@@ -14,6 +14,9 @@ apply plugin: "java"
 apply plugin: "maven-publish"
 apply plugin: "com.jfrog.bintray"
 
+sourceCompatibility = 1.8
+version = '0.0.1-alpha'
+
 repositories ihmc.ihmcDefaultArtifactProxies()
 
 repositories {
@@ -35,10 +38,8 @@ dependencies {
 
     compile group: 'us.ihmc', name: 'ihmc-commons', version: '0.11.0-alpha'
     compile group: 'org.apache.commons', name: 'commons-math3', version: '3.3'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
 }
-
-sourceCompatibility = 1.8
-version = '0.0.1-alpha'
 
 project.ext.fullVersion = version
 project.ext.vcsUrl = "https://github.com/ihmcrobotics/ihmc-yovariables"
@@ -94,6 +95,41 @@ publishing {
             artifact sourceJar {
                 classifier 'sources'
             }
+        }
+    }
+}
+
+def bintrayUsername = project.hasProperty('bintray_user') ? bintray_user : 'unknown'
+def bintrayPassword = project.hasProperty('bintray_key') ? bintray_key : 'unknown'
+
+bintray {
+    user = bintrayUsername
+    key = bintrayPassword
+
+    dryRun = false
+    publish = false
+
+    publications = ['mavenJava']
+
+    pkg {
+        repo = 'maven-release'
+        name = project.ext.publicationName
+        userOrg = 'ihmcrobotics'
+        desc = "IHMC Open Robotics Software Project ${project.name}"
+
+        websiteUrl = project.ext.vcsUrl
+        issueTrackerUrl = "${project.ext.vcsUrl}/issues"
+        vcsUrl = "${project.ext.vcsUrl}.git"
+
+        licenses = [project.ext.bintrayLicenseName]
+        labels = ['ihmc', 'java', 'yovariable']
+        publicDownloadNumbers = true
+
+        version {
+            name = project.ext.fullVersion
+            desc = "IHMC Open Robotics Software Project ${project.name} ${project.ext.fullVersion}"
+            released = new Date()
+            vcsTag = "v${project.version}"
         }
     }
 }
