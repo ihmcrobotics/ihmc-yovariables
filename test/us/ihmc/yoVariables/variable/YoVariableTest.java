@@ -144,7 +144,7 @@ public class YoVariableTest
 	@Test(timeout=300000)
    public void testGetBooleanValue()
    {
-      BooleanYoVariable booleanVariable = new BooleanYoVariable("booleanVar", registry);
+      YoBoolean booleanVariable = new YoBoolean("booleanVar", registry);
       booleanVariable.set(true);
 
       assert booleanVariable.getBooleanValue();
@@ -263,7 +263,7 @@ public class YoVariableTest
 // public void testSet()
 // {
 //    // Already tested normal sets with testDouble, Int, Enum.
-//    BooleanYoVariable booleanVariable = new BooleanYoVariable("booleanVar", registry);
+//    YoBoolean booleanVariable = new YoBoolean("booleanVar", registry);
 //    DoubleYoVariable doubleVariable = new DoubleYoVariable("doubleVariable",  registry);
 //    IntYoVariable intVariable = new IntYoVariable("intVariable", registry);
 //    EnumYoVariable enumVariable = EnumYoVariable.create("enumVariable", FooEnum.class, registry);
@@ -293,16 +293,16 @@ public class YoVariableTest
       yoVariable.set(0.0112);
       Assert.assertEquals("doubleYoVariable: 0.0112", yoVariable.toString());
 
-      BooleanYoVariable booleanyoVariable = new BooleanYoVariable("booleanYoVariable", registry);
-      booleanyoVariable.set(false);
-      Assert.assertEquals("booleanYoVariable: false", booleanyoVariable.toString());
+      YoBoolean booleanyoBoolean = new YoBoolean("booleanYoVariable", registry);
+      booleanyoBoolean.set(false);
+      Assert.assertEquals("booleanYoVariable: false", booleanyoBoolean.toString());
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testValueEquals()
    {
-      BooleanYoVariable booleanVariable = new BooleanYoVariable("booleanVar", registry);
+      YoBoolean booleanVariable = new YoBoolean("booleanVar", registry);
       DoubleYoVariable doubleVariable = new DoubleYoVariable("doubleVariable", registry);
       IntegerYoVariable intVariable = new IntegerYoVariable("intVariable", registry);
       EnumYoVariable<FooEnum> enumVariable = EnumYoVariable.create("enumVariable", FooEnum.class, registry);

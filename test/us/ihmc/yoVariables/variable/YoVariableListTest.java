@@ -27,12 +27,12 @@ public class YoVariableListTest
       YoVariableRegistry registryOne = new YoVariableRegistry("registryOne");
       YoVariableRegistry registryTwo = new YoVariableRegistry("registryTwo");
 
-      BooleanYoVariable booleanOne = new BooleanYoVariable("booleanOne", registryOne);
+      YoBoolean booleanOne = new YoBoolean("booleanOne", registryOne);
       DoubleYoVariable doubleOne = new DoubleYoVariable("doubleOne", registryOne);
       varList.addVariable(booleanOne);
       varList.addVariable(doubleOne);
 
-      BooleanYoVariable booleanTwo = new BooleanYoVariable("booleanTwo", registryTwo);
+      YoBoolean booleanTwo = new YoBoolean("booleanTwo", registryTwo);
       DoubleYoVariable doubleTwo = new DoubleYoVariable("doubleTwo", registryTwo);
       varList.addVariable(booleanTwo);
       varList.addVariable(doubleTwo);
@@ -43,10 +43,10 @@ public class YoVariableListTest
       // the first one, both, or throw an exception?
       // Right now it returns the first one. This has problems with
       // graphGroups and such and should be fixed later
-      BooleanYoVariable repeatBooleanOne = new BooleanYoVariable("booleanOne", registryTwo);
+      YoBoolean repeatBooleanOne = new YoBoolean("booleanOne", registryTwo);
       varList.addVariable(repeatBooleanOne);
 
-      BooleanYoVariable notIncluded = new BooleanYoVariable("notIncluded", registryTwo);
+      YoBoolean notIncluded = new YoBoolean("notIncluded", registryTwo);
 
       Assert.assertEquals("listOne", varList.getName());
       Assert.assertEquals(0, varList.getIndexOfVariable(booleanOne));
@@ -353,7 +353,7 @@ public class YoVariableListTest
 
       assertFalse(listener.getWasCalled());
       
-      BooleanYoVariable variable = new BooleanYoVariable("testBoolean", registry);
+      YoBoolean variable = new YoBoolean("testBoolean", registry);
       list.addVariable(variable);
 
       assertTrue(listener.getWasCalled());

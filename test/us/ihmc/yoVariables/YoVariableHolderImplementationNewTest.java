@@ -10,11 +10,8 @@ import org.junit.Test;
 
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
-import us.ihmc.yoVariables.variable.BooleanYoVariable;
-import us.ihmc.yoVariables.variable.DoubleYoVariable;
-import us.ihmc.yoVariables.variable.EnumYoVariable;
-import us.ihmc.yoVariables.variable.IntegerYoVariable;
-import us.ihmc.yoVariables.variable.YoVariable;
+import us.ihmc.yoVariables.variable.*;
+import us.ihmc.yoVariables.variable.YoBoolean;
 
 public class YoVariableHolderImplementationNewTest
 {
@@ -39,7 +36,7 @@ public class YoVariableHolderImplementationNewTest
       yoVariableHolderImplementation = new YoVariableHolderImplementation();
       testVariables = new ArrayList<YoVariable<?>>(); 
       testVariables.add(new DoubleYoVariable("doubleYoVariable", null));
-      testVariables.add(new BooleanYoVariable("booleanYoVariable", null));
+      testVariables.add(new YoBoolean("booleanYoVariable", null));
       testVariables.add(new IntegerYoVariable("integerYoVariable", null));
       testVariables.add(new EnumYoVariable<YoVariableHolderImplementationNewTest.EnumYoVariableTestEnums>("enumYoVariable", null, EnumYoVariableTestEnums.class));
    }
@@ -200,20 +197,20 @@ public class YoVariableHolderImplementationNewTest
       testRegistry2 = new YoVariableRegistry("testRegistry2"); 
       DoubleYoVariable doubleYoVariableWithNameSpace1 = new DoubleYoVariable("doubleYoVariableWithNameSpace1", testRegistry1);
       DoubleYoVariable doubleYoVariableWithNameSpace2 = new DoubleYoVariable("doubleYoVariableWithNameSpace2", testRegistry2);
-      BooleanYoVariable booleanYoVariableWithNameSpace1 = new BooleanYoVariable("booleanYoVariableWithNameSpace1", testRegistry1);
-      BooleanYoVariable booleanYoVariableWithNameSpace2 = new BooleanYoVariable("booleanYoVariableWithNameSpace2", testRegistry2);
+      YoBoolean yoBooleanWithNameSpace1 = new YoBoolean("yoBooleanWithNameSpace1", testRegistry1);
+      YoBoolean yoBooleanWithNameSpace2 = new YoBoolean("yoBooleanWithNameSpace2", testRegistry2);
       IntegerYoVariable integerYoVariableWithNameSpace1 = new IntegerYoVariable("integerYoVariableWithNameSpace1", testRegistry1);
       IntegerYoVariable integerYoVariableWithNameSpace2 = new IntegerYoVariable("integerYoVariableWithNameSpace2", testRegistry2);
       yoVariableHolderImplementation.addVariableToHolder(doubleYoVariableWithNameSpace1);
       yoVariableHolderImplementation.addVariableToHolder(doubleYoVariableWithNameSpace2);
-      yoVariableHolderImplementation.addVariableToHolder(booleanYoVariableWithNameSpace1);
-      yoVariableHolderImplementation.addVariableToHolder(booleanYoVariableWithNameSpace2);
+      yoVariableHolderImplementation.addVariableToHolder(yoBooleanWithNameSpace1);
+      yoVariableHolderImplementation.addVariableToHolder(yoBooleanWithNameSpace2);
       yoVariableHolderImplementation.addVariableToHolder(integerYoVariableWithNameSpace1);
       yoVariableHolderImplementation.addVariableToHolder(integerYoVariableWithNameSpace2);
       
       ArrayList<YoVariable<?>> expectedArrayListFromNameSpaceTestRegistry1 = new ArrayList<YoVariable<?>>();
       expectedArrayListFromNameSpaceTestRegistry1.add(doubleYoVariableWithNameSpace1);
-      expectedArrayListFromNameSpaceTestRegistry1.add(booleanYoVariableWithNameSpace1);
+      expectedArrayListFromNameSpaceTestRegistry1.add(yoBooleanWithNameSpace1);
       expectedArrayListFromNameSpaceTestRegistry1.add(integerYoVariableWithNameSpace1);
  
       for(int i = 0; i < expectedArrayListFromNameSpaceTestRegistry1.size(); i++)

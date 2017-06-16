@@ -15,9 +15,9 @@ import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.Continuous
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 
-public class BooleanYoVariableTest
+public class YoBooleanTest
 {
-   private BooleanYoVariable booleanYoVariable;
+   private YoBoolean yoBoolean;
    private YoVariableRegistry registry;
    private static final double EPSILON = 1e-10;
 
@@ -25,13 +25,13 @@ public class BooleanYoVariableTest
    public void setUp()
    {
       registry = new YoVariableRegistry("testRegistry");
-      booleanYoVariable = new BooleanYoVariable("booleanVariable", registry);
+      yoBoolean = new YoBoolean("booleanVariable", registry);
    }
 
    @After
    public void tearDown()
    {
-      booleanYoVariable = null;
+      yoBoolean = null;
       registry = null;
    }
 
@@ -39,52 +39,52 @@ public class BooleanYoVariableTest
 	@Test(timeout=300000)
    public void testBooleanYoVariable()
    {
-      Assert.assertEquals("booleanVariable", booleanYoVariable.getName());
-      Assert.assertEquals("testRegistry", booleanYoVariable.getYoVariableRegistry().getName());
-      Assert.assertEquals(false, booleanYoVariable.getBooleanValue());
+      Assert.assertEquals("booleanVariable", yoBoolean.getName());
+      Assert.assertEquals("testRegistry", yoBoolean.getYoVariableRegistry().getName());
+      Assert.assertEquals(false, yoBoolean.getBooleanValue());
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testValueEquals()
    {
-      booleanYoVariable.set(false);
-      assertFalse(booleanYoVariable.valueEquals(true));
+      yoBoolean.set(false);
+      assertFalse(yoBoolean.valueEquals(true));
 
-      booleanYoVariable.set(true);
-      assertTrue(booleanYoVariable.valueEquals(true));
+      yoBoolean.set(true);
+      assertTrue(yoBoolean.valueEquals(true));
 
-      booleanYoVariable.set(false);
-      assertTrue(booleanYoVariable.valueEquals(false));
+      yoBoolean.set(false);
+      assertTrue(yoBoolean.valueEquals(false));
 
-      booleanYoVariable.set(true);
-      assertFalse(booleanYoVariable.valueEquals(false));
+      yoBoolean.set(true);
+      assertFalse(yoBoolean.valueEquals(false));
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetAndSetBooleanYoVariable()
    {
-      booleanYoVariable.set(false);
-      assertFalse(booleanYoVariable.getBooleanValue());
+      yoBoolean.set(false);
+      assertFalse(yoBoolean.getBooleanValue());
 
-      booleanYoVariable.set(true);
-      assertTrue(booleanYoVariable.getBooleanValue());
+      yoBoolean.set(true);
+      assertTrue(yoBoolean.getBooleanValue());
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testSet_boolean_boolean()
    {
-      assertFalse(booleanYoVariable.getBooleanValue());
+      assertFalse(yoBoolean.getBooleanValue());
 
       boolean value = true;
       boolean notifyListeners = true;
-      boolean result = booleanYoVariable.set(value, notifyListeners);
-      assertTrue(booleanYoVariable.getBooleanValue());
+      boolean result = yoBoolean.set(value, notifyListeners);
+      assertTrue(yoBoolean.getBooleanValue());
       assertTrue(result);
 
-      result = booleanYoVariable.set(value, notifyListeners);
+      result = yoBoolean.set(value, notifyListeners);
       assertFalse(result);
    }
 
@@ -95,25 +95,25 @@ public class BooleanYoVariableTest
       Random rng = new Random();
       double testRandom = 0;
 
-      booleanYoVariable.setValueFromDouble(0.0);
-      assertFalse(booleanYoVariable.getBooleanValue());
+      yoBoolean.setValueFromDouble(0.0);
+      assertFalse(yoBoolean.getBooleanValue());
 
       testRandom = (double) rng.nextInt(23000) / (double) rng.nextInt(5);
 
-      booleanYoVariable.setValueFromDouble(10000);
-      assertTrue(booleanYoVariable.getBooleanValue());
+      yoBoolean.setValueFromDouble(10000);
+      assertTrue(yoBoolean.getBooleanValue());
 
-      booleanYoVariable.setValueFromDouble(-0.4);
-      assertFalse(booleanYoVariable.getBooleanValue());
+      yoBoolean.setValueFromDouble(-0.4);
+      assertFalse(yoBoolean.getBooleanValue());
       
       for(int counter = 0; counter < 100; counter++)
       {
 	      testRandom = rng.nextDouble();
-	      booleanYoVariable.setValueFromDouble(testRandom);
+	      yoBoolean.setValueFromDouble(testRandom);
 	      if (testRandom >= 0.5)
-	         assertTrue(booleanYoVariable.getBooleanValue());
+	         assertTrue(yoBoolean.getBooleanValue());
 	      else
-	         assertFalse(booleanYoVariable.getBooleanValue());
+	         assertFalse(yoBoolean.getBooleanValue());
       }
    }
 
@@ -121,13 +121,13 @@ public class BooleanYoVariableTest
 	@Test(timeout=300000)
    public void testGetValueAsDouble()
    {
-      assertFalse(booleanYoVariable.getBooleanValue());
-      double result = booleanYoVariable.getValueAsDouble();
+      assertFalse(yoBoolean.getBooleanValue());
+      double result = yoBoolean.getValueAsDouble();
       assertEquals(0.0, result, EPSILON);
 
-      booleanYoVariable.set(true);
-      assertTrue(booleanYoVariable.getBooleanValue());
-      result = booleanYoVariable.getValueAsDouble();
+      yoBoolean.set(true);
+      assertTrue(yoBoolean.getBooleanValue());
+      result = yoBoolean.getValueAsDouble();
       assertEquals(1.0, result, EPSILON);
    }
 
@@ -135,10 +135,10 @@ public class BooleanYoVariableTest
 	@Test(timeout=300000)
    public void testToString()
    {
-      booleanYoVariable.set(false);
-      Assert.assertEquals(booleanYoVariable.toString(), "booleanVariable: false");
-      booleanYoVariable.set(true);
-      Assert.assertEquals(booleanYoVariable.toString(), "booleanVariable: true");
+      yoBoolean.set(false);
+      Assert.assertEquals(yoBoolean.toString(), "booleanVariable: false");
+      yoBoolean.set(true);
+      Assert.assertEquals(yoBoolean.toString(), "booleanVariable: true");
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -147,10 +147,10 @@ public class BooleanYoVariableTest
    {
       StringBuffer testStringBuffer = new StringBuffer();
       testStringBuffer.append("Test Case: ");
-      booleanYoVariable.set(false);
-      booleanYoVariable.getValueString(testStringBuffer);
+      yoBoolean.set(false);
+      yoBoolean.getValueString(testStringBuffer);
       testStringBuffer.append(" ");
-      booleanYoVariable.getValueStringFromDouble(testStringBuffer, 1.0);
+      yoBoolean.getValueStringFromDouble(testStringBuffer, 1.0);
 
       StringBuffer expectedTestStringBuffer = new StringBuffer();
       expectedTestStringBuffer.append("Test Case: false true");
@@ -162,24 +162,24 @@ public class BooleanYoVariableTest
 	@Test(timeout=300000)
    public void testGetAndSetValueAsLongBits()
    {
-      assertFalse(booleanYoVariable.getBooleanValue());
-      long value = booleanYoVariable.getValueAsLongBits();
+      assertFalse(yoBoolean.getBooleanValue());
+      long value = yoBoolean.getValueAsLongBits();
       assertEquals(0, value);
 
-      booleanYoVariable.set(true);
-      assertTrue(booleanYoVariable.getBooleanValue());
-      value = booleanYoVariable.getValueAsLongBits();
+      yoBoolean.set(true);
+      assertTrue(yoBoolean.getBooleanValue());
+      value = yoBoolean.getValueAsLongBits();
       assertEquals(1, value);
 
       boolean notifyListeners = true;
-      booleanYoVariable.setValueFromLongBits(value, notifyListeners);
+      yoBoolean.setValueFromLongBits(value, notifyListeners);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testYoVariableType()
    {
-      Assert.assertEquals(booleanYoVariable.getYoVariableType(), YoVariableType.BOOLEAN);
+      Assert.assertEquals(yoBoolean.getYoVariableType(), YoVariableType.BOOLEAN);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -187,13 +187,13 @@ public class BooleanYoVariableTest
    public void testDuplicate()
    {
 	   YoVariableRegistry newRegistry = new YoVariableRegistry("newTestRegistry");
-	   BooleanYoVariable val, testVal;
+	   YoBoolean val, testVal;
 	   
-	   booleanYoVariable.set(true);
-	   val = booleanYoVariable.duplicate(newRegistry);
-	   testVal = (BooleanYoVariable)newRegistry.getAllVariables().get(0);
-	   Assert.assertEquals(booleanYoVariable.getBooleanValue(), val.getBooleanValue());
-	   Assert.assertEquals(booleanYoVariable.getBooleanValue(), testVal.getBooleanValue());
+	   yoBoolean.set(true);
+	   val = yoBoolean.duplicate(newRegistry);
+	   testVal = (YoBoolean)newRegistry.getAllVariables().get(0);
+	   Assert.assertEquals(yoBoolean.getBooleanValue(), val.getBooleanValue());
+	   Assert.assertEquals(yoBoolean.getBooleanValue(), testVal.getBooleanValue());
 	   assertTrue(val.getYoVariableRegistry().areEqual(newRegistry));
 	   assertTrue(val.getYoVariableRegistry().areEqual(testVal.getYoVariableRegistry()));
 	   newRegistry = null;
@@ -205,12 +205,12 @@ public class BooleanYoVariableTest
    {
 	   boolean valSet = false;
 	   YoVariableRegistry newRegistry = new YoVariableRegistry("newTestRegistry");
-	   BooleanYoVariable testBoolean = new BooleanYoVariable("testBooleanVariable", newRegistry);
+	   YoBoolean testBoolean = new YoBoolean("testBooleanVariable", newRegistry);
 	   testBoolean.set(true);
-	   valSet = booleanYoVariable.setValue(testBoolean, false);
+	   valSet = yoBoolean.setValue(testBoolean, false);
 	   assertTrue(valSet);
-	   Assert.assertEquals(booleanYoVariable.getBooleanValue(), testBoolean.getBooleanValue());
-	   assertTrue(booleanYoVariable.getYoVariableRegistry().areEqual(registry));
+	   Assert.assertEquals(yoBoolean.getBooleanValue(), testBoolean.getBooleanValue());
+	   assertTrue(yoBoolean.getYoVariableRegistry().areEqual(registry));
    }
    
 }

@@ -2,16 +2,16 @@ package us.ihmc.yoVariables.variable;
 
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
-public class BooleanYoVariable extends YoVariable<BooleanYoVariable>
+public class YoBoolean extends YoVariable<YoBoolean>
 {
    private boolean val;
 
-   public BooleanYoVariable(String name, YoVariableRegistry registry)
+   public YoBoolean(String name, YoVariableRegistry registry)
    {
       this(name, "", registry);
    }
 
-   public BooleanYoVariable(String name, String description, YoVariableRegistry registry)
+   public YoBoolean(String name, String description, YoVariableRegistry registry)
    {
       super(YoVariableType.BOOLEAN, name, description, registry);
 
@@ -131,15 +131,15 @@ public class BooleanYoVariable extends YoVariable<BooleanYoVariable>
    }
 
    @Override
-   public BooleanYoVariable duplicate(YoVariableRegistry newRegistry)
+   public YoBoolean duplicate(YoVariableRegistry newRegistry)
    {
-      BooleanYoVariable newVar = new BooleanYoVariable(getName(), getDescription(), newRegistry);
+      YoBoolean newVar = new YoBoolean(getName(), getDescription(), newRegistry);
       newVar.set(getBooleanValue());
       return newVar;
    }
 
    @Override
-   public boolean setValue(BooleanYoVariable value, boolean notifyListeners)
+   public boolean setValue(YoBoolean value, boolean notifyListeners)
    {
       return set(value.getBooleanValue(), notifyListeners);
    }
