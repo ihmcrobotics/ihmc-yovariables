@@ -13,11 +13,11 @@ import org.junit.Test;
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
-public class IntegerYoVariableTest
+public class YoIntegerTest
 {
    private YoVariableRegistry registry;
    private Random random;
-   private IntegerYoVariable integerYoVariable;
+   private YoInteger yoInteger;
    private static final double EPSILON = 1e-10;
    
    @Before
@@ -25,14 +25,14 @@ public class IntegerYoVariableTest
    {
       registry = new YoVariableRegistry("testRegistry");
       random = new Random(1776L);
-      integerYoVariable = new IntegerYoVariable("test", registry);
+      yoInteger = new YoInteger("test", registry);
    }
    
    @After
    public void tearDown()
    {
       registry = null;
-      integerYoVariable = null;
+      yoInteger = null;
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -42,8 +42,8 @@ public class IntegerYoVariableTest
       for (int i = 0; i < 100; i++)
       {
          int value = random.nextInt(Integer.MAX_VALUE);
-         integerYoVariable.set(value);
-         Assert.assertEquals(value, integerYoVariable.getIntegerValue());
+         yoInteger.set(value);
+         Assert.assertEquals(value, yoInteger.getIntegerValue());
       }
    }
 
@@ -52,19 +52,19 @@ public class IntegerYoVariableTest
    public void testIncrementDecrementAddSubtract()
    {
       int value = random.nextInt();
-      integerYoVariable.set(value);
+      yoInteger.set(value);
       
-      integerYoVariable.increment();
-      Assert.assertEquals(value + 1, integerYoVariable.getIntegerValue());
+      yoInteger.increment();
+      Assert.assertEquals(value + 1, yoInteger.getIntegerValue());
       
-      integerYoVariable.decrement();
-      Assert.assertEquals(value, integerYoVariable.getIntegerValue());
+      yoInteger.decrement();
+      Assert.assertEquals(value, yoInteger.getIntegerValue());
       
-      integerYoVariable.add(value);
-      Assert.assertEquals(value * 2, integerYoVariable.getIntegerValue());
+      yoInteger.add(value);
+      Assert.assertEquals(value * 2, yoInteger.getIntegerValue());
       
-      integerYoVariable.subtract(value);
-      Assert.assertEquals(value, integerYoVariable.getIntegerValue());
+      yoInteger.subtract(value);
+      Assert.assertEquals(value, yoInteger.getIntegerValue());
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -72,15 +72,15 @@ public class IntegerYoVariableTest
    public void testLargeValue()
    {
       int value = Integer.MAX_VALUE - 2;
-      integerYoVariable.set(value);
-      Assert.assertEquals(value, integerYoVariable.getIntegerValue());
+      yoInteger.set(value);
+      Assert.assertEquals(value, yoInteger.getIntegerValue());
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testValueEquals()
    {
-      boolean result = integerYoVariable.valueEquals(0);
+      boolean result = yoInteger.valueEquals(0);
       assertTrue(result);
    }
 
@@ -88,13 +88,13 @@ public class IntegerYoVariableTest
 	@Test(timeout=300000)
    public void testSetFinal()
    {
-      Assert.assertEquals(0, integerYoVariable.getIntegerValue());
-      integerYoVariable.set(0);
-      Assert.assertEquals(0, integerYoVariable.getIntegerValue());
+      Assert.assertEquals(0, yoInteger.getIntegerValue());
+      yoInteger.set(0);
+      Assert.assertEquals(0, yoInteger.getIntegerValue());
       
       int value = random.nextInt() + 1;
-      integerYoVariable.set(value);
-      Assert.assertEquals(value, integerYoVariable.getIntegerValue());
+      yoInteger.set(value);
+      Assert.assertEquals(value, yoInteger.getIntegerValue());
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -104,8 +104,8 @@ public class IntegerYoVariableTest
       double doubleValue = random.nextDouble();
       int intValue = (int) Math.round(doubleValue);
       boolean notifyListeners = true;
-      integerYoVariable.setValueFromDouble(doubleValue, notifyListeners);
-      Assert.assertEquals(intValue, integerYoVariable.getIntegerValue());
+      yoInteger.setValueFromDouble(doubleValue, notifyListeners);
+      Assert.assertEquals(intValue, yoInteger.getIntegerValue());
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -113,9 +113,9 @@ public class IntegerYoVariableTest
    public void testGetValueAsDouble()
    {
       int value = 15;
-      Assert.assertEquals(0, integerYoVariable.getIntegerValue());
-      integerYoVariable.set(value);
-      double result = integerYoVariable.getValueAsDouble();
+      Assert.assertEquals(0, yoInteger.getIntegerValue());
+      yoInteger.set(value);
+      double result = yoInteger.getValueAsDouble();
       assertEquals(15.0, result, EPSILON);
    }
 
@@ -123,18 +123,18 @@ public class IntegerYoVariableTest
 	@Test(timeout=300000)
 public void testToString()
 {
-   Assert.assertEquals(integerYoVariable.getName() + ": " + integerYoVariable.getIntegerValue(), integerYoVariable.toString());
+   Assert.assertEquals(yoInteger.getName() + ": " + yoInteger.getIntegerValue(), yoInteger.toString());
 }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
 public void testGetValueString()
 {
-   Assert.assertEquals(0, integerYoVariable.getIntegerValue());
+   Assert.assertEquals(0, yoInteger.getIntegerValue());
    int value = random.nextInt();
-   integerYoVariable.set(value);
+   yoInteger.set(value);
    StringBuffer stringBuffer = new StringBuffer();
-   integerYoVariable.getValueString(stringBuffer);
+   yoInteger.getValueString(stringBuffer);
    assertEquals("" + value, stringBuffer.toString());
 }
 
@@ -142,12 +142,12 @@ public void testGetValueString()
 	@Test(timeout=300000)
 public void testGetValueStringFromDouble()
 {
-   Assert.assertEquals(0, integerYoVariable.getIntegerValue());
+   Assert.assertEquals(0, yoInteger.getIntegerValue());
    double doubleValue = random.nextDouble();
    int value = (int) Math.round(doubleValue);
-   integerYoVariable.setValueFromDouble(doubleValue);
+   yoInteger.setValueFromDouble(doubleValue);
    StringBuffer stringBuffer = new StringBuffer();
-   integerYoVariable.getValueStringFromDouble(stringBuffer, doubleValue);
+   yoInteger.getValueStringFromDouble(stringBuffer, doubleValue);
    assertEquals("" + value, stringBuffer.toString()); 
 }
 
@@ -155,7 +155,7 @@ public void testGetValueStringFromDouble()
 	@Test(timeout=300000)
 public void testGetYoVariableType()
 {
-   Assert.assertEquals(YoVariableType.INTEGER, integerYoVariable.getYoVariableType());
+   Assert.assertEquals(YoVariableType.INTEGER, yoInteger.getYoVariableType());
 }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -163,37 +163,37 @@ public void testGetYoVariableType()
 public void testGetAndSetValueAsLongBits()
 {
    int value = 57;
-   integerYoVariable.set(value);
-   long result = integerYoVariable.getValueAsLongBits();
+   yoInteger.set(value);
+   long result = yoInteger.getValueAsLongBits();
    assertEquals(value, result);
    
    long longValue = 12345;
    boolean notifyListeners = true;
-   integerYoVariable.setValueFromLongBits(longValue, notifyListeners);
-   Assert.assertEquals(longValue, integerYoVariable.getValueAsLongBits());
+   yoInteger.setValueFromLongBits(longValue, notifyListeners);
+   Assert.assertEquals(longValue, yoInteger.getValueAsLongBits());
 }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
 public void testDuplicate()
 {
-   IntegerYoVariable integerYoVariable2 = new IntegerYoVariable("var2", "descriptionTest", registry);
+   YoInteger yoInteger2 = new YoInteger("var2", "descriptionTest", registry);
    YoVariableRegistry newRegistry = new YoVariableRegistry("newRegistry");
-   IntegerYoVariable duplicate = integerYoVariable2.duplicate(newRegistry);
-   Assert.assertEquals(integerYoVariable2.getName(), duplicate.getName());
-   Assert.assertEquals(integerYoVariable2.getDescription(), duplicate.getDescription());
-   Assert.assertEquals(integerYoVariable2.getManualScalingMin(), duplicate.getManualScalingMin(), EPSILON);
-   Assert.assertEquals(integerYoVariable2.getManualScalingMax(), duplicate.getManualScalingMax(), EPSILON);
+   YoInteger duplicate = yoInteger2.duplicate(newRegistry);
+   Assert.assertEquals(yoInteger2.getName(), duplicate.getName());
+   Assert.assertEquals(yoInteger2.getDescription(), duplicate.getDescription());
+   Assert.assertEquals(yoInteger2.getManualScalingMin(), duplicate.getManualScalingMin(), EPSILON);
+   Assert.assertEquals(yoInteger2.getManualScalingMax(), duplicate.getManualScalingMax(), EPSILON);
 }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
 public void testSetValue()
 {
-   IntegerYoVariable integerYoVariable2 = new IntegerYoVariable("var2", "descriptionTest", registry);
+   YoInteger yoInteger2 = new YoInteger("var2", "descriptionTest", registry);
    boolean notifyListeners = true;
-   integerYoVariable.setValue(integerYoVariable2, notifyListeners);
-   Assert.assertEquals(integerYoVariable2.getIntegerValue(), integerYoVariable.getIntegerValue());
+   yoInteger.setValue(yoInteger2, notifyListeners);
+   Assert.assertEquals(yoInteger2.getIntegerValue(), yoInteger.getIntegerValue());
 }
 
 }

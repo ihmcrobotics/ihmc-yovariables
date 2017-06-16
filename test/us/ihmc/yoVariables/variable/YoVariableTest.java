@@ -196,7 +196,7 @@ public class YoVariableTest
 	@Test(timeout=300000)
    public void testGetIntegerValue()
    {
-      IntegerYoVariable integerVariable = new IntegerYoVariable("integerVariable", registry);
+      YoInteger integerVariable = new YoInteger("integerVariable", registry);
       integerVariable.set(5);
 
       Assert.assertEquals(integerVariable.getIntegerValue(), 5);
@@ -285,7 +285,7 @@ public class YoVariableTest
       enumyoEnum.set(FooEnum.THREE);
       Assert.assertEquals("enumYoVariable: THREE", enumyoEnum.toString());
 
-      IntegerYoVariable intyoVariable = new IntegerYoVariable("intYoVariable", registry);
+      YoInteger intyoVariable = new YoInteger("intYoVariable", registry);
       intyoVariable.set(1);
       Assert.assertEquals("intYoVariable: 1", intyoVariable.toString());
 
@@ -304,7 +304,7 @@ public class YoVariableTest
    {
       YoBoolean booleanVariable = new YoBoolean("booleanVar", registry);
       YoDouble doubleVariable = new YoDouble("doubleVariable", registry);
-      IntegerYoVariable intVariable = new IntegerYoVariable("intVariable", registry);
+      YoInteger intVariable = new YoInteger("intVariable", registry);
       YoEnum<FooEnum> enumVariable = YoEnum.create("enumVariable", FooEnum.class, registry);
 
       booleanVariable.set(true);

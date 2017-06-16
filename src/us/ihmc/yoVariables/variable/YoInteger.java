@@ -2,16 +2,16 @@ package us.ihmc.yoVariables.variable;
 
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
-public class IntegerYoVariable extends YoVariable<IntegerYoVariable>
+public class YoInteger extends YoVariable<YoInteger>
 {
    private int val;
 
-   public IntegerYoVariable(String name, YoVariableRegistry registry)
+   public YoInteger(String name, YoVariableRegistry registry)
    {
       this(name, "", registry);
    }
 
-   public IntegerYoVariable(String name, String description, YoVariableRegistry registry, double minScaling, double maxScaling)
+   public YoInteger(String name, String description, YoVariableRegistry registry, double minScaling, double maxScaling)
    {
       this(name, description, registry);
 
@@ -19,7 +19,7 @@ public class IntegerYoVariable extends YoVariable<IntegerYoVariable>
       this.manualMaxScaling = maxScaling;
    }
 
-   public IntegerYoVariable(String name, String description, YoVariableRegistry registry)
+   public YoInteger(String name, String description, YoVariableRegistry registry)
    {
       super(YoVariableType.INTEGER, name, description, registry);
 
@@ -80,7 +80,7 @@ public class IntegerYoVariable extends YoVariable<IntegerYoVariable>
    public int getIntegerValue()
    {
 //      if (val != Math.round(val))
-//         System.err.println("IntegerYoVariable: returning a different value than what it used to be.");
+//         System.err.println("YoInteger: returning a different value than what it used to be.");
       return val;
    }
 
@@ -158,15 +158,15 @@ public class IntegerYoVariable extends YoVariable<IntegerYoVariable>
    }
 
    @Override
-   public IntegerYoVariable duplicate(YoVariableRegistry newRegistry)
+   public YoInteger duplicate(YoVariableRegistry newRegistry)
    {
-      IntegerYoVariable retVar = new IntegerYoVariable(getName(), getDescription(), newRegistry, getManualScalingMin(), getManualScalingMax());
+      YoInteger retVar = new YoInteger(getName(), getDescription(), newRegistry, getManualScalingMin(), getManualScalingMax());
       retVar.set(getIntegerValue());
       return retVar;
    }
 
    @Override
-   public boolean setValue(IntegerYoVariable value, boolean notifyListeners)
+   public boolean setValue(YoInteger value, boolean notifyListeners)
    {
       return set(value.getIntegerValue(), notifyListeners);
    }

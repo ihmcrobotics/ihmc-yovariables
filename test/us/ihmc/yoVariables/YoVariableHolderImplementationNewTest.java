@@ -37,7 +37,7 @@ public class YoVariableHolderImplementationNewTest
       testVariables = new ArrayList<YoVariable<?>>(); 
       testVariables.add(new YoDouble("doubleYoVariable", null));
       testVariables.add(new YoBoolean("booleanYoVariable", null));
-      testVariables.add(new IntegerYoVariable("integerYoVariable", null));
+      testVariables.add(new YoInteger("integerYoVariable", null));
       testVariables.add(new YoEnum<EnumYoVariableTestEnums>("enumYoVariable", null, EnumYoVariableTestEnums.class));
    }
 
@@ -199,19 +199,19 @@ public class YoVariableHolderImplementationNewTest
       YoDouble yoDoubleWithNameSpace2 = new YoDouble("yoDoubleWithNameSpace2", testRegistry2);
       YoBoolean yoBooleanWithNameSpace1 = new YoBoolean("yoBooleanWithNameSpace1", testRegistry1);
       YoBoolean yoBooleanWithNameSpace2 = new YoBoolean("yoBooleanWithNameSpace2", testRegistry2);
-      IntegerYoVariable integerYoVariableWithNameSpace1 = new IntegerYoVariable("integerYoVariableWithNameSpace1", testRegistry1);
-      IntegerYoVariable integerYoVariableWithNameSpace2 = new IntegerYoVariable("integerYoVariableWithNameSpace2", testRegistry2);
+      YoInteger yoIntegerWithNameSpace1 = new YoInteger("yoIntegerWithNameSpace1", testRegistry1);
+      YoInteger yoIntegerWithNameSpace2 = new YoInteger("yoIntegerWithNameSpace2", testRegistry2);
       yoVariableHolderImplementation.addVariableToHolder(yoDoubleWithNameSpace1);
       yoVariableHolderImplementation.addVariableToHolder(yoDoubleWithNameSpace2);
       yoVariableHolderImplementation.addVariableToHolder(yoBooleanWithNameSpace1);
       yoVariableHolderImplementation.addVariableToHolder(yoBooleanWithNameSpace2);
-      yoVariableHolderImplementation.addVariableToHolder(integerYoVariableWithNameSpace1);
-      yoVariableHolderImplementation.addVariableToHolder(integerYoVariableWithNameSpace2);
+      yoVariableHolderImplementation.addVariableToHolder(yoIntegerWithNameSpace1);
+      yoVariableHolderImplementation.addVariableToHolder(yoIntegerWithNameSpace2);
       
       ArrayList<YoVariable<?>> expectedArrayListFromNameSpaceTestRegistry1 = new ArrayList<YoVariable<?>>();
       expectedArrayListFromNameSpaceTestRegistry1.add(yoDoubleWithNameSpace1);
       expectedArrayListFromNameSpaceTestRegistry1.add(yoBooleanWithNameSpace1);
-      expectedArrayListFromNameSpaceTestRegistry1.add(integerYoVariableWithNameSpace1);
+      expectedArrayListFromNameSpaceTestRegistry1.add(yoIntegerWithNameSpace1);
  
       for(int i = 0; i < expectedArrayListFromNameSpaceTestRegistry1.size(); i++)
       {
