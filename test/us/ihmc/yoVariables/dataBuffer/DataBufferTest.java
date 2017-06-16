@@ -22,7 +22,7 @@ public class DataBufferTest
       ONE, TWO;
    }
 
-   private EnumYoVariable<EnumYoVariableTestEnums> enumYoVariable;
+   private YoEnum<EnumYoVariableTestEnums> yoEnum;
    private YoDouble yoDouble;
    private YoBoolean yoBoolean;
    private IntegerYoVariable integerYoVariable;
@@ -44,7 +44,7 @@ public class DataBufferTest
       yoDouble = new YoDouble("yoDouble", registry);
       yoBoolean = new YoBoolean("yoBoolean", registry);
       integerYoVariable = new IntegerYoVariable("integerYoVariable", registry);
-      enumYoVariable = new EnumYoVariable<DataBufferTest.EnumYoVariableTestEnums>("enumYoVariable", registry, EnumYoVariableTestEnums.class);
+      yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", registry, EnumYoVariableTestEnums.class);
       
       a = new YoDouble("a_arm", registry);
       b = new YoDouble("b_arm", registry);
@@ -99,7 +99,7 @@ public class DataBufferTest
       DataBufferEntry doubleDataBufferEntryTest = new DataBufferEntry(yoDouble, testBufferSize);
       DataBufferEntry booleanDataBufferEntryTest = new DataBufferEntry(yoBoolean, testBufferSize);
       DataBufferEntry integerDataBufferEntryTest = new DataBufferEntry(integerYoVariable, testBufferSize);
-      DataBufferEntry enumDataBufferEntryTest = new DataBufferEntry(enumYoVariable, testBufferSize);
+      DataBufferEntry enumDataBufferEntryTest = new DataBufferEntry(yoEnum, testBufferSize);
       dataBuffer.addEntry(doubleDataBufferEntryTest);
       dataBuffer.addEntry(booleanDataBufferEntryTest);
       dataBuffer.addEntry(integerDataBufferEntryTest);
@@ -120,8 +120,8 @@ public class DataBufferTest
       assertEquals(integerDataBufferEntryTest, testEntryReceivedViaString);
       assertEquals(integerDataBufferEntryTest, testEntryReceivedViaVariableName);
       
-      testEntryReceivedViaString = dataBuffer.getEntry("enumYoVariable");
-      testEntryReceivedViaVariableName = dataBuffer.getEntry(enumYoVariable);
+      testEntryReceivedViaString = dataBuffer.getEntry("yoEnum");
+      testEntryReceivedViaVariableName = dataBuffer.getEntry(yoEnum);
       assertEquals(enumDataBufferEntryTest, testEntryReceivedViaString);
       assertEquals(enumDataBufferEntryTest, testEntryReceivedViaVariableName);
 
@@ -134,17 +134,17 @@ public class DataBufferTest
       dataBuffer.addVariable(yoDouble, testBufferSize);
       dataBuffer.addVariable(yoBoolean, testBufferSize);
       dataBuffer.addVariable(integerYoVariable, testBufferSize);
-      dataBuffer.addVariable(enumYoVariable, testBufferSize);
+      dataBuffer.addVariable(yoEnum, testBufferSize);
       
       DataBufferEntry doubleDataBufferEntryTest = new DataBufferEntry(yoDouble, testBufferSize);
       DataBufferEntry booleanDataBufferEntryTest = new DataBufferEntry(yoBoolean, testBufferSize);
       DataBufferEntry integerDataBufferEntryTest = new DataBufferEntry(integerYoVariable, testBufferSize);
-      DataBufferEntry enumDataBufferEntryTest = new DataBufferEntry(enumYoVariable, testBufferSize);
+      DataBufferEntry enumDataBufferEntryTest = new DataBufferEntry(yoEnum, testBufferSize);
       
       assertTrue(doubleDataBufferEntryTest.getVariable() == dataBuffer.getEntry(yoDouble).getVariable());
       assertTrue(booleanDataBufferEntryTest.getVariable() == dataBuffer.getEntry(yoBoolean).getVariable());
       assertTrue(integerDataBufferEntryTest.getVariable() == dataBuffer.getEntry(integerYoVariable).getVariable());
-      assertTrue(enumDataBufferEntryTest.getVariable() == dataBuffer.getEntry(enumYoVariable).getVariable());    
+      assertTrue(enumDataBufferEntryTest.getVariable() == dataBuffer.getEntry(yoEnum).getVariable());
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -154,12 +154,12 @@ public class DataBufferTest
       dataBuffer.addVariable(yoDouble);
       dataBuffer.addVariable(yoBoolean);
       dataBuffer.addVariable(integerYoVariable);
-      dataBuffer.addVariable(enumYoVariable);
+      dataBuffer.addVariable(yoEnum);
       
       assertTrue(yoDouble == dataBuffer.getEntry(yoDouble).getVariable());
       assertTrue(yoBoolean == dataBuffer.getEntry(yoBoolean).getVariable());
       assertTrue(integerYoVariable == dataBuffer.getEntry(integerYoVariable).getVariable());
-      assertTrue(enumYoVariable == dataBuffer.getEntry(enumYoVariable).getVariable());
+      assertTrue(yoEnum == dataBuffer.getEntry(yoEnum).getVariable());
 
    }
 
@@ -171,14 +171,14 @@ public class DataBufferTest
       arrayListToBeAdded.add(yoDouble);
       arrayListToBeAdded.add(yoBoolean);
       arrayListToBeAdded.add(integerYoVariable);
-      arrayListToBeAdded.add(enumYoVariable);
+      arrayListToBeAdded.add(yoEnum);
       
       dataBuffer.addVariables(arrayListToBeAdded);
       
       assertTrue(yoDouble == dataBuffer.getEntry(yoDouble).getVariable());
       assertTrue(yoBoolean == dataBuffer.getEntry(yoBoolean).getVariable());
       assertTrue(integerYoVariable == dataBuffer.getEntry(integerYoVariable).getVariable());
-      assertTrue(enumYoVariable == dataBuffer.getEntry(enumYoVariable).getVariable());
+      assertTrue(yoEnum == dataBuffer.getEntry(yoEnum).getVariable());
       
    }
    
@@ -237,7 +237,7 @@ public class DataBufferTest
       dataBuffer.addVariable(yoDouble);
       dataBuffer.addVariable(yoBoolean);
       dataBuffer.addVariable(integerYoVariable);
-      dataBuffer.addVariable(enumYoVariable);
+      dataBuffer.addVariable(yoEnum);
       dataBuffer.addVariable(yoVariable1);
       dataBuffer.addVariable(yoVariable2);
       dataBuffer.addVariable(yoVariable3);
@@ -257,7 +257,7 @@ public class DataBufferTest
       DataBufferEntry doubleDataBufferEntryTest = new DataBufferEntry(yoDouble, testBufferSize);
       DataBufferEntry booleanDataBufferEntryTest = new DataBufferEntry(yoBoolean, testBufferSize);
       DataBufferEntry integerDataBufferEntryTest = new DataBufferEntry(integerYoVariable, testBufferSize);
-      DataBufferEntry enumDataBufferEntryTest = new DataBufferEntry(enumYoVariable, testBufferSize);
+      DataBufferEntry enumDataBufferEntryTest = new DataBufferEntry(yoEnum, testBufferSize);
       
       dataBuffer.addEntry(doubleDataBufferEntryTest);
       dataBuffer.addEntry(booleanDataBufferEntryTest);
@@ -279,13 +279,13 @@ public class DataBufferTest
       dataBuffer.addVariable(yoDouble, testBufferSize);
       dataBuffer.addVariable(yoBoolean, testBufferSize);
       dataBuffer.addVariable(integerYoVariable, testBufferSize);
-      dataBuffer.addVariable(enumYoVariable, testBufferSize);
+      dataBuffer.addVariable(yoEnum, testBufferSize);
       
       ArrayList<YoVariable<?>> expectedArrayOfVariables = new ArrayList<YoVariable<?>>();
       expectedArrayOfVariables.add(yoDouble);
       expectedArrayOfVariables.add(yoBoolean);
       expectedArrayOfVariables.add(integerYoVariable);
-      expectedArrayOfVariables.add(enumYoVariable);
+      expectedArrayOfVariables.add(yoEnum);
       
       ArrayList<YoVariable<?>> actualArrayOfVariables = dataBuffer.getAllVariables();
       
@@ -310,7 +310,7 @@ public class DataBufferTest
 //      dataBuffer.addNewEntry(yoDouble, testBufferSize);
 //      dataBuffer.addNewEntry(yoBoolean, testBufferSize);
 //      dataBuffer.addNewEntry(integerYoVariable, testBufferSize);
-//      dataBuffer.addNewEntry(enumYoVariable, testBufferSize);
+//      dataBuffer.addNewEntry(yoEnum, testBufferSize);
 //      
 //      dataBuffer.resetDataBuffer();
 //      
@@ -328,7 +328,7 @@ public class DataBufferTest
 //       dataBuffer.addNewEntry(yoDouble, testBufferSize);
 //       dataBuffer.addNewEntry(yoBoolean, testBufferSize);
 //       dataBuffer.addNewEntry(integerYoVariable, testBufferSize);
-//       dataBuffer.addNewEntry(enumYoVariable, testBufferSize);
+//       dataBuffer.addNewEntry(yoEnum, testBufferSize);
 //       
 //       dataBuffer.clearAll(testBufferSize);
 //       

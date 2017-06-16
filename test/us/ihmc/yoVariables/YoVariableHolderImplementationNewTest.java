@@ -38,7 +38,7 @@ public class YoVariableHolderImplementationNewTest
       testVariables.add(new YoDouble("doubleYoVariable", null));
       testVariables.add(new YoBoolean("booleanYoVariable", null));
       testVariables.add(new IntegerYoVariable("integerYoVariable", null));
-      testVariables.add(new EnumYoVariable<YoVariableHolderImplementationNewTest.EnumYoVariableTestEnums>("enumYoVariable", null, EnumYoVariableTestEnums.class));
+      testVariables.add(new YoEnum<EnumYoVariableTestEnums>("enumYoVariable", null, EnumYoVariableTestEnums.class));
    }
 
    @After

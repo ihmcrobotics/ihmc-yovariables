@@ -178,7 +178,7 @@ public class YoVariableTest
 	@Test(timeout=300000)
    public void testGetEnumValue()
    {
-      EnumYoVariable<FooEnum> enumVariable = EnumYoVariable.create("booleanVar", FooEnum.class, registry);
+      YoEnum<FooEnum> enumVariable = YoEnum.create("booleanVar", FooEnum.class, registry);
       enumVariable.set(FooEnum.TWO);
 
       Assert.assertEquals(enumVariable.getEnumValue(), FooEnum.TWO);
@@ -266,7 +266,7 @@ public class YoVariableTest
 //    YoBoolean booleanVariable = new YoBoolean("booleanVar", registry);
 //    YoDouble doubleVariable = new YoDouble("doubleVariable",  registry);
 //    IntYoVariable intVariable = new IntYoVariable("intVariable", registry);
-//    EnumYoVariable enumVariable = EnumYoVariable.create("enumVariable", FooEnum.class, registry);
+//    YoEnum enumVariable = YoEnum.create("enumVariable", FooEnum.class, registry);
 //
 //    boolean testPassed = true;
 // }
@@ -281,9 +281,9 @@ public class YoVariableTest
 	@Test(timeout=300000)
    public void testToString()
    {
-      EnumYoVariable<FooEnum> enumyoVariable = EnumYoVariable.create("enumYoVariable", FooEnum.class, registry);
-      enumyoVariable.set(FooEnum.THREE);
-      Assert.assertEquals("enumYoVariable: THREE", enumyoVariable.toString());
+      YoEnum<FooEnum> enumyoEnum = YoEnum.create("enumYoVariable", FooEnum.class, registry);
+      enumyoEnum.set(FooEnum.THREE);
+      Assert.assertEquals("enumYoVariable: THREE", enumyoEnum.toString());
 
       IntegerYoVariable intyoVariable = new IntegerYoVariable("intYoVariable", registry);
       intyoVariable.set(1);
@@ -305,7 +305,7 @@ public class YoVariableTest
       YoBoolean booleanVariable = new YoBoolean("booleanVar", registry);
       YoDouble doubleVariable = new YoDouble("doubleVariable", registry);
       IntegerYoVariable intVariable = new IntegerYoVariable("intVariable", registry);
-      EnumYoVariable<FooEnum> enumVariable = EnumYoVariable.create("enumVariable", FooEnum.class, registry);
+      YoEnum<FooEnum> enumVariable = YoEnum.create("enumVariable", FooEnum.class, registry);
 
       booleanVariable.set(true);
       doubleVariable.set(1.4);
