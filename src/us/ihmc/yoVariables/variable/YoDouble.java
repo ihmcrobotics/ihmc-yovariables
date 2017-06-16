@@ -17,7 +17,7 @@ import us.ihmc.yoVariables.registry.YoVariableRegistry;
  * Historical values of all registered YoVariables are stored in the DataBuffer which may be exported for later use.</p>
  * <p>
  */
-public class DoubleYoVariable extends YoVariable<DoubleYoVariable>
+public class YoDouble extends YoVariable<YoDouble>
 {
    private static final java.text.NumberFormat DOUBLE_FORMAT = new java.text.DecimalFormat(" 0.00000;-0.00000");
    private static final FieldPosition FIELD_POSITION = new FieldPosition(NumberFormat.INTEGER_FIELD);
@@ -31,7 +31,7 @@ public class DoubleYoVariable extends YoVariable<DoubleYoVariable>
     * @param registry YoVariableRegistry with which this variable is to be registerd
     * @see YoVariableRegistry YoVariableRegistry
     */
-   public DoubleYoVariable(String name, YoVariableRegistry registry)
+   public YoDouble(String name, YoVariableRegistry registry)
    {
       this(name, "", registry);
    }
@@ -50,7 +50,7 @@ public class DoubleYoVariable extends YoVariable<DoubleYoVariable>
     * @param maxScaling maximum value for scaling purpouses
     * @see YoVariableRegistry YoVariableRegistry
     */
-   public DoubleYoVariable(String name, String description, YoVariableRegistry registry, double minScaling, double maxScaling)
+   public YoDouble(String name, String description, YoVariableRegistry registry, double minScaling, double maxScaling)
    {
       this(name, description, registry);
 
@@ -69,7 +69,7 @@ public class DoubleYoVariable extends YoVariable<DoubleYoVariable>
     * @param registry YoVariableRegistry with which this variable is to be registered
     * @see YoVariableRegistry YoVariableRegistry
     */
-   public DoubleYoVariable(String name, String description, YoVariableRegistry registry)
+   public YoDouble(String name, String description, YoVariableRegistry registry)
    {
       super(YoVariableType.DOUBLE, name, description, registry);
 
@@ -96,12 +96,12 @@ public class DoubleYoVariable extends YoVariable<DoubleYoVariable>
       return Double.isNaN(val);
    }
 
-   public void add(DoubleYoVariable variable)
+   public void add(YoDouble variable)
    {
       this.set(this.getDoubleValue() + variable.getDoubleValue());
    }
 
-   public void sub(DoubleYoVariable variable)
+   public void sub(YoDouble variable)
    {
       this.set(this.getDoubleValue() - variable.getDoubleValue());
    }
@@ -121,7 +121,7 @@ public class DoubleYoVariable extends YoVariable<DoubleYoVariable>
       this.set(this.getDoubleValue() * value);
    }
 
-   public void mul(DoubleYoVariable value)
+   public void mul(YoDouble value)
    {
       this.set(this.getDoubleValue() * value.getDoubleValue());
    }
@@ -182,7 +182,7 @@ public class DoubleYoVariable extends YoVariable<DoubleYoVariable>
    //
    //   private static boolean startDisplaying = false;
    //   private static boolean stopDisplaying = false;
-   //   private static DoubleYoVariable time;
+   //   private static YoDouble time;
    //   private static PrintWriter writer;
    //
    //   private void setAndLogToAFile(double value)
@@ -269,15 +269,15 @@ public class DoubleYoVariable extends YoVariable<DoubleYoVariable>
    }
 
    @Override
-   public DoubleYoVariable duplicate(YoVariableRegistry newRegistry)
+   public YoDouble duplicate(YoVariableRegistry newRegistry)
    {
-      DoubleYoVariable retVar = new DoubleYoVariable(getName(), getDescription(), newRegistry, getManualScalingMin(), getManualScalingMax());
+      YoDouble retVar = new YoDouble(getName(), getDescription(), newRegistry, getManualScalingMin(), getManualScalingMax());
       retVar.set(val);
       return retVar;
    }
 
    @Override
-   public boolean setValue(DoubleYoVariable value, boolean notifyListeners)
+   public boolean setValue(YoDouble value, boolean notifyListeners)
    {
       return set(value.getDoubleValue(), notifyListeners);
    }

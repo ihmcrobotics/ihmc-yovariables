@@ -40,7 +40,7 @@ public class YoVariableTest
       registry = new YoVariableRegistry("testRegistry");
       robotRegistry.addChild(registry);
       
-      yoVariable = new DoubleYoVariable("variableOne", registry);
+      yoVariable = new YoDouble("variableOne", registry);
       variableChangedListeners = new ArrayList<TestVariableChangedListener>();
    }
 
@@ -74,70 +74,70 @@ public class YoVariableTest
 	@Test(timeout=300000)
    public void testValidVariable()
    {
-      new DoubleYoVariable("foobar","",null);
+      new YoDouble("foobar","",null);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000,expected = RuntimeException.class)
    public void testCantHaveADot()
    {
-      new DoubleYoVariable("foo.bar", "", null);
+      new YoDouble("foo.bar", "", null);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000,expected = RuntimeException.class)
    public void testCantHaveAComma()
    {
-      new DoubleYoVariable("foo,bar", "", null);
+      new YoDouble("foo,bar", "", null);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000,expected = RuntimeException.class)
    public void testCantHaveACarrot()
    {
-      new DoubleYoVariable("foo^bar", "", null);
+      new YoDouble("foo^bar", "", null);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testCanHaveAClosingBracket()
    {
-      new DoubleYoVariable("foo]bar", "", null);
+      new YoDouble("foo]bar", "", null);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testCanHaveAnOpeningBracket()
    {
-      new DoubleYoVariable("foo[bar", "", null);
+      new YoDouble("foo[bar", "", null);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000,expected = RuntimeException.class)
    public void testCantHaveABackSlash()
    {
-      new DoubleYoVariable("foo\\bar", "", null);
+      new YoDouble("foo\\bar", "", null);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000,expected = RuntimeException.class)
    public void testCantHaveAQuote()
    {
-      new DoubleYoVariable("foo\"bar", "", null);
+      new YoDouble("foo\"bar", "", null);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000,expected = RuntimeException.class)
    public void testCantHaveASpace()
    {
-      new DoubleYoVariable("foo bar", "", null);
+      new YoDouble("foo bar", "", null);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000,expected = RuntimeException.class)
    public void testCantHaveASlash()
    {
-      new DoubleYoVariable("foo/bar", "", null);
+      new YoDouble("foo/bar", "", null);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -156,7 +156,7 @@ public class YoVariableTest
 	@Test(timeout=300000)
    public void testGetDescription()
    {
-      DoubleYoVariable descrVariable = new DoubleYoVariable("booleanVar", "Description", registry);
+      YoDouble descrVariable = new YoDouble("booleanVar", "Description", registry);
 
       Assert.assertEquals(descrVariable.getDescription(), "Description");
       assertNotNull(yoVariable.getDescription());
@@ -166,7 +166,7 @@ public class YoVariableTest
 	@Test(timeout=300000)
    public void testGetDoubleValue()
    {
-      DoubleYoVariable doubleVariable = new DoubleYoVariable("doubleVar", registry);
+      YoDouble doubleVariable = new YoDouble("doubleVar", registry);
       doubleVariable.set(15.6);
 
       Assert.assertEquals(doubleVariable.getDoubleValue(), 15.6, 1e-7);
@@ -264,7 +264,7 @@ public class YoVariableTest
 // {
 //    // Already tested normal sets with testDouble, Int, Enum.
 //    YoBoolean booleanVariable = new YoBoolean("booleanVar", registry);
-//    DoubleYoVariable doubleVariable = new DoubleYoVariable("doubleVariable",  registry);
+//    YoDouble doubleVariable = new YoDouble("doubleVariable",  registry);
 //    IntYoVariable intVariable = new IntYoVariable("intVariable", registry);
 //    EnumYoVariable enumVariable = EnumYoVariable.create("enumVariable", FooEnum.class, registry);
 //
@@ -289,7 +289,7 @@ public class YoVariableTest
       intyoVariable.set(1);
       Assert.assertEquals("intYoVariable: 1", intyoVariable.toString());
 
-      DoubleYoVariable yoVariable = new DoubleYoVariable("doubleYoVariable", registry);
+      YoDouble yoVariable = new YoDouble("doubleYoVariable", registry);
       yoVariable.set(0.0112);
       Assert.assertEquals("doubleYoVariable: 0.0112", yoVariable.toString());
 
@@ -303,7 +303,7 @@ public class YoVariableTest
    public void testValueEquals()
    {
       YoBoolean booleanVariable = new YoBoolean("booleanVar", registry);
-      DoubleYoVariable doubleVariable = new DoubleYoVariable("doubleVariable", registry);
+      YoDouble doubleVariable = new YoDouble("doubleVariable", registry);
       IntegerYoVariable intVariable = new IntegerYoVariable("intVariable", registry);
       EnumYoVariable<FooEnum> enumVariable = EnumYoVariable.create("enumVariable", FooEnum.class, registry);
 
@@ -482,12 +482,12 @@ public class YoVariableTest
    public void testRecursiveCompareYoVariables() throws IllegalArgumentException, IllegalAccessException, SecurityException, NoSuchFieldException
    {
       YoVariableRegistry root0 = new YoVariableRegistry("root");
-      DoubleYoVariable variable01 = new DoubleYoVariable("variableOne", root0);
-      DoubleYoVariable variable02 = new DoubleYoVariable("variableTwo", root0);
+      YoDouble variable01 = new YoDouble("variableOne", root0);
+      YoDouble variable02 = new YoDouble("variableTwo", root0);
       
       YoVariableRegistry root1 = new YoVariableRegistry("root");
-      DoubleYoVariable variable11 = new DoubleYoVariable("variableOne", root1);
-      DoubleYoVariable variable12 = new DoubleYoVariable("variableTwo", root1);
+      YoDouble variable11 = new YoDouble("variableOne", root1);
+      YoDouble variable12 = new YoDouble("variableTwo", root1);
       
       YoVariableComparer comparer = new YoVariableComparer(Integer.MAX_VALUE, Integer.MAX_VALUE);
       
@@ -581,7 +581,7 @@ public class YoVariableTest
       }
 
 
-      public boolean compare(DoubleYoVariable variable01, DoubleYoVariable variable11)
+      public boolean compare(YoDouble variable01, YoDouble variable11)
       {
          return ReflectionToStringBuilder.toString(variable01, StandardToStringStyle.NO_CLASS_NAME_STYLE).equals(ReflectionToStringBuilder.toString(variable11, StandardToStringStyle.NO_CLASS_NAME_STYLE));
 

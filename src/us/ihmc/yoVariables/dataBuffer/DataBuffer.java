@@ -3,7 +3,7 @@ package us.ihmc.yoVariables.dataBuffer;
 import us.ihmc.yoVariables.IndexChangedListener;
 import us.ihmc.yoVariables.YoVariableHolderImplementation;
 import us.ihmc.yoVariables.listener.RewoundListener;
-import us.ihmc.yoVariables.variable.DoubleYoVariable;
+import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoVariable;
 import us.ihmc.yoVariables.variable.YoVariableList;
 
@@ -25,7 +25,7 @@ public class DataBuffer extends YoVariableHolderImplementation
    private int maxBufferSize = 16384;
    private int outPoint = 0;
    private ArrayList<RewoundListener> simulationRewoundListeners = null;
-   private DoubleYoVariable t = null;
+   private YoDouble t = null;
    private final LinkedHashSet<YoVariable<?>> yoVariableSet = new LinkedHashSet<YoVariable<?>>();
    private boolean wrapBuffer = false;    // Default to Expand, not Wrap!  true;
 
@@ -107,7 +107,7 @@ public class DataBuffer extends YoVariableHolderImplementation
 
       if (newVariable.getName().equals("t"))
       {
-         t = (DoubleYoVariable) newVariable;
+         t = (YoDouble) newVariable;
       }
 
       return entry;

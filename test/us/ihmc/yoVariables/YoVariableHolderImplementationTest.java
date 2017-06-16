@@ -11,7 +11,7 @@ import org.junit.Test;
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
-import us.ihmc.yoVariables.variable.DoubleYoVariable;
+import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 public class YoVariableHolderImplementationTest
@@ -40,20 +40,20 @@ public class YoVariableHolderImplementationTest
       YoVariableRegistry registryC2 = new YoVariableRegistry("registryC");
       robot2Registry.addChild(registryC2);
 
-      DoubleYoVariable variableOneA = new DoubleYoVariable("variableOne", registryA);
-      DoubleYoVariable variableOneB = new DoubleYoVariable("variableOne", registryB);
-      DoubleYoVariable variableOneC = new DoubleYoVariable("variableOne", registryC);
-      DoubleYoVariable variableOneC2 = new DoubleYoVariable("variableOne", registryC2);
+      YoDouble variableOneA = new YoDouble("variableOne", registryA);
+      YoDouble variableOneB = new YoDouble("variableOne", registryB);
+      YoDouble variableOneC = new YoDouble("variableOne", registryC);
+      YoDouble variableOneC2 = new YoDouble("variableOne", registryC2);
 
-      DoubleYoVariable variableTwoA = new DoubleYoVariable("variableTwo", registryA);
-      DoubleYoVariable variableTwoB = new DoubleYoVariable("variableTwo", registryB);
-      DoubleYoVariable variableTwoC = new DoubleYoVariable("variableTwo", registryC);
-      DoubleYoVariable variableTwoC2 = new DoubleYoVariable("variableTwo", registryC2);
+      YoDouble variableTwoA = new YoDouble("variableTwo", registryA);
+      YoDouble variableTwoB = new YoDouble("variableTwo", registryB);
+      YoDouble variableTwoC = new YoDouble("variableTwo", registryC);
+      YoDouble variableTwoC2 = new YoDouble("variableTwo", registryC2);
 
-      DoubleYoVariable variableThreeA = new DoubleYoVariable("variableThree", registryA);
-      DoubleYoVariable variableThreeB = new DoubleYoVariable("variableThree", registryB);
-      DoubleYoVariable variableThreeC = new DoubleYoVariable("variableThree", registryC);
-      DoubleYoVariable variableThreeC2 = new DoubleYoVariable("variableThree", registryC2);
+      YoDouble variableThreeA = new YoDouble("variableThree", registryA);
+      YoDouble variableThreeB = new YoDouble("variableThree", registryB);
+      YoDouble variableThreeC = new YoDouble("variableThree", registryC);
+      YoDouble variableThreeC2 = new YoDouble("variableThree", registryC2);
 
       yoVariableHolderImplementation.addVariableToHolder(variableOneA);
       yoVariableHolderImplementation.addVariableToHolder(variableOneB);

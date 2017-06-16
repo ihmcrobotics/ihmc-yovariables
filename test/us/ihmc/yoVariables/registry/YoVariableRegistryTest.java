@@ -14,7 +14,7 @@ import org.junit.Test;
 
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.listener.YoVariableRegistryChangedListener;
-import us.ihmc.yoVariables.variable.DoubleYoVariable;
+import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoVariable;
 import us.ihmc.yoVariables.variable.YoVariableList;
 
@@ -44,8 +44,8 @@ public class YoVariableRegistryTest
       
 //      yoVariableRegistry = new YoVariableRegistry("robot.controller.testRegistry");
 
-      new DoubleYoVariable("robotVariable", robotRegistry);
-      new DoubleYoVariable("controlVariable", controllerRegistry);
+      new YoDouble("robotVariable", robotRegistry);
+      new YoDouble("controlVariable", controllerRegistry);
       
       createAndAddNYoVariables(N_VARS_IN_ROOT, testRegistry);
       
@@ -70,10 +70,10 @@ public class YoVariableRegistryTest
 
    private void createAndAddNYoVariables(int numberVariablesToAdd, YoVariableRegistry registry)
    {
-      if (numberVariablesToAdd >= 1) new DoubleYoVariable("variableOne", registry);
-      if (numberVariablesToAdd >= 2) new DoubleYoVariable("variableTwo", registry);
-      if (numberVariablesToAdd >= 3) new DoubleYoVariable("variableThree", registry);
-      if (numberVariablesToAdd >= 4) new DoubleYoVariable("variableFour", registry);
+      if (numberVariablesToAdd >= 1) new YoDouble("variableOne", registry);
+      if (numberVariablesToAdd >= 2) new YoDouble("variableTwo", registry);
+      if (numberVariablesToAdd >= 3) new YoDouble("variableThree", registry);
+      if (numberVariablesToAdd >= 4) new YoDouble("variableFour", registry);
    }
 
    @After
@@ -428,7 +428,7 @@ public class YoVariableRegistryTest
 
       assertTrue(testPassed);
 
-      testRegistry.registerVariable(new DoubleYoVariable("variableFive", null));
+      testRegistry.registerVariable(new YoDouble("variableFive", null));
 
       assertTrue(testRegistry.hasUniqueVariable("variableFive"));
    }
@@ -437,8 +437,8 @@ public class YoVariableRegistryTest
 	@Test(timeout=300000,expected = RuntimeException.class)
    public void testCannotRegisterSameVariableName()
    {
-      DoubleYoVariable variableFiveOnce = new DoubleYoVariable("variableFive", null);
-      DoubleYoVariable variableFiveTwice = new DoubleYoVariable("variableFive", null);
+      YoDouble variableFiveOnce = new YoDouble("variableFive", null);
+      YoDouble variableFiveTwice = new YoDouble("variableFive", null);
 
       testRegistry.registerVariable(variableFiveOnce);
       assertTrue(testRegistry.hasUniqueVariable("variableFive"));
@@ -624,15 +624,15 @@ public class YoVariableRegistryTest
       YoVariableRegistry registry011 = new YoVariableRegistry("registry011");
       registry01.addChild(registry010);
       
-      DoubleYoVariable variable0_A = new DoubleYoVariable("variable0_A", registry0);
-      DoubleYoVariable variable0_B = new DoubleYoVariable("variable0_B", registry0);
-      DoubleYoVariable variable10_A = new DoubleYoVariable("variable10_A", registry10);
-      DoubleYoVariable variable011_A = new DoubleYoVariable("variable011_A", registry011);
+      YoDouble variable0_A = new YoDouble("variable0_A", registry0);
+      YoDouble variable0_B = new YoDouble("variable0_B", registry0);
+      YoDouble variable10_A = new YoDouble("variable10_A", registry10);
+      YoDouble variable011_A = new YoDouble("variable011_A", registry011);
       
-      DoubleYoVariable repeatedVariable_root = new DoubleYoVariable("repeatedVariable", root);
-      DoubleYoVariable repeatedVariable_registry0 = new DoubleYoVariable("repeatedVariable", registry0);
-      DoubleYoVariable repeatedVariable_registry01 = new DoubleYoVariable("repeatedVariable", registry01);
-      DoubleYoVariable repeatedVariable_registry010 = new DoubleYoVariable("repeatedVariable", registry010);
+      YoDouble repeatedVariable_root = new YoDouble("repeatedVariable", root);
+      YoDouble repeatedVariable_registry0 = new YoDouble("repeatedVariable", registry0);
+      YoDouble repeatedVariable_registry01 = new YoDouble("repeatedVariable", registry01);
+      YoDouble repeatedVariable_registry010 = new YoDouble("repeatedVariable", registry010);
 
       
       // Do some of the addChilds out of order to make sure they work correctly when done out of order.
@@ -696,9 +696,9 @@ public class YoVariableRegistryTest
       YoVariableRegistry registryOne = new YoVariableRegistry("registryOne");
       YoVariableRegistry registryOneRepeat = new YoVariableRegistry("registryOne");
 
-//      DoubleYoVariable variableOne = new DoubleYoVariable("variableOne", registryOne);
-////      DoubleYoVariable variableOneRepeat = new DoubleYoVariable("variableOne", registryOneRepeat);
-//      DoubleYoVariable variableTwo = new DoubleYoVariable("variableTwo", registryOneRepeat);
+//      YoDouble variableOne = new YoDouble("variableOne", registryOne);
+////      YoDouble variableOneRepeat = new YoDouble("variableOne", registryOneRepeat);
+//      YoDouble variableTwo = new YoDouble("variableTwo", registryOneRepeat);
       
       root.addChild(levelOne);
       
@@ -719,11 +719,11 @@ public class YoVariableRegistryTest
       NameSpace nameSpaceCheck = registry000.getNameSpace();
       assertEquals(new NameSpace("root.registry0.registry00.registry000"), nameSpaceCheck);
       
-      DoubleYoVariable foo = new DoubleYoVariable("foo", registry000);
+      YoDouble foo = new YoDouble("foo", registry000);
       assertEquals("root.registry0.registry00.registry000.foo", foo.getFullNameWithNameSpace());
       
       YoVariableRegistry registry010 = root.getOrCreateAndAddRegistry(new NameSpace("root.registry0.registry01.registry010"));
-      DoubleYoVariable bar = new DoubleYoVariable("bar", registry010);
+      YoDouble bar = new YoDouble("bar", registry010);
       assertEquals("root.registry0.registry01.registry010.bar", bar.getFullNameWithNameSpace());
       
       assertEquals(foo, root.getVariable("foo"));
@@ -878,7 +878,7 @@ public class YoVariableRegistryTest
       this.robotRegistry.attachYoVariableRegistryChangedListener(listener);
       
       assertNull(lastRegisteredVariable);
-      DoubleYoVariable addedYoVariable = new DoubleYoVariable("addedLater", controllerRegistry);
+      YoDouble addedYoVariable = new YoDouble("addedLater", controllerRegistry);
       assertEquals(addedYoVariable, lastRegisteredVariable);
       
       assertNull(lastAddedRegistry);

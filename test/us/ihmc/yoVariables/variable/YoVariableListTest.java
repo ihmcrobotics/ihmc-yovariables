@@ -28,12 +28,12 @@ public class YoVariableListTest
       YoVariableRegistry registryTwo = new YoVariableRegistry("registryTwo");
 
       YoBoolean booleanOne = new YoBoolean("booleanOne", registryOne);
-      DoubleYoVariable doubleOne = new DoubleYoVariable("doubleOne", registryOne);
+      YoDouble doubleOne = new YoDouble("doubleOne", registryOne);
       varList.addVariable(booleanOne);
       varList.addVariable(doubleOne);
 
       YoBoolean booleanTwo = new YoBoolean("booleanTwo", registryTwo);
-      DoubleYoVariable doubleTwo = new DoubleYoVariable("doubleTwo", registryTwo);
+      YoDouble doubleTwo = new YoDouble("doubleTwo", registryTwo);
       varList.addVariable(booleanTwo);
       varList.addVariable(doubleTwo);
 
@@ -121,8 +121,8 @@ public class YoVariableListTest
       registryOne.addChild(registryTwo);
       registryTwo.addChild(registryThree);
 
-      DoubleYoVariable t = new DoubleYoVariable("t", registryThree);
-      DoubleYoVariable time = new DoubleYoVariable("time", registryThree);
+      YoDouble t = new YoDouble("t", registryThree);
+      YoDouble time = new YoDouble("time", registryThree);
       t.set(1.1);
       time.set(2.2);
 
@@ -132,8 +132,8 @@ public class YoVariableListTest
 
       for (int i = 0; i < numberOfVariables; i++)
       {
-         DoubleYoVariable variableA = new DoubleYoVariable("variable" + i, registryThree);
-         DoubleYoVariable variableB = new DoubleYoVariable("variable" + i, registryTwo);
+         YoDouble variableA = new YoDouble("variable" + i, registryThree);
+         YoDouble variableB = new YoDouble("variable" + i, registryTwo);
          variableA.set(Math.random());
          variableB.set(Math.random());
 
@@ -161,9 +161,9 @@ public class YoVariableListTest
       YoVariableRegistry registry = new YoVariableRegistry("registry");
       YoVariableList list = new YoVariableList("list");
 
-      DoubleYoVariable a = new DoubleYoVariable("a", registry);
-      DoubleYoVariable b = new DoubleYoVariable("b", registry);
-      DoubleYoVariable c = new DoubleYoVariable("c", registry);
+      YoDouble a = new YoDouble("a", registry);
+      YoDouble b = new YoDouble("b", registry);
+      YoDouble c = new YoDouble("c", registry);
 
       list.addVariable(a);
       list.addVariable(b);
@@ -183,9 +183,9 @@ public class YoVariableListTest
       YoVariableList listThree = new YoVariableList("listThree");
       YoVariableList listFour = new YoVariableList("listFour");
 
-      DoubleYoVariable a = new DoubleYoVariable("a", registry);
-      DoubleYoVariable b = new DoubleYoVariable("b", registry);
-      DoubleYoVariable c = new DoubleYoVariable("c", registry);
+      YoDouble a = new YoDouble("a", registry);
+      YoDouble b = new YoDouble("b", registry);
+      YoDouble c = new YoDouble("c", registry);
 
       //YoVariableList
       list.addVariable(a);
@@ -238,10 +238,10 @@ public class YoVariableListTest
 
       assertTrue(list.isEmpty());
 
-      DoubleYoVariable a = new DoubleYoVariable("a", registry);
-      DoubleYoVariable b = new DoubleYoVariable("b", registry);
-      DoubleYoVariable c = new DoubleYoVariable("c", registry);
-      DoubleYoVariable f = new DoubleYoVariable("f", registry); //variable will not be added to list
+      YoDouble a = new YoDouble("a", registry);
+      YoDouble b = new YoDouble("b", registry);
+      YoDouble c = new YoDouble("c", registry);
+      YoDouble f = new YoDouble("f", registry); //variable will not be added to list
 
       list.addVariable(a);
       list.addVariable(b);
@@ -289,10 +289,10 @@ public class YoVariableListTest
 
       assertTrue(list.isEmpty());
 
-      DoubleYoVariable a = new DoubleYoVariable("a_arm", registry);
-      DoubleYoVariable b = new DoubleYoVariable("b_arm", registry);
-      DoubleYoVariable c = new DoubleYoVariable("c_arm", registry);
-      DoubleYoVariable f = new DoubleYoVariable("f_arm", registry); //variable will not be added to list
+      YoDouble a = new YoDouble("a_arm", registry);
+      YoDouble b = new YoDouble("b_arm", registry);
+      YoDouble c = new YoDouble("c_arm", registry);
+      YoDouble f = new YoDouble("f_arm", registry); //variable will not be added to list
 
       list.addVariable(a);
       list.addVariable(b);

@@ -17,12 +17,12 @@ import org.junit.Test;
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
-public class DoubleYoVariableTest
+public class YoDoubleTest
 {
 
    private YoVariableRegistry registry;
-   private DoubleYoVariable doubleYoVariable1;
-   private DoubleYoVariable doubleYoVariable2;
+   private YoDouble yoDouble1;
+   private YoDouble yoDouble2;
    private static final double EPSILON = 1e-10;
    private Random random = new Random(345345L);
 
@@ -30,14 +30,14 @@ public class DoubleYoVariableTest
    public void setUp()
    {
       registry = new YoVariableRegistry("testRegistry");
-      doubleYoVariable1 = new DoubleYoVariable("doubleYoVariable1", registry);
-      doubleYoVariable2 = new DoubleYoVariable("doubleYoVariable2", "description2", registry, 0.0, 10.0);
+      yoDouble1 = new YoDouble("yoDouble1", registry);
+      yoDouble2 = new YoDouble("yoDouble2", "description2", registry, 0.0, 10.0);
    }
 
    @After
    public void tearDown()
    {
-      doubleYoVariable1 = null;
+      yoDouble1 = null;
       registry = null;
    }
 
@@ -45,8 +45,8 @@ public class DoubleYoVariableTest
 	@Test(timeout=300000)
    public void testDoubleYoVariableConstructorWithoutDescription()
    {
-      assertTrue(doubleYoVariable1.getDoubleValue() == 0.0);
-      Assert.assertEquals(doubleYoVariable1.getName(), "doubleYoVariable1");
+      assertTrue(yoDouble1.getDoubleValue() == 0.0);
+      Assert.assertEquals(yoDouble1.getName(), "yoDouble1");
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -54,10 +54,10 @@ public class DoubleYoVariableTest
    public void testDoubleYoVariableConstructorWithDescription()
    {
       String testDescription = "This is a test description.";
-      DoubleYoVariable doubleYoVariableWithDescription = new DoubleYoVariable("doubleYoVariableWithDescription", testDescription, registry);
-      assertTrue(doubleYoVariableWithDescription.getDoubleValue() == 0.0);
-      Assert.assertEquals(doubleYoVariableWithDescription.getName(), "doubleYoVariableWithDescription");
-      assertTrue(doubleYoVariableWithDescription.getDescription() == testDescription);
+      YoDouble yoDoubleWithDescription = new YoDouble("yoDoubleWithDescription", testDescription, registry);
+      assertTrue(yoDoubleWithDescription.getDoubleValue() == 0.0);
+      Assert.assertEquals(yoDoubleWithDescription.getName(), "yoDoubleWithDescription");
+      assertTrue(yoDoubleWithDescription.getDescription() == testDescription);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -65,17 +65,17 @@ public class DoubleYoVariableTest
    public void testToString()
    {
       double randomNumber = Math.random();
-      doubleYoVariable1.set(randomNumber);
-      Assert.assertEquals(doubleYoVariable1.toString(), "doubleYoVariable1: " + randomNumber);
+      yoDouble1.set(randomNumber);
+      Assert.assertEquals(yoDouble1.toString(), "yoDouble1: " + randomNumber);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testIsNaN()
    {
-      assertFalse(doubleYoVariable2.isNaN());
-      doubleYoVariable2.set(Double.NaN);
-      assertTrue(doubleYoVariable2.isNaN());
+      assertFalse(yoDouble2.isNaN());
+      yoDouble2.set(Double.NaN);
+      assertTrue(yoDouble2.isNaN());
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -85,10 +85,10 @@ public class DoubleYoVariableTest
       double randomNumber1 = Math.random();
       double randomNumber2 = Math.random();
 
-      doubleYoVariable1.set(randomNumber1);
-      doubleYoVariable1.add(randomNumber2);
+      yoDouble1.set(randomNumber1);
+      yoDouble1.add(randomNumber2);
       double expectedSum = randomNumber1 + randomNumber2;
-      assertTrue(doubleYoVariable1.getDoubleValue() == expectedSum);
+      assertTrue(yoDouble1.getDoubleValue() == expectedSum);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -98,10 +98,10 @@ public class DoubleYoVariableTest
       double randomNumber1 = Math.random();
       double randomNumber2 = Math.random();
 
-      doubleYoVariable1.set(randomNumber1);
-      doubleYoVariable1.sub(randomNumber2);
+      yoDouble1.set(randomNumber1);
+      yoDouble1.sub(randomNumber2);
       double expectedDifference = randomNumber1 - randomNumber2;
-      assertTrue(doubleYoVariable1.getDoubleValue() == expectedDifference);
+      assertTrue(yoDouble1.getDoubleValue() == expectedDifference);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -111,10 +111,10 @@ public class DoubleYoVariableTest
       double randomNumber1 = Math.random();
       double randomNumber2 = Math.random();
 
-      doubleYoVariable1.set(randomNumber1);
-      doubleYoVariable1.mul(randomNumber2);
+      yoDouble1.set(randomNumber1);
+      yoDouble1.mul(randomNumber2);
       double expectedProduct = randomNumber1 * randomNumber2;
-      assertTrue(doubleYoVariable1.getDoubleValue() == expectedProduct);
+      assertTrue(yoDouble1.getDoubleValue() == expectedProduct);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -124,11 +124,11 @@ public class DoubleYoVariableTest
       double randomNumber1 = Math.random();
       double randomNumber2 = Math.random();
 
-      doubleYoVariable1.set(randomNumber1);
-      doubleYoVariable2.set(randomNumber2);
-      double expectedSum = doubleYoVariable1.getDoubleValue() + doubleYoVariable2.getDoubleValue();
-      doubleYoVariable1.add(doubleYoVariable2);
-      assertTrue(doubleYoVariable1.getDoubleValue() == expectedSum);
+      yoDouble1.set(randomNumber1);
+      yoDouble2.set(randomNumber2);
+      double expectedSum = yoDouble1.getDoubleValue() + yoDouble2.getDoubleValue();
+      yoDouble1.add(yoDouble2);
+      assertTrue(yoDouble1.getDoubleValue() == expectedSum);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -138,11 +138,11 @@ public class DoubleYoVariableTest
       double randomNumber1 = Math.random();
       double randomNumber2 = Math.random();
 
-      doubleYoVariable1.set(randomNumber1);
-      doubleYoVariable2.set(randomNumber2);
-      double expectedDifference = doubleYoVariable1.getDoubleValue() - doubleYoVariable2.getDoubleValue();
-      doubleYoVariable1.sub(doubleYoVariable2);
-      assertTrue(doubleYoVariable1.getDoubleValue() == expectedDifference);
+      yoDouble1.set(randomNumber1);
+      yoDouble2.set(randomNumber2);
+      double expectedDifference = yoDouble1.getDoubleValue() - yoDouble2.getDoubleValue();
+      yoDouble1.sub(yoDouble2);
+      assertTrue(yoDouble1.getDoubleValue() == expectedDifference);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -152,11 +152,11 @@ public class DoubleYoVariableTest
       double randomNumber1 = Math.random();
       double randomNumber2 = Math.random();
 
-      doubleYoVariable1.set(randomNumber1);
-      doubleYoVariable2.set(randomNumber2);
-      double expectedProduct = doubleYoVariable1.getDoubleValue() * doubleYoVariable2.getDoubleValue();
-      doubleYoVariable1.mul(doubleYoVariable2);
-      assertTrue(doubleYoVariable1.getDoubleValue() == expectedProduct);
+      yoDouble1.set(randomNumber1);
+      yoDouble2.set(randomNumber2);
+      double expectedProduct = yoDouble1.getDoubleValue() * yoDouble2.getDoubleValue();
+      yoDouble1.mul(yoDouble2);
+      assertTrue(yoDouble1.getDoubleValue() == expectedProduct);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -164,8 +164,8 @@ public class DoubleYoVariableTest
    public void testValueEquals()
    {
       double randomNumber = Math.random();
-      doubleYoVariable1.set(randomNumber);
-      doubleYoVariable1.valueEquals(randomNumber);
+      yoDouble1.set(randomNumber);
+      yoDouble1.valueEquals(randomNumber);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -181,8 +181,8 @@ public class DoubleYoVariableTest
       StringBuffer stringBufferTest = new StringBuffer();
       stringBufferTest.append("Test case:");
 
-      doubleYoVariable1.set(randomNumber);
-      doubleYoVariable1.getValueString(stringBufferTest);
+      yoDouble1.set(randomNumber);
+      yoDouble1.getValueString(stringBufferTest);
 
       StringBuffer expectedStringBuffer = new StringBuffer();
       expectedStringBuffer.append("Test case:");
@@ -200,9 +200,9 @@ public class DoubleYoVariableTest
    public void testGetAndSetMethods()
    {
       double randomNumber = Math.random();
-      doubleYoVariable1.set(randomNumber);
-      doubleYoVariable2.set(doubleYoVariable1.getDoubleValue());
-      assertTrue(doubleYoVariable1.getDoubleValue() == doubleYoVariable2.getDoubleValue());
+      yoDouble1.set(randomNumber);
+      yoDouble2.set(yoDouble1.getDoubleValue());
+      assertTrue(yoDouble1.getDoubleValue() == yoDouble2.getDoubleValue());
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -210,20 +210,20 @@ public class DoubleYoVariableTest
    public void testGetAndSetDoubleValue()
    {
       double randomNumber = Math.random();
-      doubleYoVariable1.setValueFromDouble(randomNumber);
-      doubleYoVariable2.setValueFromDouble(doubleYoVariable1.getValueAsDouble());
-      assertTrue(doubleYoVariable1.getValueAsDouble() == doubleYoVariable2.getValueAsDouble());
+      yoDouble1.setValueFromDouble(randomNumber);
+      yoDouble2.setValueFromDouble(yoDouble1.getValueAsDouble());
+      assertTrue(yoDouble1.getValueAsDouble() == yoDouble2.getValueAsDouble());
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testSetFinal()
    {
-      doubleYoVariable1.set(0.0);
-      doubleYoVariable1.set(0.0);
+      yoDouble1.set(0.0);
+      yoDouble1.set(0.0);
       
-      doubleYoVariable1.set(10.0);
-      Assert.assertEquals(10.0, doubleYoVariable1.getDoubleValue(), EPSILON);
+      yoDouble1.set(10.0);
+      Assert.assertEquals(10.0, yoDouble1.getDoubleValue(), EPSILON);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -231,21 +231,21 @@ public class DoubleYoVariableTest
    public void testGetValueAsLongBitsAndSetValueFromLongBits()
    {
       long longValue = random.nextLong();
-      doubleYoVariable1.setValueFromLongBits(longValue);
-      Assert.assertEquals(longValue, doubleYoVariable1.getValueAsLongBits());
+      yoDouble1.setValueFromLongBits(longValue);
+      Assert.assertEquals(longValue, yoDouble1.getValueAsLongBits());
       
-      DoubleYoVariable doubleYoVariable = new DoubleYoVariable("doubleYo", registry);
-      doubleYoVariable.set(Double.NEGATIVE_INFINITY);
+      YoDouble yoDouble = new YoDouble("doubleYo", registry);
+      yoDouble.set(Double.NEGATIVE_INFINITY);
       
-      doubleYoVariable1.setValue(doubleYoVariable, true);
-      Assert.assertEquals(0xfff0000000000000L, doubleYoVariable1.getValueAsLongBits());
+      yoDouble1.setValue(yoDouble, true);
+      Assert.assertEquals(0xfff0000000000000L, yoDouble1.getValueAsLongBits());
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetYoVariableType()
    {
-      assertTrue(doubleYoVariable1.getYoVariableType() == YoVariableType.DOUBLE);
+      assertTrue(yoDouble1.getYoVariableType() == YoVariableType.DOUBLE);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -254,9 +254,9 @@ public class DoubleYoVariableTest
    {
       String newName = "registry2000";
       double value = random.nextDouble();
-      doubleYoVariable2.set(value);
+      yoDouble2.set(value);
       YoVariableRegistry newRegistry = new YoVariableRegistry(newName);
-      DoubleYoVariable duplicate = doubleYoVariable2.duplicate(newRegistry);
-      Assert.assertEquals(doubleYoVariable2.getDoubleValue(), duplicate.getDoubleValue(), EPSILON);
+      YoDouble duplicate = yoDouble2.duplicate(newRegistry);
+      Assert.assertEquals(yoDouble2.getDoubleValue(), duplicate.getDoubleValue(), EPSILON);
    }
 }
