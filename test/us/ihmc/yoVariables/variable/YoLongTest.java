@@ -13,11 +13,11 @@ import org.junit.Test;
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
-public class LongYoVariableTest
+public class YoLongTest
 {
    private YoVariableRegistry registry;
    private Random random;
-   private LongYoVariable longYoVariable;
+   private YoLong yoLong;
    private static final double EPSILON = 1e-10;
 
    @Before
@@ -25,14 +25,14 @@ public class LongYoVariableTest
    {
       registry = new YoVariableRegistry("testRegistry");
       random = new Random(1776L);
-      longYoVariable = new LongYoVariable("test", registry);
+      yoLong = new YoLong("test", registry);
    }
 
    @After
    public void tearDown()
    {
       registry = null;
-      longYoVariable = null;
+      yoLong = null;
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -43,8 +43,8 @@ public class LongYoVariableTest
       {
          long value = random.nextLong();
          boolean notify = random.nextBoolean();
-         longYoVariable.set(value, notify);
-         Assert.assertEquals(value, longYoVariable.getLongValue());
+         yoLong.set(value, notify);
+         Assert.assertEquals(value, yoLong.getLongValue());
       }
    }
 
@@ -53,19 +53,19 @@ public class LongYoVariableTest
    public void testIncrementDecrementAddSubtract()
    {
       long value = random.nextLong();
-      longYoVariable.set(value);
+      yoLong.set(value);
 
-      longYoVariable.increment();
-      Assert.assertEquals(value + 1, longYoVariable.getLongValue());
+      yoLong.increment();
+      Assert.assertEquals(value + 1, yoLong.getLongValue());
 
-      longYoVariable.decrement();
-      Assert.assertEquals(value, longYoVariable.getLongValue());
+      yoLong.decrement();
+      Assert.assertEquals(value, yoLong.getLongValue());
 
-      longYoVariable.add(value);
-      Assert.assertEquals(value * 2, longYoVariable.getLongValue());
+      yoLong.add(value);
+      Assert.assertEquals(value * 2, yoLong.getLongValue());
 
-      longYoVariable.subtract(value);
-      Assert.assertEquals(value, longYoVariable.getLongValue());
+      yoLong.subtract(value);
+      Assert.assertEquals(value, yoLong.getLongValue());
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -73,32 +73,32 @@ public class LongYoVariableTest
    public void testLargeValue()
    {
       long value = Long.MAX_VALUE - 2;
-      longYoVariable.set(value);
-      Assert.assertEquals(value, longYoVariable.getLongValue());
+      yoLong.set(value);
+      Assert.assertEquals(value, yoLong.getLongValue());
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testValueEquals()
    {
-      assertTrue(longYoVariable.valueEquals(0));
+      assertTrue(yoLong.valueEquals(0));
 
       long number = random.nextLong();
-      longYoVariable.set(number);
-      assertTrue(longYoVariable.valueEquals(number));
+      yoLong.set(number);
+      assertTrue(yoLong.valueEquals(number));
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testSetFinal()
    {
-      Assert.assertEquals(0, longYoVariable.getLongValue());
-      longYoVariable.set(0);
-      Assert.assertEquals(0, longYoVariable.getLongValue());
+      Assert.assertEquals(0, yoLong.getLongValue());
+      yoLong.set(0);
+      Assert.assertEquals(0, yoLong.getLongValue());
 
       int value = random.nextInt() + 1;
-      longYoVariable.set(value);
-      Assert.assertEquals(value, longYoVariable.getLongValue());
+      yoLong.set(value);
+      Assert.assertEquals(value, yoLong.getLongValue());
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -108,18 +108,18 @@ public class LongYoVariableTest
       double doubleValue = random.nextDouble();
       int intValue = (int) Math.round(doubleValue);
       boolean notifyListeners = true;
-      longYoVariable.setValueFromDouble(doubleValue, notifyListeners);
-      Assert.assertEquals(intValue, longYoVariable.getLongValue());
+      yoLong.setValueFromDouble(doubleValue, notifyListeners);
+      Assert.assertEquals(intValue, yoLong.getLongValue());
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetValueAsDouble()
    {
-      Assert.assertEquals(0.0, longYoVariable.getValueAsDouble(), EPSILON);
+      Assert.assertEquals(0.0, yoLong.getValueAsDouble(), EPSILON);
       long value = 15;
-      longYoVariable.set(value);
-      double result = (double) longYoVariable.getValueAsDouble();
+      yoLong.set(value);
+      double result = (double) yoLong.getValueAsDouble();
       assertEquals(15.0, result, EPSILON);
    }
 
@@ -127,18 +127,18 @@ public class LongYoVariableTest
 	@Test(timeout=300000)
    public void testToString()
    {
-      Assert.assertEquals(longYoVariable.getName() + ": " + longYoVariable.getLongValue(), longYoVariable.toString());
+      Assert.assertEquals(yoLong.getName() + ": " + yoLong.getLongValue(), yoLong.toString());
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetValueString()
    {
-      Assert.assertEquals(0, longYoVariable.getLongValue());
+      Assert.assertEquals(0, yoLong.getLongValue());
       int value = random.nextInt();
-      longYoVariable.set(value);
+      yoLong.set(value);
       StringBuffer stringBuffer = new StringBuffer();
-      longYoVariable.getValueString(stringBuffer);
+      yoLong.getValueString(stringBuffer);
       assertEquals("" + value, stringBuffer.toString());
    }
 
@@ -146,12 +146,12 @@ public class LongYoVariableTest
 	@Test(timeout=300000)
    public void testGetValueStringFromDouble()
    {
-      Assert.assertEquals(0, longYoVariable.getLongValue());
+      Assert.assertEquals(0, yoLong.getLongValue());
       double doubleValue = random.nextDouble();
       int value = (int) Math.round(doubleValue);
-      longYoVariable.setValueFromDouble(doubleValue);
+      yoLong.setValueFromDouble(doubleValue);
       StringBuffer stringBuffer = new StringBuffer();
-      longYoVariable.getValueStringFromDouble(stringBuffer, doubleValue);
+      yoLong.getValueStringFromDouble(stringBuffer, doubleValue);
       assertEquals("" + value, stringBuffer.toString());
    }
 
@@ -159,7 +159,7 @@ public class LongYoVariableTest
 	@Test(timeout=300000)
    public void testGetYoVariableType()
    {
-      Assert.assertEquals(YoVariableType.LONG, longYoVariable.getYoVariableType());
+      Assert.assertEquals(YoVariableType.LONG, yoLong.getYoVariableType());
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -167,36 +167,36 @@ public class LongYoVariableTest
    public void testGetAndSetValueAsLongBits()
    {
       int value = 57;
-      longYoVariable.set(value);
-      long result = longYoVariable.getValueAsLongBits();
+      yoLong.set(value);
+      long result = yoLong.getValueAsLongBits();
       assertEquals(value, result);
 
       long longValue = 12345;
       boolean notifyListeners = true;
-      longYoVariable.setValueFromLongBits(longValue, notifyListeners);
-      Assert.assertEquals(longValue, longYoVariable.getValueAsLongBits());
+      yoLong.setValueFromLongBits(longValue, notifyListeners);
+      Assert.assertEquals(longValue, yoLong.getValueAsLongBits());
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testDuplicate()
    {
-      LongYoVariable longYoVariable2 = new LongYoVariable("var2", "descriptionTest", registry);
+      YoLong yoLong2 = new YoLong("var2", "descriptionTest", registry);
       YoVariableRegistry newRegistry = new YoVariableRegistry("newRegistry");
-      LongYoVariable duplicate = longYoVariable2.duplicate(newRegistry);
-      Assert.assertEquals(longYoVariable2.getName(), duplicate.getName());
-      Assert.assertEquals(longYoVariable2.getDescription(), duplicate.getDescription());
-      Assert.assertEquals(longYoVariable2.getManualScalingMin(), duplicate.getManualScalingMin(), EPSILON);
-      Assert.assertEquals(longYoVariable2.getManualScalingMax(), duplicate.getManualScalingMax(), EPSILON);
+      YoLong duplicate = yoLong2.duplicate(newRegistry);
+      Assert.assertEquals(yoLong2.getName(), duplicate.getName());
+      Assert.assertEquals(yoLong2.getDescription(), duplicate.getDescription());
+      Assert.assertEquals(yoLong2.getManualScalingMin(), duplicate.getManualScalingMin(), EPSILON);
+      Assert.assertEquals(yoLong2.getManualScalingMax(), duplicate.getManualScalingMax(), EPSILON);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testSetValue()
    {
-      LongYoVariable longYoVariable2 = new LongYoVariable("var2", "descriptionTest", registry);
+      YoLong yoLong2 = new YoLong("var2", "descriptionTest", registry);
       boolean notifyListeners = true;
-      longYoVariable.setValue(longYoVariable2, notifyListeners);
-      Assert.assertEquals(longYoVariable2.getLongValue(), longYoVariable.getLongValue());
+      yoLong.setValue(yoLong2, notifyListeners);
+      Assert.assertEquals(yoLong2.getLongValue(), yoLong.getLongValue());
    }
 }

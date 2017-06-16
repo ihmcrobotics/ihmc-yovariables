@@ -2,16 +2,16 @@ package us.ihmc.yoVariables.variable;
 
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
-public class LongYoVariable extends YoVariable<LongYoVariable>
+public class YoLong extends YoVariable<YoLong>
 {
    private long val;
 
-   public LongYoVariable(String name, YoVariableRegistry registry)
+   public YoLong(String name, YoVariableRegistry registry)
    {
       this(name, "", registry);
    }
 
-   public LongYoVariable(String name, String description, YoVariableRegistry registry, double minScaling, double maxScaling)
+   public YoLong(String name, String description, YoVariableRegistry registry, double minScaling, double maxScaling)
    {
       this(name, description, registry);
 
@@ -19,7 +19,7 @@ public class LongYoVariable extends YoVariable<LongYoVariable>
       this.manualMaxScaling = maxScaling;
    }
 
-   public LongYoVariable(String name, String description, YoVariableRegistry registry)
+   public YoLong(String name, String description, YoVariableRegistry registry)
    {
       super(YoVariableType.LONG, name, description, registry);
 
@@ -154,15 +154,15 @@ public class LongYoVariable extends YoVariable<LongYoVariable>
    }
 
    @Override
-   public LongYoVariable duplicate(YoVariableRegistry newRegistry)
+   public YoLong duplicate(YoVariableRegistry newRegistry)
    {
-      LongYoVariable retVar = new LongYoVariable(getName(), getDescription(), newRegistry, getManualScalingMin(), getManualScalingMax());
+      YoLong retVar = new YoLong(getName(), getDescription(), newRegistry, getManualScalingMin(), getManualScalingMax());
       retVar.set(getLongValue());
       return retVar;
    }
 
    @Override
-   public boolean setValue(LongYoVariable value, boolean notifyListeners)
+   public boolean setValue(YoLong value, boolean notifyListeners)
    {
       return set(value.getLongValue(), notifyListeners);
    }
