@@ -1,7 +1,5 @@
 package us.ihmc.yoVariables.dataBuffer;
 
-import us.ihmc.yoVariables.IndexChangedListener;
-import us.ihmc.yoVariables.YoVariableHolderImplementation;
 import us.ihmc.yoVariables.listener.RewoundListener;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoVariable;

@@ -1,6 +1,5 @@
 package us.ihmc.yoVariables.dataBuffer;
 
-import us.ihmc.yoVariables.YoVariableHolder;
 import us.ihmc.yoVariables.variable.YoDouble;
 
 

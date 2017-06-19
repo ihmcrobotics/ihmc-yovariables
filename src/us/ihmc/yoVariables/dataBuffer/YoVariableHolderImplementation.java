@@ -1,4 +1,4 @@
-package us.ihmc.yoVariables;
+package us.ihmc.yoVariables.dataBuffer;
 
 import java.util.ArrayList;
 import java.util.Collection;

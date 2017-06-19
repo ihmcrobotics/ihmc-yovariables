@@ -1,4 +1,4 @@
-package us.ihmc.yoVariables;
+package us.ihmc.yoVariables.dataBuffer;
 
 
 public interface IndexChangedListener
