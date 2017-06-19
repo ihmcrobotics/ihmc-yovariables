@@ -63,12 +63,13 @@ public class DataBufferEntryTest
       YoDouble yoDouble = new YoDouble("yoDouble", null);
       yoDouble.set(0);
       DataBufferEntry dataBufferEntry = new DataBufferEntry(yoDouble, nPoints);
-      double[] randomDoubles = random.doubles(-100.0, 100.0).toArray();
+      double lowerBound = -100.0;
+      double upperBound = 100.0;
 
       double total = 0.0;
       for (int i = 0; i < nPoints; i++)
       {
-         double data = randomDoubles[i];
+         double data = random.nextDouble() * (upperBound - lowerBound) + lowerBound;
          yoDouble.set(data);
          total = total + data;
          dataBufferEntry.setDataAtIndexToYoVariableValue(i);
