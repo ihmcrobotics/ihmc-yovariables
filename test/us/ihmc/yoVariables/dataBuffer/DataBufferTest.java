@@ -242,9 +242,9 @@ public class DataBufferTest
       dataBuffer.addVariable(yoVariable2);
       dataBuffer.addVariable(yoVariable3);
       
-      assertTrue(3 == dataBuffer.getVariablesThatStartWith("d", false).size());
-      assertTrue(2 == dataBuffer.getVariablesThatStartWith("d").size());
-      assertTrue(2 == dataBuffer.getVariablesThatStartWith("b").size());
+      assertTrue(4 == dataBuffer.getVariablesThatStartWith("y").size());
+      assertTrue(2 == dataBuffer.getVariablesThatStartWith("d", false).size());
+      assertTrue(1 == dataBuffer.getVariablesThatStartWith("b").size());
       
       
    }
