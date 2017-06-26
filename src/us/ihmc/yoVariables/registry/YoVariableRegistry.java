@@ -28,12 +28,12 @@ public class YoVariableRegistry implements YoVariableHolder
    private ArrayList<YoVariableRegistry> children = new ArrayList<YoVariableRegistry>();
    private YoVariableRegistry parent;
 
-   private ArrayList<RewoundListener> simulationRewoundListeners = null;
-   private ArrayList<YoVariableRegistryChangedListener> yoVariableRegistryChangedListeners = null;
+   private ArrayList<RewoundListener> simulationRewoundListeners;
+   private ArrayList<YoVariableRegistryChangedListener> yoVariableRegistryChangedListeners;
 
-   private boolean disallowSending = false;
-   private boolean isLogged = false;
-   private boolean isSent = false;
+   private boolean disallowSending;
+   private boolean isLogged;
+   private boolean isSent;
 
    private static final Pattern illegalCharacters = Pattern.compile("[ .*?@#$%/^&()<>,:{}'\"\\\\]");
 
@@ -43,8 +43,9 @@ public class YoVariableRegistry implements YoVariableHolder
 
       if (illegalCharacters.matcher(name).find())
       {
-         throw new RuntimeException(name
-               + " is an invalid name for a YoVariableRegistry. A YoVariableRegistry cannot have crazy characters in them, otherwise namespaces will not work.");
+         String message = name + " is an invalid name for a YoVariableRegistry. A YoVariableRegistry cannot have crazy characters in them, otherwise namespaces"
+               + " will not work.";
+         throw new RuntimeException(message);
       }
    }
 
@@ -59,11 +60,7 @@ public class YoVariableRegistry implements YoVariableHolder
 
       this.name = name;
 
-      if ((name == null) || (name.equals("")))
-      {
-         nameSpace = null;
-      }
-      else
+      if ((name != null) && (name.length() > 0))
       {
          nameSpace = new NameSpace(name);
       }
@@ -952,8 +949,8 @@ public class YoVariableRegistry implements YoVariableHolder
       System.out.println("");
       PrintTools.info("Printing children of " + root.getName() + " registry.");
       System.out.println("Total Number of YoVariables: " + totalVariables);
-      System.out.println("Listing registries with more then " + minVariablesToPrint + " variables or more then " + minChildrenToPrint + " children.");
-      System.out.println("Sorting by number of variables.\n");
+      System.out.println("Listing registries with at least " + minVariablesToPrint + " variables or at least " + minChildrenToPrint + " children.");
+      System.out.println("Sorting by number of variables.");
 
       for (int registryIdx = 0; registryIdx < registriesOfInterest.size(); registryIdx++)
          YoVariableRegistry.printInfo(registriesOfInterest.get(registryIdx));
@@ -990,11 +987,11 @@ public class YoVariableRegistry implements YoVariableHolder
       String variableString = trimStringToLength("Variables: " + variables, maxPropertyLength, "...");
       String childrenString = trimStringToLength("Children: " + children, maxPropertyLength, "...");
 
-      int maxNameLength = 60;
-      String name = registry.getClass().getSimpleName() + " " + registry.getName();
+      int maxNameLength = 70;
+      String name = registry.getClass().getSimpleName() + " " + registry.getNameSpace().getName();
       name = trimStringToLength(name, maxNameLength, "...");
 
-      System.out.println(name + " " + variableString + " " + childrenString);
+      System.out.println(name + "\t" + variableString + "\t" + childrenString);
    }
 
    private static String trimStringToLength(String original, int length, String placeholder)

@@ -1,22 +1,19 @@
 package us.ihmc.yoVariables.registry;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.listener.YoVariableRegistryChangedListener;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoVariable;
 import us.ihmc.yoVariables.variable.YoVariableList;
+
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+
+import static org.junit.Assert.*;
 
 
 public class YoVariableRegistryTest
@@ -497,10 +494,22 @@ public class YoVariableRegistryTest
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
-	@Test(timeout=300000,expected = RuntimeException.class)
+	@Test(timeout=300000)
    public void testIllegalName1()
    {
-      testRegistry = new YoVariableRegistry("foo..foo");
+      String illegalName = "foo..foo";
+      boolean runtimeExceptionThrown = false;
+      try
+      {
+         testRegistry = new YoVariableRegistry(illegalName);
+      }
+      catch(RuntimeException e)
+      {
+         assertTrue(e.getMessage().contains(illegalName));
+         runtimeExceptionThrown = true;
+      }
+
+      assertTrue(runtimeExceptionThrown);
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -914,5 +923,148 @@ public class YoVariableRegistryTest
       {
       }
    }
-   
+
+   @Test
+   public void testAreNotEqual()
+   {
+      assertFalse(robotRegistry.areEqual(null));
+      assertFalse(robotRegistry.areEqual(controllerRegistry));
+
+      YoVariableRegistry robotRegistryClone = new YoVariableRegistry("robot");
+      assertFalse(robotRegistry.areEqual(robotRegistryClone));
+
+      YoDouble yoDouble = new YoDouble("robotVariable", robotRegistryClone);
+      assertFalse(robotRegistry.areEqual(robotRegistryClone));
+
+      robotRegistryClone.setLogging(true);
+      assertFalse(robotRegistry.areEqual(robotRegistryClone));
+
+      robotRegistryClone.setLogging(false);
+      robotRegistryClone.setSending(true);
+      assertFalse(robotRegistry.areEqual(robotRegistryClone));
+
+      robotRegistryClone.setSending(false);
+      robotRegistryClone.setDisallowSending();
+      assertFalse(robotRegistry.areEqual(robotRegistryClone));
+   }
+
+   @Test
+   public void testAreEqual()
+   {
+      YoVariableRegistry robotRegistryClone = new YoVariableRegistry("robot");
+      YoVariableRegistry controllerRegistryClone = new YoVariableRegistry("controller");
+      YoVariableRegistry testRegistryClone = new YoVariableRegistry("testRegistry");
+
+      robotRegistryClone.addChild(controllerRegistryClone);
+      controllerRegistryClone.addChild(testRegistryClone);
+
+      new YoDouble("robotVariable", robotRegistryClone);
+      new YoDouble("controlVariable", controllerRegistryClone);
+
+      createAndAddNYoVariables(N_VARS_IN_ROOT, testRegistryClone);
+
+      assertTrue(robotRegistry.areEqual(robotRegistryClone));
+   }
+
+   @Test
+   public void testPrintSizeRecursively()
+   {
+      YoVariableRegistry rootRegistry = new YoVariableRegistry("rootRegistry");
+
+      int numberOfFirstLevelChildRegistries = 2;
+      int numberOfFirstLevelYoVariables = 1;
+      int numberOfSecondLevelChildRegistries = 1;
+      int numberOfSecondLevelYoVariables = 4;
+      int numberOfThirdLevelChildRegistries = 1;
+      int numberOfThirdLevelYoVariables = 1;
+
+      int totalNumberOfYoVariables = numberOfFirstLevelChildRegistries * (numberOfFirstLevelYoVariables +
+                                     numberOfSecondLevelChildRegistries * (numberOfSecondLevelYoVariables +
+                                     numberOfThirdLevelChildRegistries * numberOfThirdLevelYoVariables));
+
+      for(int i = 0; i < numberOfFirstLevelChildRegistries; i++)
+      {
+         YoVariableRegistry firstLevelChild = new YoVariableRegistry("firstLevelChild_" + i);
+         registerYoDoubles(firstLevelChild, numberOfFirstLevelYoVariables);
+         rootRegistry.addChild(firstLevelChild);
+
+         for(int j = 0; j < numberOfSecondLevelChildRegistries; j++)
+         {
+            YoVariableRegistry secondLevelChild = new YoVariableRegistry("secondLevelChild_" + j);
+            registerYoDoubles(secondLevelChild, numberOfSecondLevelYoVariables);
+            firstLevelChild.addChild(secondLevelChild);
+
+            for(int k = 0; k < numberOfThirdLevelChildRegistries; k++)
+            {
+               YoVariableRegistry thirdLevelChild = new YoVariableRegistry("thirdLevelChild_" + k);
+               registerYoDoubles(thirdLevelChild, numberOfThirdLevelYoVariables);
+               secondLevelChild.addChild(thirdLevelChild);
+            }
+         }
+      }
+
+      Interceptor interceptor = new Interceptor(System.out);
+      System.setOut(interceptor);
+
+      int minimumVariablesToPrint = 2;
+      int minimumChildrenToPrint = 2;
+
+      YoVariableRegistry.printSizeRecursively(minimumVariablesToPrint, minimumChildrenToPrint, rootRegistry);
+
+      String bufferString = interceptor.getBuffer().toString();
+      assertTrue(bufferString.length() != 0);
+
+      String[] strings = bufferString.split("\n");
+      assertTrue(strings[1].contains(rootRegistry.getName()));
+      assertTrue(strings[2].contains(String.valueOf(totalNumberOfYoVariables)));
+      assertTrue(strings[5].contains("firstLevelChild_0.secondLevelChild_0"));
+      assertTrue(strings[5].contains("Variables: " + numberOfSecondLevelYoVariables));
+      assertTrue(strings[5].contains("Children: " + numberOfSecondLevelChildRegistries));
+      assertTrue(strings[6].contains("firstLevelChild_1.secondLevelChild_0"));
+      assertTrue(strings[6].contains("Variables: " + numberOfSecondLevelYoVariables));
+      assertTrue(strings[6].contains("Children: " + numberOfSecondLevelChildRegistries));
+      assertTrue(strings[7].contains("rootRegistry"));
+      assertTrue(strings[7].contains("Variables: " + 0));
+      assertTrue(strings[7].contains("Children: " + numberOfFirstLevelChildRegistries));
+   }
+
+   private void registerYoDoubles(YoVariableRegistry registry, int numberOfYoDoublesToRegister)
+   {
+      for(int i = 0; i < numberOfYoDoublesToRegister; i++)
+      {
+         YoDouble yoDouble = new YoDouble("yoDouble_" + i, registry);
+      }
+   }
+
+   private class Interceptor extends PrintStream
+   {
+      private final StringBuffer buffer = new StringBuffer();
+
+      public Interceptor(OutputStream out)
+      {
+         super(out);
+      }
+
+      @Override
+      public void print(String s)
+      {
+         buffer.append(s);
+      }
+
+      @Override
+      public void println(String s)
+      {
+         print(s + "\n");
+      }
+
+      public StringBuffer getBuffer()
+      {
+         return buffer;
+      }
+   }
+
+//   public static void main(String[] args)
+//   {
+//      MutationTestFacilitator.facilitateMutationTestForClass(YoVariableRegistry.class, YoVariableRegistryTest.class);
+//   }
 }
