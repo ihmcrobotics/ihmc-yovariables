@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
+import us.ihmc.yoVariables.listener.RewoundListener;
 import us.ihmc.yoVariables.listener.YoVariableRegistryChangedListener;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoVariable;
@@ -1061,6 +1062,26 @@ public class YoVariableRegistryTest
       {
          return buffer;
       }
+   }
+
+   @Test
+   public void testRegisterSimulationRewoundListener()
+   {
+      RewoundListener rewoundListener = () -> {};
+
+      robotRegistry.registerSimulationRewoundListener(rewoundListener);
+      ArrayList<RewoundListener> allSimulationRewoundListeners = robotRegistry.getAllSimulationRewoundListeners();
+
+      assertTrue(allSimulationRewoundListeners.contains(rewoundListener));
+   }
+
+   @Test
+   public void testChangeNameSpace()
+   {
+      String newNameSpace = "newNamespace";
+
+      robotRegistry.changeNameSpace(newNameSpace);
+      assertTrue(robotRegistry.getNameSpace().getName().equals(newNameSpace));
    }
 
 //   public static void main(String[] args)

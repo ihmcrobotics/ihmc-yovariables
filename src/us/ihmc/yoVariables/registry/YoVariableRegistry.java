@@ -43,7 +43,7 @@ public class YoVariableRegistry implements YoVariableHolder
 
       if (illegalCharacters.matcher(name).find())
       {
-         String message = name + " is an invalid name for a YoVariableRegistry. A YoVariableRegistry cannot have crazy characters in them, otherwise namespaces"
+         String message = name + " is an invalid name for a YoVariableRegistry. A YoVariableRegistry cannot have crazy characters in them, otherwise NameSpaces"
                + " will not work.";
          throw new RuntimeException(message);
       }
@@ -130,9 +130,9 @@ public class YoVariableRegistry implements YoVariableHolder
 
       if (controlVarsHashMap.containsKey(variableName))
       {
-         System.err.println("Error:  " + variable.getName() + " has already been registered in this registry! YoVariableRegistry nameSpace = " + nameSpace);
+         System.err.println("Error:  " + variable.getName() + " has already been registered in this registry! YoVariableRegistry NameSpace = " + nameSpace);
          // Sometimes RuntimeExceptions are not displayed, but the error out is still visible.
-         throw new RuntimeException("Error:  " + variable.getName() + " has already been registered in this registry! YoVariableRegistry nameSpace = "
+         throw new RuntimeException("Error:  " + variable.getName() + " has already been registered in this registry! YoVariableRegistry NameSpace = "
                + nameSpace);
       }
 
@@ -356,7 +356,7 @@ public class YoVariableRegistry implements YoVariableHolder
    public void addChild(YoVariableRegistry child, boolean notifyListeners)
    {
       // Prepend the parents nameSpace to the child. NameSpace will figure out if it's valid or not.
-      // This then requires that the child only has it's portion of the namespace that the parent does not.
+      // This then requires that the child only has it's portion of the NameSpace that the parent does not.
 
       if (child == null)
          return;
@@ -388,7 +388,7 @@ public class YoVariableRegistry implements YoVariableHolder
    private void prependNameSpace(NameSpace parentNameSpace)
    {
       if (this.nameSpace == null)
-         throw new RuntimeException("Cannot prepend a namespace. This namespace is null. Only root can have a null namespace");
+         throw new RuntimeException("Cannot prepend a NameSpace. This NameSpace is null. Only root can have a null NameSpace");
       if (parentNameSpace == null)
          return;
 
@@ -402,7 +402,7 @@ public class YoVariableRegistry implements YoVariableHolder
       }
    }
 
-   public void recursivelyChangeNamespaces(NameSpaceRenamer nameSpaceRenamer)
+   public void recursivelyChangeNameSpaces(NameSpaceRenamer nameSpaceRenamer)
    {
       NameSpace nameSpace = this.getNameSpace();
       String nameSpaceString = nameSpace.getName();
@@ -416,13 +416,13 @@ public class YoVariableRegistry implements YoVariableHolder
 
       for (YoVariableRegistry child : children)
       {
-         child.recursivelyChangeNamespaces(nameSpaceRenamer);
+         child.recursivelyChangeNameSpaces(nameSpaceRenamer);
       }
    }
 
    public void changeNameSpace(String newNamespace)
    {
-      System.err.println("Warning: Changing namespace from " + this.nameSpace + " to " + newNamespace);
+      System.err.println("Warning: Changing nameSpace from " + this.nameSpace + " to " + newNamespace);
       this.nameSpace = new NameSpace(newNamespace);
    }
 
