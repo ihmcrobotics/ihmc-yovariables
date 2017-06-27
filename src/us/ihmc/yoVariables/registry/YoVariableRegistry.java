@@ -410,8 +410,6 @@ public class YoVariableRegistry implements YoVariableHolder
       nameSpaceString = nameSpaceRenamer.changeNamespaceString(nameSpaceString);
       this.changeNameSpace(nameSpaceString);
 
-      System.out.println(nameSpaceString);
-
       ArrayList<YoVariableRegistry> children = this.getChildren();
 
       for (YoVariableRegistry child : children)
