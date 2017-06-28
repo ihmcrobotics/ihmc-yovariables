@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.Random;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,6 +23,13 @@ public class DataBufferEntryTest
       yoDouble = new YoDouble("yoDouble", null);
       yoDouble.set(0);
       dataBufferEntry = new DataBufferEntry(yoDouble, nPoints);
+   }
+
+   @After
+   public void tearDown()
+   {
+      yoDouble = null;
+      dataBufferEntry = null;
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
