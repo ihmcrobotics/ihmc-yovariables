@@ -1,17 +1,16 @@
 package us.ihmc.yoVariables.dataBuffer;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 import us.ihmc.yoVariables.variable.*;
-import us.ihmc.yoVariables.variable.YoBoolean;
+
+import java.util.ArrayList;
+import java.util.Random;
+
+import static org.junit.Assert.*;
 
 public class DataBufferTest
 {
@@ -31,11 +30,6 @@ public class DataBufferTest
    
    private YoDouble a, b, c;
    private DataBufferEntry aBuffer, bBuffer, cBuffer;
-
-   public DataBufferTest()
-   {
-      
-   }
    
    @Before
    public void setUp()
@@ -296,7 +290,6 @@ public class DataBufferTest
  
    }
    
-/*   
    //testGetVars(String [], String[])
    
    //testGetVarsFromGroup(String varGroupName, VarGroupList varGroupList)
@@ -319,8 +312,7 @@ public class DataBufferTest
 //      assertTrue(0 == dataBufferSize);
 //
 //   }
-   
-   
+
 //   @Test(timeout=300000)
 //   public void testClearAll() throws RepeatDataBufferEntryException
 //   {
@@ -337,7 +329,6 @@ public class DataBufferTest
 //       assertTrue(0 == dataBufferSize);
 //      
 //   }
-  */   
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
@@ -612,13 +603,6 @@ public class DataBufferTest
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
-   public void testClearAll()
-   {
-      
-   }
-
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
-	@Test(timeout=300000)
     public void testResetDataBuffer()
     {       
        dataBuffer.addEntry(aBuffer);
@@ -638,5 +622,68 @@ public class DataBufferTest
 //       assertTrue(resetVariables.size() == 0);
     }
 
+    @Test
+    public void testCloseAndDispose()
+    {
+       dataBuffer.addEntry(aBuffer);
+       dataBuffer.addEntry(bBuffer);
+       dataBuffer.addEntry(cBuffer);
 
+       assertTrue(dataBuffer.getEntries().size() == 3);
+       dataBuffer.closeAndDispose();
+       assertTrue(dataBuffer.getEntries() == null);
+       assertTrue(dataBuffer.getIndex() == -1);
+    }
+
+    @Test
+    public void testCopyValuesThrough()
+    {
+       // add entries to the buffer and set the in-out points so the whole buffer is used
+       dataBuffer.addEntry(aBuffer);
+       dataBuffer.addEntry(bBuffer);
+       dataBuffer.addEntry(cBuffer);
+       dataBuffer.setInOutPointFullBuffer();
+
+       // fill entries with random data
+       Random random = new Random(574893);
+       for(int i = 0; i < testBufferSize; i++)
+       {
+          a.set(random.nextDouble());
+          b.set(random.nextDouble());
+          c.set(random.nextDouble());
+
+          dataBuffer.updateAndTick();
+       }
+
+       ArrayList<DataBufferEntry> entries = dataBuffer.getEntries();
+
+       // check that each point for each entry is filled with random data
+       for(int i = 0; i < entries.size(); i++)
+       {
+          DataBufferEntry dataBufferEntry = entries.get(i);
+          double[] data = dataBufferEntry.getData();
+
+          for(int j = 0; j < data.length - 1; j++)
+          {
+             // assuming that 0.0 wasn't randomly generated
+             assertTrue(data[j] != 0.0);
+          }
+       }
+
+       // method being tested
+       dataBuffer.copyValuesThrough();
+
+       // each point for each entry should now equal the current value of the entry's YoVariable
+       for(int i = 0; i < entries.size(); i++)
+       {
+          DataBufferEntry dataBufferEntry = entries.get(i);
+          YoVariable<?> variable = dataBufferEntry.getVariable();
+          double[] data = dataBufferEntry.getData();
+
+          for(int j = 0; j < data.length - 1; j++)
+          {
+             assertTrue(data[j] == variable.getValueAsDouble());
+          }
+       }
+    }
 }

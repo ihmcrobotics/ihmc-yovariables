@@ -39,11 +39,6 @@ public class DataBuffer extends YoVariableHolderImplementation
 
    private boolean safeToManualyChangeIndex = true;
 
-   public DataBuffer()
-   {
-      entries = new ArrayList<DataBufferEntry>();
-   }
-
    @Override
    public void closeAndDispose()
    {
