@@ -603,87 +603,76 @@ public class DataBufferTest
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
-    public void testResetDataBuffer()
-    {       
-       dataBuffer.addEntry(aBuffer);
-       dataBuffer.addEntry(bBuffer);
-       dataBuffer.addEntry(cBuffer);
-       
-       ArrayList<YoVariable<?>> withVariables = dataBuffer.getVariables();
-       
-//       System.out.println(withVariables.size());
-       assertTrue(withVariables.size() > 0);
-       
-       dataBuffer.resetDataBuffer();
-       
-       ArrayList<YoVariable<?>> resetVariables = dataBuffer.getVariables();
-       
-//       System.out.println(resetVariables.size());
-//       assertTrue(resetVariables.size() == 0);
-    }
+   public void testResetDataBuffer()
+   {
+      dataBuffer.addEntry(aBuffer);
+      dataBuffer.addEntry(bBuffer);
+      dataBuffer.addEntry(cBuffer);
 
-    @Test
-    public void testCloseAndDispose()
-    {
-       dataBuffer.addEntry(aBuffer);
-       dataBuffer.addEntry(bBuffer);
-       dataBuffer.addEntry(cBuffer);
+      ArrayList<YoVariable<?>> withVariables = dataBuffer.getVariables();
 
-       assertTrue(dataBuffer.getEntries().size() == 3);
-       dataBuffer.closeAndDispose();
-       assertTrue(dataBuffer.getEntries() == null);
-       assertTrue(dataBuffer.getIndex() == -1);
-    }
+//      System.out.println(withVariables.size());
+      assertTrue(withVariables.size() > 0);
 
-    @Test
-    public void testCopyValuesThrough()
-    {
-       // add entries to the buffer and set the in-out points so the whole buffer is used
-       dataBuffer.addEntry(aBuffer);
-       dataBuffer.addEntry(bBuffer);
-       dataBuffer.addEntry(cBuffer);
-       dataBuffer.setInOutPointFullBuffer();
+      dataBuffer.resetDataBuffer();
 
-       // fill entries with random data
-       Random random = new Random(574893);
-       for(int i = 0; i < testBufferSize; i++)
-       {
-          a.set(random.nextDouble());
-          b.set(random.nextDouble());
-          c.set(random.nextDouble());
+      ArrayList<YoVariable<?>> resetVariables = dataBuffer.getVariables();
 
-          dataBuffer.updateAndTick();
-       }
-
-       ArrayList<DataBufferEntry> entries = dataBuffer.getEntries();
-
-       // check that each point for each entry is filled with random data
-       for(int i = 0; i < entries.size(); i++)
-       {
-          DataBufferEntry dataBufferEntry = entries.get(i);
-          double[] data = dataBufferEntry.getData();
-
-          for(int j = 0; j < data.length - 1; j++)
-          {
-             // assuming that 0.0 wasn't randomly generated
-             assertTrue(data[j] != 0.0);
-          }
-       }
-
-       // method being tested
-       dataBuffer.copyValuesThrough();
-
-       // each point for each entry should now equal the current value of the entry's YoVariable
-       for(int i = 0; i < entries.size(); i++)
-       {
-          DataBufferEntry dataBufferEntry = entries.get(i);
-          YoVariable<?> variable = dataBufferEntry.getVariable();
-          double[] data = dataBufferEntry.getData();
-
-          for(int j = 0; j < data.length - 1; j++)
-          {
-             assertTrue(data[j] == variable.getValueAsDouble());
-          }
-       }
-    }
+//      System.out.println(resetVariables.size());
+//      assertTrue(resetVariables.size() == 0);
+   }
+   @Test
+   public void testCloseAndDispose()
+   {
+      dataBuffer.addEntry(aBuffer);
+      dataBuffer.addEntry(bBuffer);
+      dataBuffer.addEntry(cBuffer);
+      assertTrue(dataBuffer.getEntries().size() == 3);
+      dataBuffer.closeAndDispose();
+      assertTrue(dataBuffer.getEntries() == null);
+      assertTrue(dataBuffer.getIndex() == -1);
+   }
+   @Test
+   public void testCopyValuesThrough()
+   {
+      // add entries to the buffer and set the in-out points so the whole buffer is used
+      dataBuffer.addEntry(aBuffer);
+      dataBuffer.addEntry(bBuffer);
+      dataBuffer.addEntry(cBuffer);
+      dataBuffer.setInOutPointFullBuffer();
+      // fill entries with random data
+      Random random = new Random(574893);
+      for(int i = 0; i < testBufferSize; i++)
+      {
+         a.set(random.nextDouble());
+         b.set(random.nextDouble());
+         c.set(random.nextDouble());
+         dataBuffer.updateAndTick();
+      }
+      ArrayList<DataBufferEntry> entries = dataBuffer.getEntries();
+      // check that each point for each entry is filled with random data
+      for(int i = 0; i < entries.size(); i++)
+      {
+         DataBufferEntry dataBufferEntry = entries.get(i);
+         double[] data = dataBufferEntry.getData();
+         for(int j = 0; j < data.length - 1; j++)
+         {
+            // assuming that 0.0 wasn't randomly generated
+            assertTrue(data[j] != 0.0);
+         }
+      }
+      // method being tested
+      dataBuffer.copyValuesThrough();
+      // each point for each entry should now equal the current value of the entry's YoVariable
+      for(int i = 0; i < entries.size(); i++)
+      {
+         DataBufferEntry dataBufferEntry = entries.get(i);
+         YoVariable<?> variable = dataBufferEntry.getVariable();
+         double[] data = dataBufferEntry.getData();
+         for(int j = 0; j < data.length - 1; j++)
+         {
+            assertTrue(data[j] == variable.getValueAsDouble());
+         }
+      }
+   }
 }
