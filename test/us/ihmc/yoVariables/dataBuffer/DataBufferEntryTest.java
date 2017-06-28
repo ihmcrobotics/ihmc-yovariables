@@ -575,4 +575,46 @@ public class DataBufferEntryTest
       assertEquals(oldMin, dataBufferEntry.getMin(350,0,350,450), 0);
       assertEquals(oldMin, dataBufferEntry.getMin(500,450,350,450), 0);
    }
+
+   @Test
+   public void testThinData()
+   {
+      Random random = new Random(53290);
+
+      for(int i = 0; i < nPoints; i++)
+      {
+         yoDouble.set((double) random.nextInt(20000) / (double) random.nextInt(30));
+         dataBufferEntry.setDataAtIndexToYoVariableValue(i);
+      }
+
+      assertTrue(dataBufferEntry.getDataLength() == nPoints);
+
+      int keepEveryNthPoint = 5;
+      dataBufferEntry.thinData(keepEveryNthPoint);
+
+      assertTrue(dataBufferEntry.getDataLength() == (nPoints / keepEveryNthPoint));
+   }
+
+   @Test
+   public void testGetSetInverted()
+   {
+      dataBufferEntry.setInverted(true);
+      assertTrue(dataBufferEntry.getInverted());
+
+
+      dataBufferEntry.setInverted(false);
+      assertFalse(dataBufferEntry.getInverted());
+   }
+
+   @Test
+   public void testGetVariableName()
+   {
+      assertTrue(dataBufferEntry.getVariableName().equals(yoDouble.getName()));
+   }
+
+   @Test
+   public void testGetFullVariableNameWithNameSpace()
+   {
+      assertTrue(dataBufferEntry.getFullVariableNameWithNameSpace().equals(yoDouble.getFullNameWithNameSpace()));
+   }
 }
