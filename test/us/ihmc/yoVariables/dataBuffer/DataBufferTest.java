@@ -123,7 +123,7 @@ public class DataBufferTest
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
-   public void testAddNewEntry() throws DataBuffer.RepeatDataBufferEntryException
+   public void testAddNewEntry()
    {
       dataBuffer.addVariable(yoDouble, testBufferSize);
       dataBuffer.addVariable(yoBoolean, testBufferSize);
@@ -143,7 +143,7 @@ public class DataBufferTest
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
-   public void testAddVariable() throws DataBuffer.RepeatDataBufferEntryException
+   public void testAddVariable()
    {
       dataBuffer.addVariable(yoDouble);
       dataBuffer.addVariable(yoBoolean);
@@ -159,7 +159,7 @@ public class DataBufferTest
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
-   public void testAddVariableWithArrayList() throws DataBuffer.RepeatDataBufferEntryException
+   public void testAddVariableWithArrayList()
    {
       ArrayList<YoVariable<?>> arrayListToBeAdded = new ArrayList<YoVariable<?>>();
       arrayListToBeAdded.add(yoDouble);
@@ -180,7 +180,7 @@ public class DataBufferTest
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
-   public void testGetVariablesThatContain() throws DataBuffer.RepeatDataBufferEntryException
+   public void testGetVariablesThatContain()
    {
       YoDouble yoVariable123456789 = new YoDouble("123456789", registry);
       YoDouble yoVariable12345678 = new YoDouble("12345678", registry);
@@ -221,7 +221,7 @@ public class DataBufferTest
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
-   public void testGetVariablesThatStartWith() throws DataBuffer.RepeatDataBufferEntryException
+   public void testGetVariablesThatStartWith()
    {
       
       YoDouble yoVariable1 = new YoDouble("doy", registry);
@@ -245,7 +245,7 @@ public class DataBufferTest
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
-   public void testGetEntries() throws DataBuffer.RepeatDataBufferEntryException
+   public void testGetEntries()
    {
       ArrayList<DataBufferEntry> expectedDataEntries = new ArrayList<DataBufferEntry>();
       DataBufferEntry doubleDataBufferEntryTest = new DataBufferEntry(yoDouble, testBufferSize);
@@ -268,7 +268,7 @@ public class DataBufferTest
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
-   public void testGetVariables() throws DataBuffer.RepeatDataBufferEntryException
+   public void testGetVariables()
    {
       dataBuffer.addVariable(yoDouble, testBufferSize);
       dataBuffer.addVariable(yoBoolean, testBufferSize);
