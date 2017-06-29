@@ -635,20 +635,9 @@ public class DataBufferTest
    @Test
    public void testCopyValuesThrough()
    {
-      // add entries to the buffer and set the in-out points so the whole buffer is used
-      dataBuffer.addEntry(aBuffer);
-      dataBuffer.addEntry(bBuffer);
-      dataBuffer.addEntry(cBuffer);
-      dataBuffer.setInOutPointFullBuffer();
-      // fill entries with random data
       Random random = new Random(574893);
-      for(int i = 0; i < testBufferSize; i++)
-      {
-         a.set(random.nextDouble());
-         b.set(random.nextDouble());
-         c.set(random.nextDouble());
-         dataBuffer.updateAndTick();
-      }
+      fillDataBufferWithRandomData(random);
+
       ArrayList<DataBufferEntry> entries = dataBuffer.getEntries();
       // check that each point for each entry is filled with random data
       for(int i = 0; i < entries.size(); i++)
@@ -673,6 +662,24 @@ public class DataBufferTest
          {
             assertTrue(data[j] == variable.getValueAsDouble());
          }
+      }
+   }
+
+   private void fillDataBufferWithRandomData(Random random)
+   {
+      // add entries to the buffer and set the in-out points so the whole buffer is used
+      dataBuffer.addEntry(aBuffer);
+      dataBuffer.addEntry(bBuffer);
+      dataBuffer.addEntry(cBuffer);
+      dataBuffer.setInOutPointFullBuffer();
+
+      // fill entries with random data
+      for(int i = 0; i < testBufferSize; i++)
+      {
+         a.set(random.nextDouble());
+         b.set(random.nextDouble());
+         c.set(random.nextDouble());
+         dataBuffer.updateAndTick();
       }
    }
 }
