@@ -639,6 +639,7 @@ public class DataBufferTest
       fillDataBufferWithRandomData(random);
 
       ArrayList<DataBufferEntry> entries = dataBuffer.getEntries();
+
       // check that each point for each entry is filled with random data
       for(int i = 0; i < entries.size(); i++)
       {
@@ -650,8 +651,11 @@ public class DataBufferTest
             assertTrue(data[j] != 0.0);
          }
       }
-      // method being tested
+
+      // method being tested: replace each data point in each DataBufferEntry with the current value of the
+      // YoVariable assigned to that DataBufferEntry
       dataBuffer.copyValuesThrough();
+
       // each point for each entry should now equal the current value of the entry's YoVariable
       for(int i = 0; i < entries.size(); i++)
       {
@@ -662,6 +666,75 @@ public class DataBufferTest
          {
             assertTrue(data[j] == variable.getValueAsDouble());
          }
+      }
+   }
+
+   @Test
+   public void testPackDataWithInvalidStartPoint()
+   {
+      Random random = new Random(27093);
+      fillDataBufferWithRandomData(random);
+
+      // assert inPoint at start of buffer, outPoint at the end
+      assertTrue(dataBuffer.getInPoint() == 0);
+      assertTrue(dataBuffer.getOutPoint() == (testBufferSize - 1));
+
+      // assert in/outPoint don't chnage if start point is outside buffer range
+      dataBuffer.packData(-1);
+      assertTrue(dataBuffer.getInPoint() == 0);
+      assertTrue(dataBuffer.getOutPoint() == (testBufferSize - 1));
+
+      dataBuffer.packData(testBufferSize);
+      assertTrue(dataBuffer.getInPoint() == 0);
+      assertTrue(dataBuffer.getOutPoint() == (testBufferSize - 1));
+   }
+
+   @Test
+   public void testPackData()
+   {
+      Random random = new Random(209390);
+      fillDataBufferWithRandomData(random);
+
+      // assert inPoint at start of buffer, outPoint at the end
+      assertTrue(dataBuffer.getInPoint() == 0);
+      assertTrue(dataBuffer.getOutPoint() == (testBufferSize - 1));
+
+      // create a copy of the DataBuffer before packing for comparison afterwards
+      DataBuffer dataBufferClone = cloneDataBuffer(dataBuffer);
+
+      for(int i = 0; i < 1000; i++)
+      {
+         int newIndex = random.nextInt(testBufferSize);
+         dataBuffer.setIndex(newIndex);
+         int newStartLocation = random.nextInt(testBufferSize);
+         dataBuffer.packData(newStartLocation);
+
+         ArrayList<DataBufferEntry> entries = dataBuffer.getEntries();
+         ArrayList<DataBufferEntry> entriesClone = dataBufferClone.getEntries();
+         for(int j = 0; j < dataBuffer.getEntries().size(); j++)
+         {
+            DataBufferEntry entry = entries.get(j);
+            DataBufferEntry entryClone = entriesClone.get(j);
+
+            double[] data = entry.getData();
+            double[] dataClone = entryClone.getData();
+
+            for(int k = 0; k < data.length; k++)
+            {
+               assertTrue(dataClone[k] == data[(k + testBufferSize - newStartLocation) % testBufferSize]);
+            }
+
+            if(newStartLocation >= newIndex)
+               assertTrue(dataBuffer.getIndex() == 0);
+            else
+               assertTrue(dataBuffer.getIndex() == (newIndex - newStartLocation));
+            assertTrue(dataBuffer.getInPoint() == 0);
+            assertTrue(dataBuffer.getOutPoint() == (testBufferSize - 1 - newStartLocation));
+
+            entryClone.setData(entry.getData(), entry.getDataLength());
+         }
+
+         dataBuffer.setInOutPointFullBuffer();
       }
    }
 
@@ -682,4 +755,87 @@ public class DataBufferTest
          dataBuffer.updateAndTick();
       }
    }
+
+   @Test
+   public void testCloneDataBuffer()
+   {
+      Random random = new Random(19824);
+      fillDataBufferWithRandomData(random);
+      DataBuffer dataBufferClone = cloneDataBuffer(dataBuffer);
+
+      dataBuffer.checkIfDataIsEqual(dataBufferClone, 1e-6);
+   }
+
+   private DataBuffer cloneDataBuffer(DataBuffer originalDataBuffer)
+   {
+      DataBuffer cloneDataBuffer = new DataBuffer(originalDataBuffer.getBufferSize());
+
+      for(DataBufferEntry originalEntry : originalDataBuffer.getEntries())
+      {
+         DataBufferEntry cloneEntry = new DataBufferEntry(originalEntry.getVariable(), originalEntry.getDataLength());
+         cloneEntry.setData(originalEntry.getData(), originalEntry.getDataLength());
+         cloneDataBuffer.addEntry(cloneEntry);
+      }
+
+      cloneDataBuffer.setIndex(originalDataBuffer.getIndex());
+      cloneDataBuffer.setInPoint(originalDataBuffer.getInPoint());
+      cloneDataBuffer.setOutPoint(originalDataBuffer.getOutPoint());
+
+      return cloneDataBuffer;
+   }
+
+   @Test
+   public void testCutDataWithInvalidStartAndEnd()
+   {
+      Random random = new Random(6543897);
+      fillDataBufferWithRandomData(random);
+
+      assertTrue(dataBuffer.getIndex() == 0);
+      assertTrue(dataBuffer.getInPoint() == 0);
+      assertTrue(dataBuffer.getOutPoint() == testBufferSize - 1);
+
+      // attempt to cut data with unreasonable start point
+      dataBuffer.cutData(-1, testBufferSize/2);
+
+      // assert nothing changed
+      assertTrue(dataBuffer.getIndex() == 0);
+      assertTrue(dataBuffer.getInPoint() == 0);
+      assertTrue(dataBuffer.getOutPoint() == testBufferSize - 1);
+
+      // attempt to cut data with unreasonable end point
+      dataBuffer.cutData(testBufferSize/2, testBufferSize + 1);
+
+      // assert nothing changed
+      assertTrue(dataBuffer.getIndex() == 0);
+      assertTrue(dataBuffer.getInPoint() == 0);
+      assertTrue(dataBuffer.getOutPoint() == testBufferSize - 1);
+   }
+
+   @Test
+   public void testCutDataOfEntireBuffer()
+   {
+      Random random = new Random(27489);
+      fillDataBufferWithRandomData(random);
+
+      // assert that the in and out points are at the edges of the buffer
+      assertTrue(dataBuffer.getInPoint() == 0);
+      assertTrue(dataBuffer.getOutPoint() == (testBufferSize - 1));
+
+      // the no-arg constructor should use the in/out points for the start and end of the region to cut
+      // this should cut the entire buffer and effectively erase all of its data
+      dataBuffer.cutData();
+
+      // assert that the length of the buffer didn't change
+      // this is true when the entire buffer is cut
+      assertTrue(dataBuffer.getBufferSize() == testBufferSize);
+
+      for(DataBufferEntry entry : dataBuffer.getEntries())
+      {
+         for(double d : entry.getData())
+         {
+            assertTrue(d == 0);
+         }
+      }
+   }
+
 }
