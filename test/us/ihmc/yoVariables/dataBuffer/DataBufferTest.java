@@ -289,46 +289,6 @@ public class DataBufferTest
       }
  
    }
-   
-   //testGetVars(String [], String[])
-   
-   //testGetVarsFromGroup(String varGroupName, VarGroupList varGroupList)
-   
-   //setMaxBufferSize
-   
-   
-//   @Test(timeout=300000)
-//   public void testResetDataBuffer() throws RepeatDataBufferEntryException
-//   {
-//      dataBuffer.addNewEntry(yoDouble, testBufferSize);
-//      dataBuffer.addNewEntry(yoBoolean, testBufferSize);
-//      dataBuffer.addNewEntry(yoInteger, testBufferSize);
-//      dataBuffer.addNewEntry(yoEnum, testBufferSize);
-//      
-//      dataBuffer.resetDataBuffer();
-//      
-//      int dataBufferSize = dataBuffer.getBufferSize();
-//      .println(dataBufferSize);
-//      assertTrue(0 == dataBufferSize);
-//
-//   }
-
-//   @Test(timeout=300000)
-//   public void testClearAll() throws RepeatDataBufferEntryException
-//   {
-//      
-//       dataBuffer.addNewEntry(yoDouble, testBufferSize);
-//       dataBuffer.addNewEntry(yoBoolean, testBufferSize);
-//       dataBuffer.addNewEntry(yoInteger, testBufferSize);
-//       dataBuffer.addNewEntry(yoEnum, testBufferSize);
-//       
-//       dataBuffer.clearAll(testBufferSize);
-//       
-//       int dataBufferSize = dataBuffer.getBufferSize();
-//       .println(dataBufferSize);
-//       assertTrue(0 == dataBufferSize);
-//      
-//   }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
@@ -692,6 +652,7 @@ public class DataBufferTest
    @Test
    public void testPackData()
    {
+      int TEST_ITERATIONS = 1000;
       Random random = new Random(209390);
       fillDataBufferWithRandomData(random);
 
@@ -702,7 +663,7 @@ public class DataBufferTest
       // create a copy of the DataBuffer before packing for comparison afterwards
       DataBuffer dataBufferClone = cloneDataBuffer(dataBuffer);
 
-      for(int i = 0; i < 1000; i++)
+      for(int i = 0; i < TEST_ITERATIONS; i++)
       {
          int newIndex = random.nextInt(testBufferSize);
          dataBuffer.setIndex(newIndex);
@@ -838,4 +799,145 @@ public class DataBufferTest
       }
    }
 
+   @Test
+   public void testCutData()
+   {
+      int TEST_ITERATIONS = 1000;
+      Random random = new Random(345890);
+      fillDataBufferWithRandomData(random);
+
+      // assert that the in and out points are at the edges of the buffer
+      assertTrue(dataBuffer.getInPoint() == 0);
+      assertTrue(dataBuffer.getOutPoint() == (testBufferSize - 1));
+
+      // Create a copy of dataBuffer before it is modified
+      DataBuffer unmodifiedDataBuffer = cloneDataBuffer(dataBuffer);
+
+      for(int i = 0; i < TEST_ITERATIONS; i++)
+      {
+         int start = random.nextInt(testBufferSize);
+         int end = random.nextInt(testBufferSize);
+
+         dataBuffer.cutData(start, end);
+
+         for(int j = 0; j < dataBuffer.getEntries().size(); j++)
+         {
+            DataBufferEntry cutEntry = dataBuffer.getEntries().get(j);
+            DataBufferEntry unmodifiedEntry = unmodifiedDataBuffer.getEntries().get(j);
+
+            for(int k = 0; k < cutEntry.getData().length; k++)
+            {
+               if(start < end)
+               {
+                  // First check that the size of the buffer has been cut to the expected size
+                  assertTrue(dataBuffer.getBufferSize() == (testBufferSize - (end - start + 1)));
+                  double dataFromCutEntry = cutEntry.getData()[k];
+
+                  int indexInUnmodifiedEntry = k < start ? k : end + (k - start) + 1;
+                  double dataFromUnmodifiedEntry = unmodifiedEntry.getData()[indexInUnmodifiedEntry];
+
+                  // Check that only data outside of the cut-range remains in the buffer
+                  assertTrue(dataFromCutEntry == dataFromUnmodifiedEntry);
+               }
+               else
+               {
+                  if(start > end)
+                  {
+                     // This is considered an invalid cut. DataBuffer should be unchanged
+                     assertTrue(dataBuffer.getBufferSize() == testBufferSize);
+                     assertTrue(cutEntry.getData()[k] == unmodifiedEntry.getData()[k]);
+                  }
+                  else
+                  {
+                     // Here start = end. Only cut the single data-point
+                     assertTrue(dataBuffer.getBufferSize() == testBufferSize - 1);
+                     double dataFromCutEntry = cutEntry.getData()[k];
+
+                     int indexInUnmodifiedEntry = k < start ? k : k + 1;
+                     double dataFromUnmodifiedEntry = unmodifiedEntry.getData()[indexInUnmodifiedEntry];
+
+                     // Check that only data outside of the cut-range remains in the buffer
+                     assertTrue(dataFromCutEntry == dataFromUnmodifiedEntry);
+                  }
+               }
+            }
+         }
+
+         // Restore dataBuffer for the next iteration
+         dataBuffer = cloneDataBuffer(unmodifiedDataBuffer);
+      }
+   }
+
+//   @Test
+   public void testThinData()
+   {
+      Random random = new Random(246370);
+
+      int iterations = 1000;
+
+      for(int i = 0; i < iterations; i++)
+      {
+         fillDataBufferWithRandomData(random);
+         for(DataBufferEntry entry : dataBuffer.getEntries())
+         {
+            assertTrue(entry.getData().length == testBufferSize);
+         }
+
+         int keepEveryNthPoint = random.nextInt(testBufferSize);
+         System.out.println("iteration: " + i);
+         System.out.println("thinning factor: " + keepEveryNthPoint);
+         dataBuffer.thinData(keepEveryNthPoint);
+
+         for(DataBufferEntry entry : dataBuffer.getEntries())
+         {
+            if(keepEveryNthPoint < testBufferSize/2)
+               assertTrue(entry.getDataLength() == (testBufferSize/keepEveryNthPoint));
+            else
+               assertTrue(entry.getDataLength() == testBufferSize);
+         }
+
+         dataBuffer.closeAndDispose();
+      }
+
+   }
+
+   //testGetVars(String [], String[])
+
+   //testGetVarsFromGroup(String varGroupName, VarGroupList varGroupList)
+
+   //setMaxBufferSize
+
+
+   //   @Test(timeout=300000)
+   //   public void testResetDataBuffer() throws RepeatDataBufferEntryException
+   //   {
+   //      dataBuffer.addNewEntry(yoDouble, testBufferSize);
+   //      dataBuffer.addNewEntry(yoBoolean, testBufferSize);
+   //      dataBuffer.addNewEntry(yoInteger, testBufferSize);
+   //      dataBuffer.addNewEntry(yoEnum, testBufferSize);
+   //
+   //      dataBuffer.resetDataBuffer();
+   //
+   //      int dataBufferSize = dataBuffer.getBufferSize();
+   //      .println(dataBufferSize);
+   //      assertTrue(0 == dataBufferSize);
+   //
+   //   }
+
+   //   @Test(timeout=300000)
+   //   public void testClearAll() throws RepeatDataBufferEntryException
+   //   {
+   //
+   //       dataBuffer.addNewEntry(yoDouble, testBufferSize);
+   //       dataBuffer.addNewEntry(yoBoolean, testBufferSize);
+   //       dataBuffer.addNewEntry(yoInteger, testBufferSize);
+   //       dataBuffer.addNewEntry(yoEnum, testBufferSize);
+   //
+   //       dataBuffer.clearAll(testBufferSize);
+   //
+   //       int dataBufferSize = dataBuffer.getBufferSize();
+   //       .println(dataBufferSize);
+   //       assertTrue(0 == dataBufferSize);
+   //
+   //   }
 }
