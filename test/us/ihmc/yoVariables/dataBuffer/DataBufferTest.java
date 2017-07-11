@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
+import us.ihmc.yoVariables.listener.RewoundListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 import us.ihmc.yoVariables.variable.*;
 
@@ -868,7 +869,7 @@ public class DataBufferTest
       }
    }
 
-   //   @Test
+   @Test
    public void testThinData()
    {
       int TEST_ITERATIONS = 1000;
@@ -895,15 +896,66 @@ public class DataBufferTest
                if(keepEveryNthPoint < testBufferSize / 2)
                {
                   assertTrue(thinnedEntry.getDataLength() == (testBufferSize / keepEveryNthPoint));
+                  double thinnedEntryDatum = thinnedEntryData[k];
+                  double unmodifiedEntryDatum = unmodifiedEntryData[k * keepEveryNthPoint];
+                  assertTrue(thinnedEntryDatum == unmodifiedEntryDatum);
                }
                else
+               {
                   assertTrue(thinnedEntry.getDataLength() == testBufferSize);
+                  assertTrue(thinnedEntryData[k] == unmodifiedEntryData[k]);
+               }
             }
          }
 
          dataBuffer = cloneDataBuffer(unmodifiedDataBuffer);
       }
+   }
 
+   @Test
+   public void testAttachSimulationRewoundListeners()
+   {
+      final boolean[] listenerNotified = {false, false, false};
+
+      ArrayList<RewoundListener> simulationRewoundListeners = new ArrayList<>();
+      simulationRewoundListeners.add(() -> listenerNotified[0] = true);
+      simulationRewoundListeners.add(() -> listenerNotified[1] = true);
+
+      dataBuffer.attachSimulationRewoundListeners(simulationRewoundListeners);
+
+      assertFalse(listenerNotified[0]);
+      assertFalse(listenerNotified[1]);
+      assertFalse(listenerNotified[2]);
+
+      dataBuffer.tickButDoNotNotifySimulationRewoundListeners(1);
+
+      assertFalse(listenerNotified[0]);
+      assertFalse(listenerNotified[1]);
+      assertFalse(listenerNotified[2]);
+
+      dataBuffer.notifySimulationRewoundListenerListeners();
+
+      assertTrue(listenerNotified[0]);
+      assertTrue(listenerNotified[1]);
+      assertFalse(listenerNotified[2]);
+   }
+
+   @Test
+   public void testAttachIndexChangedListener()
+   {
+      final boolean[] listenerNotified = {false, false};
+
+      IndexChangedListener indexChangedListener = (int newIndex, double newTime) -> listenerNotified[0] = true;
+
+      dataBuffer.attachIndexChangedListener(indexChangedListener);
+
+      assertFalse(listenerNotified[0]);
+      assertFalse(listenerNotified[1]);
+
+      dataBuffer.tickAndUpdate();
+
+      assertTrue(listenerNotified[0]);
+      assertFalse(listenerNotified[1]);
    }
 
    //testGetVars(String [], String[])
