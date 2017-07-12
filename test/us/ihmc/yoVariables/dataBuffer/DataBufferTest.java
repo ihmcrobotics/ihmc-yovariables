@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.listener.RewoundListener;
+import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 import us.ihmc.yoVariables.variable.*;
 
@@ -956,6 +957,127 @@ public class DataBufferTest
 
       assertTrue(listenerNotified[0]);
       assertFalse(listenerNotified[1]);
+   }
+
+   @Test
+   public void testNotifyDataBufferListeners()
+   {
+      YoVariableRegistry registryOfInterest = new YoVariableRegistry("registryOfInterest");
+      NameSpace registryOfInterestNameSpace = registryOfInterest.getNameSpace();
+
+      int NUMBER_OF_VARIABLES_TO_ADD = 30;
+      double VALUE_TO_SET = 1.0;
+
+      for(int i = 0; i < NUMBER_OF_VARIABLES_TO_ADD; i++)
+      {
+         YoDouble yoDouble = new YoDouble("yoDouble_" + i, registryOfInterest);
+         yoDouble.set(VALUE_TO_SET);
+         dataBuffer.addVariable(yoDouble);
+      }
+
+      DataBufferListener dataBufferListener = new DataBufferListener()
+      {
+         @Override
+         public YoDouble[] getVariablesOfInterest(YoVariableHolder yoVariableHolder)
+         {
+            ArrayList<YoVariable<?>> variables = yoVariableHolder.getVariables(registryOfInterestNameSpace);
+            YoDouble[] ret = new YoDouble[variables.size()];
+            for(int i = 0; i < ret.length; i++)
+            {
+               ret[i] = (YoDouble) variables.get(i);
+            }
+
+            return ret;
+         }
+
+         @Override
+         public void dataBufferUpdate(double[] values)
+         {
+            assertTrue(values.length == NUMBER_OF_VARIABLES_TO_ADD);
+            for(int i = 0; i < values.length; i++)
+            {
+               assertTrue(values[i] == VALUE_TO_SET);
+            }
+         }
+      };
+
+      dataBuffer.addDataBufferListener(dataBufferListener);
+      dataBuffer.notifySimulationRewoundListenerListeners();
+   }
+
+   @Test
+   public void testApplyDataProcessingFunction()
+   {
+      Random random = new Random(74523);
+      fillDataBufferWithRandomData(random);
+
+      DataProcessingFunction forwardDataProcessingFunction = new DataProcessingFunction()
+      {
+         @Override
+         public void initializeProcessing()
+         {
+         }
+
+         @Override
+         public void processData()
+         {
+            a.set(1.0);
+            b.set(2.348);
+            c.set(8.7834);
+         }
+      };
+
+      assertFalse(a.getDoubleValue() == 1.0);
+      assertFalse(b.getDoubleValue() == 2.348);
+      assertFalse(c.getDoubleValue() == 8.7834);
+
+      dataBuffer.applyDataProcessingFunction(forwardDataProcessingFunction);
+
+      assertTrue(a.getDoubleValue() == 1.0);
+      assertTrue(b.getDoubleValue() == 2.348);
+      assertTrue(c.getDoubleValue() == 8.7834);
+
+      dataBuffer.setIndex(dataBuffer.getOutPoint());
+
+      DataProcessingFunction backwardsDataProcessingFunction = new DataProcessingFunction()
+      {
+         @Override
+         public void initializeProcessing()
+         {
+         }
+
+         @Override
+         public void processData()
+         {
+            a.set(0.0);
+            b.set(0.0);
+            c.set(0.0);
+         }
+      };
+
+      assertFalse(a.getDoubleValue() == 0.0);
+      assertFalse(b.getDoubleValue() == 0.0);
+      assertFalse(c.getDoubleValue() == 0.0);
+
+      dataBuffer.applyDataProcessingFunctionBackward(backwardsDataProcessingFunction);
+
+      assertTrue(a.getDoubleValue() == 0.0);
+      assertTrue(b.getDoubleValue() == 0.0);
+      assertTrue(c.getDoubleValue() == 0.0);
+   }
+
+   @Test
+   public void testToggleKeyPointMode()
+   {
+      boolean keyPointModeToggled = dataBuffer.isKeyPointModeToggled();
+
+      dataBuffer.toggleKeyPointMode();
+
+      assertFalse(keyPointModeToggled == dataBuffer.isKeyPointModeToggled());
+
+      dataBuffer.toggleKeyPointMode();
+
+      assertTrue(keyPointModeToggled == dataBuffer.isKeyPointModeToggled());
    }
 
    //testGetVars(String [], String[])
