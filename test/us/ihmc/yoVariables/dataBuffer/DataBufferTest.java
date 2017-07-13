@@ -720,13 +720,54 @@ public class DataBufferTest
    }
 
    @Test
+   public void testCheckIfDataIsEqual()
+   {
+      DataBuffer dataBuffer = new DataBuffer(0);
+      DataBuffer otherDataBuffer = new DataBuffer(0);
+
+      assertTrue(dataBuffer.checkIfDataIsEqual(otherDataBuffer, 1e-6));
+
+      YoVariableRegistry dataBufferRegistry = new YoVariableRegistry("dataBufferRegistry");
+      YoDouble dataBufferYoDouble = new YoDouble("dataBufferYoDouble", dataBufferRegistry);
+      DataBufferEntry dataBufferEntry = new DataBufferEntry(dataBufferYoDouble, 0);
+      dataBuffer.addEntry(dataBufferEntry);
+
+      assertFalse(dataBuffer.checkIfDataIsEqual(otherDataBuffer, 1));
+
+      YoVariableRegistry otherDataBufferRegistry = new YoVariableRegistry("otherDataBufferRegistry");
+      YoDouble otherDataBufferYoDouble = new YoDouble("otherDataBufferYoDouble", otherDataBufferRegistry);
+      DataBufferEntry otherDataBufferEntry = new DataBufferEntry(otherDataBufferYoDouble, 0);
+      otherDataBuffer.addEntry(otherDataBufferEntry);
+
+      assertFalse(dataBuffer.checkIfDataIsEqual(otherDataBuffer, 1e-6));
+
+      dataBuffer = new DataBuffer(testBufferSize);
+      otherDataBuffer = new DataBuffer(testBufferSize);
+
+      dataBuffer.addVariable(dataBufferYoDouble);
+      otherDataBuffer.addVariable(dataBufferYoDouble);
+
+      int numberOfTicks = 5;
+      for(int i = 0; i < numberOfTicks; i++)
+      {
+         dataBufferYoDouble.set(1.0);
+         dataBuffer.tickAndUpdate();
+
+         dataBufferYoDouble.set(0.0);
+         otherDataBuffer.tickAndUpdate();
+      }
+
+      assertFalse(dataBuffer.checkIfDataIsEqual(otherDataBuffer, 1e-6));
+   }
+
+   @Test
    public void testCloneDataBuffer()
    {
       Random random = new Random(19824);
       fillDataBufferWithRandomData(random);
       DataBuffer dataBufferClone = cloneDataBuffer(dataBuffer);
 
-      dataBuffer.checkIfDataIsEqual(dataBufferClone, 1e-6);
+      assertTrue(dataBuffer.checkIfDataIsEqual(dataBufferClone, 1e-6));
    }
 
    private DataBuffer cloneDataBuffer(DataBuffer originalDataBuffer)
@@ -1078,6 +1119,39 @@ public class DataBufferTest
       dataBuffer.toggleKeyPointMode();
 
       assertTrue(keyPointModeToggled == dataBuffer.isKeyPointModeToggled());
+   }
+
+   @Test
+   public void testGetSetTimeVariable()
+   {
+      String timeVariableName = "time";
+      YoDouble time = new YoDouble(timeVariableName, registry);
+
+      dataBuffer.addVariable(time);
+      dataBuffer.setTimeVariableName(timeVariableName);
+
+      int numberOfTicks = 5;
+
+      double[] timeData = new double[numberOfTicks];
+
+      for(int i = 0; i < numberOfTicks; i++)
+      {
+         time.set(i);
+         timeData[i] = i;
+         dataBuffer.tickAndUpdate();
+      }
+
+      assertTrue(dataBuffer.getTimeVariableName().equals(timeVariableName));
+
+      assertTrue(timeData.length == dataBuffer.getIndex());
+
+      double[] dataBufferTimeData = dataBuffer.getTimeData();
+      for(int i = 0; i < timeData.length; i++)
+      {
+         // We have to add 1 to the dataBufferTimeData index because the time variable
+         // already has a value of 0.0 when we call tickAndUpdate the first time
+         assertTrue(timeData[i] == dataBufferTimeData[i + 1]);
+      }
    }
 
    //testGetVars(String [], String[])
