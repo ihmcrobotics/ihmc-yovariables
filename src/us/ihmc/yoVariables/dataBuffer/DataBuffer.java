@@ -956,12 +956,12 @@ public class DataBuffer extends YoVariableHolderImplementation
 
    public int getNextTime()
    {
-      return keyPoints.getNextTime(index, inPoint, outPoint);
+      return keyPoints.getNextTime(index);
    }
 
    public int getPreviousTime()
    {
-      return keyPoints.getPreviousTime(index, inPoint, outPoint);
+      return keyPoints.getPreviousTime(index);
    }
 
    public ArrayList<YoVariable<?>> getVariablesThatStartWith(String searchString, boolean caseSensitive)
