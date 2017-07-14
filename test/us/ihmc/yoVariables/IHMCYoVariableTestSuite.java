@@ -20,6 +20,7 @@ import us.ihmc.yoVariables.variable.*;
       YoDoubleTest.class,
       YoEnumTest.class,
       YoIntegerTest.class,
+      YoLongTest.class,
       YoVariableListTest.class,
       YoVariableTest.class,
       YoVariableHolderImplementationTest.class,
