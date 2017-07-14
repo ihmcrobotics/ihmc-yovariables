@@ -4,6 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import us.ihmc.yoVariables.dataBuffer.DataBufferEntryTest;
 import us.ihmc.yoVariables.dataBuffer.DataBufferTest;
+import us.ihmc.yoVariables.dataBuffer.KeyPointsTest;
 import us.ihmc.yoVariables.registry.NameSpaceTest;
 import us.ihmc.yoVariables.registry.YoVariableRegistryTest;
 import us.ihmc.yoVariables.variable.*;
@@ -12,6 +13,7 @@ import us.ihmc.yoVariables.variable.*;
 @Suite.SuiteClasses({
       DataBufferEntryTest.class,
       DataBufferTest.class,
+      KeyPointsTest.class,
       NameSpaceTest.class,
       YoVariableRegistryTest.class,
       YoBooleanTest.class,
