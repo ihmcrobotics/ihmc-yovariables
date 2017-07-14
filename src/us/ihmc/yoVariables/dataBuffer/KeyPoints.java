@@ -13,7 +13,6 @@ public class KeyPoints
 
 	public boolean setKeyPoint(int time)
 	{
-		boolean added = false;
 		for (int i = 0; i < keyPoints.size(); i++)
 		{
 			if (keyPoints.get(i) == time)
@@ -31,10 +30,7 @@ public class KeyPoints
 			}
 		}
 
-		if (!added)
-		{
-			keyPoints.add(time);
-		}
+		keyPoints.add(time);
 
 		return true;
 	}
