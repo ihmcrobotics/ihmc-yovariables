@@ -109,6 +109,8 @@ public class KeyPointsTest
       assertFalse(keyPoints.useKeyPoints());
       keyPoints.setUseKeyPoints(true);
       assertTrue(keyPoints.useKeyPoints());
+      keyPoints.setUseKeyPoints(false);
+      assertFalse(keyPoints.useKeyPoints());
    }
 
    private void clearAndFillKeyPoints(int[] keyPointTimes)
