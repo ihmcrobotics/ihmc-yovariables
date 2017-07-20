@@ -14,11 +14,10 @@ import us.ihmc.yoVariables.registry.YoVariableRegistry;
  * Title:        Simulation Construction Set<p>
  * Description:  Package for Simulating Dynamic Robots and Mechanisms<p>
  *
- * <p>YoVariables provide a simple, convienent mechanism for storing and manipulating robot data.  While each
+ * <p>YoVariables provide a simple, convenient mechanism for storing and manipulating robot data.  While each
  * essentially contains a double value YoVariables are designed for integration into the SCS GUI.  Once registered,
  * a variable will automatically become available to the GUI for graphing, modification and other data manipulation.
  * Historical values of all registered YoVariables are stored in the DataBuffer which may be exported for later use.</p>
- *
  */
 public abstract class YoVariable<T extends YoVariable<T>>
 {
@@ -60,7 +59,13 @@ public abstract class YoVariable<T extends YoVariable<T>>
 
       registerVariable(registry, this);
    }
-   
+
+   /**
+    * Static internal method to compare the given name against the Regex {@link YoVariable#ILLEGAL_CHARACTERS} for a YoVariable.
+    *
+    * @param name String to check
+    * @throws RuntimeException if there are any illegal characters present in the name
+    */
    private static void checkForIllegalCharacters(String name)
    {
       // String.matches() only matches the whole string ( as if you put ^$ around it ). Use .find() of the Matcher class instead!
@@ -93,6 +98,14 @@ public abstract class YoVariable<T extends YoVariable<T>>
       }
    }
 
+   /**
+    * Static function to register a YoVariable to a given {@link YoVariableRegistry}.
+    *
+    * <p>Will print to stderr if the given registry is null and {@link YoVariable#warnAboutNullRegistries} is true.</p>
+    * 
+    * @param registry YoVariableRegistry to register the given variable to
+    * @param variable YoVariable to register
+    */
    private static void registerVariable(YoVariableRegistry registry, YoVariable<?> variable)
    {
       if (registry != null)
@@ -105,6 +118,11 @@ public abstract class YoVariable<T extends YoVariable<T>>
       }
    }
 
+   /**
+    * Retrieves the {@link YoVariableRegistry} this variable belongs to.
+    *
+    * @return YoVariableRegistry this variable is registered in
+    */
    public YoVariableRegistry getYoVariableRegistry()
    {
       return registry;
@@ -113,7 +131,7 @@ public abstract class YoVariable<T extends YoVariable<T>>
    /**
     * Retrieves the name of this YoVariable.
     *
-    * @return the full name
+    * @return the full name of this variable
     */
    public String getName()
    {
@@ -195,7 +213,7 @@ public abstract class YoVariable<T extends YoVariable<T>>
    }
 
    /**
-    * Retrieve the current maximum value for manual scaling.
+    * Retrieve the current step size.
     *
     * @return double step size
     */
@@ -204,11 +222,21 @@ public abstract class YoVariable<T extends YoVariable<T>>
       return stepSize;
    }
 
+   /**
+    * Sets the current step size.
+    *
+    * @param stepSize double new step size to use
+    */
    public void setStepSize(double stepSize)
    {
       this.stepSize = stepSize;
    }
 
+   /**
+    * Retrieves this variable's {@link YoVariableType}.
+    *
+    * @return YoVariableType of this variable
+    */
    public final YoVariableType getYoVariableType()
    {
       return type;
@@ -226,7 +254,13 @@ public abstract class YoVariable<T extends YoVariable<T>>
 
       getValueString(stringBuffer);
    }
-   
+
+   /**
+    * Adds the variable's name and the passed value to the beginning of the given string buffer.
+    *
+    * @param stringBuffer StringBuffer to which the data will be added
+    * @param doubleValue double value to format and add to the stringBuffer
+    */
    public void getNameAndValueStringFromDouble(StringBuffer stringBuffer, double doubleValue)
    {
       stringBuffer.append(name);    // buffer.insert(0,this.name); // Add the variable name to it.
@@ -236,10 +270,12 @@ public abstract class YoVariable<T extends YoVariable<T>>
    }
 
    /**
-    * fullNameEndsWith
+    * Checks if this variable's fully qualified name and namespace is equal to the given name, without respect to character case for only the variable's full name.
     *
-    * @param name String
-    * @return boolean
+    * <p>Returns false if this variable's registry is null, the full names differ (case ignored) or the namespace does not match exactly (case considered.)</p>
+    *
+    * @param name String variable name to compare to
+    * @return boolean if this variable's name and the given name meet the above conditions
     */
    public boolean fullNameEndsWithCaseInsensitive(String name)
    {
@@ -263,16 +299,21 @@ public abstract class YoVariable<T extends YoVariable<T>>
    }
 
    /**
-    * hasSameFullName
+    * Compare full name including namespace of the passed variable to this variable's full name with namespace.
     *
-    * @param variable YoVariable
-    * @return boolean
+    * @param variable YoVariable to compare names to
+    * @return boolean true if names are exactly identical
     */
    public boolean hasSameFullName(YoVariable<?> variable)
    {
       return this.getFullNameWithNameSpace().equals(variable.getFullNameWithNameSpace());
    }
 
+   /**
+    * Retrieves this variable's full name and namespace, if applicable.
+    *
+    * @return String fully qualified name
+    */
    public String getFullNameWithNameSpace()
    {
       if (registry == null)
@@ -282,13 +323,24 @@ public abstract class YoVariable<T extends YoVariable<T>>
 
       return registry.getNameSpace() + "." + this.name;
    }
-   
+
+   /**
+    * Retrieves this variable's namespace alone.
+    *
+    * @return String namespace for this variable
+    */
    public NameSpace getNameSpace()
    {
       return registry.getNameSpace();
    }
 
-
+   /**
+    * Attaches an object implementing {@link VariableChangedListener} to this variable's list of listeners.
+    *
+    *<p>Instantiates a new empty list of listeners if it is currently null.</p>
+    *
+    * @param variableChangedListener VariableChangedListener to attach
+    */
    public void addVariableChangedListener(VariableChangedListener variableChangedListener)
    {
       if (variableChangedListeners == null)
@@ -299,6 +351,11 @@ public abstract class YoVariable<T extends YoVariable<T>>
       this.variableChangedListeners.add(variableChangedListener);
    }
 
+   /**
+    * Clears this variable's list of {@link VariableChangedListener}s.
+    *
+    * <p>If the list is null, does nothing.</p>
+    */
    public void removeAllVariableChangedListeners()
    {
       if (this.variableChangedListeners != null)
@@ -307,11 +364,21 @@ public abstract class YoVariable<T extends YoVariable<T>>
       }
    }
 
+   /**
+    * Returns this variable's list of {@link VariableChangedListener}s.
+    *
+    * @return
+    */
    public ArrayList<VariableChangedListener> getVariableChangedListeners()
    {
       return variableChangedListeners;
    }
 
+   /**
+    * Removes a {@link VariableChangedListener} from this variable's list of listeners.
+    *
+    * @param variableChangedListener VariableChangedListener to remove
+    */
    public void removeVariableChangedListener(VariableChangedListener variableChangedListener)
    {
       boolean success;
@@ -325,7 +392,9 @@ public abstract class YoVariable<T extends YoVariable<T>>
          throw new NoSuchElementException("Listener not found");
    }
 
-
+   /**
+    * Calls {@link VariableChangedListener#variableChanged(YoVariable)} with this variable for every {@link VariableChangedListener} attached to this variable.
+    */
    public void notifyVariableChangedListeners()
    {
       if (variableChangedListeners != null)
@@ -337,39 +406,123 @@ public abstract class YoVariable<T extends YoVariable<T>>
       }
    }
 
+   /**
+    * Retreives this variable's value interpreted as a Double and converted to a String.
+    *
+    * @see #getValueAsDouble()
+    * @return String formatted double value of this variable
+    */
    public String getNumericValueAsAString()
    {
       return Double.toString(getValueAsDouble());
    }
 
+   /**
+    * Retrieves this variable's value interpreted as a double.
+    *
+    * <p>Abstract; implemented by each extension of YoVariable to return different interpretations.</p>
+    *
+    * @return double value of variable interpreted as Double
+    */
    public abstract double getValueAsDouble();
 
+   /**
+    * Calls {@link #setValueFromDouble(double, boolean)} with (value, true).
+    *
+    * @param value double to set this variable's value to
+    */
    public final void setValueFromDouble(double value)
    {
       setValueFromDouble(value, true);
    }
-   
+
+   /**
+    * Sets this variable's value using the given double.
+    *
+    * <p>Abstract; implemented by each extension of YoVariable to result in different interpretation.</p>
+    *
+    * <p>Will call {@link #notifyVariableChangedListeners()} if notifyListeners is true.</p>
+    *
+    * @param value double to set this variable's value to
+    * @param notifyListeners boolean determining whether or not to call {@link #notifyVariableChangedListeners()}
+    */
    public abstract void setValueFromDouble(double value, boolean notifyListeners);
 
+   /**
+    * Appends this variable's value to the given stringBuffer.
+    *
+    * <p>Abstract; implemented by each extension of YoVariable to result in different output to stringBuffer.</p>
+    *
+    * @param stringBuffer StringBuffer to append to
+    */
    public abstract void getValueString(StringBuffer stringBuffer);
-   
+
+   /**
+    * Appends the given double value to the given stringBuffer.
+    *
+    * <p>Abstract; implemented by each extension of YoVariable to result in differnt output to stringBuffer.</p>
+    *
+    * @param stringBuffer StringBuffer to append to
+    * @param value to be interpreted against this variable's type
+    */
    public abstract void getValueStringFromDouble(StringBuffer stringBuffer, double value);
-   
+
+   /**
+    * Retrieves this variable's value interpreted as a long.
+    *
+    * <p>Abstract; implemented by each extension of YoVariable to result in different interpretation.</p>
+    *
+    * @return long formatted value of this variable
+    */
    public abstract long getValueAsLongBits();
-   
+
+   /**
+    * Calls {@link #setValueFromLongBits(long, boolean)} with (value, true).
+    *
+    * @param value long value to set this variable to
+    */
    public final void setValueFromLongBits(long value)
    {
       setValueFromLongBits(value, true);
    }
-   
+
+   /**
+    * Sets this variable's value using the given long.
+    *
+    * <p>Abstract; implemented by each extension of YoVariable to result in different action taken.</p>
+    *
+    * @param value long to set this variable's value to
+    * @param notifyListeners boolean determining whether or not to call {@link #notifyVariableChangedListeners()}
+    */
    public abstract void setValueFromLongBits(long value, boolean notifyListeners);
 
+   /**
+    * Creates a copy of this variable in the given {@link YoVariableRegistry}
+    *
+    * <p>Abstract; implemented by each extension of YoVariable to perform action with proper typing.</p>
+    *
+    * @param newRegistry YoVariableRegistry to duplicate this variable to
+    * @return the newly created variable from the given newRegistry
+    */
    public abstract T duplicate(YoVariableRegistry newRegistry);
    
    /**
+    * Sets this variable's value to the given value.
+    *
+    * <p>Abstract; implemented by each extension of YoVariable to perform action with proper typing.</p>
+    *
+    * @param value abstract typed value to set this variable's value to
+    * @param notifyListeners boolean determining whether or not to call {@link #notifyVariableChangedListeners()}
     * @return true if value changed
     */
    public abstract boolean setValue(T value, boolean notifyListeners);
-   
+
+   /**
+    * Assesses if this variable's value is equivalent to zero.
+    *
+    * <p>Abstract; implemented by each extension of YoVariable to result in different interpretation.</p>
+    *
+    * @return boolean if variable's value is zero, per extension's interpretation
+    */
    public abstract boolean isZero();
 }
