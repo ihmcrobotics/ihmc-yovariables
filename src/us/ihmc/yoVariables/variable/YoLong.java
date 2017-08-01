@@ -151,7 +151,7 @@ public class YoLong extends YoVariable<YoLong>
    /**
     * Set the value of this YoLong using the given double, passed through {@link #convertFromDoubleToLong(double)}.
     *
-    * @param doubleValue to convert and set this YoLong to
+    * @param doubleValue double to convert and set this YoLong to
     * @param notifyListeners boolean determining whether or not to call {@link #notifyVariableChangedListeners()}
     */
    @Override public void setValueFromDouble(double doubleValue, boolean notifyListeners)
@@ -262,6 +262,6 @@ public class YoLong extends YoVariable<YoLong>
     */
    @Override public boolean isZero()
    {
-      return getLongValue() == 0l;
+      return getLongValue() == 0;
    }
 }

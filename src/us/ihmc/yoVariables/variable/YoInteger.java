@@ -151,7 +151,7 @@ public class YoInteger extends YoVariable<YoInteger>
    /**
     * Set the value of this YoInteger using the given double, passed through {@link #convertFromDoubleToInt(double)}.
     *
-    * @param doubleValue to convert and set this YoInteger to
+    * @param doubleValue double to convert and set this YoInteger to
     * @param notifyListeners boolean determining whether or not to call {@link #notifyVariableChangedListeners()}
     */
    @Override public void setValueFromDouble(double doubleValue, boolean notifyListeners)
