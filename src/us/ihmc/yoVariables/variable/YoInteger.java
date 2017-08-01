@@ -4,16 +4,36 @@ import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 /**
  * Integer implementation of the YoVariable class.
+ *
+ * <p>All abstract functions of YoVariable will be implemented using integer type for interpretation.
+ * Values will be interpreted, compared, and returned as integers rather than other native types.
  */
 public class YoInteger extends YoVariable<YoInteger>
 {
    private int val;
 
+   /**
+    * Create a new YoInteger. This will call {@link #YoInteger(String, String, YoVariableRegistry)} with the given name and
+    * registry and an empty description.
+    *
+    * @param name String that uniquely identifies this YoInteger
+    * @param registry YoVariableRegistry for this YoInteger to register itself to after initialization
+    */
    public YoInteger(String name, YoVariableRegistry registry)
    {
       this(name, "", registry);
    }
 
+   /**
+    * Create a new YoInteger. This will call {@link #YoInteger(String, String, YoVariableRegistry)} with the given values
+    * as well as set {@link #manualMaxScaling} and {@link #manualMaxScaling} to the given values.
+    *
+    * @param name String that uniquely identifies this YoInteger
+    * @param description String that describes this YoInteger's purpose
+    * @param registry YoVariableRegistry for this YoInteger to register itself to after initialization
+    * @param minScaling to set manualMinScaling to
+    * @param maxScaling to set manualMaxScaling to
+    */
    public YoInteger(String name, String description, YoVariableRegistry registry, double minScaling, double maxScaling)
    {
       this(name, description, registry);
@@ -26,9 +46,9 @@ public class YoInteger extends YoVariable<YoInteger>
     * Create a new YoInteger. This will call its super YoVariable's {@link YoVariable(YoVariableType, String, String, YoVariableRegistry)}
     * with YoVariableType.INTEGER and the given values.
     *
-    * @param name 
-    * @param description
-    * @param registry
+    * @param name String that uniquely identifies this YoInteger
+    * @param description String that describes this YoInteger's purpose
+    * @param registry YoVariableRegistry for this YoInteger to register itself to after initialization
     */
    public YoInteger(String name, String description, YoVariableRegistry registry)
    {
@@ -38,7 +58,7 @@ public class YoInteger extends YoVariable<YoInteger>
    }
 
    /**
-    * Calls {@link #set(int, boolean)} with (value, true).
+    * Calls {@link #set(int, boolean)} with value and true.
     *
     * @param value to set this YoInteger's internal integer state to
     */
