@@ -2,15 +2,41 @@ package us.ihmc.yoVariables.variable;
 
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
+/**
+ * Long implementation of the YoVariable class.
+ *
+ * <p>All abstract functions of YoVariable will be implemented using long type for interpretation.
+ * Values will be interpreted, compared, and returned as longs rather than other native types.
+ */
 public class YoLong extends YoVariable<YoLong>
 {
+   /**
+    * Internal long value of this YoLong.
+    */
    private long val;
 
+   /**
+    * Create a new YoLong. This will call {@link #YoLong(String, String, YoVariableRegistry)} with the given name and
+    * registry and an empty description.
+    *
+    * @param name String that uniquely identifies this YoLong
+    * @param registry YoVariableRegistry for this YoLong to register itself to after initialization
+    */
    public YoLong(String name, YoVariableRegistry registry)
    {
       this(name, "", registry);
    }
 
+   /**
+    * Create a new YoLong. This will call {@link #YoLong(String, String, YoVariableRegistry)} with the given values as
+    * well as set {@link #manualMinScaling} and {@link #manualMaxScaling} to the given values.
+    *
+    * @param name String that uniquely identifies this YoLong
+    * @param description String that describes this YoLong's purpose
+    * @param registry YoVariableRegistry for this YoLong to register itself to after initialization
+    * @param minScaling double to set manualMinScaling to
+    * @param maxScaling double to set manualMaxScaling to
+    */
    public YoLong(String name, String description, YoVariableRegistry registry, double minScaling, double maxScaling)
    {
       this(name, description, registry);
@@ -19,6 +45,14 @@ public class YoLong extends YoVariable<YoLong>
       this.manualMaxScaling = maxScaling;
    }
 
+   /**
+    * Create a new YoLong. This will call {@link YoVariable(YoVariableType, String, String, YoVariableRegistry)}
+    * with {@link YoVariableType#LONG} and the given values.
+    *
+    * @param name
+    * @param description
+    * @param registry
+    */
    public YoLong(String name, String description, YoVariableRegistry registry)
    {
       super(YoVariableType.LONG, name, description, registry);
@@ -27,25 +61,28 @@ public class YoLong extends YoVariable<YoLong>
    }
 
    /**
-    * NOT VERIFIED::::
-    * 
-    * Set the value of this YoVariable.  All four types are represented via the same interal double.  If
-    * of integer type this value is cast as an int whenever accessed.  It represents the ordinal if of enum type.
-    * Boolean values are triggered around the 0.5 threshold with < 0.5 being false and greater or equal being true.
+    * Calls {@link #set(long, boolean)} with value and true.
     *
-    * @param value double value to store
+    * @param value long to set this YoInteger's internal integer state to
     */
    public void set(long value)
    {
       set(value, true);
    }
-   
+
+   /**
+    * Sets this YoLong to the given value.
+    *
+    * @param value long to set this YoLong's internal long state to
+    * @param notifyListeners boolean determining whether or not to call {@link #notifyVariableChangedListeners()}
+    * @return boolean if the given value differed from the current value of this YoLong
+    */
    public boolean set(long value, boolean notifyListeners)
    {
       if (val != value)
       {
          val = value;
-         if(notifyListeners)
+         if (notifyListeners)
          {
             notifyVariableChangedListeners();
          }
@@ -53,31 +90,47 @@ public class YoLong extends YoVariable<YoLong>
       }
       return false;
    }
-   
+
+   /**
+    * Sets this YoInteger to its current value plus one.
+    */
    public void increment()
    {
-      this.set(this.getLongValue()+1);
+      this.set(this.getLongValue() + 1);
    }
-   
+
+   /**
+    * Sets this YoInteger to its current value minus one.
+    */
    public void decrement()
    {
-      this.set(this.getLongValue()-1);
+      this.set(this.getLongValue() - 1);
    }
-   
+
+   /**
+    * Sets this YoLong to its current value plus the given value.
+    *
+    * @param value long to add to this YoLong
+    */
    public void add(long value)
    {
       this.set(this.getLongValue() + value);
    }
-   
+
+   /**
+    * Sets this YoLong to its current value minus the given value.
+    *
+    * @param value long to subtract from this YoLong
+    */
    public void subtract(long value)
    {
       this.set(this.getLongValue() - value);
    }
 
    /**
-    * Retrieve the integer representation of this variable.
+    * Retrieves the value of this YoLong.
     *
-    * @return int value of this
+    * @return the internal long value of this YoLong
     */
    public long getLongValue()
    {
@@ -85,90 +138,129 @@ public class YoLong extends YoVariable<YoLong>
    }
 
    /**
-    * Check if the value contained by this variable is equal to the given integer.  If not of integer type
-    * a warning will be printed to the console.
+    * Check if the value contained by this YoLong is equal to the given long.
     *
-    * @param value int to be compared
-    * @return boolean are they equal?
+    * @param value long for this YoLong to be compared to
+    * @return boolean if this YoLong's value is the same as the passed value
     */
    public boolean valueEquals(long value)
    {
       return val == value;
    }
 
-   @Override
-   public void setValueFromDouble(double doubleValue, boolean notifyListeners)
+   /**
+    * Set the value of this YoLong using the given double, passed through {@link #convertFromDoubleToLong(double)}.
+    *
+    * @param doubleValue to convert and set this YoLong to
+    * @param notifyListeners boolean determining whether or not to call {@link #notifyVariableChangedListeners()}
+    */
+   @Override public void setValueFromDouble(double doubleValue, boolean notifyListeners)
    {
       set(convertFromDoubleToLong(doubleValue), notifyListeners);
    }
-   
+
    public long convertFromDoubleToLong(double doubleValue)
    {
       return Math.round(doubleValue);
    }
 
-   @Override
-   public double getValueAsDouble()
+   /**
+    * Retrieves this YoLong's value as a double.
+    *
+    * @return return-casted double value of this YoInteger's internal long value
+    */
+   @Override public double getValueAsDouble()
    {
       return val;
    }
 
-   @Override
-   public String toString()
+   /**
+    * Returns String representation of this YoLong.
+    *
+    * @return a String representing this YoLong and its current value as a long
+    */
+   @Override public String toString()
    {
-      StringBuffer retBuffer = new StringBuffer();
-      retBuffer.append(getName());
-      retBuffer.append(": ");
-      retBuffer.append(getLongValue());
-      return retBuffer.toString();
+      return String.format("%s: %d", getName(), getLongValue());
    }
 
    /**
-    * Appends the value of this variable to the end of the given StringBuffer.  This representation is
-    * based on variable type.
+    * Appends the value of this variable to the end of the given StringBuffer.
     *
     * @param stringBuffer StringBuffer to which the value will be appended
     */
-   @Override
-   public void getValueString(StringBuffer stringBuffer)
+   @Override public void getValueString(StringBuffer stringBuffer)
    {
       stringBuffer.append(val);
    }
-   
-   @Override
-   public void getValueStringFromDouble(StringBuffer stringBuffer, double doubleValue)
+
+   /**
+    * Appends the YoLong representation of the given double value to the given StringBuffer.
+    *
+    * @param stringBuffer StringBuffer to append to
+    * @param doubleValue double value to convert to YoLong representation
+    */
+   @Override public void getValueStringFromDouble(StringBuffer stringBuffer, double doubleValue)
    {
       stringBuffer.append(convertFromDoubleToLong(doubleValue));
    }
 
-   @Override
-   public long getValueAsLongBits()
+   /**
+    * Retrieves this YoLong's value as a long.
+    *
+    * <p>Effectively equivalent to {@link #getLongValue()}.
+    *
+    * @return internal long value of this YoInteger
+    */
+   @Override public long getValueAsLongBits()
    {
       return val;
    }
 
-   @Override
-   public void setValueFromLongBits(long value, boolean notifyListeners)
+   /**
+    * Sets the internal long value of this YoLong using the passed long value.
+    *
+    * <p>Effectively equivalent to {@link #set(long, boolean)}.
+    *
+    * @param value long to set this variable's value to
+    * @param notifyListeners boolean determining whether or not to call {@link #notifyVariableChangedListeners()}
+    */
+   @Override public void setValueFromLongBits(long value, boolean notifyListeners)
    {
       set(value, notifyListeners);
    }
 
-   @Override
-   public YoLong duplicate(YoVariableRegistry newRegistry)
+   /**
+    * Creates a new YoLong with the same parameters as this one, and registers it to the passed {@link YoVariableRegistry}.
+    *
+    * @param newRegistry YoVariableRegistry to duplicate this YoLong to
+    * @return the newly created and registered YoLong
+    */
+   @Override public YoLong duplicate(YoVariableRegistry newRegistry)
    {
       YoLong retVar = new YoLong(getName(), getDescription(), newRegistry, getManualScalingMin(), getManualScalingMax());
       retVar.set(getLongValue());
       return retVar;
    }
 
-   @Override
-   public boolean setValue(YoLong value, boolean notifyListeners)
+   /**
+    * Sets the internal value of this YoLong to the current value of the passed YoLong.
+    *
+    * @param value YoLong value to set this variable's value to
+    * @param notifyListeners boolean determining whether or not to call {@link #notifyVariableChangedListeners()}
+    * @return boolean whether or not internal state differed from the passed value
+    */
+   @Override public boolean setValue(YoLong value, boolean notifyListeners)
    {
       return set(value.getLongValue(), notifyListeners);
    }
 
-   @Override
-   public boolean isZero()
+   /**
+    * Assesses if this YoLong is equal to zero.
+    *
+    * @return boolean if this YoLong's internal integer value is equal to long 0
+    */
+   @Override public boolean isZero()
    {
       return getLongValue() == 0l;
    }

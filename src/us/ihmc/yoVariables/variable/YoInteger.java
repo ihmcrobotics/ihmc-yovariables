@@ -10,6 +10,9 @@ import us.ihmc.yoVariables.registry.YoVariableRegistry;
  */
 public class YoInteger extends YoVariable<YoInteger>
 {
+   /**
+    * Internal integer value of this YoInteger.
+    */
    private int val;
 
    /**
@@ -31,8 +34,8 @@ public class YoInteger extends YoVariable<YoInteger>
     * @param name String that uniquely identifies this YoInteger
     * @param description String that describes this YoInteger's purpose
     * @param registry YoVariableRegistry for this YoInteger to register itself to after initialization
-    * @param minScaling to set manualMinScaling to
-    * @param maxScaling to set manualMaxScaling to
+    * @param minScaling double to set manualMinScaling to
+    * @param maxScaling double to set manualMaxScaling to
     */
    public YoInteger(String name, String description, YoVariableRegistry registry, double minScaling, double maxScaling)
    {
@@ -44,7 +47,7 @@ public class YoInteger extends YoVariable<YoInteger>
 
    /**
     * Create a new YoInteger. This will call its super YoVariable's {@link YoVariable(YoVariableType, String, String, YoVariableRegistry)}
-    * with YoVariableType.INTEGER and the given values.
+    * with {@link YoVariableType#INTEGER} and the given values.
     *
     * @param name String that uniquely identifies this YoInteger
     * @param description String that describes this YoInteger's purpose
@@ -60,7 +63,7 @@ public class YoInteger extends YoVariable<YoInteger>
    /**
     * Calls {@link #set(int, boolean)} with value and true.
     *
-    * @param value to set this YoInteger's internal integer state to
+    * @param value integer to set this YoInteger's internal integer state to
     */
    public void set(int value)
    {
@@ -70,7 +73,7 @@ public class YoInteger extends YoVariable<YoInteger>
    /**
     * Sets this YoInteger to the given value.
     *
-    * @param value to set this YoInteger's internal integer state to
+    * @param value integer to set this YoInteger's internal integer state to
     * @param notifyListeners boolean determining whether or not to call {@link #notifyVariableChangedListeners()}
     * @return boolean if the given value differed from the current value of this YoInteger
     */
@@ -107,7 +110,7 @@ public class YoInteger extends YoVariable<YoInteger>
    /**
     * Sets this YoInteger to its current value plus the given value.
     *
-    * @param value to add to this YoInteger
+    * @param value integer to add to this YoInteger
     */
    public void add(int value)
    {
@@ -117,7 +120,7 @@ public class YoInteger extends YoVariable<YoInteger>
    /**
     * Sets this YoInteger to its current value minus the given value.
     *
-    * @param value to subtract from this YoInteger
+    * @param value integer to subtract from this YoInteger
     */
    public void subtract(int value)
    {
@@ -127,7 +130,7 @@ public class YoInteger extends YoVariable<YoInteger>
    /**
     * Retrieves the value of this YoInteger.
     *
-    * @return the internal integer state of this YoInteger
+    * @return the internal integer value of this YoInteger
     */
    public int getIntegerValue()
    {
@@ -233,7 +236,7 @@ public class YoInteger extends YoVariable<YoInteger>
    /**
     * Creates a new YoInteger with the same parameters as this one, and registers it to the passed {@link YoVariableRegistry}.
     *
-    * @param newRegistry YoVariableRegistry to duplicate this variable to
+    * @param newRegistry YoVariableRegistry to duplicate this YoInteger to
     * @return the newly created and registered YoInteger
     */
    @Override public YoInteger duplicate(YoVariableRegistry newRegistry)
@@ -244,7 +247,7 @@ public class YoInteger extends YoVariable<YoInteger>
    }
 
    /**
-    * Sets the interal value of this YoInteger to the current value of the passed YoInteger.
+    * Sets the internal value of this YoInteger to the current value of the passed YoInteger.
     *
     * @param value YoInteger value to set this variable's value to
     * @param notifyListeners boolean determining whether or not to call {@link #notifyVariableChangedListeners()}
