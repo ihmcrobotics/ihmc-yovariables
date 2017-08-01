@@ -7,14 +7,10 @@ import java.text.FieldPosition;
 import java.text.NumberFormat;
 
 /**
- * Title:        Simulation Construction Set<p>
- * Description:  Package for Simulating Dynamic Robots and Mechanisms<p>
+ * Double implementation of the YoVariable class.
  *
- * <p>YoVariables provide a simple, convenient mechanism for storing and manipulating robot data.  While each
- * essentially contains a double value YoVariables are designed for integration into the SCS GUI.  Once registered,
- * a variable will automatically become available to the GUI for graphing, modification and other data manipulation.
- * Historical values of all registered YoVariables are stored in the DataBuffer which may be exported for later use.</p>
- * <p>
+ * <p>All abstract functions of YoVariable will be implemented using double type for interpretation.
+ * Values will be interpreted, compared, and returned as doubles rather than other native types.
  */
 public class YoDouble extends YoVariable<YoDouble>
 {
