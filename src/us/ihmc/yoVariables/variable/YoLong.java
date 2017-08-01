@@ -258,7 +258,7 @@ public class YoLong extends YoVariable<YoLong>
    /**
     * Assesses if this YoLong is equal to zero.
     *
-    * @return boolean if this YoLong's internal integer value is equal to long 0
+    * @return boolean if this YoLong's internal long value is equal to long 0
     */
    @Override public boolean isZero()
    {
