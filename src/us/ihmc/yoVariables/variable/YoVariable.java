@@ -11,11 +11,11 @@ import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 /**
- * Title:        Simulation Construction Set<p>
- * Description:  Package for Simulating Dynamic Robots and Mechanisms<p>
+ * Title:        Simulation Construction Set
+ * <p>Description:  Package for Simulating Dynamic Robots and Mechanisms
  *
- * <p>YoVariables provide a simple, convenient mechanism for storing and manipulating robot data.  While each
- * essentially contains a double value YoVariables are designed for integration into the SCS GUI.  Once registered,
+ * <p>YoVariables provide a simple, convenient mechanism for storing and manipulating robot data. While each
+ * essentially contains a double value YoVariables are designed for integration into the SCS GUI. Once registered,
  * a variable will automatically become available to the GUI for graphing, modification and other data manipulation.
  * Historical values of all registered YoVariables are stored in the DataBuffer which may be exported for later use.</p>
  */
@@ -36,7 +36,16 @@ public abstract class YoVariable<T extends YoVariable<T>>
    private String description;
    private YoVariableType type;
    private YoVariableRegistry registry;
-   
+
+   /**
+    * Create a new YoVariable. This is called by extensions of YoVariable, and require a
+    * {@link YoVariableType}, name, description, and {@link YoVariableRegistry} to register itself to.
+    *
+    * @param type YoVariableType for this YoVariable to implement
+    * @param name String that uniquely identifies this YoVariable
+    * @param description String that describes this YoVariable's purpose
+    * @param registry YoVariableRegistry for this YoVariable to register itself to after initialization
+    */
    public YoVariable(YoVariableType type, String name, String description, YoVariableRegistry registry)
    {
       checkForIllegalCharacters(name);
