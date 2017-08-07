@@ -140,7 +140,7 @@ public class YoBoolean extends YoVariable<YoBoolean>
    /**
     * Returns String representation of this YoBoolean.
     *
-    * @return a String representing this YoBoolean and its current value as a boolean
+    * @return String representing this YoBoolean and its current value as a boolean
     */
    @Override public String toString()
    {

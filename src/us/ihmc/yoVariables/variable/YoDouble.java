@@ -67,7 +67,7 @@ public class YoDouble extends YoVariable<YoDouble>
    /**
     * Returns String representation of this YoDouble.
     *
-    * @return a String representing this YoDouble and its current value as a double
+    * @return String representing this YoDouble and its current value as a double
     */
    @Override public String toString()
    {

@@ -184,7 +184,7 @@ public class YoInteger extends YoVariable<YoInteger>
    /**
     * Returns String representation of this YoInteger.
     *
-    * @return a String representing this YoInteger and its current value as an integer
+    * @return String representing this YoInteger and its current value as an integer
     */
    @Override public String toString()
    {
