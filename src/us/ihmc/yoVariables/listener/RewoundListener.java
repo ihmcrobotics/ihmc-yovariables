@@ -1,11 +1,15 @@
 package us.ihmc.yoVariables.listener;
 
-/*
- * Listener on a SimulationConstructionSet simulation.
- * simulationRewound() will be called when the gui data index is changed by the user or outside call.
- * However, it will not be called when the simulation ticks forward naturally.
+import us.ihmc.yoVariables.dataBuffer.DataBuffer;
+
+/**
+ * Listener on the progression of a {@link DataBuffer} index.
  */
 public interface RewoundListener
 {
+	/**
+	 * Called when the {@link DataBuffer#index} is changed using its setter.
+	 * This method is not be called when the index ticks forward naturally.
+	 */
 	public void wasRewound();
 }

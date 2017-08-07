@@ -28,12 +28,12 @@ public class YoVariableRegistry implements YoVariableHolder
    private ArrayList<YoVariableRegistry> children = new ArrayList<YoVariableRegistry>();
    private YoVariableRegistry parent;
 
-   private ArrayList<RewoundListener> simulationRewoundListeners = null;
-   private ArrayList<YoVariableRegistryChangedListener> yoVariableRegistryChangedListeners = null;
+   private ArrayList<RewoundListener> simulationRewoundListeners;
+   private ArrayList<YoVariableRegistryChangedListener> yoVariableRegistryChangedListeners;
 
-   private boolean disallowSending = false;
-   private boolean isLogged = false;
-   private boolean isSent = false;
+   private boolean disallowSending;
+   private boolean isLogged;
+   private boolean isSent;
 
    private static final Pattern illegalCharacters = Pattern.compile("[ .*?@#$%/^&()<>,:{}'\"\\\\]");
 
@@ -43,8 +43,9 @@ public class YoVariableRegistry implements YoVariableHolder
 
       if (illegalCharacters.matcher(name).find())
       {
-         throw new RuntimeException(name
-               + " is an invalid name for a YoVariableRegistry. A YoVariableRegistry cannot have crazy characters in them, otherwise namespaces will not work.");
+         String message = name + " is an invalid name for a YoVariableRegistry. A YoVariableRegistry cannot have crazy characters in them, otherwise NameSpaces"
+               + " will not work.";
+         throw new RuntimeException(message);
       }
    }
 
@@ -59,11 +60,7 @@ public class YoVariableRegistry implements YoVariableHolder
 
       this.name = name;
 
-      if ((name == null) || (name.equals("")))
-      {
-         nameSpace = null;
-      }
-      else
+      if ((name != null) && (name.length() > 0))
       {
          nameSpace = new NameSpace(name);
       }
@@ -133,9 +130,9 @@ public class YoVariableRegistry implements YoVariableHolder
 
       if (controlVarsHashMap.containsKey(variableName))
       {
-         System.err.println("Error:  " + variable.getName() + " has already been registered in this registry! YoVariableRegistry nameSpace = " + nameSpace);
+         System.err.println("Error:  " + variable.getName() + " has already been registered in this registry! YoVariableRegistry NameSpace = " + nameSpace);
          // Sometimes RuntimeExceptions are not displayed, but the error out is still visible.
-         throw new RuntimeException("Error:  " + variable.getName() + " has already been registered in this registry! YoVariableRegistry nameSpace = "
+         throw new RuntimeException("Error:  " + variable.getName() + " has already been registered in this registry! YoVariableRegistry NameSpace = "
                + nameSpace);
       }
 
@@ -359,7 +356,7 @@ public class YoVariableRegistry implements YoVariableHolder
    public void addChild(YoVariableRegistry child, boolean notifyListeners)
    {
       // Prepend the parents nameSpace to the child. NameSpace will figure out if it's valid or not.
-      // This then requires that the child only has it's portion of the namespace that the parent does not.
+      // This then requires that the child only has it's portion of the NameSpace that the parent does not.
 
       if (child == null)
          return;
@@ -391,7 +388,7 @@ public class YoVariableRegistry implements YoVariableHolder
    private void prependNameSpace(NameSpace parentNameSpace)
    {
       if (this.nameSpace == null)
-         throw new RuntimeException("Cannot prepend a namespace. This namespace is null. Only root can have a null namespace");
+         throw new RuntimeException("Cannot prepend a NameSpace. This NameSpace is null. Only root can have a null NameSpace");
       if (parentNameSpace == null)
          return;
 
@@ -405,7 +402,7 @@ public class YoVariableRegistry implements YoVariableHolder
       }
    }
 
-   public void recursivelyChangeNamespaces(NameSpaceRenamer nameSpaceRenamer)
+   public void recursivelyChangeNameSpaces(NameSpaceRenamer nameSpaceRenamer)
    {
       NameSpace nameSpace = this.getNameSpace();
       String nameSpaceString = nameSpace.getName();
@@ -413,19 +410,17 @@ public class YoVariableRegistry implements YoVariableHolder
       nameSpaceString = nameSpaceRenamer.changeNamespaceString(nameSpaceString);
       this.changeNameSpace(nameSpaceString);
 
-      System.out.println(nameSpaceString);
-
       ArrayList<YoVariableRegistry> children = this.getChildren();
 
       for (YoVariableRegistry child : children)
       {
-         child.recursivelyChangeNamespaces(nameSpaceRenamer);
+         child.recursivelyChangeNameSpaces(nameSpaceRenamer);
       }
    }
 
    public void changeNameSpace(String newNamespace)
    {
-      System.err.println("Warning: Changing namespace from " + this.nameSpace + " to " + newNamespace);
+      System.err.println("Warning: Changing nameSpace from " + this.nameSpace + " to " + newNamespace);
       this.nameSpace = new NameSpace(newNamespace);
    }
 
@@ -952,8 +947,8 @@ public class YoVariableRegistry implements YoVariableHolder
       System.out.println("");
       PrintTools.info("Printing children of " + root.getName() + " registry.");
       System.out.println("Total Number of YoVariables: " + totalVariables);
-      System.out.println("Listing registries with more then " + minVariablesToPrint + " variables or more then " + minChildrenToPrint + " children.");
-      System.out.println("Sorting by number of variables.\n");
+      System.out.println("Listing registries with at least " + minVariablesToPrint + " variables or at least " + minChildrenToPrint + " children.");
+      System.out.println("Sorting by number of variables.");
 
       for (int registryIdx = 0; registryIdx < registriesOfInterest.size(); registryIdx++)
          YoVariableRegistry.printInfo(registriesOfInterest.get(registryIdx));
@@ -990,11 +985,11 @@ public class YoVariableRegistry implements YoVariableHolder
       String variableString = trimStringToLength("Variables: " + variables, maxPropertyLength, "...");
       String childrenString = trimStringToLength("Children: " + children, maxPropertyLength, "...");
 
-      int maxNameLength = 60;
-      String name = registry.getClass().getSimpleName() + " " + registry.getName();
+      int maxNameLength = 70;
+      String name = registry.getClass().getSimpleName() + " " + registry.getNameSpace().getName();
       name = trimStringToLength(name, maxNameLength, "...");
 
-      System.out.println(name + " " + variableString + " " + childrenString);
+      System.out.println(name + "\t" + variableString + "\t" + childrenString);
    }
 
    private static String trimStringToLength(String original, int length, String placeholder)

@@ -8,17 +8,11 @@ import java.util.ArrayList;
 public class KeyPoints
 {
 	ArrayList<Integer> keyPoints = new ArrayList<Integer>();
-	ArrayList<Integer> cameraKeyPoints = new ArrayList<Integer>();
 	boolean toggleKeyPoints = false;
 	boolean DEBUG = false;
 
-	public KeyPoints()
-	{
-	}
-
 	public boolean setKeyPoint(int time)
 	{
-		boolean added = false;
 		for (int i = 0; i < keyPoints.size(); i++)
 		{
 			if (keyPoints.get(i) == time)
@@ -36,10 +30,7 @@ public class KeyPoints
 			}
 		}
 
-		if (!added)
-		{
-			keyPoints.add(time);
-		}
+		keyPoints.add(time);
 
 		return true;
 	}
@@ -57,7 +48,7 @@ public class KeyPoints
 		}
 	}
 
-	public int getNextTime(int time, int inPoint, int outPoint)
+	public int getNextTime(int time)
 	{
 		for (int i = 0; i < keyPoints.size(); i++)
 		{
@@ -75,11 +66,12 @@ public class KeyPoints
 		return time;
 	}
 
-	public int getPreviousTime(int time, int inPoint, int outPoint)
+	public int getPreviousTime(int time)
 	{
 		for (int i = keyPoints.size() - 1; i >= 0; i--)
 		{
-			// System.out.println(keyPoints.get(i));
+			if(DEBUG)
+				System.out.println(keyPoints.get(i));
 			if (keyPoints.get(i) < time)
 			{
 				return keyPoints.get(i);
@@ -98,7 +90,8 @@ public class KeyPoints
 	{
 		for (int i = 0; i < keyPoints.size(); i++)
 		{
-			// System.out.println(keyPoints.get(i));
+			if(DEBUG)
+			 	System.out.println(keyPoints.get(i));
 			if (inPoint < outPoint)
 			{
 				if ((keyPoints.get(i) < inPoint) || (keyPoints.get(i) > outPoint))

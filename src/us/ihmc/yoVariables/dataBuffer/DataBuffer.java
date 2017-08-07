@@ -39,11 +39,6 @@ public class DataBuffer extends YoVariableHolderImplementation
 
    private boolean safeToManualyChangeIndex = true;
 
-   public DataBuffer()
-   {
-      entries = new ArrayList<DataBufferEntry>();
-   }
-
    @Override
    public void closeAndDispose()
    {
@@ -95,7 +90,7 @@ public class DataBuffer extends YoVariableHolderImplementation
       entries.add(entry);
    }
 
-   public DataBufferEntry addVariable(YoVariable<?> newVariable, int nPoints) throws RepeatDataBufferEntryException
+   public DataBufferEntry addVariable(YoVariable<?> newVariable, int nPoints)
    {
       addVariableToHolder(newVariable);
       yoVariableSet.add(newVariable);
@@ -111,12 +106,12 @@ public class DataBuffer extends YoVariableHolderImplementation
       return entry;
    }
 
-   public void addVariable(YoVariable<?> newVariable) throws RepeatDataBufferEntryException
+   public void addVariable(YoVariable<?> newVariable)
    {
       addVariable(newVariable, bufferSize);
    }
 
-   public void addVariables(ArrayList<YoVariable<?>> variables) throws RepeatDataBufferEntryException
+   public void addVariables(ArrayList<YoVariable<?>> variables)
    {
       entries.ensureCapacity(entries.size() + variables.size());    // do this first so that 'entries' will only have to grow once.
 
@@ -961,12 +956,12 @@ public class DataBuffer extends YoVariableHolderImplementation
 
    public int getNextTime()
    {
-      return keyPoints.getNextTime(index, inPoint, outPoint);
+      return keyPoints.getNextTime(index);
    }
 
    public int getPreviousTime()
    {
-      return keyPoints.getPreviousTime(index, inPoint, outPoint);
+      return keyPoints.getPreviousTime(index);
    }
 
    public ArrayList<YoVariable<?>> getVariablesThatStartWith(String searchString, boolean caseSensitive)
@@ -1000,16 +995,6 @@ public class DataBuffer extends YoVariableHolderImplementation
       }
 
       return ret;
-   }
-
-   public class RepeatDataBufferEntryException extends Exception
-   {
-      private static final long serialVersionUID = -8151095313463159788L;
-
-      RepeatDataBufferEntryException(String message)
-      {
-         super(message);
-      }
    }
 
    public boolean checkIfDataIsEqual(DataBuffer dataBuffer, double epsilon)
