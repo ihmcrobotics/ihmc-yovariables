@@ -2,28 +2,57 @@ package us.ihmc.yoVariables.registry;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import us.ihmc.yoVariables.variable.YoVariable;
 
+/**
+ * Specifies the fully qualified namespace of a YoVariable or YoVariableRegistry. This object
+ * is used to describe a YoObject's place in the tree of YoVariable registries.
+ */
 public class NameSpace implements Serializable
 {
    private static final long serialVersionUID = -2584260031738121095L;
    private final String name;
    private final ArrayList<String> subNames;
 
+   /**
+    * Creates a new NameSpace from the fully qualified hierarchy.
+    *
+    * @param name String of period (.) separated names of {@link YoVariableRegistry}. The first name
+    *             must be that of the root registry.
+    *
+    *  @throws RuntimeException if the {@code name} parameter:
+    *  <ul>
+    *  <li>is an empty String
+    *  <li>has a period (.) as the first character
+    *  <li>has a period (.) as the last character
+    *  <li>2 consecutive periods (..)
+    *  <li>contains duplicate names i.e. foo.bar.foo or bar.foo.foo
+    *  </ul>
+    */
    public NameSpace(String name)
    {
       this.name = name;
       subNames = getSubStrings(name);
       checkRepInvariant();
    }
-   
-   public ArrayList<String> getSubNames()
-   {
-      return subNames;
-   }
 
+   /**
+    * Creates a new NameSpace by concatenating the list of Strings as well as adding a period between
+    * each item, and passing the result to {@link #NameSpace(String)}.
+    *
+    * @param subNamesStartingWithRoot
+    */
    public NameSpace(ArrayList<String> subNamesStartingWithRoot)
    {
       this(recreateNameFromSubNames(subNamesStartingWithRoot));
+   }
+
+   /**
+    * @return List of child {@link YoVariableRegistry} names starting with the root
+    */
+   public ArrayList<String> getSubNames()
+   {
+      return subNames;
    }
 
    private static ArrayList<String> getSubStrings(String name)
@@ -79,21 +108,38 @@ public class NameSpace implements Serializable
       }
    }
 
+   /**
+    *
+    * @return Fully qualified name
+    */
    public String getName()
    {
       return name;
    }
 
+   /**
+    *
+    * @return Last name of the fully qualified hierarchy i.e. the leaf name of this branch
+    */
    public String getShortName()
    {
       return subNames.get(subNames.size() - 1);
    }
 
+   /**
+    *
+    * @return First name of the fully qualified hierarchy
+    */
    public String getRootName()
    {
       return subNames.get(0);
    }
 
+   /**
+    *
+    * @return Fully qualified name with the name of the root registry stripped off. Returns
+    * null if there are less than 2 names in the fully qualified hierarchy.
+    */
    public String getNameWithRootStripped()
    {
       if (subNames.size() < 2)
@@ -133,10 +179,10 @@ public class NameSpace implements Serializable
    }
 
    /**
-    * Checks if the given name is in this nameSpace. Must match from the end up to a dot or the start.
+    * Checks if the given name is in this NameSpace. Must match from the end up to a dot or the start.
     * For example "robot.controller.module" endsWith("module") and endsWith("controller.module") and endsWith("robot.controller.module")
     * but does not endsWith("bot.controller.module") or endsWith("") or anything else.
-    * @param name Name to check if this NameSpace ends with.
+    * @param nameToMatch Name to check if this NameSpace ends with.
     * @return boolean Whether this NameSpace ends with the given name.
     */
    public boolean endsWith(String nameToMatch)
@@ -158,10 +204,10 @@ public class NameSpace implements Serializable
    }
 
    /**
-    * Checks if the given name is in this nameSpace. Must match from the start up to a dot or the end.
+    * Checks if the given name is in this NameSpace. Must match from the start up to a dot or the end.
     * For example "robot.controller.module" startsWith("robot") and startsWith("robot.controller") and startsWith("robot.controller.module")
     * but does not startsWith("robot.controller.mod") or startsWith("") or anything else.
-    * @param name Name to check if this NameSpace starts with.
+    * @param nameToMatch Name to check if this NameSpace starts with.
     * @return boolean Whether this NameSpace starts with the given name.
     */
    public boolean startsWith(String nameToMatch)
@@ -184,7 +230,7 @@ public class NameSpace implements Serializable
     * For example "robot.controller.module" contains("robot") and contains("robot.controller") and contains("robot.controller.module")
     * and contains("module") and contains("controller.module") and contains("robot.controller.module") and contains("controller")
     * but does not contains("robot.controller.mod") or contains("") or anything else.
-    * @param name Name to check if this NameSpace contains it.
+    * @param nameToMatch Name to check if this NameSpace contains it.
     * @return boolean Whether this NameSpace contains the given name.
     */
    public boolean contains(String nameToMatch)
@@ -219,7 +265,6 @@ public class NameSpace implements Serializable
       return true;
    }
 
-
    public boolean equals(Object nameSpace)
    {
       if (nameSpace == this)
@@ -232,10 +277,17 @@ public class NameSpace implements Serializable
       return nameSpaceToCheck.name.equals(this.name);
    }
 
-   /*
-    * Strips the given nameSpace off of the beginning of this nameSpace and returns a new NameSpace.
-    * If the two don't match all the way through, returns null.
-    * If the two are the same, returns null.
+   /**
+    * Strips the given NameSpace off of the beginning of this NameSpace.
+    *
+    * @param nameSpaceToRemove ancestor of this NameSpace to remove
+    *
+    * @return A new NameSpace object missing the specified ancestors. Returns
+    * null if
+    * <ul>
+    * <li>this NameSpace and {@code nameSpaceToRemove} have no names in common
+    * <li>this NameSpace completely matches {@code nameSpaceToRemove}
+    * </ul>
     */
    public NameSpace stripOffFromBeginning(NameSpace nameSpaceToRemove)
    {
@@ -266,22 +318,21 @@ public class NameSpace implements Serializable
       return new NameSpace(newSubNames);
    }
 
-   
    /**
     * Check if this is the root element
-    *  
+    *
     * @return true if there are no sub names.
     */
    public boolean isRootNameSpace()
    {
       return this.subNames.size() == 1;
    }
-   
+
    /**
     * Get the parent namespace.
-    * 
+    *
     * The parent namespace is defined as this namespace with its own name stripped
-    * 
+    *
     * @return Parent namespace, or null if isRootNameSpace() is true.
     */
    public NameSpace getParent()
@@ -290,7 +341,7 @@ public class NameSpace implements Serializable
       {
          return null;
       }
-      
+
       StringBuilder builder = new StringBuilder();
       for(int i = 0; i < subNames.size() - 2; i++)
       {
@@ -299,10 +350,16 @@ public class NameSpace implements Serializable
       }
       builder.append(subNames.get(subNames.size() - 2));
       return new NameSpace(builder.toString());
-      
+
    }
-   
-   
+
+   /**
+    * Helper method for creating a NameSpace using the fully qualified name of a YoVariable.
+    *
+    * @param fullVariableName Fully qualified {@link YoVariable} name
+    * @return NameSpace of the {@link YoVariableRegistry} containing that YoVariable. If {@code fullVaraibleName}
+    * is not a fully qualified name, {@link #NameSpace(String)} is called with the String literal {@code "NoNameSpaceRegistry"}.
+    */
    public static NameSpace createNameSpaceFromAFullVariableName(String fullVariableName)
    {
       int lastIndexOfDot = fullVariableName.lastIndexOf(".");
@@ -316,6 +373,12 @@ public class NameSpace implements Serializable
       return new NameSpace(nameSpaceString);
    }
 
+   /**
+    * Helper method for extracting the short name of a YoVariable from its fully qualified name.
+    *
+    * @param variableName Fully qualified {@link YoVariable} name
+    * @return Name of the just YoVariable without its hierarchy
+    */
    public static String stripOffNameSpaceToGetVariableName(String variableName)
    {
       int lastIndexOfDot = variableName.lastIndexOf(".");
@@ -327,6 +390,4 @@ public class NameSpace implements Serializable
       return variableName.substring(lastIndexOfDot + 1);
    }
 
-   
-   
 }
