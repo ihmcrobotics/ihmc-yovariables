@@ -15,6 +15,7 @@
  */
 package us.ihmc.yoVariables.parameters;
 
+import us.ihmc.yoVariables.providers.DoubleProvider;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoVariable;
@@ -25,7 +26,7 @@ import us.ihmc.yoVariables.variable.YoVariable;
  * @author Jesper Smith
  *
  */
-public class DoubleParameter extends YoParameter<DoubleParameter>
+public class DoubleParameter extends YoParameter<DoubleParameter> implements DoubleProvider
 {
    private final YoDouble value;
    private final double initialValue;
@@ -52,21 +53,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter>
    {
       super(name);
 
-      this.value = new YoDouble(name, registry)
-      {
-         @Override
-         public boolean isParameter()
-         {
-            return true;
-         }
-         
-         @Override
-         public YoParameter<?> getParameter()
-         {
-            return DoubleParameter.this;
-         }
-      };
-      
+      this.value = new YoDoubleParameter(name, registry);      
       this.initialValue = initialValue;
    }
 
@@ -77,7 +64,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter>
     * @return value for this parameter
     * @throws RuntimeException if the parameter is not loaded yet.
     */
-   public double get()
+   public double getValue()
    {
       checkLoaded();
       return this.value.getDoubleValue();
@@ -100,4 +87,32 @@ public class DoubleParameter extends YoParameter<DoubleParameter>
    {
       this.value.set(initialValue);
    }
+   
+   /**
+    * Internal class to set parameter settings for YoDouble 
+    * 
+    * @author Jesper Smith
+    *
+    */
+   private class YoDoubleParameter extends YoDouble
+   {
+
+      public YoDoubleParameter(String name, YoVariableRegistry registry)
+      {
+         super(name, registry);
+      }
+      
+      @Override
+      public boolean isParameter()
+      {
+         return true;
+      }
+      
+      @Override
+      public YoParameter<?> getParameter()
+      {
+         return DoubleParameter.this;
+      }
+   }
+   
 }

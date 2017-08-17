@@ -15,6 +15,12 @@
  */
 package us.ihmc.yoVariables.parameters;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+import us.ihmc.yoVariables.listener.ParameterChangedListener;
+import us.ihmc.yoVariables.listener.VariableChangedListener;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 /**
@@ -39,10 +45,80 @@ public abstract class YoParameter<T extends YoParameter<T>>
 {
    private final String name;
    private boolean loaded = false;
+   private YoParameterChangedListenerHolder parameterChangedListenersHolder;
 
+   /**
+    * @return the name of this parameter
+    */
    public String getName()
    {
       return name;
+   }
+   
+
+   /**
+    * Attaches an object implementing {@link ParameterChangedListener} to this parameter's list of listeners.
+    *
+    *<p>Instantiates a new list of listeners if it is currently empty.</p>
+    *
+    * @param ParameterChangedListener ParameterChangedListener to attach
+    */
+   public void addParameterChangedListener(ParameterChangedListener parameterChangedListener)
+   {
+      if (parameterChangedListenersHolder == null)
+      {
+         parameterChangedListenersHolder = new YoParameterChangedListenerHolder();
+      }
+
+      this.parameterChangedListenersHolder.add(parameterChangedListener);
+   }
+
+   /**
+    * Clears this parameter's list of {@link ParameterChangedListener}s.
+    *
+    * <p>If the list is null, does nothing.</p>
+    */
+   public void removeAllParameterChangedListeners()
+   {
+      if (this.parameterChangedListenersHolder != null)
+      {
+         this.parameterChangedListenersHolder.clear();
+      }
+   }
+
+   /**
+    * Returns this parameter's list of {@link ParameterChangedListener}s.
+    *
+    * @return List of change listeners, null if empty
+    */
+   public List<ParameterChangedListener> getParameterChangedListeners()
+   {
+      if(this.parameterChangedListenersHolder == null)
+      {
+         return null;
+      }
+      else
+      {
+         return this.parameterChangedListenersHolder.getParameterChangedListeners();
+      }
+   }
+
+   /**
+    * Removes a {@link ParameterChangedListener} from this parameter's list of listeners.
+    *
+    * @param ParameterChangedListener ParameterChangedListener to remove
+    */
+   public void removeParameterChangedListener(ParameterChangedListener parameterChangedListener)
+   {
+      boolean success;
+
+      if (parameterChangedListenersHolder == null)
+         success = false;
+      else
+         success = this.parameterChangedListenersHolder.remove(parameterChangedListener);
+
+      if (!success)
+         throw new NoSuchElementException("Listener not found");
    }
 
    YoParameter(String name)
@@ -96,6 +172,52 @@ public abstract class YoParameter<T extends YoParameter<T>>
       setToDefault();
 
       loaded = true;
+   }
+   
+   /**
+    * Helper class to delegate VariableChangedListeners to ParameterChangedListeners
+    * 
+    * @author Jesper Smith
+    *
+    */
+   private class YoParameterChangedListenerHolder implements VariableChangedListener
+   {
+      private final ArrayList<ParameterChangedListener> parameterChangedListeners = new ArrayList<>();
+      
+
+      @Override
+      public void variableChanged(YoVariable<?> v)
+      {
+         for(int i = 0; i < parameterChangedListeners.size(); i++)
+         {
+            parameterChangedListeners.get(i).variableChanged(v.getParameter());
+         }
+      }
+
+
+      public boolean remove(ParameterChangedListener parameterChangedListener)
+      {
+         return parameterChangedListeners.remove(parameterChangedListener);
+      }
+
+
+      public List<ParameterChangedListener> getParameterChangedListeners()
+      {
+         return parameterChangedListeners;
+      }
+
+
+      public void clear()
+      {
+         parameterChangedListeners.clear();
+      }
+
+
+      public void add(ParameterChangedListener parameterChangedListener)
+      {
+         parameterChangedListeners.add(parameterChangedListener);
+      }
+      
    }
 
 }
