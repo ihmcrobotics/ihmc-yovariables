@@ -14,6 +14,7 @@ import us.ihmc.commons.PrintTools;
 import us.ihmc.yoVariables.dataBuffer.YoVariableHolder;
 import us.ihmc.yoVariables.listener.RewoundListener;
 import us.ihmc.yoVariables.listener.YoVariableRegistryChangedListener;
+import us.ihmc.yoVariables.parameters.YoParameter;
 import us.ihmc.yoVariables.variable.YoVariable;
 import us.ihmc.yoVariables.variable.YoVariableList;
 
@@ -23,6 +24,9 @@ public class YoVariableRegistry implements YoVariableHolder
    // User defined control variables will be placed in this ArrayList when they are registered:
    private ArrayList<YoVariable<?>> controlVars = new ArrayList<YoVariable<?>>();
    private LinkedHashMap<String, YoVariable<?>> controlVarsHashMap = new LinkedHashMap<String, YoVariable<?>>(); // From name to the variable with that name.
+   private ArrayList<YoParameter<?>> parameters = new ArrayList<>();
+   private LinkedHashMap<String, YoParameter<?>> parametersHashMap = new LinkedHashMap<>();
+   
    private final String name;
    private NameSpace nameSpace;
    private ArrayList<YoVariableRegistry> children = new ArrayList<YoVariableRegistry>();
@@ -138,6 +142,13 @@ public class YoVariableRegistry implements YoVariableHolder
 
       controlVarsHashMap.put(variableName, variable);
       controlVars.add(variable);
+      
+      if(variable.isParameter())
+      {
+         YoParameter<?> parameter = variable.getParameter();
+         parameters.add(parameter);
+         parametersHashMap.put(variableName, parameter);
+      }
 
       notifyListenersYoVariableWasRegistered(variable);
    }
