@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -901,6 +902,43 @@ public class YoVariableRegistry implements YoVariableHolder
          }
       }
    }
+   
+   private void getAllParametersIncludingDescendantsRecursively(ArrayList<YoParameter<?>> parameters)
+   {
+      // Add ours:
+      parameters.addAll(this.parameters);
+
+      // Add children's recursively:
+      for (YoVariableRegistry registry : children)
+      {
+         registry.getAllParametersIncludingDescendantsRecursively(parameters);
+      }
+   }
+
+   
+   /**
+    * Recursively get all parameters in this and underlying registries
+    * 
+    * @return list of all parameters in this registry and decendants
+    */
+   public List<YoParameter<?>> getAllParameters()
+   {
+      ArrayList<YoParameter<?>> parameters = new ArrayList<>();
+      getAllParametersIncludingDescendantsRecursively(parameters);
+      
+      return parameters;
+   }
+   
+   /**
+    * Get all parameters in this registry
+    * 
+    * @return unmodifiable list of all parameters in this registry
+    */
+   public List<YoParameter<?>> getParametersInThisRegistry()
+   {
+      return Collections.unmodifiableList(this.parameters);
+   }
+   
 
    public void closeAndDispose()
    {
@@ -916,6 +954,18 @@ public class YoVariableRegistry implements YoVariableHolder
          controlVarsHashMap = null;
       }
 
+      if (parameters != null)
+      {
+         parameters.clear();
+         parameters = null;
+      }
+      
+      if (parametersHashMap != null)
+      {
+         parametersHashMap.clear();
+         parametersHashMap = null;
+      }
+      
       if (children != null)
       {
          for (YoVariableRegistry child : children)

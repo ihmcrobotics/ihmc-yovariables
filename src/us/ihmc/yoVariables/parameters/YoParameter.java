@@ -21,6 +21,7 @@ import java.util.NoSuchElementException;
 
 import us.ihmc.yoVariables.listener.ParameterChangedListener;
 import us.ihmc.yoVariables.listener.VariableChangedListener;
+import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 /**
@@ -55,6 +56,16 @@ public abstract class YoParameter<T extends YoParameter<T>>
       return name;
    }
    
+   
+   /**
+    * 
+    * @return the namespace of this parameter
+    */
+   public NameSpace getNameSpace()
+   {
+      return getVariable().getNameSpace();
+   }
+   
 
    /**
     * Attaches an object implementing {@link ParameterChangedListener} to this parameter's list of listeners.
@@ -68,6 +79,7 @@ public abstract class YoParameter<T extends YoParameter<T>>
       if (parameterChangedListenersHolder == null)
       {
          parameterChangedListenersHolder = new YoParameterChangedListenerHolder();
+         getVariable().addVariableChangedListener(parameterChangedListenersHolder);
       }
 
       this.parameterChangedListenersHolder.add(parameterChangedListener);
