@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 import java.util.regex.Pattern;
 
 import us.ihmc.yoVariables.listener.VariableChangedListener;
+import us.ihmc.yoVariables.parameters.YoParameter;
 import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
@@ -534,4 +535,26 @@ public abstract class YoVariable<T extends YoVariable<T>>
     * @return boolean if variable's value is zero, per extension's interpretation
     */
    public abstract boolean isZero();
+   
+   
+   /**
+    * 
+    * Flag to notify if this variable should be treated as a parameter
+    * 
+    * @return true if this a parameter
+    */
+   public boolean isParameter()
+   {
+      return false;
+   }
+   
+   /**
+    * If isParamater() is true, this function returns the corresponding parameter object
+    * 
+    * @return the parameter object if isParameter() is true, null otherwise
+    */
+   public YoParameter<?> getParameter()
+   {
+      return null;
+   }
 }
