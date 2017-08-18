@@ -88,7 +88,7 @@ public abstract class AbstractParameterLoader
    
    protected NameSpace getRelativeNamespace(NameSpace parameterNamespace, YoVariableRegistry registry)
    {
-      NameSpace registryNamespace = registry.getNameSpace()
+      NameSpace registryNamespace = registry.getNameSpace();
       
       return parameterNamespace.stripOffFromBeginning(registry.getNameSpace());
 
