@@ -22,7 +22,7 @@ import org.junit.Test;
 import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
-public class ParameterLoaderTest
+public class AbstractParameterLoaderTest
 {
 
    private final static double initialValue = 42.0;
@@ -51,7 +51,24 @@ public class ParameterLoaderTest
       }
 
    }
+   
+   @Test(expected=RuntimeException.class)
+   public void testDoubleLoad()
+   {
+      YoVariableRegistry root = new YoVariableRegistry("root");
+      YoVariableRegistry a = new YoVariableRegistry("a");
+      
+      root.addChild(a);
+      new DoubleParameter("param", a, initialValue);
+      
+      TestDefaultLoaderNamespace loader = new TestDefaultLoaderNamespace();
+      loader.loadParametersInRegistry(root);
+      loader.loadParametersInRegistry(a);
+   }
 
+
+   
+   
    private static class TestParameterLoaderNamespace extends AbstractParameterLoader
    {
       private final String expectedNamespace;
@@ -64,6 +81,20 @@ public class ParameterLoaderTest
       protected boolean hasValue(NameSpace namespace, String name)
       {
          assertEquals(expectedNamespace, namespace.getName());
+         return false;
+      }
+
+      protected String getValue(NameSpace namespace, String name)
+      {
+         throw new RuntimeException("Loader always returns false");
+      }
+
+   }
+   
+   private static class TestDefaultLoaderNamespace extends AbstractParameterLoader
+   {
+      protected boolean hasValue(NameSpace namespace, String name)
+      {
          return false;
       }
 
