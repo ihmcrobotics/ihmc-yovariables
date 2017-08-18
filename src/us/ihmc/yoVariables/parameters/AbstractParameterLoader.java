@@ -58,7 +58,7 @@ public abstract class AbstractParameterLoader
          }
          else
          {
-            parameter.setToDefault();
+            parameter.loadDefault();
          }
          
          
@@ -89,8 +89,14 @@ public abstract class AbstractParameterLoader
    protected NameSpace getRelativeNamespace(NameSpace parameterNamespace, YoVariableRegistry registry)
    {
       NameSpace registryNamespace = registry.getNameSpace();
-      
-      return parameterNamespace.stripOffFromBeginning(registry.getNameSpace());
+      if(registryNamespace.isRootNameSpace())
+      {
+         return parameterNamespace;
+      }
+      else
+      {
+         return parameterNamespace.stripOffFromBeginning(registry.getNameSpace().getParent());
+      }
 
    }
 }

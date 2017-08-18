@@ -15,6 +15,8 @@
  */
 package us.ihmc.yoVariables.parameters;
 
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 import us.ihmc.yoVariables.registry.NameSpace;
@@ -22,41 +24,49 @@ import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 public class ParameterLoaderTest
 {
-   
+
    private final static double initialValue = 42.0;
 
-   
-   
    @Test
-   public void testLoadingFromRootRegistry()
+   public void testLoadingNamespacesRegistry()
    {
-      YoVariableRegistry root = new YoVariableRegistry("root");
-      YoVariableRegistry a = new YoVariableRegistry("a");
-      YoVariableRegistry b = new YoVariableRegistry("b");
-      YoVariableRegistry c = new YoVariableRegistry("c");
 
-      root.addChild(a);
-      a.addChild(b);
-      b.addChild(c);
+      for (int i = 0; i < 4; i++)
+      {
+         YoVariableRegistry[] regs = {new YoVariableRegistry("root"), new YoVariableRegistry("a"), new YoVariableRegistry("b"), new YoVariableRegistry("c")};
 
-      DoubleParameter param = new DoubleParameter("param", c, initialValue);
+         String[] expectedNamespaces = {"root.a.b.c", "a.b.c", "b.c", "c"};
 
-      TestParameterLoader loader = new TestParameterLoader();
-      loader.loadParametersInRegistry(root);
-      
-      
+         regs[0].addChild(regs[1]);
+         regs[1].addChild(regs[2]);
+         regs[2].addChild(regs[3]);
+
+         new DoubleParameter("paramA", regs[3], initialValue);
+         new DoubleParameter("paramB", regs[3], initialValue);
+         new DoubleParameter("paramC", regs[3], initialValue);
+         new DoubleParameter("paramD", regs[3], initialValue);
+
+         TestParameterLoaderNamespace loaderRoot = new TestParameterLoaderNamespace(expectedNamespaces[i]);
+         loaderRoot.loadParametersInRegistry(regs[i]);
+      }
+
    }
-   
-   
-   private static class TestParameterLoader extends AbstractParameterLoader
+
+   private static class TestParameterLoaderNamespace extends AbstractParameterLoader
    {
+      private final String expectedNamespace;
+
+      private TestParameterLoaderNamespace(String expectedNamespace)
+      {
+         this.expectedNamespace = expectedNamespace;
+      }
+
       protected boolean hasValue(NameSpace namespace, String name)
       {
-         System.out.println(namespace);
-         System.out.println(name);
+         assertEquals(expectedNamespace, namespace.getName());
          return false;
       }
-      
+
       protected String getValue(NameSpace namespace, String name)
       {
          throw new RuntimeException("Loader always returns false");
