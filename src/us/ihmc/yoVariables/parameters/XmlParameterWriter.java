@@ -28,7 +28,6 @@ import us.ihmc.yoVariables.parameters.xml.Parameter;
 import us.ihmc.yoVariables.parameters.xml.Parameters;
 import us.ihmc.yoVariables.parameters.xml.Registry;
 import us.ihmc.yoVariables.registry.NameSpace;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 public class XmlParameterWriter extends AbstractParameterWriter
 {
@@ -104,35 +103,5 @@ public class XmlParameterWriter extends AbstractParameterWriter
       
    }
 
-   public static void main(String[] args) throws IOException
-   {
-      YoVariableRegistry regs = createRegistries();
-
-      DefaultParameterReader reader = new DefaultParameterReader();
-      reader.readParametersInRegistry(regs);
-
-      XmlParameterWriter writer = new XmlParameterWriter();
-      writer.writeParametersInRegistry(regs);
-      
-      writer.write(System.out);
-   }
-
-   public static YoVariableRegistry createRegistries()
-   {
-      YoVariableRegistry[] regs = {new YoVariableRegistry("root"), new YoVariableRegistry("a"), new YoVariableRegistry("b"), new YoVariableRegistry("c")};
-
-      regs[0].addChild(regs[1]);
-      regs[1].addChild(regs[2]);
-      regs[2].addChild(regs[3]);
-
-      new DoubleParameter("paramA", regs[3], 0);
-      new DoubleParameter("paramB", regs[3], 0);
-      new DoubleParameter("paramC", regs[3], 0);
-      new DoubleParameter("paramD", regs[3], 0);
-      new DoubleParameter("paramE", regs[2], 0);
-      new DoubleParameter("paramF", regs[1], 0);
-      new DoubleParameter("paramG", regs[0], 0);
-      return regs[0];
-   }
 
 }
