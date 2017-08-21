@@ -19,7 +19,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
@@ -28,8 +27,7 @@ public class AbstractParameterReaderTest
 
    private final static double initialValue = 42.0;
 
-   @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   @Test
    public void testReadingNamespacesRegistry()
    {
 
@@ -54,8 +52,7 @@ public class AbstractParameterReaderTest
 
    }
    
-   @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   @Test(expected=RuntimeException.class)
    public void testDoubleRead()
    {
       YoVariableRegistry root = new YoVariableRegistry("root");
