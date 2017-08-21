@@ -22,13 +22,13 @@ import org.junit.Test;
 import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
-public class AbstractParameterLoaderTest
+public class AbstractParameterReaderTest
 {
 
    private final static double initialValue = 42.0;
 
    @Test
-   public void testLoadingNamespacesRegistry()
+   public void testReadingNamespacesRegistry()
    {
 
       for (int i = 0; i < 4; i++)
@@ -46,14 +46,14 @@ public class AbstractParameterLoaderTest
          new DoubleParameter("paramC", regs[3], initialValue);
          new DoubleParameter("paramD", regs[3], initialValue);
 
-         TestParameterLoaderNamespace loaderRoot = new TestParameterLoaderNamespace(expectedNamespaces[i]);
-         loaderRoot.loadParametersInRegistry(regs[i]);
+         TestParameterReaderNamespace readerRoot = new TestParameterReaderNamespace(expectedNamespaces[i]);
+         readerRoot.readParametersInRegistry(regs[i]);
       }
 
    }
    
    @Test(expected=RuntimeException.class)
-   public void testDoubleLoad()
+   public void testDoubleRead()
    {
       YoVariableRegistry root = new YoVariableRegistry("root");
       YoVariableRegistry a = new YoVariableRegistry("a");
@@ -61,19 +61,19 @@ public class AbstractParameterLoaderTest
       root.addChild(a);
       new DoubleParameter("param", a, initialValue);
       
-      TestDefaultLoaderNamespace loader = new TestDefaultLoaderNamespace();
-      loader.loadParametersInRegistry(root);
-      loader.loadParametersInRegistry(a);
+      TestDefaultReaderNamespace reader = new TestDefaultReaderNamespace();
+      reader.readParametersInRegistry(root);
+      reader.readParametersInRegistry(a);
    }
 
 
    
    
-   private static class TestParameterLoaderNamespace extends AbstractParameterLoader
+   private static class TestParameterReaderNamespace extends AbstractParameterReader
    {
       private final String expectedNamespace;
 
-      private TestParameterLoaderNamespace(String expectedNamespace)
+      private TestParameterReaderNamespace(String expectedNamespace)
       {
          this.expectedNamespace = expectedNamespace;
       }
@@ -86,12 +86,12 @@ public class AbstractParameterLoaderTest
 
       protected String getValue(NameSpace namespace, String name)
       {
-         throw new RuntimeException("Loader always returns false");
+         throw new RuntimeException("Should not get here, hasValue always returns false");
       }
 
    }
    
-   private static class TestDefaultLoaderNamespace extends AbstractParameterLoader
+   private static class TestDefaultReaderNamespace extends AbstractParameterReader
    {
       protected boolean hasValue(NameSpace namespace, String name)
       {
@@ -100,7 +100,7 @@ public class AbstractParameterLoaderTest
 
       protected String getValue(NameSpace namespace, String name)
       {
-         throw new RuntimeException("Loader always returns false");
+         throw new RuntimeException("Should not get here, hasValue always returns false");
       }
 
    }

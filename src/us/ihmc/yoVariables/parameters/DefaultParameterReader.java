@@ -18,14 +18,14 @@ package us.ihmc.yoVariables.parameters;
 import us.ihmc.yoVariables.registry.NameSpace;
 
 /**
- * Parameter loader that always initializes parameters to the value provided
+ * Parameter reader that always initializes parameters to the value provided
  * as initialValue in the constructor.
  * 
  * 
  * @author Jesper Smith
  *
  */
-public class DefaultParameterLoader extends AbstractParameterLoader
+public class DefaultParameterReader extends AbstractParameterReader
 {
 
    @Override

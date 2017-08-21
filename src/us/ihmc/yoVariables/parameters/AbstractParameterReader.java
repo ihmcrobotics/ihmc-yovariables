@@ -17,29 +17,27 @@ package us.ihmc.yoVariables.parameters;
 
 import java.util.List;
 
-import javax.xml.stream.events.Namespace;
-
 import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 /**
- * Base class for parameter loaders
+ * Base class for parameter readers
  * 
  * @author Jesper Smith
  *
  */
-public abstract class AbstractParameterLoader
+public abstract class AbstractParameterReader
 {
    
    /**
-    * Loads all parameters registered to the registry and all its children.
+    * Read all parameters registered to the registry and all its children.
     * 
     * If a parameter cannot be found in the parameter store, it is initialized
     * to its default.
     * 
     * @param registry
     */
-   public void loadParametersInRegistry(YoVariableRegistry registry)
+   public void readParametersInRegistry(YoVariableRegistry registry)
    {
       List<YoParameter<?>> parameters = registry.getAllParameters();
       
@@ -53,7 +51,7 @@ public abstract class AbstractParameterLoader
          if(hasValue(relativeNamespace, parameter.getName()))
          {
             String value = getValue(relativeNamespace, parameter.getName());
-            
+            parameter.load(value);
             
          }
          else
@@ -86,7 +84,7 @@ public abstract class AbstractParameterLoader
    protected abstract String getValue(NameSpace namespace, String name);
 
    
-   protected NameSpace getRelativeNamespace(NameSpace parameterNamespace, YoVariableRegistry registry)
+   static NameSpace getRelativeNamespace(NameSpace parameterNamespace, YoVariableRegistry registry)
    {
       NameSpace registryNamespace = registry.getNameSpace();
       if(registryNamespace.isRootNameSpace())

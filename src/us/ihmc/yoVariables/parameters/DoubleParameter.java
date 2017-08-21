@@ -70,6 +70,14 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
       return this.value.getDoubleValue();
    }
 
+
+   @Override
+   public String getValueAsString()
+   {
+      return String.valueOf(getValue());
+   }
+
+   
    @Override
    YoVariable<?> getVariable()
    {
@@ -114,5 +122,6 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
          return DoubleParameter.this;
       }
    }
+
    
 }

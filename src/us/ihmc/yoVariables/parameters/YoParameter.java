@@ -133,6 +133,18 @@ public abstract class YoParameter<T extends YoParameter<T>>
          throw new NoSuchElementException("Listener not found");
    }
 
+   
+   /**
+    * Get the value of this parameter as a string.
+    * 
+    * The value depends on the type, numeric types will return a numeric representation
+    * while enum's will return the enum value string.
+    *
+    * @return the value as string
+    */
+   public abstract String getValueAsString();
+   
+   
    YoParameter(String name)
    {
       checkForIllegalCharacters(name);
@@ -231,5 +243,6 @@ public abstract class YoParameter<T extends YoParameter<T>>
       }
       
    }
+
 
 }
