@@ -17,20 +17,16 @@ package us.ihmc.yoVariables.parameters;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.util.HashMap;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.apache.commons.io.input.ReaderInputStream;
-
 import us.ihmc.yoVariables.parameters.xml.Parameter;
 import us.ihmc.yoVariables.parameters.xml.Parameters;
 import us.ihmc.yoVariables.parameters.xml.Registry;
 import us.ihmc.yoVariables.registry.NameSpace;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 public class XmlParameterReader extends AbstractParameterReader
 {
@@ -64,7 +60,6 @@ public class XmlParameterReader extends AbstractParameterReader
          {
             String name = path + "." + param.getName();
             parameterValues.put(name, param.getValue());
-            System.out.println("Adding " + name + " value " + param.getValue());
          }
       }
       
@@ -89,19 +84,7 @@ public class XmlParameterReader extends AbstractParameterReader
    protected String getValue(NameSpace namespace, String name)
    {
       String fullname = namespace.getName() + "." + name;
-      System.out.println("Requesting " + fullname + " value " + parameterValues.get(fullname));
       return parameterValues.get(fullname);
-   }
-
-   public static void main(String[] args) throws IOException
-   {
-      String data = "<parameters>    <registry name=\"root\">        <registry name=\"a\">            <registry name=\"b\">                <registry name=\"c\">                    <parameter name=\"paramA\" type=\"DoubleParameter\" value=\"6.0\"/>                    <parameter name=\"paramB\" type=\"DoubleParameter\" value=\"0.0\"/>                    <parameter name=\"paramC\" type=\"DoubleParameter\" value=\"0.0\"/>                    <parameter name=\"paramD\" type=\"DoubleParameter\" value=\"0.0\"/>                </registry>                <parameter name=\"paramE\" type=\"DoubleParameter\" value=\"0.0\"/>            </registry>            <parameter name=\"paramF\" type=\"DoubleParameter\" value=\"0.0\"/>        </registry>        <parameter name=\"paramG\" type=\"DoubleParameter\" value=\"0.0\"/>    </registry></parameters>";
-
-      XmlParameterReader reader = new XmlParameterReader(new ReaderInputStream(new StringReader(data)));
-
-      YoVariableRegistry regs = XmlParameterWriter.createRegistries();
-
-      reader.readParametersInRegistry(regs);
    }
 
 }
