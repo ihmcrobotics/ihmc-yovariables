@@ -106,6 +106,19 @@ public class XmlParameterWriter extends AbstractParameterWriter
 
    public static void main(String[] args) throws IOException
    {
+      YoVariableRegistry regs = createRegistries();
+
+      DefaultParameterReader reader = new DefaultParameterReader();
+      reader.readParametersInRegistry(regs);
+
+      XmlParameterWriter writer = new XmlParameterWriter();
+      writer.writeParametersInRegistry(regs);
+      
+      writer.write(System.out);
+   }
+
+   public static YoVariableRegistry createRegistries()
+   {
       YoVariableRegistry[] regs = {new YoVariableRegistry("root"), new YoVariableRegistry("a"), new YoVariableRegistry("b"), new YoVariableRegistry("c")};
 
       regs[0].addChild(regs[1]);
@@ -119,14 +132,7 @@ public class XmlParameterWriter extends AbstractParameterWriter
       new DoubleParameter("paramE", regs[2], 0);
       new DoubleParameter("paramF", regs[1], 0);
       new DoubleParameter("paramG", regs[0], 0);
-
-      DefaultParameterReader reader = new DefaultParameterReader();
-      reader.readParametersInRegistry(regs[0]);
-
-      XmlParameterWriter writer = new XmlParameterWriter();
-      writer.writeParametersInRegistry(regs[0]);
-      
-      writer.write(System.out);
+      return regs[0];
    }
 
 }
