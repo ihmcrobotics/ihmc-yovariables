@@ -47,7 +47,6 @@ public class XmlParameterWriter extends AbstractParameterWriter
       if (namespace.isRootNameSpace())
       {
          parameterRoot.getRegistries().add(newRegistry);
-         System.out.println("Adding root " + namespace.getName());
       }
       else
       {
@@ -58,7 +57,6 @@ public class XmlParameterWriter extends AbstractParameterWriter
          }
 
          registries.get(parent.getName()).getRegistries().add(newRegistry);
-         System.out.println("Adding registry " + namespace.getName() + " to " + parent.getName());
       }
 
       registries.put(namespace.getName(), newRegistry);
@@ -78,7 +76,15 @@ public class XmlParameterWriter extends AbstractParameterWriter
       Parameter newParameter = new Parameter(name, type, value);
       registries.get(namespace.getName()).getParameters().add(newParameter);
    }
-   
+
+   /**
+    * Write the current parameter tree to an OutputStream
+    * 
+    *  This function can be called as multiple times without affecting the output.
+    * 
+    * @param os OutputStream to use
+    * @throws IOException
+    */
    public void write(OutputStream os) throws IOException
    {
       try
