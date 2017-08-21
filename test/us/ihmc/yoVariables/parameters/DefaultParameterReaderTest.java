@@ -21,13 +21,13 @@ import org.junit.Test;
 
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
-public class DefaultParameterLoaderTest
+public class DefaultParameterReaderTest
 {
 
    public static final double initialValue = 42.0;
    
    @Test()
-   public void testLoadDefault()
+   public void testReadDefault()
    {
       YoVariableRegistry root = new YoVariableRegistry("root");
       YoVariableRegistry a = new YoVariableRegistry("a");
@@ -35,8 +35,8 @@ public class DefaultParameterLoaderTest
       root.addChild(a);
       DoubleParameter param = new DoubleParameter("param", a, initialValue);
       
-      DefaultParameterLoader loader = new DefaultParameterLoader();
-      loader.loadParametersInRegistry(root);
+      DefaultParameterReader reader = new DefaultParameterReader();
+      reader.readParametersInRegistry(root);
       
       
       assertEquals(initialValue, param.getValue(), 1e-9);
