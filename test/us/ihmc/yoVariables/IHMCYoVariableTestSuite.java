@@ -5,6 +5,14 @@ import org.junit.runners.Suite;
 import us.ihmc.yoVariables.dataBuffer.DataBufferEntryTest;
 import us.ihmc.yoVariables.dataBuffer.DataBufferTest;
 import us.ihmc.yoVariables.dataBuffer.KeyPointsTest;
+import us.ihmc.yoVariables.parameters.AbstractParameterReaderTest;
+import us.ihmc.yoVariables.parameters.BooleanParameterTest;
+import us.ihmc.yoVariables.parameters.DefaultParameterReaderTest;
+import us.ihmc.yoVariables.parameters.DoubleParameterTest;
+import us.ihmc.yoVariables.parameters.EnumParameterTest;
+import us.ihmc.yoVariables.parameters.IntegerParameterTest;
+import us.ihmc.yoVariables.parameters.LongParameterTest;
+import us.ihmc.yoVariables.parameters.XMLParameterIOTest;
 import us.ihmc.yoVariables.registry.NameSpaceTest;
 import us.ihmc.yoVariables.registry.YoVariableRegistryTest;
 import us.ihmc.yoVariables.variable.*;
@@ -24,7 +32,15 @@ import us.ihmc.yoVariables.variable.*;
       YoVariableListTest.class,
       YoVariableTest.class,
       YoVariableHolderImplementationTest.class,
-      YoVariableHolderImplementationNewTest.class
+      YoVariableHolderImplementationNewTest.class,
+      AbstractParameterReaderTest.class,
+      BooleanParameterTest.class,
+      DefaultParameterReaderTest.class,
+      DoubleParameterTest.class,
+      EnumParameterTest.class,
+      IntegerParameterTest.class,
+      LongParameterTest.class,
+      XMLParameterIOTest.class
 })
 public class IHMCYoVariableTestSuite
 {

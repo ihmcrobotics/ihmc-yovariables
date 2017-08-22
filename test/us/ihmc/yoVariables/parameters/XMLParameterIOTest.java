@@ -23,6 +23,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 public class XMLParameterIOTest
@@ -48,7 +49,8 @@ public class XMLParameterIOTest
    }
 
    
-   @Test
+   @Test(timeout = 30000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testWritingAndReading() throws IOException
    {
       YoVariableRegistry source = createRegistries();

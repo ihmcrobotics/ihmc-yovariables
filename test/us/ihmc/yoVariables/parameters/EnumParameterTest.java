@@ -23,11 +23,17 @@ import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.Continuous
 import us.ihmc.yoVariables.listener.ParameterChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
-public class DoubleParameterTest
+public class EnumParameterTest
 {
-   private final static double initialValue = 42.0;
+   private enum TestEnum 
+   {
+      A, B, C, D, E, F, G, H, I, J, K, L, M;
+   }
+   
+   
+   private final static TestEnum initialValue = TestEnum.D;
 
-   public DoubleParameter createParameterWithNamespace()
+   public EnumParameter<TestEnum> createParameterWithNamespace()
    {
       YoVariableRegistry root = new YoVariableRegistry("root");
       YoVariableRegistry a = new YoVariableRegistry("a");
@@ -38,30 +44,66 @@ public class DoubleParameterTest
       a.addChild(b);
       b.addChild(c);
 
-      DoubleParameter param = new DoubleParameter("param", c, initialValue);
+      EnumParameter<TestEnum> param = new EnumParameter<>("param", c, TestEnum.class, true, initialValue);
 
       return param;
    }
    
    @Test(timeout = 1000)
    @ContinuousIntegrationTest(estimatedDuration = 1.0)
-   public void testConstructDefaultValue()
+   public void testLoadNullValue()
    {
       YoVariableRegistry dummy = new YoVariableRegistry("dummy");
-      DoubleParameter test = new DoubleParameter("test", dummy);
-      test.loadDefault();
+      EnumParameter<TestEnum> yesnull = new EnumParameter<>("yesnull", dummy, TestEnum.class, true, initialValue);
       
-      assertTrue(Double.isNaN(test.getValue()));
+      yesnull.load("NULL");
+      
+      assertEquals(null, yesnull.getValue());
+      
+
+   }
+   
+   @Test(timeout = 1000, expected = RuntimeException.class)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testDisallowNullLoadValue()
+   {
+      YoVariableRegistry dummy = new YoVariableRegistry("dummy");
+      EnumParameter<TestEnum> nonull = new EnumParameter<>("nonull", dummy, TestEnum.class, false, initialValue);
+      nonull.load("null");
+      
+   }
+   
+   @Test(timeout = 1000, expected = RuntimeException.class)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testDisallowNullConstructValue()
+   {
+      YoVariableRegistry dummy = new YoVariableRegistry("dummy");
+      new EnumParameter<>("nonull", dummy, TestEnum.class, false, null);
       
    }
 
+   @Test(timeout = 1000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testConstructDefaultValue()
+   {
+      YoVariableRegistry dummy = new YoVariableRegistry("dummy");
+      EnumParameter<TestEnum> nonull = new EnumParameter<>("nonull", dummy, TestEnum.class, false);
+      EnumParameter<TestEnum> yesnull = new EnumParameter<>("yesnull", dummy, TestEnum.class, true);
+      
+      nonull.loadDefault();
+      yesnull.loadDefault();
+      
+      assertEquals(TestEnum.A, nonull.getValue());
+      assertEquals(null, yesnull.getValue());
+      
+   }
 
    @Test(timeout = 1000)
    @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testGetNamespace()
    {
 
-      DoubleParameter param = createParameterWithNamespace();
+      EnumParameter<TestEnum> param = createParameterWithNamespace();
 
       assertEquals("root.a.b.c", param.getNameSpace().toString());
       assertEquals("param", param.getName());
@@ -73,14 +115,15 @@ public class DoubleParameterTest
    public void testLoadFromString()
    {
 
-      for(double s = 0; s < 100.0; s += 1.153165)
+      for(TestEnum element : TestEnum.values())
       { 
          YoVariableRegistry dummy = new YoVariableRegistry("dummy");
-         DoubleParameter param = new DoubleParameter("test", dummy);
-         param.load(String.valueOf(s));
+         EnumParameter<TestEnum> param = new EnumParameter<>("test", dummy, TestEnum.class, true, null);
+         String stringValue = element.toString();
+         param.load(stringValue);
          
-         assertEquals(s, param.getValue(), 1e-9);
-         assertEquals(String.valueOf(s), param.getValueAsString());
+         assertEquals(TestEnum.valueOf(stringValue), param.getValue());
+         assertEquals(stringValue, param.getValueAsString());
       }
    }
 
@@ -88,7 +131,7 @@ public class DoubleParameterTest
    @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testGetBeforeLoad()
    {
-      DoubleParameter param = createParameterWithNamespace();
+      EnumParameter<TestEnum>param = createParameterWithNamespace();
       param.getValue();
    }
 
@@ -96,16 +139,16 @@ public class DoubleParameterTest
    @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testDefault()
    {
-      DoubleParameter param = createParameterWithNamespace();
+      EnumParameter<TestEnum>param = createParameterWithNamespace();
       param.loadDefault();
-      assertEquals(initialValue, param.getValue(), 1e-9);
+      assertEquals(initialValue, param.getValue());
    }
 
    @Test(timeout = 1000)
    @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testListener()
    {
-      DoubleParameter param = createParameterWithNamespace();
+      EnumParameter<TestEnum>param = createParameterWithNamespace();
       CallbackTest callback = new CallbackTest();
       param.addParameterChangedListener(callback);
       
@@ -119,7 +162,7 @@ public class DoubleParameterTest
       param.getVariable().setValueFromDouble(param.getVariable().getValueAsDouble());
       assertFalse(callback.set);
       
-      param.getVariable().setValueFromDouble(1.0);
+      param.getVariable().setValueFromDouble(TestEnum.K.ordinal());
       
       assertTrue(callback.set);
       
