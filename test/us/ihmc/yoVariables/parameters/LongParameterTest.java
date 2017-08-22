@@ -73,7 +73,7 @@ public class LongParameterTest
    public void testLoadFromString()
    {
 
-      for(long s = 100 * Integer.MIN_VALUE; s < 100 * Integer.MAX_VALUE; s+= Integer.MAX_VALUE)
+      for(long s = 100L * (long)Integer.MIN_VALUE; s < 100L * (long)Integer.MAX_VALUE; s+= (long)Integer.MAX_VALUE)
       { 
          YoVariableRegistry dummy = new YoVariableRegistry("dummy");
          LongParameter param = new LongParameter("test", dummy);
