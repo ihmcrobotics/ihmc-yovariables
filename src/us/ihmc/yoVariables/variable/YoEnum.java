@@ -1,8 +1,9 @@
 package us.ihmc.yoVariables.variable;
 
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
-
 import java.util.Arrays;
+
+import us.ihmc.yoVariables.providers.EnumProvider;
+import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 /**
  * Enum implementation of the YoVariable class.
@@ -10,7 +11,7 @@ import java.util.Arrays;
  * <p>All abstract functions of YoVariable will be implemented using enum type for interpretation.
  * Values will be interpreted, compared, and returned as enums rather than any native types.
  */
-public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>>
+public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements EnumProvider<T>
 {
    public static final int NULL_VALUE = -1;
 
@@ -487,5 +488,11 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>>
    @Override public boolean isZero()
    {
       return getEnumValue() == null;
+   }
+   
+   @Override
+   public T getValue()
+   {
+      return getEnumValue();
    }
 }

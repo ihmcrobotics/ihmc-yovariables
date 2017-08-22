@@ -259,4 +259,15 @@ public class YoDoubleTest
       YoDouble duplicate = yoDouble2.duplicate(newRegistry);
       Assert.assertEquals(yoDouble2.getDoubleValue(), duplicate.getDoubleValue(), EPSILON);
    }
+	
+   @ContinuousIntegrationTest(estimatedDuration = 0.0)
+   @Test(timeout = 300000)
+   public void testProviderValue()
+   {
+      yoDouble1.set(12509481.0);
+      yoDouble2.set(2358);
+      
+      assertEquals(yoDouble1.getDoubleValue(), yoDouble1.getValue(), 1e-9);
+      assertEquals(yoDouble2.getDoubleValue(), yoDouble2.getValue(), 1e-9);
+   }
 }
