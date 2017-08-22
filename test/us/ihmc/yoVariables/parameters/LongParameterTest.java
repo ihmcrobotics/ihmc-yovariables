@@ -23,11 +23,11 @@ import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.Continuous
 import us.ihmc.yoVariables.listener.ParameterChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
-public class DoubleParameterTest
+public class LongParameterTest
 {
-   private final static double initialValue = 42.0;
+   private final static long initialValue = 42;
 
-   public DoubleParameter createParameterWithNamespace()
+   public LongParameter createParameterWithNamespace()
    {
       YoVariableRegistry root = new YoVariableRegistry("root");
       YoVariableRegistry a = new YoVariableRegistry("a");
@@ -38,7 +38,7 @@ public class DoubleParameterTest
       a.addChild(b);
       b.addChild(c);
 
-      DoubleParameter param = new DoubleParameter("param", c, initialValue);
+      LongParameter param = new LongParameter("param", c, initialValue);
 
       return param;
    }
@@ -48,10 +48,10 @@ public class DoubleParameterTest
    public void testConstructDefaultValue()
    {
       YoVariableRegistry dummy = new YoVariableRegistry("dummy");
-      DoubleParameter test = new DoubleParameter("test", dummy);
+      LongParameter test = new LongParameter("test", dummy);
       test.loadDefault();
       
-      assertTrue(Double.isNaN(test.getValue()));
+      assertEquals(0, test.getValue());
       
    }
 
@@ -61,7 +61,7 @@ public class DoubleParameterTest
    public void testGetNamespace()
    {
 
-      DoubleParameter param = createParameterWithNamespace();
+      LongParameter param = createParameterWithNamespace();
 
       assertEquals("root.a.b.c", param.getNameSpace().toString());
       assertEquals("param", param.getName());
@@ -73,13 +73,13 @@ public class DoubleParameterTest
    public void testLoadFromString()
    {
 
-      for(double s = 0; s < 100.0; s += 1.153165)
+      for(long s = 100 * Integer.MIN_VALUE; s < 100 * Integer.MAX_VALUE; s+= Integer.MAX_VALUE)
       { 
          YoVariableRegistry dummy = new YoVariableRegistry("dummy");
-         DoubleParameter param = new DoubleParameter("test", dummy);
+         LongParameter param = new LongParameter("test", dummy);
          param.load(String.valueOf(s));
          
-         assertEquals(s, param.getValue(), 1e-9);
+         assertEquals(s, param.getValue());
          assertEquals(String.valueOf(s), param.getValueAsString());
       }
    }
@@ -88,7 +88,7 @@ public class DoubleParameterTest
    @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testGetBeforeLoad()
    {
-      DoubleParameter param = createParameterWithNamespace();
+      LongParameter param = createParameterWithNamespace();
       param.getValue();
    }
 
@@ -96,16 +96,16 @@ public class DoubleParameterTest
    @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testDefault()
    {
-      DoubleParameter param = createParameterWithNamespace();
+      LongParameter param = createParameterWithNamespace();
       param.loadDefault();
-      assertEquals(initialValue, param.getValue(), 1e-9);
+      assertEquals(initialValue, param.getValue());
    }
 
    @Test(timeout = 1000)
    @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testListener()
    {
-      DoubleParameter param = createParameterWithNamespace();
+      LongParameter param = createParameterWithNamespace();
       CallbackTest callback = new CallbackTest();
       param.addParameterChangedListener(callback);
       

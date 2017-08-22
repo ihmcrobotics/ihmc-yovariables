@@ -53,7 +53,12 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
    {
       super(name);
 
-      this.value = new YoEnumParameter(name, registry, enumType, allowNullValues);      
+      this.value = new YoEnumParameter(name, registry, enumType, allowNullValues);
+      if(!this.value.getAllowNullValue() && initialValue == null)
+      {
+         throw new RuntimeException("Cannot initialize to null value, allowNullValues is false");
+      }
+      
       this.initialValue = initialValue;
    }
 
@@ -87,7 +92,7 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
    @Override
    void setToString(String valueString)
    {
-      if("null".equals(valueString))
+      if("null".equalsIgnoreCase(valueString))
       {
          this.value.set(null);
          return;

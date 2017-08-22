@@ -23,11 +23,11 @@ import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.Continuous
 import us.ihmc.yoVariables.listener.ParameterChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
-public class DoubleParameterTest
+public class BooleanParameterTest
 {
-   private final static double initialValue = 42.0;
+   private final static boolean initialValue = true;
 
-   public DoubleParameter createParameterWithNamespace()
+   public BooleanParameter createParameterWithNamespace()
    {
       YoVariableRegistry root = new YoVariableRegistry("root");
       YoVariableRegistry a = new YoVariableRegistry("a");
@@ -38,34 +38,29 @@ public class DoubleParameterTest
       a.addChild(b);
       b.addChild(c);
 
-      DoubleParameter param = new DoubleParameter("param", c, initialValue);
+      BooleanParameter param = new BooleanParameter("param", c, initialValue);
 
       return param;
    }
-   
-   @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
-   public void testConstructDefaultValue()
-   {
-      YoVariableRegistry dummy = new YoVariableRegistry("dummy");
-      DoubleParameter test = new DoubleParameter("test", dummy);
-      test.loadDefault();
-      
-      assertTrue(Double.isNaN(test.getValue()));
-      
-   }
-
 
    @Test(timeout = 1000)
    @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testGetNamespace()
    {
 
-      DoubleParameter param = createParameterWithNamespace();
+      BooleanParameter param = createParameterWithNamespace();
 
       assertEquals("root.a.b.c", param.getNameSpace().toString());
       assertEquals("param", param.getName());
 
+   }
+
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   @Test(expected = RuntimeException.class, timeout = 1000)
+   public void testGetBeforeLoad()
+   {
+      BooleanParameter param = createParameterWithNamespace();
+      param.getValue();
    }
    
    @Test(timeout = 1000)
@@ -73,39 +68,34 @@ public class DoubleParameterTest
    public void testLoadFromString()
    {
 
-      for(double s = 0; s < 100.0; s += 1.153165)
+      String options[] = { "false", "true", "FALSE", "TRUE", "False", "True" };
+      
+      for(int i = 0; i < options.length; i++)
       { 
-         YoVariableRegistry dummy = new YoVariableRegistry("dummy");
-         DoubleParameter param = new DoubleParameter("test", dummy);
-         param.load(String.valueOf(s));
          
-         assertEquals(s, param.getValue(), 1e-9);
-         assertEquals(String.valueOf(s), param.getValueAsString());
+         YoVariableRegistry dummy = new YoVariableRegistry("dummy");
+         BooleanParameter param = new BooleanParameter("test", dummy);
+         param.load(options[i]);
+         
+         assertEquals(i % 2 == 1, param.getValue());
+         assertEquals(options[i].toLowerCase(), param.getValueAsString());
       }
-   }
-
-   @Test(expected = RuntimeException.class, timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
-   public void testGetBeforeLoad()
-   {
-      DoubleParameter param = createParameterWithNamespace();
-      param.getValue();
    }
 
    @Test(timeout = 1000)
    @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testDefault()
    {
-      DoubleParameter param = createParameterWithNamespace();
+      BooleanParameter param = createParameterWithNamespace();
       param.loadDefault();
-      assertEquals(initialValue, param.getValue(), 1e-9);
+      assertEquals(initialValue, param.getValue());
    }
 
    @Test(timeout = 1000)
    @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testListener()
    {
-      DoubleParameter param = createParameterWithNamespace();
+      BooleanParameter param = createParameterWithNamespace();
       CallbackTest callback = new CallbackTest();
       param.addParameterChangedListener(callback);
       
@@ -119,7 +109,8 @@ public class DoubleParameterTest
       param.getVariable().setValueFromDouble(param.getVariable().getValueAsDouble());
       assertFalse(callback.set);
       
-      param.getVariable().setValueFromDouble(1.0);
+      
+      param.getVariable().setValueFromDouble(0.0);
       
       assertTrue(callback.set);
       
