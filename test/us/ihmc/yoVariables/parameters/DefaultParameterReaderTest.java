@@ -19,6 +19,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 public class DefaultParameterReaderTest
@@ -26,7 +27,8 @@ public class DefaultParameterReaderTest
 
    public static final double initialValue = 42.0;
    
-   @Test()
+   @Test(timeout = 1000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testReadDefault()
    {
       YoVariableRegistry root = new YoVariableRegistry("root");
