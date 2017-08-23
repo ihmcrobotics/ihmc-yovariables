@@ -63,7 +63,7 @@ public class XmlParameterWriter extends AbstractParameterWriter
    }
 
    @Override
-   protected void setValue(NameSpace namespace, String name, String type, String value)
+   protected void setValue(NameSpace namespace, String name, String description, String type, String value)
    {
       String nameSpaceAsString = namespace.getName();
 
@@ -73,6 +73,14 @@ public class XmlParameterWriter extends AbstractParameterWriter
       }
 
       Parameter newParameter = new Parameter(name, type, value);
+      if(description != null && !description.trim().isEmpty())
+      {
+         newParameter.setDescription(description);
+      }
+      else
+      {
+         newParameter.setDescription(null);
+      }
       registries.get(namespace.getName()).getParameters().add(newParameter);
    }
 

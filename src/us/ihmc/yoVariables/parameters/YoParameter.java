@@ -45,6 +45,7 @@ import us.ihmc.yoVariables.variable.YoVariable;
 public abstract class YoParameter<T extends YoParameter<T>>
 {
    private final String name;
+   private final String description;
    private boolean loaded = false;
    private YoParameterChangedListenerHolder parameterChangedListenersHolder;
 
@@ -56,6 +57,17 @@ public abstract class YoParameter<T extends YoParameter<T>>
       return name;
    }
    
+   /**
+    * User readable description that describes the purpose of this parameter
+    * 
+    * The description is only used as a guideline to the user.
+    * 
+    * @return
+    */
+   public String getDescription()
+   {
+      return description;
+   }
    
    /**
     * 
@@ -145,10 +157,11 @@ public abstract class YoParameter<T extends YoParameter<T>>
    public abstract String getValueAsString();
    
    
-   YoParameter(String name)
+   YoParameter(String name, String description)
    {
       checkForIllegalCharacters(name);
       this.name = name;
+      this.description = description;
    }
 
    abstract YoVariable<?> getVariable();

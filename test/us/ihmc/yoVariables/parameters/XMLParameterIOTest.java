@@ -38,7 +38,7 @@ public class XMLParameterIOTest
       regs[1].addChild(regs[2]);
       regs[2].addChild(regs[3]);
 
-      new DoubleParameter("paramA", regs[3], 0);
+      new DoubleParameter("paramA", "parameter A description", regs[3], 0);
       new DoubleParameter("paramB", regs[3], 0);
       new DoubleParameter("paramC", regs[3], 0);
       new DoubleParameter("paramD", regs[3], 0);

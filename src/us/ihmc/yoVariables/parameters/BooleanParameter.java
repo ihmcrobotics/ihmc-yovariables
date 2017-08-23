@@ -39,7 +39,19 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
     */
    public BooleanParameter(String name, YoVariableRegistry registry)
    {
-      this(name, registry, false);
+      this(name, "", registry);
+   }
+
+   /**
+    * Create a new Boolean parameter, registered to the namespace of the registry.
+    * 
+    * @param name Desired name. Must be unique in the registry
+    * @param description User readable description that describes the purpose of this parameter 
+    * @param registry YoVariableRegistry to store under
+    */
+   public BooleanParameter(String name, String description, YoVariableRegistry registry)
+   {
+      this(name, "", registry, false);
    }
 
    /**
@@ -51,9 +63,22 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
     */
    public BooleanParameter(String name, YoVariableRegistry registry, boolean initialValue)
    {
-      super(name);
+      this(name, "", registry, initialValue);
+   }
 
-      this.value = new YoBooleanParameter(name, registry);      
+    /**
+    * Create a new Boolean parameter, registered to the namespace of the registry.
+    * 
+    * @param name Desired name. Must be unique in the registry
+    * @param description User readable description that describes the purpose of this parameter
+    * @param registry YoVariableRegistry to store under
+    * @param initialValue Value to set to when no value can be found in the user provided parameterLoader
+    */
+   public BooleanParameter(String name, String description, YoVariableRegistry registry, boolean initialValue)
+   {
+      super(name, description);
+
+      this.value = new YoBooleanParameter(name, description, registry);      
       this.initialValue = initialValue;
    }
 
@@ -105,9 +130,9 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
    private class YoBooleanParameter extends YoBoolean
    {
 
-      public YoBooleanParameter(String name, YoVariableRegistry registry)
+      public YoBooleanParameter(String name, String description, YoVariableRegistry registry)
       {
-         super(name, registry);
+         super(name, description, registry);
       }
       
       @Override

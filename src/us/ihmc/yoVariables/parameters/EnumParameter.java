@@ -36,10 +36,26 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
     * 
     * @param name Desired name. Must be unique in the registry
     * @param registry YoVariableRegistry to store under
+    * @param enumType The class representing the type of the enum
+    * @param allowNullValues Boolean determining if null enum values are permitted
     */
    public EnumParameter(String name, YoVariableRegistry registry, Class<T> enumType, boolean allowNullValues)
    {
-      this(name, registry, enumType, allowNullValues, allowNullValues ? null : enumType.getEnumConstants()[0]);
+      this(name, "", registry, enumType, allowNullValues);
+   }
+   
+   /**
+    * Create a new Enum parameter, registered to the namespace of the registry.
+    * 
+    * @param name Desired name. Must be unique in the registry
+    * @param description User readable description that describes the purpose of this parameter
+    * @param registry YoVariableRegistry to store under
+    * @param enumType The class representing the type of the enum
+    * @param allowNullValues Boolean determining if null enum values are permitted
+    */
+   public EnumParameter(String name, String description, YoVariableRegistry registry, Class<T> enumType, boolean allowNullValues)
+   {
+      this(name, description, registry, enumType, allowNullValues, allowNullValues ? null : enumType.getEnumConstants()[0]);
    }
 
    /**
@@ -47,13 +63,30 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
     * 
     * @param name Desired name. Must be unique in the registry
     * @param registry YoVariableRegistry to store under
+    * @param enumType The class representing the type of the enum
+    * @param allowNullValues Boolean determining if null enum values are permitted
     * @param initialValue Value to set to when no value can be found in the user provided parameterLoader
     */
    public EnumParameter(String name, YoVariableRegistry registry, Class<T> enumType, boolean allowNullValues, T initialValue)
    {
-      super(name);
+      this(name, "", registry, enumType, allowNullValues, initialValue);
+   }
+   
+   /**
+    * Create a new Enum parameter, registered to the namespace of the registry.
+    * 
+    * @param name Desired name. Must be unique in the registry
+    * @param description User readable description that describes the purpose of this parameter
+    * @param registry YoVariableRegistry to store under
+    * @param enumType The class representing the type of the enum
+    * @param allowNullValues Boolean determining if null enum values are permitted
+    * @param initialValue Value to set to when no value can be found in the user provided parameterLoader
+    */
+   public EnumParameter(String name, String description, YoVariableRegistry registry, Class<T> enumType, boolean allowNullValues, T initialValue)
+   {
+      super(name, description);
 
-      this.value = new YoEnumParameter(name, registry, enumType, allowNullValues);
+      this.value = new YoEnumParameter(name, description, registry, enumType, allowNullValues);
       if(!this.value.getAllowNullValue() && initialValue == null)
       {
          throw new RuntimeException("Cannot initialize to null value, allowNullValues is false");
@@ -125,9 +158,9 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
    private class YoEnumParameter extends YoEnum<T>
    {
 
-      public YoEnumParameter(String name, YoVariableRegistry registry, Class<T> enumType, boolean allowNullValues)
+      public YoEnumParameter(String name, String description, YoVariableRegistry registry, Class<T> enumType, boolean allowNullValues)
       {
-         super(name, registry, enumType, allowNullValues);
+         super(name, description, registry, enumType, allowNullValues);
       }
       
       @Override
