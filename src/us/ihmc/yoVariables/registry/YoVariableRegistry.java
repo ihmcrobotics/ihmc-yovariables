@@ -939,6 +939,28 @@ public class YoVariableRegistry implements YoVariableHolder
       return Collections.unmodifiableList(this.parameters);
    }
    
+   /** 
+    * Checks if this registry or its children have parameters registered
+    * 
+    * @return true if this registry or its children have parameters registered
+    */
+   public boolean getIfRegistryOrChildrenHaveParameters()
+   {
+      if(!this.parameters.isEmpty())
+      {
+         return true;
+      }
+      
+      for(int i = 0; i < this.children.size(); i++)
+      {
+         if(this.children.get(i).getIfRegistryOrChildrenHaveParameters())
+         {
+            return true;
+         }
+      }
+      
+      return false;
+   }
 
    public void closeAndDispose()
    {
