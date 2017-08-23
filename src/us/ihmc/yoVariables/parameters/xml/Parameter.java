@@ -18,6 +18,7 @@ package us.ihmc.yoVariables.parameters.xml;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class Parameter
@@ -31,6 +32,8 @@ public class Parameter
    @XmlAttribute
    private String value;
 
+   @XmlElement
+   private String description;
    
    public Parameter()
    {
@@ -74,6 +77,14 @@ public class Parameter
    {
       this.value = value;
    }
-   
-   
+
+   public String getDescription()
+   {
+      return description;
+   }
+
+   public void setDescription(String description)
+   {
+      this.description = description;
+   }
 }

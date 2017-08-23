@@ -32,18 +32,30 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
    private final double initialValue;
    
    /**
-    * Create a new double parameter, registered to the namespace of the registry.
+    * Create a new Double parameter, registered to the namespace of the registry.
     * 
     * @param name Desired name. Must be unique in the registry
     * @param registry YoVariableRegistry to store under
     */
    public DoubleParameter(String name, YoVariableRegistry registry)
    {
-      this(name, registry, Double.NaN);
+      this(name, "", registry);
    }
 
    /**
-    * Create a new double parameter, registered to the namespace of the registry.
+    * Create a new Double parameter, registered to the namespace of the registry.
+    * 
+    * @param name Desired name. Must be unique in the registry
+    * @param description User readable description that describes the purpose of this parameter 
+    * @param registry YoVariableRegistry to store under
+    */
+   public DoubleParameter(String name, String description, YoVariableRegistry registry)
+   {
+      this(name, "", registry, Double.NaN);
+   }
+
+   /**
+    * Create a new Double parameter, registered to the namespace of the registry.
     * 
     * @param name Desired name. Must be unique in the registry
     * @param registry YoVariableRegistry to store under
@@ -51,9 +63,22 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
     */
    public DoubleParameter(String name, YoVariableRegistry registry, double initialValue)
    {
-      super(name);
+      this(name, "", registry, initialValue);
+   }
 
-      this.value = new YoDoubleParameter(name, registry);      
+    /**
+    * Create a new Double parameter, registered to the namespace of the registry.
+    * 
+    * @param name Desired name. Must be unique in the registry
+    * @param description User readable description that describes the purpose of this parameter
+    * @param registry YoVariableRegistry to store under
+    * @param initialValue Value to set to when no value can be found in the user provided parameterLoader
+    */
+   public DoubleParameter(String name, String description, YoVariableRegistry registry, double initialValue)
+   {
+      super(name, description);
+
+      this.value = new YoDoubleParameter(name, description, registry);      
       this.initialValue = initialValue;
    }
 
@@ -105,9 +130,9 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
    private class YoDoubleParameter extends YoDouble
    {
 
-      public YoDoubleParameter(String name, YoVariableRegistry registry)
+      public YoDoubleParameter(String name, String description, YoVariableRegistry registry)
       {
-         super(name, registry);
+         super(name, description, registry);
       }
       
       @Override

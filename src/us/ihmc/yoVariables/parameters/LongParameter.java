@@ -39,7 +39,19 @@ public class LongParameter extends YoParameter<LongParameter> implements LongPro
     */
    public LongParameter(String name, YoVariableRegistry registry)
    {
-      this(name, registry, 0L);
+      this(name, "", registry);
+   }
+
+   /**
+    * Create a new Long parameter, registered to the namespace of the registry.
+    * 
+    * @param name Desired name. Must be unique in the registry
+    * @param description User readable description that describes the purpose of this parameter 
+    * @param registry YoVariableRegistry to store under
+    */
+   public LongParameter(String name, String description, YoVariableRegistry registry)
+   {
+      this(name, "", registry, 0L);
    }
 
    /**
@@ -51,9 +63,22 @@ public class LongParameter extends YoParameter<LongParameter> implements LongPro
     */
    public LongParameter(String name, YoVariableRegistry registry, long initialValue)
    {
-      super(name);
+      this(name, "", registry, initialValue);
+   }
 
-      this.value = new YoLongParameter(name, registry);      
+    /**
+    * Create a new Long parameter, registered to the namespace of the registry.
+    * 
+    * @param name Desired name. Must be unique in the registry
+    * @param description User readable description that describes the purpose of this parameter
+    * @param registry YoVariableRegistry to store under
+    * @param initialValue Value to set to when no value can be found in the user provided parameterLoader
+    */
+   public LongParameter(String name, String description, YoVariableRegistry registry, long initialValue)
+   {
+      super(name, description);
+
+      this.value = new YoLongParameter(name, description, registry);      
       this.initialValue = initialValue;
    }
 
@@ -105,9 +130,9 @@ public class LongParameter extends YoParameter<LongParameter> implements LongPro
    private class YoLongParameter extends YoLong
    {
 
-      public YoLongParameter(String name, YoVariableRegistry registry)
+      public YoLongParameter(String name, String description, YoVariableRegistry registry)
       {
-         super(name, registry);
+         super(name, description, registry);
       }
       
       @Override

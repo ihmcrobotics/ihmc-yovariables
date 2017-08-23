@@ -39,7 +39,19 @@ public class IntegerParameter extends YoParameter<IntegerParameter> implements I
     */
    public IntegerParameter(String name, YoVariableRegistry registry)
    {
-      this(name, registry, 0);
+      this(name, "", registry);
+   }
+
+   /**
+    * Create a new Integer parameter, registered to the namespace of the registry.
+    * 
+    * @param name Desired name. Must be unique in the registry
+    * @param description User readable description that describes the purpose of this parameter 
+    * @param registry YoVariableRegistry to store under
+    */
+   public IntegerParameter(String name, String description, YoVariableRegistry registry)
+   {
+      this(name, "", registry, 0);
    }
 
    /**
@@ -51,9 +63,22 @@ public class IntegerParameter extends YoParameter<IntegerParameter> implements I
     */
    public IntegerParameter(String name, YoVariableRegistry registry, int initialValue)
    {
-      super(name);
+      this(name, "", registry, initialValue);
+   }
 
-      this.value = new YoIntegerParameter(name, registry);      
+    /**
+    * Create a new Integer parameter, registered to the namespace of the registry.
+    * 
+    * @param name Desired name. Must be unique in the registry
+    * @param description User readable description that describes the purpose of this parameter
+    * @param registry YoVariableRegistry to store under
+    * @param initialValue Value to set to when no value can be found in the user provided parameterLoader
+    */
+   public IntegerParameter(String name, String description, YoVariableRegistry registry, int initialValue)
+   {
+      super(name, description);
+
+      this.value = new YoIntegerParameter(name, description, registry);      
       this.initialValue = initialValue;
    }
 
@@ -105,9 +130,9 @@ public class IntegerParameter extends YoParameter<IntegerParameter> implements I
    private class YoIntegerParameter extends YoInteger
    {
 
-      public YoIntegerParameter(String name, YoVariableRegistry registry)
+      public YoIntegerParameter(String name, String description, YoVariableRegistry registry)
       {
-         super(name, registry);
+         super(name, description, registry);
       }
       
       @Override
