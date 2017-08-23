@@ -77,7 +77,15 @@ public class XmlParameterReader extends AbstractParameterReader
    protected boolean hasValue(NameSpace namespace, String name)
    {
       String fullname = namespace.getName() + "." + name;
-      return parameterValues.containsKey(fullname);
+      if(parameterValues.containsKey(fullname))
+      {
+         return true;
+      }
+      else
+      {
+         System.err.println("Parameter " + fullname + " not found, falling back to default value.");
+         return false;
+      }
    }
 
    @Override

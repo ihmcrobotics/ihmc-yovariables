@@ -189,11 +189,6 @@ public abstract class YoParameter<T extends YoParameter<T>>
 
    void load(String valueString)
    {
-      if (loaded)
-      {
-         throw new RuntimeException("Trying to load parameter value twice. Can only load once");
-      }
-
       setToString(valueString);
 
       loaded = true;
@@ -201,11 +196,6 @@ public abstract class YoParameter<T extends YoParameter<T>>
 
    void loadDefault()
    {
-      if (loaded)
-      {
-         throw new RuntimeException("Trying to load parameter value twice. Can only load once");
-      }
-
       setToDefault();
 
       loaded = true;
