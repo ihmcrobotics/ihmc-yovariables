@@ -54,7 +54,7 @@ public class AbstractParameterReaderTest
 
    }
    
-   @Test(expected=RuntimeException.class, timeout = 1000)
+   @Test(timeout = 1000)
    @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testDoubleRead()
    {
