@@ -37,7 +37,6 @@ public class YoEnumTest
       registry = null;
    }
 
-   @SuppressWarnings("deprecation")
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
@@ -51,7 +50,6 @@ public class YoEnumTest
       assertTrue(registry.getVariable("yoEnum").equals(yoEnum));
    }
 
-   @SuppressWarnings("deprecation")
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
@@ -66,7 +64,6 @@ public class YoEnumTest
       assertTrue(yoEnum.getDescription().equals("yoEnum with description"));
    }
 
-   @SuppressWarnings("deprecation")
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
@@ -79,7 +76,6 @@ public class YoEnumTest
       assertTrue(registry.getVariable("yoEnum").equals(yoEnum));
    }
 
-   @SuppressWarnings("deprecation")
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
@@ -394,5 +390,17 @@ public class YoEnumTest
 
       assertEquals(yoEnum.getEnumValue(), yoEnum.getValue());
       assertEquals(yoEnum2.getEnumValue(), yoEnum2.getValue());
+   }
+   
+   @Test(expected = RuntimeException.class, timeout = 1000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testStringBasedAccessNullConstant()
+   {
+      String[] constants = { "A", "B", "C", null, "E", "F", "G", "H" };
+      
+      YoVariableRegistry registry = new YoVariableRegistry("test");
+      
+      new YoEnum<>("constantDefault", "", registry, false, constants);
+      
    }
 }

@@ -169,6 +169,106 @@ public class EnumParameterTest
       
       
    }
+   
+   @Test(timeout = 1000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testStringBased()
+   {
+      String[] constants = { "A", "B", "C", "D", "E", "F", "G", "H" };
+      
+      YoVariableRegistry registry = new YoVariableRegistry("test");
+      
+      EnumParameter<?> nullDefault = new EnumParameter<>("nullDefault", "", registry, true, constants);
+      nullDefault.loadDefault();
+      assertEquals("null", nullDefault.getValueAsString());
+
+      
+      EnumParameter<?> constantDefault = new EnumParameter<>("constantDefault", "", registry, false, constants);
+      constantDefault.loadDefault();
+      assertEquals("A", constantDefault.getValueAsString());
+      
+      
+      for(String c : constants)
+      {
+         constantDefault.setToString(c);
+         assertEquals(c, constantDefault.getValueAsString());
+         
+      }
+      
+      nullDefault.setToString("A");
+      assertEquals("A", nullDefault.getValueAsString());
+      
+      nullDefault.setToString("NULL");
+      assertEquals("null", nullDefault.getValueAsString());
+      
+      
+   }
+   
+   @Test(expected = RuntimeException.class, timeout = 1000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testStringBasedAccess()
+   {
+      String[] constants = { "A", "B", "C", "D", "E", "F", "G", "H" };
+      
+      YoVariableRegistry registry = new YoVariableRegistry("test");
+      EnumParameter<?> nullDefault = new EnumParameter<>("nullDefault", "", registry, true, constants);
+      nullDefault.loadDefault();
+      nullDefault.getValue();
+   }
+   
+   @Test(expected = RuntimeException.class, timeout = 1000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testStringBasedAccessSetNull()
+   {
+      String[] constants = { "A", "B", "C", "D", "E", "F", "G", "H" };
+      
+      YoVariableRegistry registry = new YoVariableRegistry("test");
+
+      EnumParameter<?> constantDefault = new EnumParameter<>("constantDefault", "", registry, false, constants);
+      constantDefault.loadDefault();
+      
+      
+      constantDefault.setToString("null");
+   }
+   
+   @Test(expected = RuntimeException.class, timeout = 1000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testStringBasedAccessSetNonExistant()
+   {
+      String[] constants = { "A", "B", "C", "D", "E", "F", "G", "H" };
+      
+      YoVariableRegistry registry = new YoVariableRegistry("test");
+      
+      EnumParameter<?> constantDefault = new EnumParameter<>("constantDefault", "", registry, false, constants);
+      constantDefault.loadDefault();
+      
+      
+      constantDefault.setToString("NONEXISTANT");
+   }
+
+   @Test(expected = RuntimeException.class, timeout = 1000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testStringBasedAccessNullValueConstant()
+   {
+      String[] constants = { "A", "B", "C", "NuLl", "E", "F", "G", "H" };
+      
+      YoVariableRegistry registry = new YoVariableRegistry("test");
+      
+      new EnumParameter<>("constantDefault", "", registry, false, constants);
+      
+   }
+
+   @Test(expected = RuntimeException.class, timeout = 1000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testStringBasedAccessNullConstant()
+   {
+      String[] constants = { "A", "B", "C", null, "E", "F", "G", "H" };
+      
+      YoVariableRegistry registry = new YoVariableRegistry("test");
+      
+      new EnumParameter<>("constantDefault", "", registry, false, constants);
+      
+   }
 
    private class CallbackTest implements ParameterChangedListener
    {
