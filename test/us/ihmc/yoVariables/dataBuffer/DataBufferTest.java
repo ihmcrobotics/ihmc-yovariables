@@ -975,7 +975,7 @@ public class DataBufferTest
       assertFalse(listenerNotified[1]);
       assertFalse(listenerNotified[2]);
 
-      dataBuffer.notifySimulationRewoundListenerListeners();
+      dataBuffer.notifyRewindListeners();
 
       assertTrue(listenerNotified[0]);
       assertTrue(listenerNotified[1]);
@@ -1043,7 +1043,7 @@ public class DataBufferTest
       };
 
       dataBuffer.addDataBufferListener(dataBufferListener);
-      dataBuffer.notifySimulationRewoundListenerListeners();
+      dataBuffer.notifyRewindListeners();
    }
 
    @Test
