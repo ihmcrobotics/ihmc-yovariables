@@ -378,4 +378,21 @@ public class YoEnumTest
       yoEnum.setValue(yoEnum2, notifyListeners);
       Assert.assertEquals(enumValue, yoEnum.getEnumValue());
    }
+	
+	  
+   @ContinuousIntegrationTest(estimatedDuration = 0.0)
+   @Test(timeout = 300000)
+   public void testProviderValue()
+   {
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", registry,
+            EnumYoVariableTestEnums.class);
+      YoEnum<EnumYoVariableTestEnums> yoEnum2 = new YoEnum<EnumYoVariableTestEnums>("yoEnum2", registry,
+            EnumYoVariableTestEnums.class);
+      
+      yoEnum.set(EnumYoVariableTestEnums.ONE);
+      yoEnum2.set(EnumYoVariableTestEnums.TWO);
+
+      assertEquals(yoEnum.getEnumValue(), yoEnum.getValue());
+      assertEquals(yoEnum2.getEnumValue(), yoEnum2.getValue());
+   }
 }

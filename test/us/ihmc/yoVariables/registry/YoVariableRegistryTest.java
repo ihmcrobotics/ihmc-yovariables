@@ -6,6 +6,7 @@ import org.junit.Test;
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.listener.RewoundListener;
 import us.ihmc.yoVariables.listener.YoVariableRegistryChangedListener;
+import us.ihmc.yoVariables.parameters.DoubleParameter;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoVariable;
 import us.ihmc.yoVariables.variable.YoVariableList;
@@ -138,8 +139,6 @@ public class YoVariableRegistryTest
       assertEquals("return value", expectedReturn, actualReturn);
    }
    
-   @SuppressWarnings("deprecation")
-
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetVariable()
@@ -190,8 +189,6 @@ public class YoVariableRegistryTest
    }
    
    
-   @SuppressWarnings("deprecation")
-
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testCaseInsensitivityToNameButNotNamespace()
@@ -608,8 +605,6 @@ public class YoVariableRegistryTest
       assertEquals(0, testNullChild.getChildren().size());
    }
 
-   @SuppressWarnings("deprecation")
-
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testRegistryTree()
@@ -720,8 +715,6 @@ public class YoVariableRegistryTest
    }
    
    
-   @SuppressWarnings("deprecation")
-
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetOrCreateAndAddRegistry()
@@ -937,7 +930,7 @@ public class YoVariableRegistryTest
       YoVariableRegistry robotRegistryClone = new YoVariableRegistry("robot");
       assertFalse(robotRegistry.areEqual(robotRegistryClone));
 
-      YoDouble yoDouble = new YoDouble("robotVariable", robotRegistryClone);
+      new YoDouble("robotVariable", robotRegistryClone);
       assertFalse(robotRegistry.areEqual(robotRegistryClone));
 
       robotRegistryClone.setLogging(true);
@@ -1043,7 +1036,7 @@ public class YoVariableRegistryTest
    {
       for(int i = 0; i < numberOfYoDoublesToRegister; i++)
       {
-         YoDouble yoDouble = new YoDouble("yoDouble_" + i, registry);
+         new YoDouble("yoDouble_" + i, registry);
       }
    }
 
@@ -1145,6 +1138,59 @@ public class YoVariableRegistryTest
       assertTrue(matchingVariablesWithRegex.size() == 0);
    }
 
+   @Test
+   public void testParameters()
+   {
+      YoVariableRegistry a = new YoVariableRegistry("a");
+      YoVariableRegistry aa = new YoVariableRegistry("aa");
+      YoVariableRegistry ab = new YoVariableRegistry("ab");
+      YoVariableRegistry aaa = new YoVariableRegistry("aaa");
+      YoVariableRegistry aab = new YoVariableRegistry("aab");
+      
+      DoubleParameter paramater1 = new DoubleParameter("parameter1", aa);
+      DoubleParameter paramater2 = new DoubleParameter("parameter2", aaa);
+      DoubleParameter paramater3 = new DoubleParameter("parameter3", aaa);
+      
+      new YoDouble("double1", a);
+      new YoDouble("double2", aa);
+      new YoDouble("double3", ab);
+      new YoDouble("double4", aaa);
+      new YoDouble("double5", aab);
+      
+      a.addChild(aa);
+      a.addChild(ab);
+      aa.addChild(aaa);
+      aa.addChild(aab);
+      
+      
+      assertTrue(a.getIfRegistryOrChildrenHaveParameters());
+      assertTrue(aa.getIfRegistryOrChildrenHaveParameters());
+      assertTrue(aaa.getIfRegistryOrChildrenHaveParameters());
+      assertFalse(ab.getIfRegistryOrChildrenHaveParameters());
+      assertFalse(aab.getIfRegistryOrChildrenHaveParameters());
+      
+      assertEquals(3, a.getAllParameters().size());
+      assertEquals(3, aa.getAllParameters().size());
+      assertEquals(2, aaa.getAllParameters().size());
+      assertEquals(0, ab.getAllParameters().size());
+      assertEquals(0, aab.getAllParameters().size());
+      
+      assertEquals(1, aa.getParametersInThisRegistry().size());
+      assertEquals(2, aaa.getParametersInThisRegistry().size());
+      assertEquals(0, a.getParametersInThisRegistry().size());
+      assertEquals(0, ab.getParametersInThisRegistry().size());
+      assertEquals(0, aab.getParametersInThisRegistry().size());
+      
+      assertTrue(a.getAllParameters().contains(paramater1));
+      assertTrue(a.getAllParameters().contains(paramater2));
+      assertTrue(a.getAllParameters().contains(paramater3));
+
+      assertTrue(aa.getParametersInThisRegistry().contains(paramater1));
+      assertTrue(aaa.getParametersInThisRegistry().contains(paramater2));
+      assertTrue(aaa.getParametersInThisRegistry().contains(paramater3));
+      
+   }
+   
    @Test(expected = NullPointerException.class)
    public void testCloseAndDispose()
    {

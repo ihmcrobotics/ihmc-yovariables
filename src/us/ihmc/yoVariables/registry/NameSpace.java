@@ -266,6 +266,43 @@ public class NameSpace implements Serializable
       return new NameSpace(newSubNames);
    }
 
+   
+   /**
+    * Check if this is the root element
+    *  
+    * @return true if there are no sub names.
+    */
+   public boolean isRootNameSpace()
+   {
+      return this.subNames.size() == 1;
+   }
+   
+   /**
+    * Get the parent namespace.
+    * 
+    * The parent namespace is defined as this namespace with its own name stripped
+    * 
+    * @return Parent namespace, or null if isRootNameSpace() is true.
+    */
+   public NameSpace getParent()
+   {
+      if(isRootNameSpace())
+      {
+         return null;
+      }
+      
+      StringBuilder builder = new StringBuilder();
+      for(int i = 0; i < subNames.size() - 2; i++)
+      {
+         builder.append(subNames.get(i));
+         builder.append('.');
+      }
+      builder.append(subNames.get(subNames.size() - 2));
+      return new NameSpace(builder.toString());
+      
+   }
+   
+   
    public static NameSpace createNameSpaceFromAFullVariableName(String fullVariableName)
    {
       int lastIndexOfDot = fullVariableName.lastIndexOf(".");
@@ -290,4 +327,6 @@ public class NameSpace implements Serializable
       return variableName.substring(lastIndexOfDot + 1);
    }
 
+   
+   
 }

@@ -1,5 +1,6 @@
 package us.ihmc.yoVariables.variable;
 
+import us.ihmc.yoVariables.providers.BooleanProvider;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 /**
@@ -8,7 +9,7 @@ import us.ihmc.yoVariables.registry.YoVariableRegistry;
  * <p>All abstract functions of YoVariable will be implemented using boolean type for interpretation.
  * Values will be interpreted, compared, and returned as booleans rather than other native types.
  */
-public class YoBoolean extends YoVariable<YoBoolean>
+public class YoBoolean extends YoVariable<YoBoolean> implements BooleanProvider
 {
    /**
     * Internal boolean value of this YoLong.
@@ -226,6 +227,12 @@ public class YoBoolean extends YoVariable<YoBoolean>
    @Override public boolean isZero()
    {
       return !getBooleanValue();
+   }
+   
+   @Override
+   public boolean getValue()
+   {
+      return getBooleanValue();
    }
 
 }

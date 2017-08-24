@@ -263,4 +263,41 @@ public class NameSpaceTest
       assertEquals("variable", NameSpace.stripOffNameSpaceToGetVariableName("variable"));
    }
 
+   @ContinuousIntegrationTest(estimatedDuration = 0.0)
+   @Test(timeout = 30000)
+   public void testIsRootNamespace()
+   {
+      NameSpace nameSpace1 = new NameSpace("robot1.controller1.module1");
+      NameSpace nameSpace2 = new NameSpace("robot1.controller1.module2");
+      NameSpace nameSpace3 = new NameSpace("robot1.module1");
+      NameSpace nameSpace4 = new NameSpace("robot1.controller2.mod");
+      NameSpace nameSpace5 = new NameSpace("bot1.controller1.module1");
+      NameSpace nameSpace6 = new NameSpace("bot1");
+      
+      assertFalse(nameSpace1.isRootNameSpace());
+      assertFalse(nameSpace2.isRootNameSpace());
+      assertFalse(nameSpace3.isRootNameSpace());
+      assertFalse(nameSpace4.isRootNameSpace());
+      assertFalse(nameSpace5.isRootNameSpace());
+      assertTrue(nameSpace6.isRootNameSpace());
+   }
+   @ContinuousIntegrationTest(estimatedDuration = 0.0)
+   @Test(timeout = 30000)
+   public void testGetParent()
+   {
+      NameSpace nameSpace1 = new NameSpace("robot1.controller1.module1");
+      NameSpace nameSpace2 = new NameSpace("robot1.controller1.module2");
+      NameSpace nameSpace3 = new NameSpace("robot1.module1");
+      NameSpace nameSpace4 = new NameSpace("robot1.controller2.mod");
+      NameSpace nameSpace5 = new NameSpace("bot1.controller1.module1.sub");
+      NameSpace nameSpace6 = new NameSpace("bot1");
+      
+      assertEquals("robot1.controller1", nameSpace1.getParent().getName());
+      assertEquals("robot1.controller1", nameSpace2.getParent().getName());
+      assertEquals("robot1", nameSpace3.getParent().getName());
+      assertEquals("robot1.controller2", nameSpace4.getParent().getName());
+      assertEquals("bot1.controller1.module1", nameSpace5.getParent().getName());
+      assertEquals(null, nameSpace6.getParent());
+      
+   }
 }

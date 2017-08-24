@@ -1,6 +1,8 @@
 package us.ihmc.yoVariables.variable;
 
 import org.apache.commons.math3.util.Precision;
+
+import us.ihmc.yoVariables.providers.DoubleProvider;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 import java.text.FieldPosition;
@@ -12,7 +14,7 @@ import java.text.NumberFormat;
  * <p>All abstract functions of YoVariable will be implemented using double type for interpretation.
  * Values will be interpreted, compared, and returned as doubles rather than other native types.
  */
-public class YoDouble extends YoVariable<YoDouble>
+public class YoDouble extends YoVariable<YoDouble> implements DoubleProvider
 {
    private static final java.text.NumberFormat DOUBLE_FORMAT = new java.text.DecimalFormat(" 0.00000;-0.00000");
    private static final FieldPosition FIELD_POSITION = new FieldPosition(NumberFormat.INTEGER_FIELD);
@@ -307,6 +309,12 @@ public class YoDouble extends YoVariable<YoDouble>
    @Override public boolean isZero()
    {
       return Precision.equals(0.0, getDoubleValue(), 1);
+   }
+
+   @Override
+   public double getValue()
+   {
+      return getDoubleValue();
    }
 
    //   NOTE: JEP October 30, 2010:
