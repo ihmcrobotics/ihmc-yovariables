@@ -86,17 +86,25 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
     * @param name String uniquely identifying this YoEnum
     * @param description String describing this YoEnum's purpose
     * @param registry YoVariableRegistry for this YoEnum to register itself to after initialization
-    * @param values String array of values that this enum can take
+    * @param constants String array of constants for this enum
     */
-   public YoEnum(String name, String description, YoVariableRegistry registry, boolean allowNullValues, String... values)
+   public YoEnum(String name, String description, YoVariableRegistry registry, boolean allowNullValues, String... constants)
    {
       super(YoVariableType.ENUM, name, description, registry);
 
       this.enumType = null;
       this.allowNullValue = allowNullValues;
       this.enumValues = null;
+      
+      for(String constant : constants)
+      {
+         if(constant == null)
+         {
+            throw new RuntimeException("One of the enum constants is null.");
+         }
+      }
 
-      enumValuesAsString = Arrays.copyOf(values, values.length);
+      enumValuesAsString = Arrays.copyOf(constants, constants.length);
       set(0, true);
    }
 
