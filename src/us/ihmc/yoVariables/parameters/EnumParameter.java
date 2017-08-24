@@ -140,10 +140,10 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
 
       if(!this.value.getAllowNullValue() && constants.length == 0)
       {
-         throw new RuntimeException("Cannot initialize an enum variable with zero elements if allowNullValues is false.");
+         throw new RuntimeException("Cannot initialize an enum parameter with zero elements if allowNullValues is false.");
       }
       
-      if(allowNullValues)
+      if(allowNullValues || constants.length == 0)
       {
          this.initialOrdinal = YoEnum.NULL_VALUE;
       }

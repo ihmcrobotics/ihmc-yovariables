@@ -262,12 +262,38 @@ public class EnumParameterTest
    @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testStringBasedAccessNullConstant()
    {
-      String[] constants = { "A", "B", "C", null, "E", "F", "G", "H" };
-      
+      String[] constants = {"A", "B", "C", null, "E", "F", "G", "H"};
+
       YoVariableRegistry registry = new YoVariableRegistry("test");
-      
+
       new EnumParameter<>("constantDefault", "", registry, false, constants);
-      
+
+   }
+
+   @Test(expected = RuntimeException.class, timeout = 1000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testStringBasedAccessEmptyConstantListNotNull()
+   {
+      String[] constants = {};
+
+      YoVariableRegistry registry = new YoVariableRegistry("test");
+
+      new EnumParameter<>("constantDefault", "", registry, false, constants);
+
+   }
+
+   @Test(timeout = 1000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testStringBasedAccessEmptyConstantList()
+   {
+      String[] constants = {};
+
+      YoVariableRegistry registry = new YoVariableRegistry("test");
+
+      EnumParameter<?> nullDefault = new EnumParameter<>("nullDefault", "", registry, true, constants);
+      nullDefault.loadDefault();
+      assertEquals("null", nullDefault.getValueAsString());
+
    }
 
    private class CallbackTest implements ParameterChangedListener
