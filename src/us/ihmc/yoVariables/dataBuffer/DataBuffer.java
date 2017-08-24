@@ -663,7 +663,7 @@ public class DataBuffer extends YoVariableHolderImplementation
          // So there may be thread timing issues here. We may need to do some sort of synchronization and/or change it so that the
          // simulationRewoundListeners are notified in the simulation/control thread.
          if (notifySimulationRewoundListeners)
-            notifySimulationRewoundListenerListeners();
+            notifyRewindListeners();
       }
    }
 
@@ -840,7 +840,7 @@ public class DataBuffer extends YoVariableHolderImplementation
       }
    }
 
-   public void notifySimulationRewoundListenerListeners()
+   public void notifyRewindListeners()
    {
       if (simulationRewoundListeners != null)
       {
@@ -865,11 +865,11 @@ public class DataBuffer extends YoVariableHolderImplementation
 
             if (t != null)
             {
-               indexChangedListener.indexChanged(index, t.getDoubleValue());
+               indexChangedListener.notifyOfIndexChange(index, t.getDoubleValue());
             }
             else
             {
-               indexChangedListener.indexChanged(index, 0.0);
+               indexChangedListener.notifyOfIndexChange(index, 0.0);
             }
          }
       }
@@ -1075,7 +1075,4 @@ public class DataBuffer extends YoVariableHolderImplementation
 
       return false;
    }
-
-
-
 }
