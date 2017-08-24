@@ -46,7 +46,22 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
          enumValuesAsString[i] = enumValues[i].toString();
       }
 
-      set(0, true);
+      if (enumValues.length > 0)
+      {
+         set(0, true);
+      }
+      else
+      {
+         if(allowNullValue)
+         {
+            set(NULL_VALUE, true);
+         }
+         else
+         {
+            throw new RuntimeException("Cannot initialize an enum variable with zero elements if allowNullValue is false.");
+         }
+      }
+         
    }
 
    /**
@@ -105,7 +120,21 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
       }
 
       enumValuesAsString = Arrays.copyOf(constants, constants.length);
-      set(0, true);
+      if(constants.length > 0)
+      {
+         set(0, true);
+      }
+      else
+      {
+         if(allowNullValue)
+         {
+            set(NULL_VALUE, true);
+         }
+         else
+         {
+            throw new RuntimeException("Cannot initialize an enum variable with zero elements if allowNullValue is false.");
+         }
+      }
    }
 
    /**

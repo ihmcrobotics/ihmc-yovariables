@@ -403,4 +403,41 @@ public class YoEnumTest
       new YoEnum<>("constantDefault", "", registry, false, constants);
       
    }
+   
+   @Test(timeout = 1000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testEmptyConstantList()
+   {
+      String[] constants = {  };
+      YoVariableRegistry registry = new YoVariableRegistry("test");
+      
+      YoEnum<?> stringConstructor = new YoEnum<>("stringConstructor", "", registry, true, constants);
+      YoEnum<?> enumConstructor = new YoEnum<>("enumConsturctor", "", registry, EmptyEnum.class, true);
+      
+      assertEquals(null,enumConstructor.getEnumValue());
+      assertEquals("null", stringConstructor.getStringValue());
+   }
+
+   @Test(expected = RuntimeException.class, timeout = 1000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testEmptyConstantListNotNull()
+   {
+      YoVariableRegistry registry = new YoVariableRegistry("test");
+      
+      new YoEnum<>("enumConsturctor", "", registry, EmptyEnum.class, false);
+   }
+   
+   @Test(expected = RuntimeException.class, timeout = 1000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testEmptyStringConstantListNotNull()
+   {
+      YoVariableRegistry registry = new YoVariableRegistry("test");
+      String[] constants = {  };
+      new YoEnum<>("stringConstructor", "", registry, false, constants);
+   }
+   
+   enum EmptyEnum
+   {
+      
+   }
 }
