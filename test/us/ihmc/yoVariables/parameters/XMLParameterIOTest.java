@@ -20,7 +20,9 @@ import static org.junit.Assert.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
 
+import org.apache.commons.io.input.ReaderInputStream;
 import org.junit.Test;
 
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
@@ -48,6 +50,19 @@ public class XMLParameterIOTest
       return regs[0];
    }
 
+   
+   @Test(timeout = 30000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testEmptyFile() throws IOException
+   {
+      YoVariableRegistry target = createRegistries();
+      String data = "<parameters/>";
+      StringReader reader = new StringReader(data);
+      
+      
+      XmlParameterReader parameterReader = new XmlParameterReader(new ReaderInputStream(reader));
+      parameterReader.readParametersInRegistry(target);
+   }
    
    @Test(timeout = 30000)
    @ContinuousIntegrationTest(estimatedDuration = 1.0)
