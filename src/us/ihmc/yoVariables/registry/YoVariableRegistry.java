@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,6 +15,7 @@ import us.ihmc.commons.PrintTools;
 import us.ihmc.yoVariables.dataBuffer.YoVariableHolder;
 import us.ihmc.yoVariables.listener.RewoundListener;
 import us.ihmc.yoVariables.listener.YoVariableRegistryChangedListener;
+import us.ihmc.yoVariables.parameters.YoParameter;
 import us.ihmc.yoVariables.variable.YoVariable;
 import us.ihmc.yoVariables.variable.YoVariableList;
 
@@ -23,6 +25,9 @@ public class YoVariableRegistry implements YoVariableHolder
    // User defined control variables will be placed in this ArrayList when they are registered:
    private ArrayList<YoVariable<?>> controlVars = new ArrayList<YoVariable<?>>();
    private LinkedHashMap<String, YoVariable<?>> controlVarsHashMap = new LinkedHashMap<String, YoVariable<?>>(); // From name to the variable with that name.
+   private ArrayList<YoParameter<?>> parameters = new ArrayList<>();
+   private LinkedHashMap<String, YoParameter<?>> parametersHashMap = new LinkedHashMap<>();
+   
    private final String name;
    private NameSpace nameSpace;
    private ArrayList<YoVariableRegistry> children = new ArrayList<YoVariableRegistry>();
@@ -138,6 +143,13 @@ public class YoVariableRegistry implements YoVariableHolder
 
       controlVarsHashMap.put(variableName, variable);
       controlVars.add(variable);
+      
+      if(variable.isParameter())
+      {
+         YoParameter<?> parameter = variable.getParameter();
+         parameters.add(parameter);
+         parametersHashMap.put(variableName, parameter);
+      }
 
       notifyListenersYoVariableWasRegistered(variable);
    }
@@ -890,6 +902,65 @@ public class YoVariableRegistry implements YoVariableHolder
          }
       }
    }
+   
+   private void getAllParametersIncludingDescendantsRecursively(ArrayList<YoParameter<?>> parameters)
+   {
+      // Add ours:
+      parameters.addAll(this.parameters);
+
+      // Add children's recursively:
+      for (YoVariableRegistry registry : children)
+      {
+         registry.getAllParametersIncludingDescendantsRecursively(parameters);
+      }
+   }
+
+   
+   /**
+    * Recursively get all parameters in this and underlying registries
+    * 
+    * @return list of all parameters in this registry and decendants
+    */
+   public List<YoParameter<?>> getAllParameters()
+   {
+      ArrayList<YoParameter<?>> parameters = new ArrayList<>();
+      getAllParametersIncludingDescendantsRecursively(parameters);
+      
+      return parameters;
+   }
+   
+   /**
+    * Get all parameters in this registry
+    * 
+    * @return unmodifiable list of all parameters in this registry
+    */
+   public List<YoParameter<?>> getParametersInThisRegistry()
+   {
+      return Collections.unmodifiableList(this.parameters);
+   }
+   
+   /** 
+    * Checks if this registry or its children have parameters registered
+    * 
+    * @return true if this registry or its children have parameters registered
+    */
+   public boolean getIfRegistryOrChildrenHaveParameters()
+   {
+      if(!this.parameters.isEmpty())
+      {
+         return true;
+      }
+      
+      for(int i = 0; i < this.children.size(); i++)
+      {
+         if(this.children.get(i).getIfRegistryOrChildrenHaveParameters())
+         {
+            return true;
+         }
+      }
+      
+      return false;
+   }
 
    public void closeAndDispose()
    {
@@ -905,6 +976,18 @@ public class YoVariableRegistry implements YoVariableHolder
          controlVarsHashMap = null;
       }
 
+      if (parameters != null)
+      {
+         parameters.clear();
+         parameters = null;
+      }
+      
+      if (parametersHashMap != null)
+      {
+         parametersHashMap.clear();
+         parametersHashMap = null;
+      }
+      
       if (children != null)
       {
          for (YoVariableRegistry child : children)

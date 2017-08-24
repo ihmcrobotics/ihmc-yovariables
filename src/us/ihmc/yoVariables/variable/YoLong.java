@@ -1,5 +1,6 @@
 package us.ihmc.yoVariables.variable;
 
+import us.ihmc.yoVariables.providers.LongProvider;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 /**
@@ -8,7 +9,7 @@ import us.ihmc.yoVariables.registry.YoVariableRegistry;
  * <p>All abstract functions of YoVariable will be implemented using long type for interpretation.
  * Values will be interpreted, compared, and returned as longs rather than other native types.
  */
-public class YoLong extends YoVariable<YoLong>
+public class YoLong extends YoVariable<YoLong> implements LongProvider
 {
    /**
     * Internal long value of this YoLong.
@@ -263,5 +264,11 @@ public class YoLong extends YoVariable<YoLong>
    @Override public boolean isZero()
    {
       return getLongValue() == 0;
+   }
+
+   @Override
+   public long getValue()
+   {
+      return getLongValue();
    }
 }
