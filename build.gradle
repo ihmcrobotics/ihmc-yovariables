@@ -15,7 +15,7 @@ apply plugin: "maven-publish"
 apply plugin: "com.jfrog.bintray"
 
 sourceCompatibility = 1.8
-version = '0.1.99'
+version = '0.2.0'
 
 repositories ihmc.ihmcDefaultArtifactProxies()
 
