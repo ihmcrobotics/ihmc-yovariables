@@ -2,6 +2,9 @@ package us.ihmc.yoVariables.dataBuffer;
 
 import us.ihmc.yoVariables.variable.YoVariable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class DataBufferEntry implements DataEntry
 {
    private final YoVariable<?> variable;
@@ -13,6 +16,8 @@ public class DataBufferEntry implements DataEntry
    private boolean minMaxChanged = true;
 
    private boolean minMaxStale = true;
+
+   private ArrayList<DataEntryChangeListener> changeListeners = new ArrayList<>();
 
    // private double manualMinScaling = 0.0, manualMaxScaling = 1.0;
    private boolean autoScale = true;
@@ -41,15 +46,29 @@ public class DataBufferEntry implements DataEntry
       return inverted;
    }
 
+   @Override public void attachDataEntryChangeListener(DataEntryChangeListener listener)
+   {
+      changeListeners.add(listener);
+   }
+
+   @Override public void detachDataEntryChangeListener(DataEntryChangeListener listener) {
+      changeListeners.remove(listener);
+   }
+
    public int getDataLength()
    {
       return data.length;
    }
-   
+
    @Override
-   public double[] getData()
+   public double[] getData() {
+      return this.getData(0, this.data.length-1);
+   }
+
+   @Override
+   public double[] getData(int startIndex, int endIndex)
    {
-      return this.data;
+      return Arrays.copyOfRange(this.data, startIndex, endIndex);
    }
 
    @Override
@@ -326,9 +345,9 @@ public class DataBufferEntry implements DataEntry
    }
 
    @Override
-   public synchronized boolean minMaxChanged()
+   public synchronized boolean hasMinMaxChanged()
 
-   // public boolean minMaxChanged()
+   // public boolean hasMinMaxChanged()
    {
       return minMaxChanged;
    }
