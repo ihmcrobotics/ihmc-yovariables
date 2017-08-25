@@ -19,6 +19,17 @@ import us.ihmc.yoVariables.parameters.YoParameter;
 import us.ihmc.yoVariables.variable.YoVariable;
 import us.ihmc.yoVariables.variable.YoVariableList;
 
+/**
+ * Data structure for creating, managing, and interacting with a hierarchy of {@code YoVariables}.
+ * <p>
+ * Registries are organized into a tree structure with one parent and many children. Children
+ * can be either other registries or variables. All {@code YoVariables} must be associated with
+ * exactly one registry.
+ * </p>
+ *
+ * @see YoVariableHolder
+ * @see YoVariable
+ */
 public class YoVariableRegistry implements YoVariableHolder
 {
    // User defined control variables will be placed in this ArrayList when they are registered:
@@ -26,7 +37,7 @@ public class YoVariableRegistry implements YoVariableHolder
    private LinkedHashMap<String, YoVariable<?>> controlVarsHashMap = new LinkedHashMap<String, YoVariable<?>>(); // From name to the variable with that name.
    private ArrayList<YoParameter<?>> parameters = new ArrayList<>();
    private LinkedHashMap<String, YoParameter<?>> parametersHashMap = new LinkedHashMap<>();
-   
+
    private final String name;
    private NameSpace nameSpace;
    private ArrayList<YoVariableRegistry> children = new ArrayList<YoVariableRegistry>();
@@ -37,6 +48,14 @@ public class YoVariableRegistry implements YoVariableHolder
 
    private static final Pattern illegalCharacters = Pattern.compile("[ .*?@#$%/^&()<>,:{}'\"\\\\]");
 
+   /**
+    * Creates a new YoVariableRegistry with the given name. The {@code name} parameter must be unique
+    * to this YoVariableRegistry and must not contain any of the following characters: [ .*?@#$%/^&()<>,:{}'"\]
+    *
+    * @param name Unique name for this registry
+    *
+    * @throws RuntimeException if {@code name} matches the regex pattern variable {@link #illegalCharacters}
+    */
    public YoVariableRegistry(String name)
    {
       checkForIllegalCharacters(name);
@@ -61,16 +80,33 @@ public class YoVariableRegistry implements YoVariableHolder
       }
    }
 
+   /**
+    *
+    * @return Unique short name for this registry
+    */
    public String getName()
    {
       return name;
    }
 
+   /**
+    *
+    * @return Fully qualified namespace for this registry
+    */
    public NameSpace getNameSpace()
    {
       return nameSpace;
    }
 
+   /**
+    * Lazily instantiates an ArrayList of change-listeners and adds {@code listener} to the list.
+    * This should only be called on te root of your registry tree.
+    *
+    * @param listener
+    *
+    * @throws RuntimeException if called on any registry other than the root i.e. any registry
+    * with a parent
+    */
    public void attachYoVariableRegistryChangedListener(YoVariableRegistryChangedListener listener)
    {
       if (yoVariableRegistryChangedListeners == null)
@@ -130,7 +166,7 @@ public class YoVariableRegistry implements YoVariableHolder
 
       controlVarsHashMap.put(variableName, variable);
       controlVars.add(variable);
-      
+
       if(variable.isParameter())
       {
          YoParameter<?> parameter = variable.getParameter();
@@ -822,7 +858,7 @@ public class YoVariableRegistry implements YoVariableHolder
          }
       }
    }
-   
+
    private void getAllParametersIncludingDescendantsRecursively(ArrayList<YoParameter<?>> parameters)
    {
       // Add ours:
@@ -835,33 +871,33 @@ public class YoVariableRegistry implements YoVariableHolder
       }
    }
 
-   
+
    /**
     * Recursively get all parameters in this and underlying registries
-    * 
+    *
     * @return list of all parameters in this registry and decendants
     */
    public List<YoParameter<?>> getAllParameters()
    {
       ArrayList<YoParameter<?>> parameters = new ArrayList<>();
       getAllParametersIncludingDescendantsRecursively(parameters);
-      
+
       return parameters;
    }
-   
+
    /**
     * Get all parameters in this registry
-    * 
+    *
     * @return unmodifiable list of all parameters in this registry
     */
    public List<YoParameter<?>> getParametersInThisRegistry()
    {
       return Collections.unmodifiableList(this.parameters);
    }
-   
-   /** 
+
+   /**
     * Checks if this registry or its children have parameters registered
-    * 
+    *
     * @return true if this registry or its children have parameters registered
     */
    public boolean getIfRegistryOrChildrenHaveParameters()
@@ -870,7 +906,7 @@ public class YoVariableRegistry implements YoVariableHolder
       {
          return true;
       }
-      
+
       for(int i = 0; i < this.children.size(); i++)
       {
          if(this.children.get(i).getIfRegistryOrChildrenHaveParameters())
@@ -878,7 +914,7 @@ public class YoVariableRegistry implements YoVariableHolder
             return true;
          }
       }
-      
+
       return false;
    }
 
@@ -901,13 +937,13 @@ public class YoVariableRegistry implements YoVariableHolder
          parameters.clear();
          parameters = null;
       }
-      
+
       if (parametersHashMap != null)
       {
          parametersHashMap.clear();
          parametersHashMap = null;
       }
-      
+
       if (children != null)
       {
          for (YoVariableRegistry child : children)
