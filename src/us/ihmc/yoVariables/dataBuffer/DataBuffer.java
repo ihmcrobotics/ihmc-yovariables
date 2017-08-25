@@ -37,7 +37,7 @@ public class DataBuffer extends YoVariableHolderImplementation
 
    private boolean clearing = false;
 
-   private boolean safeToManualyChangeIndex = true;
+   private boolean safeToManuallyChangeIndex = true;
 
    @Override
    public void closeAndDispose()
@@ -59,12 +59,12 @@ public class DataBuffer extends YoVariableHolderImplementation
 
    public void setSafeToChangeIndex(boolean safe)
    {
-      this.safeToManualyChangeIndex = safe;
+      this.safeToManuallyChangeIndex = safe;
    }
 
    public boolean isSafeToChangeIndex()
    {
-      return safeToManualyChangeIndex;
+      return safeToManuallyChangeIndex;
    }
 
    public int getBufferSize()
@@ -641,7 +641,7 @@ public class DataBuffer extends YoVariableHolderImplementation
 
    private void setIndex(int index, boolean notifySimulationRewoundListeners)
    {
-      if (safeToManualyChangeIndex)
+      if (safeToManuallyChangeIndex)
       {
          this.index = index;
 
@@ -722,7 +722,7 @@ public class DataBuffer extends YoVariableHolderImplementation
     */
    private boolean tick(int n, boolean notifySimulationRewoundListeners)
    {
-      if (safeToManualyChangeIndex)
+      if (safeToManuallyChangeIndex)
       {
          int newIndex = this.index + n;
 
