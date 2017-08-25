@@ -1,5 +1,6 @@
 package us.ihmc.yoVariables.variable;
 
+import us.ihmc.yoVariables.providers.IntegerProvider;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 /**
@@ -8,7 +9,7 @@ import us.ihmc.yoVariables.registry.YoVariableRegistry;
  * <p>All abstract functions of YoVariable will be implemented using integer type for interpretation.
  * Values will be interpreted, compared, and returned as integers rather than other native types.
  */
-public class YoInteger extends YoVariable<YoInteger>
+public class YoInteger extends YoVariable<YoInteger> implements IntegerProvider
 {
    /**
     * Internal integer value of this YoInteger.
@@ -266,5 +267,11 @@ public class YoInteger extends YoVariable<YoInteger>
    @Override public boolean isZero()
    {
       return getIntegerValue() == 0;
+   }
+   
+   @Override
+   public int getValue()
+   {
+      return getIntegerValue();
    }
 }

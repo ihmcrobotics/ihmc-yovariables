@@ -196,4 +196,15 @@ public void testSetValue()
    Assert.assertEquals(yoInteger2.getIntegerValue(), yoInteger.getIntegerValue());
 }
 
+	
+   @ContinuousIntegrationTest(estimatedDuration = 0.0)
+   @Test(timeout = 300000)
+   public void testProviderValue()
+   {
+      yoInteger.set(1250948);
+      assertEquals(yoInteger.getIntegerValue(), yoInteger.getValue());
+      yoInteger.set(-521);
+      assertEquals(yoInteger.getIntegerValue(), yoInteger.getValue());
+      
+   }
 }

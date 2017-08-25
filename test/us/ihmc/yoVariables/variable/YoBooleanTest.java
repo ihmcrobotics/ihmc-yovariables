@@ -213,4 +213,13 @@ public class YoBooleanTest
 	   assertTrue(yoBoolean.getYoVariableRegistry().areEqual(registry));
    }
    
+	
+	@ContinuousIntegrationTest(estimatedDuration = 0.0)
+   @Test(timeout=300000)
+   public void testProviderValue()
+   {
+	   assertEquals(yoBoolean.getBooleanValue(), yoBoolean.getValue());
+	   yoBoolean.set(true);
+	   assertEquals(yoBoolean.getBooleanValue(), yoBoolean.getValue());
+   }
 }

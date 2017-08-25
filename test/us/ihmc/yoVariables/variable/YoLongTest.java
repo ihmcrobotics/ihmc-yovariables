@@ -199,4 +199,16 @@ public class YoLongTest
       yoLong.setValue(yoLong2, notifyListeners);
       Assert.assertEquals(yoLong2.getLongValue(), yoLong.getLongValue());
    }
+	
+   @ContinuousIntegrationTest(estimatedDuration = 0.0)
+   @Test(timeout = 300000)
+   public void testProviderValue()
+   {
+      yoLong.set(10L * (long)Integer.MAX_VALUE);
+      assertEquals(yoLong.getLongValue(), yoLong.getValue());
+      yoLong.set(10L * (long)Integer.MIN_VALUE);
+      assertEquals(yoLong.getLongValue(), yoLong.getValue());
+      
+      
+   }
 }
