@@ -987,7 +987,7 @@ public class DataBufferTest
    {
       final boolean[] listenerNotified = {false, false};
 
-      IndexChangedListener indexChangedListener = (int newIndex, double newTime) -> listenerNotified[0] = true;
+      IndexChangedListener indexChangedListener = (int newIndex) -> listenerNotified[0] = true;
 
       dataBuffer.attachIndexChangedListener(indexChangedListener);
 
