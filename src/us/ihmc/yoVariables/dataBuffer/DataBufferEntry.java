@@ -55,6 +55,13 @@ public class DataBufferEntry implements DataEntry
       changeListeners.remove(listener);
    }
 
+   @Override public void notifyDataEntryChangeListeners(int index)
+   {
+      for (DataEntryChangeListener listener : this.changeListeners) {
+         listener.notifyOfDataChange(this, index);
+      }
+   }
+
    public int getDataLength()
    {
       return data.length;
@@ -62,7 +69,7 @@ public class DataBufferEntry implements DataEntry
 
    @Override
    public double[] getData() {
-      return this.getData(0, this.data.length-1);
+      return this.getData(0, this.data.length);
    }
 
    @Override
@@ -294,33 +301,38 @@ public class DataBufferEntry implements DataEntry
    public synchronized void setDataAtIndexToYoVariableValue(int index)
    {
       double newVal = variable.getValueAsDouble();
-      double oldVal = data[index];
 
-      data[index] = newVal;
+      if (data[index] != newVal) {
+         double oldVal = data[index];
 
-      if (newVal < this.min)
-      {
-         this.min = newVal;
-         setMinMaxChanged();
+         data[index] = newVal;
+
+         if (newVal < this.min)
+         {
+            this.min = newVal;
+            setMinMaxChanged();
+         }
+
+         if (newVal > this.max)
+         {
+            this.max = newVal;
+            setMinMaxChanged();
+         }
+
+         if (oldVal >= this.max)
+         {
+            setMinMaxChanged();
+            minMaxStale = true;
+         } // reCalcMinMax();
+
+         if (oldVal <= this.min)
+         {
+            setMinMaxChanged();
+            minMaxStale = true;
+         } // reCalcMinMax();
+
+         notifyDataEntryChangeListeners(index);
       }
-
-      if (newVal > this.max)
-      {
-         this.max = newVal;
-         setMinMaxChanged();
-      }
-
-      if (oldVal >= this.max)
-      {
-         setMinMaxChanged();
-         minMaxStale = true;
-      } // reCalcMinMax();
-
-      if (oldVal <= this.min)
-      {
-         setMinMaxChanged();
-         minMaxStale = true;
-      } // reCalcMinMax();
    }
 
    protected void setYoVariableValueToDataAtIndex(int index)
