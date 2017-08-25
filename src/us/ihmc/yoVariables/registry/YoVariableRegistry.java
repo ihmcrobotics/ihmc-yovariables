@@ -21,7 +21,6 @@ import us.ihmc.yoVariables.variable.YoVariableList;
 
 public class YoVariableRegistry implements YoVariableHolder
 {
-
    // User defined control variables will be placed in this ArrayList when they are registered:
    private ArrayList<YoVariable<?>> controlVars = new ArrayList<YoVariable<?>>();
    private LinkedHashMap<String, YoVariable<?>> controlVarsHashMap = new LinkedHashMap<String, YoVariable<?>>(); // From name to the variable with that name.
@@ -36,30 +35,9 @@ public class YoVariableRegistry implements YoVariableHolder
    private ArrayList<RewoundListener> simulationRewoundListeners;
    private ArrayList<YoVariableRegistryChangedListener> yoVariableRegistryChangedListeners;
 
-   private boolean disallowSending;
-   private boolean isLogged;
-   private boolean isSent;
-
    private static final Pattern illegalCharacters = Pattern.compile("[ .*?@#$%/^&()<>,:{}'\"\\\\]");
 
-   protected static void checkForIllegalCharacters(String name)
-   {
-      // String.matches() only matches the whole string ( as if you put ^$ around it ). Use .find() of the Matcher class instead!
-
-      if (illegalCharacters.matcher(name).find())
-      {
-         String message = name + " is an invalid name for a YoVariableRegistry. A YoVariableRegistry cannot have crazy characters in them, otherwise NameSpaces"
-               + " will not work.";
-         throw new RuntimeException(message);
-      }
-   }
-
    public YoVariableRegistry(String name)
-   {
-      this(name, false, false);
-   }
-
-   public YoVariableRegistry(String name, boolean isLogged, boolean isSent)
    {
       checkForIllegalCharacters(name);
 
@@ -69,9 +47,18 @@ public class YoVariableRegistry implements YoVariableHolder
       {
          nameSpace = new NameSpace(name);
       }
+   }
 
-      this.isLogged = isLogged;
-      this.isSent = isSent;
+   private static void checkForIllegalCharacters(String name)
+   {
+      // String.matches() only matches the whole string ( as if you put ^$ around it ). Use .find() of the Matcher class instead!
+
+      if (illegalCharacters.matcher(name).find())
+      {
+         String message = name + " is an invalid name for a YoVariableRegistry. A YoVariableRegistry cannot have crazy characters in them, otherwise NameSpaces"
+               + " will not work.";
+         throw new RuntimeException(message);
+      }
    }
 
    public String getName()
@@ -592,66 +579,6 @@ public class YoVariableRegistry implements YoVariableHolder
       return null;
    }
 
-   public void setLogging(boolean log)
-   {
-      this.isLogged = log;
-   }
-
-   public void setLoggingIncludingDescendants(boolean log)
-   {
-      setLogging(log);
-
-      for (YoVariableRegistry registry : children)
-      {
-         registry.setLoggingIncludingDescendants(log);
-      }
-   }
-
-   public boolean isLogged()
-   {
-      return isLogged;
-   }
-
-   public void setDisallowSending()
-   {
-      this.disallowSending = true;
-      this.isSent = false;
-   }
-
-   public void setSending(boolean send)
-   {
-      if (disallowSending && send)
-      {
-         String errorMessage = "Trying to set sending in registry " + this.getName() + " even though disallowSending is true.";
-         //         throw new RuntimeException(errorMessage);
-         System.err.println(errorMessage);
-      }
-      else
-      {
-         this.isSent = send;
-      }
-   }
-
-   public void setSendingIncludingDescendants(boolean send)
-   {
-      setSending(send);
-
-      for (YoVariableRegistry registry : children)
-      {
-         registry.setSendingIncludingDescendants(send);
-      }
-   }
-
-   public boolean isDisallowSendingSet()
-   {
-      return disallowSending;
-   }
-
-   public boolean isSent()
-   {
-      return isSent;
-   }
-
    public int getNumberOfYoVariables()
    {
       return controlVars.size();
@@ -783,13 +710,6 @@ public class YoVariableRegistry implements YoVariableHolder
          return false;
 
       if (!this.getNameSpace().equals(registry.getNameSpace()))
-         return false;
-
-      if (this.isLogged != registry.isLogged)
-         return false;
-      if (this.isSent != registry.isSent)
-         return false;
-      if (this.disallowSending != registry.disallowSending)
          return false;
 
       for (YoVariable<?> variable : controlVars)

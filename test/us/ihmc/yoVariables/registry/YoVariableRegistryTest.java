@@ -825,51 +825,6 @@ public class YoVariableRegistryTest
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
-   public void testLoggingAndSending()
-   {
-      robotRegistry.setLoggingIncludingDescendants(false);
-      robotRegistry.setSendingIncludingDescendants(false);
-      
-      assertFalse(robotRegistry.isLogged());
-      assertFalse(controllerRegistry.isLogged());
-      assertFalse(testRegistry.isLogged());
-      
-      assertFalse(robotRegistry.isSent());
-      assertFalse(controllerRegistry.isSent());
-      assertFalse(testRegistry.isSent());
-      
-      controllerRegistry.setLogging(true);
-      assertFalse(robotRegistry.isLogged());
-      assertTrue(controllerRegistry.isLogged());
-      assertFalse(testRegistry.isLogged());
-      
-      assertFalse(robotRegistry.isSent());
-      assertFalse(controllerRegistry.isSent());
-      assertFalse(testRegistry.isSent());
-      
-      controllerRegistry.setSendingIncludingDescendants(true);
-      assertFalse(robotRegistry.isLogged());
-      assertTrue(controllerRegistry.isLogged());
-      assertFalse(testRegistry.isLogged());
-      
-      assertFalse(robotRegistry.isSent());
-      assertTrue(controllerRegistry.isSent());
-      assertTrue(testRegistry.isSent());
-      
-      robotRegistry.setLoggingIncludingDescendants(false);
-      robotRegistry.setSendingIncludingDescendants(true);
-      
-      assertFalse(robotRegistry.isLogged());
-      assertFalse(controllerRegistry.isLogged());
-      assertFalse(testRegistry.isLogged());
-      
-      assertTrue(robotRegistry.isSent());
-      assertTrue(controllerRegistry.isSent());
-      assertTrue(testRegistry.isSent());
-   }
-
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
-	@Test(timeout=300000)
    public void testGetNumberOfVariables()
    {
       assertEquals(1, robotRegistry.getNumberOfYoVariables());
@@ -932,17 +887,6 @@ public class YoVariableRegistryTest
 
       new YoDouble("robotVariable", robotRegistryClone);
       assertFalse(robotRegistry.areEqual(robotRegistryClone));
-
-      robotRegistryClone.setLogging(true);
-      assertFalse(robotRegistry.areEqual(robotRegistryClone));
-
-      robotRegistryClone.setLogging(false);
-      robotRegistryClone.setSending(true);
-      assertFalse(robotRegistry.areEqual(robotRegistryClone));
-
-      robotRegistryClone.setSending(false);
-      robotRegistryClone.setDisallowSending();
-      assertFalse(robotRegistry.areEqual(robotRegistryClone));
    }
 
    @Test
@@ -961,14 +905,6 @@ public class YoVariableRegistryTest
       createAndAddNYoVariables(N_VARS_IN_ROOT, testRegistryClone);
 
       assertTrue(robotRegistry.areEqual(robotRegistryClone));
-   }
-
-   @Test
-   public void testSetDisallowSending()
-   {
-      assertFalse(robotRegistry.isDisallowSendingSet());
-      robotRegistry.setDisallowSending();
-      assertTrue(robotRegistry.isDisallowSendingSet());
    }
 
    @Test
