@@ -54,6 +54,7 @@ public class DataBuffer extends YoVariableHolderImplementation
    public DataBuffer(int bufferSize)
    {
       entries = new ArrayList<DataBufferEntry>();
+
       this.bufferSize = bufferSize;
    }
 
@@ -695,6 +696,12 @@ public class DataBuffer extends YoVariableHolderImplementation
       indexChangedListeners.add(indexChangedListener);
    }
 
+   public void detachIndexChangedListener(IndexChangedListener indexChangedListener) {
+      if (indexChangedListeners != null) {
+         indexChangedListeners.add(indexChangedListener);
+      }
+   }
+
    @Override
    public int getIndex()
    {
@@ -727,6 +734,7 @@ public class DataBuffer extends YoVariableHolderImplementation
          int newIndex = this.index + n;
 
          boolean rolledOver = !isIndexBetweenInAndOutPoint(newIndex);
+
          if (rolledOver)
          {
             if (n >= 0)
