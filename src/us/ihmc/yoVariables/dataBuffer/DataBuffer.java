@@ -865,11 +865,11 @@ public class DataBuffer extends YoVariableHolderImplementation
 
             if (t != null)
             {
-               indexChangedListener.notifyOfIndexChange(index, t.getDoubleValue());
+               indexChangedListener.notifyOfIndexChange(index);
             }
             else
             {
-               indexChangedListener.notifyOfIndexChange(index, 0.0);
+               indexChangedListener.notifyOfIndexChange(index);
             }
          }
       }
