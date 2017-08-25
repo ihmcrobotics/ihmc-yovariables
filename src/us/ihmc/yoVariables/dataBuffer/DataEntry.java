@@ -47,4 +47,6 @@ public interface DataEntry
    public abstract void attachDataEntryChangeListener(DataEntryChangeListener listener);
 
    public abstract void detachDataEntryChangeListener(DataEntryChangeListener listener);
+
+   public abstract void notifyDataEntryChangeListeners(int index);
 }
