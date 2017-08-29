@@ -40,9 +40,12 @@ public class XmlParameterReader extends AbstractParameterReader
          Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
          Parameters parameterRoot = (Parameters) jaxbUnmarshaller.unmarshal(data);
-         for(Registry registry : parameterRoot.getRegistries())
+         if(parameterRoot.getRegistries() != null)
          {
-            addRegistry(registry.getName(), registry);
+            for(Registry registry : parameterRoot.getRegistries())
+            {
+               addRegistry(registry.getName(), registry);
+            }
          }
       }
       catch (JAXBException e)
