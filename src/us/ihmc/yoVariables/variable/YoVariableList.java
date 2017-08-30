@@ -267,12 +267,12 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
    }
 
    /**
-    * //  * Compares this VarList to the specified object returning > = < as 1 0 -1 respectively.
-    * //  * Reference object must be another VarList otherwise a runtime exception will be thrown.
-    * /
-    * //  * @param other Object to which this will be compared
-    * //  * @return indicates > = < as 1 0 -1 respectively
-    * /
+    * Compares this VarList to the specified object returning > = < as 1 0 -1 respectively.
+    * Reference object must be another VarList otherwise a runtime exception will be thrown.
+    *
+    * @param other Object to which this will be compared
+    * @return indicates > = < as 1 0 -1 respectively
+    *
     */
    @Override
    public int compareTo(YoVariableList other)
