@@ -28,6 +28,12 @@ public class Parameter
    
    @XmlAttribute
    private String type;
+
+   @XmlAttribute
+   private String min;
+   
+   @XmlAttribute
+   private String max;
    
    @XmlAttribute
    private String value;
@@ -35,16 +41,19 @@ public class Parameter
    @XmlElement
    private String description;
    
+   
    public Parameter()
    {
       
    }
    
-   public Parameter(String name, String type, String value)
+   public Parameter(String name, String type, String value, String min, String max)
    {
       this.name = name;
       this.type = type;
       this.value = value;
+      this.min = min;
+      this.max = max;
    }
    
    
@@ -87,4 +96,26 @@ public class Parameter
    {
       this.description = description;
    }
+
+   public String getMin()
+   {
+      return min;
+   }
+
+   public void setMin(String min)
+   {
+      this.min = min;
+   }
+
+   public String getMax()
+   {
+      return max;
+   }
+
+   public void setMax(String max)
+   {
+      this.max = max;
+   }
+   
+   
 }

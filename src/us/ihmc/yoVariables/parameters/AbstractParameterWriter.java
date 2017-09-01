@@ -34,12 +34,14 @@ public abstract class AbstractParameterWriter
          NameSpace relativeNamespace = AbstractParameterReader.getRelativeNamespace(parameter.getNameSpace(), registry);
          
          String value = parameter.getValueAsString();
-         setValue(relativeNamespace, parameter.getName(), parameter.getDescription(), parameter.getClass().getSimpleName(), value);
+         String min = String.valueOf(parameter.getVariable().getManualScalingMin());
+         String max = String.valueOf(parameter.getVariable().getManualScalingMax());
+         setValue(relativeNamespace, parameter.getName(), parameter.getDescription(), parameter.getClass().getSimpleName(), value, min, max);
          
       }
    }
    
-   protected abstract void setValue(NameSpace namespace, String name, String description, String type, String value);
+   protected abstract void setValue(NameSpace namespace, String name, String description, String type, String value, String min, String max);
    
    
 }
