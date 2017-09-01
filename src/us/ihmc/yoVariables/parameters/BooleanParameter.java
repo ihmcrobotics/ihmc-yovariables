@@ -80,6 +80,8 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
 
       this.value = new YoBooleanParameter(name, description, registry);      
       this.initialValue = initialValue;
+      
+      setSuggestedRange(0, 1);
    }
 
    /**
