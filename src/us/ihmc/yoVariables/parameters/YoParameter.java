@@ -169,6 +169,11 @@ public abstract class YoParameter<T extends YoParameter<T>>
    abstract void setToString(String valueString);
 
    abstract void setToDefault();
+   
+   void setSuggestedRange(double min, double max)
+   {
+      getVariable().setManualScalingMinMax(min, max);
+   }
 
    private static void checkForIllegalCharacters(String name)
    {

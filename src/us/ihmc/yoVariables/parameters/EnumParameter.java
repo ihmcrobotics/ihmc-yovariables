@@ -108,6 +108,9 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
       {
          this.initialOrdinal = initialValue.ordinal();
       }
+      
+
+      setSuggestedRange(0, enumType.getEnumConstants().length - 1);
    }
    
    /**
@@ -151,6 +154,8 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
       {
          this.initialOrdinal = 0;
       }
+      
+      setSuggestedRange(0, constants.length - 1);
    }
 
    /**
