@@ -218,7 +218,7 @@ public abstract class YoParameter<T extends YoParameter<T>>
       
 
       @Override
-      public void variableChanged(YoVariable<?> v)
+      public void notifyOfVariableChange(YoVariable<?> v)
       {
          for(int i = 0; i < parameterChangedListeners.size(); i++)
          {
