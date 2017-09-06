@@ -222,7 +222,7 @@ public abstract class YoParameter<T extends YoParameter<T>>
       {
          for(int i = 0; i < parameterChangedListeners.size(); i++)
          {
-            parameterChangedListeners.get(i).variableChanged(v.getParameter());
+            parameterChangedListeners.get(i).notifyOfParameterChange(v.getParameter());
          }
       }
 

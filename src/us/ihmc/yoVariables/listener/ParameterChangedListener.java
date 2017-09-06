@@ -30,6 +30,6 @@ public interface ParameterChangedListener
     *
     * @param v YoParameter the listener is attached to
     */
-   public void variableChanged(YoParameter<?> v);
+   public void notifyOfParameterChange(YoParameter<?> v);
 
 }
