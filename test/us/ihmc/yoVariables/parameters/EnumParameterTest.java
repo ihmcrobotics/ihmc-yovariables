@@ -358,7 +358,7 @@ public class EnumParameterTest
       boolean set = false;
 
       @Override
-      public void variableChanged(YoParameter<?> v)
+      public void notifyOfParameterChange(YoParameter<?> v)
       {
          set = true;
       }
