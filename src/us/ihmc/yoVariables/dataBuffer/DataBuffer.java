@@ -856,7 +856,7 @@ public class DataBuffer extends YoVariableHolderImplementation
          {
             RewoundListener simulationRewoundListener = simulationRewoundListeners.get(i);
 
-            simulationRewoundListener.wasRewound();
+            simulationRewoundListener.notifyOfRewind();
          }
       }
 
