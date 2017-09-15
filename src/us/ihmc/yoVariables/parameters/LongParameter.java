@@ -221,6 +221,15 @@ public class LongParameter extends YoParameter<LongParameter> implements LongPro
       {
          return LongParameter.this;
       }
+      
+      @Override
+      public YoLong duplicate(YoVariableRegistry newRegistry)
+      {
+         LongParameter newParameter = new LongParameter(getName(), getDescription(), newRegistry, initialValue, (long) getManualScalingMin(), (long) getManualScalingMax());
+         newParameter.loadDefault();
+         newParameter.value.set(value.getValue());
+         return newParameter.value;
+      }
    }
 
    

@@ -15,13 +15,16 @@
  */
 package us.ihmc.yoVariables.parameters;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.listener.ParameterChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.variable.YoLong;
 
 public class LongParameterTest
 {
@@ -38,7 +41,7 @@ public class LongParameterTest
       a.addChild(b);
       b.addChild(c);
 
-      LongParameter param = new LongParameter("param", c, initialValue);
+      LongParameter param = new LongParameter("param", "paramDescription", c, initialValue, -102024, 294);
 
       return param;
    }
@@ -55,6 +58,30 @@ public class LongParameterTest
       
    }
 
+
+   @Test(timeout = 1000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testDuplicate()
+   {
+      LongParameter param = createParameterWithNamespace();
+      YoLong var = (YoLong) param.getVariable();
+      param.loadDefault();
+      
+      var.set(632);
+      
+      YoVariableRegistry newRegistry = new YoVariableRegistry("newRegistry");
+      YoLong newVar = var.duplicate(newRegistry);
+      LongParameter newParam = (LongParameter) newVar.getParameter();
+      
+      assertEquals(param.getName(), newParam.getName());
+      assertEquals(param.getDescription(), newParam.getDescription());
+      assertEquals(param.getValue(), newParam.getValue(), 1e-9);
+      assertEquals(var.getManualScalingMin(), newVar.getManualScalingMin(), 1e-9);
+      assertEquals(var.getManualScalingMax(), newVar.getManualScalingMax(), 1e-9);
+      
+      
+      
+   }
 
    @Test(timeout = 1000)
    @ContinuousIntegrationTest(estimatedDuration = 1.0)
