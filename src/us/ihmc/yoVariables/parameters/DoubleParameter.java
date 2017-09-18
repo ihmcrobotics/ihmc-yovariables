@@ -221,6 +221,15 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
       {
          return DoubleParameter.this;
       }
+      
+      @Override
+      public YoDouble duplicate(YoVariableRegistry newRegistry)
+      {
+         DoubleParameter newParameter = new DoubleParameter(getName(), getDescription(), newRegistry, initialValue, getManualScalingMin(), getManualScalingMax());
+         newParameter.loadDefault();
+         newParameter.value.set(value.getValue());
+         return newParameter.value;
+      }
    }
 
    
