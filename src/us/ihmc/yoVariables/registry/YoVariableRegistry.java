@@ -49,8 +49,10 @@ public class YoVariableRegistry implements YoVariableHolder
    private static final Pattern illegalCharacters = Pattern.compile("[ .*?@#$%/^&()<>,:{}'\"\\\\]");
 
    /**
-    * Creates a new YoVariableRegistry with the given name. The {@code name} parameter must be unique
-    * to this YoVariableRegistry and must not contain any of the following characters: [ .*?@#$%/^&()<>,:{}'"\]
+    * Creates a new YoVariableRegistry with the given name.
+    * <p>
+    * The {@code name} parameter must be unique to this YoVariableRegistry and must not contain any of the
+    * following characters: [ .*?@#$%/^&()<>,:{}'"\]
     *
     * @param name Unique name for this registry
     *
@@ -99,10 +101,11 @@ public class YoVariableRegistry implements YoVariableHolder
    }
 
    /**
-    * Lazily instantiates an ArrayList of change-listeners and adds {@code listener} to the list.
-    * This should only be called on te root of your registry tree.
+    * Lazily instantiates list of change listeners and adds {@code listener} to the list.
+    * <p>
+    * This should only be called on the registry tree root.
     *
-    * @param listener
+    * @param listener change listener to add to {@link #yoVariableRegistryChangedListeners}
     *
     * @throws RuntimeException if called on any registry other than the root i.e. any registry
     * with a parent
@@ -119,6 +122,12 @@ public class YoVariableRegistry implements YoVariableHolder
       this.verifyDoNotHaveBothParentAndYoVariableRegistryChangedListeners();
    }
 
+   /**
+    * Lazily instantiates list of rewound listeners and adds {@code simulationRewoundListener}
+    * to the list.
+    *
+    * @param simulationRewoundListener rewound listener to add to {@link #simulationRewoundListeners}
+    */
    public void registerSimulationRewoundListener(RewoundListener simulationRewoundListener)
    {
       if (simulationRewoundListeners == null)
@@ -129,6 +138,13 @@ public class YoVariableRegistry implements YoVariableHolder
       simulationRewoundListeners.add(simulationRewoundListener);
    }
 
+   /**
+    * Creates a new ArrayList and recursively adds rewound listeners of this registry and all
+    * of its children.
+    *
+    * @return list containing all simulation rewound listeners attached to this registry as well
+    * as those attached to all child registries
+    */
    public ArrayList<RewoundListener> getAllSimulationRewoundListeners()
    {
       ArrayList<RewoundListener> ret = new ArrayList<RewoundListener>();
@@ -151,6 +167,14 @@ public class YoVariableRegistry implements YoVariableHolder
       }
    }
 
+   /**
+    * Adds a YoVariable to this registry's list of YoVariables.
+    * <p>
+    * This method is called by the {@link YoVariable} constructor. Users should never have to call
+    * this method themselves.
+    *
+    * @param variable YoVariable to add to this registry
+    */
    public void registerVariable(YoVariable<?> variable)
    {
       String variableName = variable.getName();
@@ -177,6 +201,11 @@ public class YoVariableRegistry implements YoVariableHolder
       notifyListenersYoVariableWasRegistered(variable);
    }
 
+   /**
+    * Creates a new list of YoVariables and adds this registry's variables only.
+    *
+    * @return list of this registry's YoVariables
+    */
    public ArrayList<YoVariable<?>> getAllVariablesInThisListOnly()
    {
       ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>();
@@ -185,6 +214,12 @@ public class YoVariableRegistry implements YoVariableHolder
       return ret;
    }
 
+   /**
+    * Creates a new list of YoVariables and recursively adds this registry's variables and the
+    * variables of its children.
+    *
+    * @return list of this registry's YoVariables and its child registries' YoVariables
+    */
    public ArrayList<YoVariable<?>> getAllVariablesIncludingDescendants()
    {
       ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>();
@@ -205,6 +240,15 @@ public class YoVariableRegistry implements YoVariableHolder
       }
    }
 
+   /**
+    * Creates a new array of YoVariables containing this registry's variables and the
+    * variables of its children.
+    * <p>
+    * Under the hood this method takes the result of {@link #getAllRegistriesIncludingChildren()}
+    * and packs the contents into an array.
+    *
+    * @return array of this registry's YoVariables and its child registries' YoVariables
+    */
    public YoVariable<?>[] getAllVariablesArray()
    {
       ArrayList<YoVariable<?>> variables = getAllVariablesIncludingDescendants();
@@ -215,6 +259,12 @@ public class YoVariableRegistry implements YoVariableHolder
       return ret;
    }
 
+   /**
+    * Creates a new YoVariableList with this registry's fully qualified name and adds
+    * this registry's YoVariables to the list.
+    *
+    * @return YoVariableList containing this registry's YoVariables
+    */
    public YoVariableList createVarList()
    {
       YoVariableList ret = new YoVariableList(this.nameSpace.getName());
@@ -224,10 +274,19 @@ public class YoVariableRegistry implements YoVariableHolder
       return ret;
    }
 
-   /*
+   /**
     * Returns the first discovered instance of a variable matching the given
     * name. It will first check this registry, then it's children in the order
     * in which they were added. Returns null if no variable is found.
+    *
+    * @param nameSpace String specifying the YoVariable's parent registry's fully
+    *                  qualified NameSpace
+    * @param name name of the YoVariable to get
+    *
+    * @return YoVariable with matching name in the given nameSpace. If no variable
+    * is found, null is returned.
+    *
+    * @throws RuntimeException if {@code name} contains the character "."
     */
    public YoVariable<?> getVariable(String nameSpace, String name)
    {
@@ -237,10 +296,15 @@ public class YoVariableRegistry implements YoVariableHolder
       return getVariable(nameSpace + "." + name);
    }
 
-   /*
+   /**
     * Returns the first discovered instance of a variable matching the given
     * name. It will first check this registry, then it's children in the order
     * in which they were added. Returns null if no variable is found.
+    *
+    * @param name of the YoVariable to get
+    *
+    * @return YoVariable with matching name. If no variable is found, null is
+    * returned.
     */
    public YoVariable<?> getVariable(String name)
    {
@@ -265,9 +329,18 @@ public class YoVariableRegistry implements YoVariableHolder
       return null;
    }
 
-   /*
+   /**
     * Returns all of the variables matching the given name, searching in this
-    * YoVariableRegistry and all of its children.
+    * YoVariableRegistry and all of its children. To match the given name, the
+    * variable's nameSpace must end with the given nameSpace and the variable's
+    * name must be the given name.
+    *
+    * @param nameSpace partially qualified String name of the YoVariable's parent registry
+    * @param name String name of the YoVariable to get
+    *
+    * @return all YoVariables with matching name in the given nameSpace
+    *
+    * @throws RuntimeException if {@code name} contains a "."
     */
    public ArrayList<YoVariable<?>> getVariables(String nameSpace, String name)
    {
@@ -277,9 +350,13 @@ public class YoVariableRegistry implements YoVariableHolder
       return getVariables(nameSpace + "." + name);
    }
 
-   /*
+   /**
     * Returns all of the variables matching the given name, searching in this
     * YoVariableRegistry and all of its children.
+    *
+    * @param name String name of the YoVariable to get
+    *
+    * @return all YoVariables with matching name
     */
    public ArrayList<YoVariable<?>> getVariables(String name)
    {
@@ -290,9 +367,12 @@ public class YoVariableRegistry implements YoVariableHolder
       return ret;
    }
 
-   /*
-    * Adds to listToPack all of the variables matching the given name, searching
-    * in this YoVariableRegistry and all of its children.
+   /**
+    * Adds all of the variables matching the given name to {@code listToPack}, recursively
+    * searching in this YoVariableRegistry and all of its children.
+    *
+    * @param listToPack list to add matching YoVariables to
+    * @param name String name of YoVariables to add to {@code listToPack}
     */
    public void getVariables(ArrayList<YoVariable<?>> listToPack, String name)
    {
@@ -313,11 +393,19 @@ public class YoVariableRegistry implements YoVariableHolder
       }
    }
 
-   /*
+   /**
     * Returns true if this YoVariableRegistry, or any of its children, hold a
     * variable matching this name, and no more than one of them. To match the
     * given name, the variable's nameSpace must end with the given nameSpace and
-    * the variables name must be the given name.
+    * the variable's name must be the given name.
+    *
+    * @param nameSpace partially qualified name of the YoVariableRegistry to search
+    * @param name name of the YoVariable to search for
+    *
+    * @return true if there exists exactly one YoVariable with the given name in this
+    * registry or its children
+    *
+    * @throws RuntimeException if {@code name} contains a "."
     */
    public boolean hasUniqueVariable(String nameSpace, String name)
    {
@@ -327,15 +415,21 @@ public class YoVariableRegistry implements YoVariableHolder
       return hasUniqueVariable(nameSpace + "." + name);
    }
 
-   /*
+   /**
     * Returns true if this YoVariableRegistry, or any of its children, hold a
     * variable of this name, and no more than one of them. To match the given
     * name, the variable's nameSpace must end with the given nameSpace,
     * specified by the last part of the given name, and the variables name must
-    * be the end part of the given name. For example
-    * hasUniqueVariable(b.c.variableName) will be true if this registry is a,
-    * and it has a child b, with a child c, which has a variable named
-    * variableName.
+    * be the end part of the given name.
+    *<p>
+    * For example, hasUniqueVariable("b.c.variableName") will be true if this
+    * registry is a, and it has a child b, with a child c, which has a variable
+    * named variableName.6
+    *
+    * @param name name of the YoVariable to search for
+    *
+    * @return true if there exists exactly one YoVariable with the given name in
+    * this registry or its children
     */
    public boolean hasUniqueVariable(String name)
    {
