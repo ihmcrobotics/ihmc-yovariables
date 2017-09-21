@@ -2,6 +2,9 @@ package us.ihmc.yoVariables.dataBuffer;
 
 import us.ihmc.yoVariables.variable.YoVariable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class DataBufferEntry implements DataEntry
 {
    private final YoVariable<?> variable;
@@ -13,6 +16,8 @@ public class DataBufferEntry implements DataEntry
    private boolean minMaxChanged = true;
 
    private boolean minMaxStale = true;
+
+   private ArrayList<DataEntryChangeListener> changeListeners = new ArrayList<>();
 
    // private double manualMinScaling = 0.0, manualMaxScaling = 1.0;
    private boolean autoScale = true;
@@ -41,15 +46,36 @@ public class DataBufferEntry implements DataEntry
       return inverted;
    }
 
+   @Override public void attachDataEntryChangeListener(DataEntryChangeListener listener)
+   {
+      changeListeners.add(listener);
+   }
+
+   @Override public void detachDataEntryChangeListener(DataEntryChangeListener listener) {
+      changeListeners.remove(listener);
+   }
+
+   @Override public void notifyDataEntryChangeListeners(int index)
+   {
+      for (DataEntryChangeListener listener : this.changeListeners) {
+         listener.notifyOfDataChange(this, index);
+      }
+   }
+
    public int getDataLength()
    {
       return data.length;
    }
-   
+
    @Override
-   public double[] getData()
+   public double[] getData() {
+      return this.getData(0, this.data.length);
+   }
+
+   @Override
+   public double[] getData(int startIndex, int endIndex)
    {
-      return this.data;
+      return Arrays.copyOfRange(this.data, startIndex, endIndex);
    }
 
    @Override
@@ -275,33 +301,38 @@ public class DataBufferEntry implements DataEntry
    public synchronized void setDataAtIndexToYoVariableValue(int index)
    {
       double newVal = variable.getValueAsDouble();
-      double oldVal = data[index];
 
-      data[index] = newVal;
+      if (data[index] != newVal) {
+         double oldVal = data[index];
 
-      if (newVal < this.min)
-      {
-         this.min = newVal;
-         setMinMaxChanged();
+         data[index] = newVal;
+
+         if (newVal < this.min)
+         {
+            this.min = newVal;
+            setMinMaxChanged();
+         }
+
+         if (newVal > this.max)
+         {
+            this.max = newVal;
+            setMinMaxChanged();
+         }
+
+         if (oldVal >= this.max)
+         {
+            setMinMaxChanged();
+            minMaxStale = true;
+         } // reCalcMinMax();
+
+         if (oldVal <= this.min)
+         {
+            setMinMaxChanged();
+            minMaxStale = true;
+         } // reCalcMinMax();
+
+         notifyDataEntryChangeListeners(index);
       }
-
-      if (newVal > this.max)
-      {
-         this.max = newVal;
-         setMinMaxChanged();
-      }
-
-      if (oldVal >= this.max)
-      {
-         setMinMaxChanged();
-         minMaxStale = true;
-      } // reCalcMinMax();
-
-      if (oldVal <= this.min)
-      {
-         setMinMaxChanged();
-         minMaxStale = true;
-      } // reCalcMinMax();
    }
 
    protected void setYoVariableValueToDataAtIndex(int index)
@@ -326,9 +357,9 @@ public class DataBufferEntry implements DataEntry
    }
 
    @Override
-   public synchronized boolean minMaxChanged()
+   public synchronized boolean hasMinMaxChanged()
 
-   // public boolean minMaxChanged()
+   // public boolean hasMinMaxChanged()
    {
       return minMaxChanged;
    }

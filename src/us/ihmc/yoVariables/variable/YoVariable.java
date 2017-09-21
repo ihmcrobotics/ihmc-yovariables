@@ -403,7 +403,7 @@ public abstract class YoVariable<T extends YoVariable<T>>
    }
 
    /**
-    * Calls {@link VariableChangedListener#variableChanged(YoVariable)} with this variable for every {@link VariableChangedListener} attached to this variable.
+    * Calls {@link VariableChangedListener#notifyOfVariableChange(YoVariable)} with this variable for every {@link VariableChangedListener} attached to this variable.
     */
    public void notifyVariableChangedListeners()
    {
@@ -411,7 +411,7 @@ public abstract class YoVariable<T extends YoVariable<T>>
       {
          for(int i = 0; i <  variableChangedListeners.size(); i++)
          {
-            variableChangedListeners.get(i).variableChanged(this);
+            variableChangedListeners.get(i).notifyOfVariableChange(this);
          }
       }
    }

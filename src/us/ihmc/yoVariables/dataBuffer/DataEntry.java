@@ -14,6 +14,8 @@ public interface DataEntry
 
    public abstract double[] getData();
 
+   public abstract double[] getData(int startIndex, int endIndex);
+
    public abstract double getMax();
 
    public abstract double getMin();
@@ -26,7 +28,7 @@ public interface DataEntry
 
    public abstract void resetMinMaxChanged();
 
-   public abstract boolean minMaxChanged();
+   public abstract boolean hasMinMaxChanged();
 
    public abstract double getMax(int leftIndex, int rightIndex, int leftPlotIndex, int rightPlotIndex);
 
@@ -41,4 +43,10 @@ public interface DataEntry
    public abstract void setInverted(boolean selected);
 
    public abstract boolean getInverted();
+
+   public abstract void attachDataEntryChangeListener(DataEntryChangeListener listener);
+
+   public abstract void detachDataEntryChangeListener(DataEntryChangeListener listener);
+
+   public abstract void notifyDataEntryChangeListeners(int index);
 }

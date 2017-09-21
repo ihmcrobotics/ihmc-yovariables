@@ -37,7 +37,7 @@ public class DataBuffer extends YoVariableHolderImplementation
 
    private boolean clearing = false;
 
-   private boolean safeToManualyChangeIndex = true;
+   private boolean safeToManuallyChangeIndex = true;
 
    @Override
    public void closeAndDispose()
@@ -54,17 +54,18 @@ public class DataBuffer extends YoVariableHolderImplementation
    public DataBuffer(int bufferSize)
    {
       entries = new ArrayList<DataBufferEntry>();
+
       this.bufferSize = bufferSize;
    }
 
    public void setSafeToChangeIndex(boolean safe)
    {
-      this.safeToManualyChangeIndex = safe;
+      this.safeToManuallyChangeIndex = safe;
    }
 
    public boolean isSafeToChangeIndex()
    {
-      return safeToManualyChangeIndex;
+      return safeToManuallyChangeIndex;
    }
 
    public int getBufferSize()
@@ -641,7 +642,7 @@ public class DataBuffer extends YoVariableHolderImplementation
 
    private void setIndex(int index, boolean notifySimulationRewoundListeners)
    {
-      if (safeToManualyChangeIndex)
+      if (safeToManuallyChangeIndex)
       {
          this.index = index;
 
@@ -663,7 +664,7 @@ public class DataBuffer extends YoVariableHolderImplementation
          // So there may be thread timing issues here. We may need to do some sort of synchronization and/or change it so that the
          // simulationRewoundListeners are notified in the simulation/control thread.
          if (notifySimulationRewoundListeners)
-            notifySimulationRewoundListenerListeners();
+            notifyRewindListeners();
       }
    }
 
@@ -695,6 +696,12 @@ public class DataBuffer extends YoVariableHolderImplementation
       indexChangedListeners.add(indexChangedListener);
    }
 
+   public void detachIndexChangedListener(IndexChangedListener indexChangedListener) {
+      if (indexChangedListeners != null) {
+         indexChangedListeners.add(indexChangedListener);
+      }
+   }
+
    @Override
    public int getIndex()
    {
@@ -722,11 +729,12 @@ public class DataBuffer extends YoVariableHolderImplementation
     */
    private boolean tick(int n, boolean notifySimulationRewoundListeners)
    {
-      if (safeToManualyChangeIndex)
+      if (safeToManuallyChangeIndex)
       {
          int newIndex = this.index + n;
 
          boolean rolledOver = !isIndexBetweenInAndOutPoint(newIndex);
+
          if (rolledOver)
          {
             if (n >= 0)
@@ -840,7 +848,7 @@ public class DataBuffer extends YoVariableHolderImplementation
       }
    }
 
-   public void notifySimulationRewoundListenerListeners()
+   public void notifyRewindListeners()
    {
       if (simulationRewoundListeners != null)
       {
@@ -848,7 +856,7 @@ public class DataBuffer extends YoVariableHolderImplementation
          {
             RewoundListener simulationRewoundListener = simulationRewoundListeners.get(i);
 
-            simulationRewoundListener.wasRewound();
+            simulationRewoundListener.notifyOfRewind();
          }
       }
 
@@ -865,11 +873,11 @@ public class DataBuffer extends YoVariableHolderImplementation
 
             if (t != null)
             {
-               indexChangedListener.indexChanged(index, t.getDoubleValue());
+               indexChangedListener.notifyOfIndexChange(index);
             }
             else
             {
-               indexChangedListener.indexChanged(index, 0.0);
+               indexChangedListener.notifyOfIndexChange(index);
             }
          }
       }
@@ -1075,7 +1083,4 @@ public class DataBuffer extends YoVariableHolderImplementation
 
       return false;
    }
-
-
-
 }
