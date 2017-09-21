@@ -29,7 +29,7 @@ import us.ihmc.yoVariables.variable.YoVariable;
 public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<T>> implements EnumProvider<T>
 {
    private final YoEnum<T> value;
-   private final T initialValue;
+   private final int initialOrdinal;
    
    /**
     * Create a new Enum parameter, registered to the namespace of the registry.
@@ -86,13 +86,76 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
    {
       super(name, description);
 
+      for(T constant : enumType.getEnumConstants())
+      {
+         if(constant.toString().equalsIgnoreCase("null"))
+         {
+            throw new RuntimeException("\"" + constant.toString() + "\" is a reserved keyword for EnumParameters. No enum constants named \"null\"(case insensitive) are allowed.");
+         }
+      }
+      
       this.value = new YoEnumParameter(name, description, registry, enumType, allowNullValues);
       if(!this.value.getAllowNullValue() && initialValue == null)
       {
          throw new RuntimeException("Cannot initialize to null value, allowNullValues is false");
       }
       
-      this.initialValue = initialValue;
+      if(initialValue == null)
+      {
+         this.initialOrdinal = YoEnum.NULL_VALUE;
+      }
+      else
+      {
+         this.initialOrdinal = initialValue.ordinal();
+      }
+      
+
+      setSuggestedRange(0, enumType.getEnumConstants().length - 1);
+   }
+   
+   /**
+    * Create a new Enum parameter, registered to the namespace of the registry.
+    * 
+    * This constructor allows a enum parameter based on string values. This should not be used directly by the user,
+    * but only internally in the robot data logger. 
+    * 
+    * @param name Desired name. Must be unique in the registry
+    * @param description User readable description that describes the purpose of this parameter
+    * @param registry YoVariableRegistry to store under
+    * @param allowNullValues Boolean determining if null enum values are permitted
+    * @param constants Array of enum constants
+    */
+   public EnumParameter(String name, String description, YoVariableRegistry registry, boolean allowNullValues, String... constants)
+   {
+      super(name, description);
+      for(String constant : constants)
+      {
+         if(constant == null)
+         {
+            throw new RuntimeException("One of the enum constants is null.");
+         }
+         if(constant.equalsIgnoreCase("null"))
+         {
+            throw new RuntimeException("\"" + constant.toString() + "\" is a reserved keyword for EnumParameters. No enum constants named \"null\"(case insensitive) are allowed.");
+         }
+      }
+      this.value = new YoEnumParameter(name, description, registry, allowNullValues, constants);
+
+      if(!this.value.getAllowNullValue() && constants.length == 0)
+      {
+         throw new RuntimeException("Cannot initialize an enum parameter with zero elements if allowNullValues is false.");
+      }
+      
+      if(allowNullValues || constants.length == 0)
+      {
+         this.initialOrdinal = YoEnum.NULL_VALUE;
+      }
+      else
+      {
+         this.initialOrdinal = 0;
+      }
+      
+      setSuggestedRange(0, constants.length - 1);
    }
 
    /**
@@ -127,15 +190,15 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
    {
       if("null".equalsIgnoreCase(valueString))
       {
-         this.value.set(null);
+         this.value.set(YoEnum.NULL_VALUE);
          return;
       }
       
-      for(int i = 0; i < this.value.getEnumValues().length; i++)
+      for(int i = 0; i < this.value.getEnumValuesAsString().length; i++)
       {
-         if(this.value.getEnumValues()[i].toString().equals(valueString))
+         if(this.value.getEnumValuesAsString()[i].equals(valueString))
          {
-            this.value.set(this.value.getEnumValues()[i]);
+            this.value.set(i);
             return;
          }
       }
@@ -146,7 +209,7 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
    @Override
    void setToDefault()
    {
-      this.value.set(initialValue);
+      this.value.set(initialOrdinal);
    }
    
    /**
@@ -163,6 +226,11 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
          super(name, description, registry, enumType, allowNullValues);
       }
       
+      public YoEnumParameter(String name, String description, YoVariableRegistry registry, boolean allowNullValues, String... values)
+      {
+         super(name, description, registry, allowNullValues, values);
+      }
+      
       @Override
       public boolean isParameter()
       {
@@ -173,6 +241,35 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
       public YoParameter<?> getParameter()
       {
          return EnumParameter.this;
+      }
+      
+      
+      @Override
+      public YoEnum<T> duplicate(YoVariableRegistry newRegistry)
+      {
+         EnumParameter<T> newParameter;
+         if(isBackedByEnum())
+         {
+            T initialValue;
+            if(initialOrdinal == NULL_VALUE)
+            {
+               initialValue = null;
+            }
+            else
+            {
+               initialValue = getEnumValues()[initialOrdinal];
+            }
+            
+            newParameter = new EnumParameter<T>(getName(), getDescription(), newRegistry, getEnumType(), getAllowNullValue(), initialValue);
+         }
+         else
+         {
+            newParameter = new EnumParameter<>(getName(), getDescription(), newRegistry, getAllowNullValue(), getEnumValuesAsString());
+         }
+         
+         newParameter.loadDefault();
+         newParameter.value.set(value.getOrdinal());
+         return newParameter.value;
       }
    }
 

@@ -80,6 +80,8 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
 
       this.value = new YoBooleanParameter(name, description, registry);      
       this.initialValue = initialValue;
+      
+      setSuggestedRange(0, 1);
    }
 
    /**
@@ -145,6 +147,15 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
       public YoParameter<?> getParameter()
       {
          return BooleanParameter.this;
+      }
+      
+      @Override
+      public YoBoolean duplicate(YoVariableRegistry newRegistry)
+      {
+         BooleanParameter newParameter = new BooleanParameter(getName(), getDescription(), newRegistry, initialValue);
+         newParameter.loadDefault();
+         newParameter.value.set(value.getValue());
+         return newParameter.value;
       }
    }
 

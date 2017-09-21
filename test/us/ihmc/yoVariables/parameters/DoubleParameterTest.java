@@ -15,13 +15,16 @@
  */
 package us.ihmc.yoVariables.parameters;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.listener.ParameterChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.variable.YoDouble;
 
 public class DoubleParameterTest
 {
@@ -38,7 +41,7 @@ public class DoubleParameterTest
       a.addChild(b);
       b.addChild(c);
 
-      DoubleParameter param = new DoubleParameter("param", c, initialValue);
+      DoubleParameter param = new DoubleParameter("param", "paramDescription", c, initialValue, -20.3, 24.5);
 
       return param;
    }
@@ -52,6 +55,30 @@ public class DoubleParameterTest
       test.loadDefault();
       
       assertTrue(Double.isNaN(test.getValue()));
+      
+   }
+
+   @Test(timeout = 1000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testDuplicate()
+   {
+      DoubleParameter param = createParameterWithNamespace();
+      YoDouble var = (YoDouble) param.getVariable();
+      param.loadDefault();
+      
+      var.set(632.0);
+      
+      YoVariableRegistry newRegistry = new YoVariableRegistry("newRegistry");
+      YoDouble newVar = var.duplicate(newRegistry);
+      DoubleParameter newParam = (DoubleParameter) newVar.getParameter();
+      
+      assertEquals(param.getName(), newParam.getName());
+      assertEquals(param.getDescription(), newParam.getDescription());
+      assertEquals(param.getValue(), newParam.getValue(), 1e-9);
+      assertEquals(var.getManualScalingMin(), newVar.getManualScalingMin(), 1e-9);
+      assertEquals(var.getManualScalingMax(), newVar.getManualScalingMax(), 1e-9);
+      
+      
       
    }
 
@@ -132,7 +159,7 @@ public class DoubleParameterTest
       boolean set = false;
 
       @Override
-      public void variableChanged(YoParameter<?> v)
+      public void notifyOfParameterChange(YoParameter<?> v)
       {
          set = true;
       }

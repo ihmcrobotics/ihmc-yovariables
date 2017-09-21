@@ -169,6 +169,11 @@ public abstract class YoParameter<T extends YoParameter<T>>
    abstract void setToString(String valueString);
 
    abstract void setToDefault();
+   
+   void setSuggestedRange(double min, double max)
+   {
+      getVariable().setManualScalingMinMax(min, max);
+   }
 
    private static void checkForIllegalCharacters(String name)
    {
@@ -213,11 +218,11 @@ public abstract class YoParameter<T extends YoParameter<T>>
       
 
       @Override
-      public void variableChanged(YoVariable<?> v)
+      public void notifyOfVariableChange(YoVariable<?> v)
       {
          for(int i = 0; i < parameterChangedListeners.size(); i++)
          {
-            parameterChangedListeners.get(i).variableChanged(v.getParameter());
+            parameterChangedListeners.get(i).notifyOfParameterChange(v.getParameter());
          }
       }
 

@@ -558,7 +558,7 @@ public class YoVariableTest
    {
       private YoVariable<?> lastVariableChanged = null;
 
-      public void variableChanged(YoVariable<?> v)
+      public void notifyOfVariableChange(YoVariable<?> v)
       {
          lastVariableChanged = v;
       }

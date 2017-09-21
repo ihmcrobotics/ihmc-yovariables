@@ -473,9 +473,9 @@ public class DataBufferEntryTest
       int tempInteger = random.nextInt(500) + 11;
       yoDouble.set(tempInteger);
       dataBufferEntry.setDataAtIndexToYoVariableValue(0);
-      assertTrue(dataBufferEntry.minMaxChanged());
+      assertTrue(dataBufferEntry.hasMinMaxChanged());
       dataBufferEntry.resetMinMaxChanged();
-      assertFalse(dataBufferEntry.minMaxChanged());
+      assertFalse(dataBufferEntry.hasMinMaxChanged());
    }
 
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
