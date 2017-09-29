@@ -11,61 +11,65 @@ public class YoVariablizer
 {
    public void Yo(Object toYovariablize, String name, YoVariableRegistry forRegistry)
    {
-      name = name.toLowerCase();
-
-      for (Method m : toYovariablize.getClass().getMethods())
+      try
       {
-         for (Annotation a : m.getAnnotations())
-         {
-            if (a.annotationType().equals(Yo.class))
-            {
-               if (m.getParameterCount() == 0)
-               {
-                  String fieldName = String.format("%s_%s", name, m.getName().toLowerCase().replace("get", ""));
+         name = name.toLowerCase();
 
-                  if (m.getReturnType().equals(Double.class) || m.getReturnType().equals(double.class))
+         for (Method m : toYovariablize.getClass().getMethods())
+         {
+            for (Annotation a : m.getAnnotations())
+            {
+               if (a.annotationType().equals(Yo.class))
+               {
+                  if (m.getParameterCount() == 0)
                   {
-                     new YoDoubleFielded(fieldName, forRegistry, toYovariablize, m);
-                  }
-                  else if (m.getReturnType().equals(Integer.class) || m.getReturnType().equals(int.class))
-                  {
-                     new YoIntegerFielded(fieldName, forRegistry, toYovariablize, m);
-                  } else if (m.getReturnType().equals(Double[].class) || m.getReturnType().equals(double[].class)) {
-                     if (((Yo) a).length() > 0) {
-                        for (int i = 0; i < ((Yo) a).length(); ++i) {
-                           new YoDoubleFieldedArray(String.format("%s_%d", fieldName, i), forRegistry, toYovariablize, m, i);
+                     String fieldName = String.format("%s_%s", name, m.getName().toLowerCase().replace("get", ""));
+
+                     if (m.getReturnType().equals(Double.class) || m.getReturnType().equals(double.class))
+                     {
+                        new YoDoubleFielded(fieldName, forRegistry, toYovariablize, m);
+                     }
+                     else if (m.getReturnType().equals(Integer.class) || m.getReturnType().equals(int.class))
+                     {
+                        new YoIntegerFielded(fieldName, forRegistry, toYovariablize, m);
+                     }
+                     else if (m.getReturnType().equals(Double[].class) || m.getReturnType().equals(double[].class))
+                     {
+                        if (((Yo) a).length() > 0)
+                        {
+                           for (int i = 0; i < ((Yo) a).length(); ++i)
+                           {
+                              new YoDoubleFieldedArray(String.format("%s_%d", fieldName, i), forRegistry, toYovariablize, m, i);
+                           }
                         }
                      }
-                  } else if (m.getReturnType().equals(Integer[].class) || m.getReturnType().equals(int[].class)) {
-                     if (((Yo) a).length() > 0) {
-                        for (int i = 0; i < ((Yo) a).length(); ++i) {
-                           new YoIntegerFieldedArray(String.format("%s_%d", fieldName, i), forRegistry, toYovariablize, m, i);
+                     else if (m.getReturnType().equals(Integer[].class) || m.getReturnType().equals(int[].class))
+                     {
+                        if (((Yo) a).length() > 0)
+                        {
+                           for (int i = 0; i < ((Yo) a).length(); ++i)
+                           {
+                              new YoIntegerFieldedArray(String.format("%s_%d", fieldName, i), forRegistry, toYovariablize, m, i);
+                           }
                         }
                      }
+                     else
+                     {
+                        Yo(m.invoke(toYovariablize), fieldName, forRegistry);
+                     }
                   }
-               } else {
-                  System.err.println("Could not yovariablize " + m.getName() + " in yovariablized " + name + ": must be a getter (0 parameters)");
+                  else
+                  {
+                     throw new RuntimeException("method " + m.getName() + " must be getter (0 arguments) to use Yo annotation");
+                  }
                }
             }
          }
       }
-
-      for (Field f : toYovariablize.getClass().getFields())
+      catch (Exception e)
       {
-         for (Annotation a : f.getAnnotations())
-         {
-            if (a.annotationType().equals(Yo.class))
-            {
-               try
-               {
-                  Yo(f.get(toYovariablize), String.format("%s_%s", name, f.getName().toLowerCase()), forRegistry);
-               }
-               catch (Exception e)
-               {
-                  System.err.println("Could not yovariablize " + f.getName() + " in yovariablized " + name);
-               }
-            }
-         }
+         System.err.println("Could not yovariablize " + name + ": " + e.getMessage());
+         e.printStackTrace();
       }
    }
 }
