@@ -16,7 +16,7 @@ apply plugin: "com.jfrog.bintray"
 
 sourceCompatibility = 1.8
 group = "us.ihmc"
-version = '0.2.1'
+version = '0.2.3'
 
 repositories ihmc.ihmcDefaultArtifactProxies()
 

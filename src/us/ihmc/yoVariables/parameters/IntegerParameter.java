@@ -223,6 +223,15 @@ public class IntegerParameter extends YoParameter<IntegerParameter> implements I
       {
          return IntegerParameter.this;
       }
+      
+      @Override
+      public YoInteger duplicate(YoVariableRegistry newRegistry)
+      {
+         IntegerParameter newParameter = new IntegerParameter(getName(), getDescription(), newRegistry, initialValue, (int) getManualScalingMin(), (int) getManualScalingMax());
+         newParameter.loadDefault();
+         newParameter.value.set(value.getValue());
+         return newParameter.value;
+      }
    }
 
    

@@ -16,12 +16,15 @@
 package us.ihmc.yoVariables.parameters;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.listener.ParameterChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.variable.YoEnum;
 
 public class EnumParameterTest
 {
@@ -44,7 +47,7 @@ public class EnumParameterTest
       a.addChild(b);
       b.addChild(c);
 
-      EnumParameter<TestEnum> param = new EnumParameter<>("param", c, TestEnum.class, true, initialValue);
+      EnumParameter<TestEnum> param = new EnumParameter<>("param", "paramDescription", c, TestEnum.class, true, initialValue);
 
       return param;
    }
@@ -61,6 +64,60 @@ public class EnumParameterTest
       assertEquals(null, yesnull.getValue());
       
 
+   }
+   
+
+   @Test(timeout = 1000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testDuplicate()
+   {
+      EnumParameter<TestEnum> param = createParameterWithNamespace();
+      @SuppressWarnings("unchecked")
+      YoEnum<TestEnum> var = (YoEnum<TestEnum>) param.getVariable();
+      param.loadDefault();
+      
+      var.set(TestEnum.E);
+      
+      YoVariableRegistry newRegistry = new YoVariableRegistry("newRegistry");
+      YoEnum<TestEnum> newVar = var.duplicate(newRegistry);
+      @SuppressWarnings("unchecked")
+      EnumParameter<TestEnum> newParam = (EnumParameter<TestEnum>) newVar.getParameter();
+      
+      assertEquals(param.getName(), newParam.getName());
+      assertEquals(param.getDescription(), newParam.getDescription());
+      assertEquals(param.getValue(), newParam.getValue());
+      
+      assertEquals(var.getAllowNullValue(), newVar.getAllowNullValue());
+      assertArrayEquals(var.getEnumValues(), newVar.getEnumValues());
+      
+   }
+   
+   @Test(timeout = 1000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testStringDuplicate()
+   {
+      YoVariableRegistry root = new YoVariableRegistry("root");
+
+      EnumParameter<?> param = new EnumParameter<>("testString", "stringDescription", root, true, "A", "B", "C", "D", "E", "F");
+      @SuppressWarnings("unchecked")
+      YoEnum<TestEnum> var = (YoEnum<TestEnum>) param.getVariable();
+      param.loadDefault();
+      
+      var.set(4);
+      
+      YoVariableRegistry newRegistry = new YoVariableRegistry("newRegistry");
+      YoEnum<TestEnum> newVar = var.duplicate(newRegistry);
+      @SuppressWarnings("unchecked")
+      EnumParameter<TestEnum> newParam = (EnumParameter<TestEnum>) newVar.getParameter();
+      
+      assertEquals(param.getName(), newParam.getName());
+      assertEquals(param.getDescription(), newParam.getDescription());
+      assertEquals(param.getValueAsString(), newParam.getValueAsString());
+      
+      assertEquals(var.isBackedByEnum(), newVar.isBackedByEnum());
+      assertEquals(var.getAllowNullValue(), newVar.getAllowNullValue());
+      assertArrayEquals(var.getEnumValuesAsString(), newVar.getEnumValuesAsString());
+      
    }
    
    @Test(timeout = 1000, expected = RuntimeException.class)

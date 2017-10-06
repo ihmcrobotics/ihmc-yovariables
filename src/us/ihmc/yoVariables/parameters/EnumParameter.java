@@ -242,6 +242,35 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
       {
          return EnumParameter.this;
       }
+      
+      
+      @Override
+      public YoEnum<T> duplicate(YoVariableRegistry newRegistry)
+      {
+         EnumParameter<T> newParameter;
+         if(isBackedByEnum())
+         {
+            T initialValue;
+            if(initialOrdinal == NULL_VALUE)
+            {
+               initialValue = null;
+            }
+            else
+            {
+               initialValue = getEnumValues()[initialOrdinal];
+            }
+            
+            newParameter = new EnumParameter<T>(getName(), getDescription(), newRegistry, getEnumType(), getAllowNullValue(), initialValue);
+         }
+         else
+         {
+            newParameter = new EnumParameter<>(getName(), getDescription(), newRegistry, getAllowNullValue(), getEnumValuesAsString());
+         }
+         
+         newParameter.loadDefault();
+         newParameter.value.set(value.getOrdinal());
+         return newParameter.value;
+      }
    }
 
    

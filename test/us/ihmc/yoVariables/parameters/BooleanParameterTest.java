@@ -15,13 +15,16 @@
  */
 package us.ihmc.yoVariables.parameters;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.listener.ParameterChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.variable.YoBoolean;
 
 public class BooleanParameterTest
 {
@@ -38,7 +41,7 @@ public class BooleanParameterTest
       a.addChild(b);
       b.addChild(c);
 
-      BooleanParameter param = new BooleanParameter("param", c, initialValue);
+      BooleanParameter param = new BooleanParameter("param", "paramDescription", c, initialValue);
 
       return param;
    }
@@ -91,6 +94,27 @@ public class BooleanParameterTest
       assertEquals(initialValue, param.getValue());
    }
 
+   @Test(timeout = 1000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testDuplicate()
+   {
+      BooleanParameter param = createParameterWithNamespace();
+      YoBoolean var = (YoBoolean) param.getVariable();
+      param.loadDefault();
+      
+      var.set(true);
+      
+      YoVariableRegistry newRegistry = new YoVariableRegistry("newRegistry");
+      YoBoolean newVar = var.duplicate(newRegistry);
+      BooleanParameter newParam = (BooleanParameter) newVar.getParameter();
+      
+      assertEquals(param.getName(), newParam.getName());
+      assertEquals(param.getDescription(), newParam.getDescription());
+      assertEquals(param.getValue(), newParam.getValue());
+      
+      
+   }
+   
    @Test(timeout = 1000)
    @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testListener()
