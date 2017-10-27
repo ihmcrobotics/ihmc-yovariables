@@ -23,7 +23,7 @@ public class KeyPointsTest
       keyPoints = null;
    }
 
-   @Test
+   @Test(timeout = 30000)
    public void testSetKeyPoint()
    {
       assertTrue(keyPoints.getPoints().size() == 0);
@@ -35,7 +35,7 @@ public class KeyPointsTest
       assertTrue(keyPoints.getPoints().size() == 3);
    }
 
-   @Test
+   @Test(timeout = 30000)
    public void testRemoveDuplicateKeyPoint()
    {
       assertTrue(keyPoints.getPoints().size() == 0);
@@ -46,7 +46,7 @@ public class KeyPointsTest
       assertTrue(keyPoints.getPoints().size() == 0);
    }
 
-   @Test
+   @Test(timeout = 30000)
    public void testGetNextTime()
    {
       int[] keyPointTimes = new int[]{3,16,20,48,75};
@@ -63,7 +63,7 @@ public class KeyPointsTest
       assertTrue(nextTimeOutOfRange == 3);
    }
 
-   @Test
+   @Test(timeout = 30000)
    public void getPreviousTime()
    {
       int[] keyPointTimes = new int[]{3,16,20,48,75};
@@ -80,7 +80,7 @@ public class KeyPointsTest
       assertTrue(previousTimeOutOfRange == 75);
    }
 
-   @Test
+   @Test(timeout = 30000)
    public void testTrim()
    {
       int[] keyPointTimes = new int[]{3,16,20,48,75};
@@ -103,7 +103,7 @@ public class KeyPointsTest
       assertTrue(keyPoints.getPoints().get(3) == 75);
    }
 
-   @Test
+   @Test(timeout = 30000)
    public void testUseKeyPoints()
    {
       assertFalse(keyPoints.useKeyPoints());
