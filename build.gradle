@@ -33,13 +33,13 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile group: "junit", name: "junit", version: "4.12"
     testCompile group: 'us.ihmc', name: 'ihmc-continuous-integration-framework', version: '0.9.4'
-    testCompile group: "us.ihmc", name: "ihmc-commons-testing", version: "0.12.1"
+    testCompile group: "us.ihmc", name: "ihmc-commons-testing", version: "0.17.0"
 
-    compile group: "us.ihmc", name: "ihmc-commons", version: "0.12.1"
+    compile group: "us.ihmc", name: "ihmc-commons", version: "0.17.0"
     compile group: 'org.apache.commons', name: 'commons-math3', version: '3.3'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
 }
 
 project.ext.fullVersion = version
