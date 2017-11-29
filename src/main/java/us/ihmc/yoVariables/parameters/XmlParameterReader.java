@@ -86,7 +86,7 @@ public class XmlParameterReader extends AbstractParameterReader
       }
       else
       {
-         System.err.println("Parameter " + fullname + " not found, falling back to default value.");
+         System.err.println("[" + getClass().getSimpleName() + "] Parameter " + fullname + " not found, falling back to default value.");
          return false;
       }
    }
