@@ -194,16 +194,14 @@ public abstract class YoParameter<T extends YoParameter<T>>
 
    void load(String valueString)
    {
-      setToString(valueString);
-
       loaded = true;
+      setToString(valueString);
    }
 
    void loadDefault()
    {
-      setToDefault();
-
       loaded = true;
+      setToDefault();
    }
    
    /**
