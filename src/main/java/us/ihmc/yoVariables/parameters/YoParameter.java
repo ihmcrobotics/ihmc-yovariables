@@ -207,6 +207,16 @@ public abstract class YoParameter<T extends YoParameter<T>>
    }
    
    /**
+    * Check if this parameter has been loaded
+    * 
+    * @return true if this parameter has been loaded and can be used
+    */
+   public boolean isLoaded()
+   {
+      return loaded;
+   }
+   
+   /**
     * Helper class to delegate VariableChangedListeners to ParameterChangedListeners
     * 
     * @author Jesper Smith
@@ -244,7 +254,7 @@ public abstract class YoParameter<T extends YoParameter<T>>
          parameterChangedListeners.clear();
       }
 
-
+ 
       public void add(ParameterChangedListener parameterChangedListener)
       {
          parameterChangedListeners.add(parameterChangedListener);
