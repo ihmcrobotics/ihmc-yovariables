@@ -21,13 +21,13 @@ ihmc {
 }
 
 dependencies {
-   compile group: "us.ihmc", name: "ihmc-commons", version: "0.17.0"
+   compile group: "us.ihmc", name: "ihmc-commons", version: "0.17.1"
    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.3'
    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
 }
 
 testDependencies {
    compile group: "junit", name: "junit", version: "4.12"
-   compile group: 'us.ihmc', name: 'ihmc-ci-core-api', version: '0.17.0'
-   compile group: "us.ihmc", name: "ihmc-commons-testing", version: "0.17.0"
+   compile group: 'us.ihmc', name: 'ihmc-ci-core-api', version: '0.17.1'
+   compile group: "us.ihmc", name: "ihmc-commons-testing", version: "0.17.1"
 }
