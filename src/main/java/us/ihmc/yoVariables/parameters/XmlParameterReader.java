@@ -46,11 +46,27 @@ public class XmlParameterReader extends AbstractParameterReader
    {
       for (InputStream dataStream : dataStreams)
       {
-         readStream(dataStream);
+         readStream(dataStream, false);
       }
    }
 
-   private void readStream(InputStream data) throws IOException
+   /**
+    * Will overwrite parameters in the parameter reader with parameters specified in the
+    * provided streams. This method will throw a {@link RuntimeException} if any parameter
+    * that needs to be overwritten does not exist.
+    *
+    * @param overwriteParameters
+    * @throws IOException
+    */
+   public void overwrite(InputStream... overwriteParameters) throws IOException
+   {
+      for (InputStream dataStream : overwriteParameters)
+      {
+         readStream(dataStream, true);
+      }
+   }
+
+   private void readStream(InputStream data, boolean forceOverwrite) throws IOException
    {
       try
       {
@@ -62,7 +78,7 @@ public class XmlParameterReader extends AbstractParameterReader
          {
             for(Registry registry : parameterRoot.getRegistries())
             {
-               addRegistry(registry.getName(), registry);
+               addRegistry(registry.getName(), registry, forceOverwrite);
             }
          }
       }
@@ -73,7 +89,7 @@ public class XmlParameterReader extends AbstractParameterReader
 
    }
 
-   private void addRegistry(String path, Registry registry)
+   private void addRegistry(String path, Registry registry, boolean forceOverwrite)
    {
       if (registry.getParameters() != null)
       {
@@ -84,6 +100,10 @@ public class XmlParameterReader extends AbstractParameterReader
             {
                System.out.println(prefix + " overwriting " + param.getName());
             }
+            else if (forceOverwrite)
+            {
+               throw new RuntimeException(prefix + " trying to overwrite parameter " + param.getName() + " but it does not exist.");
+            }
          }
       }
       
@@ -92,8 +112,8 @@ public class XmlParameterReader extends AbstractParameterReader
          for(Registry child : registry.getRegistries())
          {
             String childPath = path + "." + child.getName();
-            addRegistry(childPath, child);
-         }         
+            addRegistry(childPath, child, forceOverwrite);
+         }
       }
    }
 
