@@ -30,9 +30,27 @@ import us.ihmc.yoVariables.registry.NameSpace;
 
 public class XmlParameterReader extends AbstractParameterReader
 {
+   private static final String prefix = "[" + XmlParameterReader.class.getSimpleName() + "]:";
+
    private final HashMap<String, String> parameterValues = new HashMap<>();
 
-   public XmlParameterReader(InputStream data) throws IOException
+   /**
+    * Creates a parameter reader that will read the provided data streams. If more than
+    * one data stream is passed to the reader multiple occurrences of the same parameter
+    * will cause the parameter value to be overwritten with the new value.
+    *
+    * @param dataStreams
+    * @throws IOException
+    */
+   public XmlParameterReader(InputStream... dataStreams) throws IOException
+   {
+      for (InputStream dataStream : dataStreams)
+      {
+         readStream(dataStream);
+      }
+   }
+
+   private void readStream(InputStream data) throws IOException
    {
       try
       {
@@ -57,12 +75,15 @@ public class XmlParameterReader extends AbstractParameterReader
 
    private void addRegistry(String path, Registry registry)
    {
-      if(registry.getParameters() != null)
+      if (registry.getParameters() != null)
       {
-         for(Parameter param : registry.getParameters())
+         for (Parameter param : registry.getParameters())
          {
             String name = path + "." + param.getName();
-            parameterValues.put(name, param.getValue());
+            if (parameterValues.put(name, param.getValue()) != null)
+            {
+               System.out.println(prefix + " overwriting " + param.getName());
+            }
          }
       }
       
@@ -86,7 +107,7 @@ public class XmlParameterReader extends AbstractParameterReader
       }
       else
       {
-         System.err.println("[" + getClass().getSimpleName() + "] Parameter " + fullname + " not found, falling back to default value.");
+         System.err.println(prefix + " Parameter " + fullname + " not found, falling back to default value.");
          return false;
       }
    }
