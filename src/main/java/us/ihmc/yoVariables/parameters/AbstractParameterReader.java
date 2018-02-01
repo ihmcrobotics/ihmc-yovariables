@@ -35,32 +35,34 @@ public abstract class AbstractParameterReader
     * If a parameter cannot be found in the parameter store, it is initialized
     * to its default.
     * 
-    * @param registry
+    * @param registry with parameters that need to be loaded
+    * @return the number of parameters that could not be loaded
     */
-   public void readParametersInRegistry(YoVariableRegistry registry)
+   public int readParametersInRegistry(YoVariableRegistry registry)
    {
       List<YoParameter<?>> parameters = registry.getAllParameters();
-      
-      for(int i = 0; i < parameters.size(); i++)
+      int defaultCount = 0;
+
+      for (int i = 0; i < parameters.size(); i++)
       {
          YoParameter<?> parameter = parameters.get(i);
-         
-         
+
          NameSpace relativeNamespace = getRelativeNamespace(parameter.getNameSpace(), registry);
-         
-         if(hasValue(relativeNamespace, parameter.getName()))
+
+         if (hasValue(relativeNamespace, parameter.getName()))
          {
             String value = getValue(relativeNamespace, parameter.getName());
             parameter.load(value);
-            
+
          }
          else
          {
             parameter.loadDefault();
+            defaultCount++;
          }
-         
-         
       }
+
+      return defaultCount;
    }
    
    /**
