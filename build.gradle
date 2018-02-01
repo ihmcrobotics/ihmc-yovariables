@@ -1,136 +1,33 @@
 buildscript {
-  repositories {
-    maven {
-      url "https://plugins.gradle.org/m2/"
-    }
-  }
-  dependencies {
-    classpath "gradle.plugin.us.ihmc.gradle:ihmc-build:0.0.19"
-  }
+   repositories {
+      maven { url "https://plugins.gradle.org/m2/" }
+      mavenLocal()
+   }
+   dependencies {
+      classpath "us.ihmc:ihmc-build:0.12.5"
+   }
 }
+apply plugin: "us.ihmc.ihmc-build"
 
-apply plugin: "us.ihmc.gradle.ihmc-build"
-apply plugin: "java"
-apply plugin: "maven-publish"
-apply plugin: "com.jfrog.bintray"
+ihmc {
+   group = "us.ihmc"
+   version = "0.2.7"
+   vcsUrl = "https://github.com/ihmcrobotics/ihmc-yovariables"
+   openSource = true
+   maintainer = "Nathan Mertins"
 
-sourceCompatibility = 1.8
-group = "us.ihmc"
-version = '0.2.4'
-
-repositories ihmc.ihmcDefaultArtifactProxies()
-
-repositories {
-    mavenLocal()
-    jcenter()
-    mavenCentral()
-    maven {
-        url "http://artifactory.ihmc.us/artifactory/thirdparty/"
-    }
-    maven {
-        url "http://artifactory.ihmc.us/artifactory/releases/"
-    }
+   configureDependencyResolution()
+   configurePublications()
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
-    testCompile group: 'us.ihmc', name: 'ihmc-continuous-integration-framework', version: '0.9.4'
-    testCompile group: 'us.ihmc', name: 'ihmc-commons-testing', version: '0.11.0-alpha'
-
-    compile group: 'us.ihmc', name: 'ihmc-commons', version: '0.11.0-alpha'
-    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.3'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
+   compile group: "us.ihmc", name: "ihmc-commons", version: "0.17.3"
+   compile group: 'org.apache.commons', name: 'commons-math3', version: '3.3'
+   compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
 }
 
-project.ext.fullVersion = version
-project.ext.vcsUrl = "https://github.com/ihmcrobotics/ihmc-yovariables"
-project.ext.licenseURL = "http://www.apache.org/license/LICENSE-2.0.txt"
-project.ext.licenseName = "The Apache Software License, Version 2.0"
-project.ext.bintrayLicenseName = "Apache-2.0"
-project.ext.publicationName = "ihmc-yovariables"
-
-jar {
-    manifest {
-        attributes(
-                "Created-By": "IHMC Gradle Build Script",
-                "Implementation-Title": project.name,
-                "Implementation-Version": project.version,
-                "Implementation-Vendor": "IHMC",
-
-                "Bundle-Name": project.name,
-                "Bundle-Version": project.version,
-                "Bundle-License": project.ext.licenseURL,
-                "Bundle-Vendor": "IHMC"
-        )
-    }
-}
-
-task sourceJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allJava
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            groupId 'us.ihmc'
-            artifactId project.ext.publicationName
-            version "$version"
-            from components.java
-
-            pom.withXml {
-                asNode().children().last() + {
-                    resolveStrategy = Closure.DELEGATE_FIRST
-                    name project.name
-                    url project.ext.vcsUrl
-                    licenses {
-                        license {
-                            name project.ext.licenseName
-                            url project.ext.licenseURL
-                            distribution 'repo'
-                        }
-                    }
-                }
-            }
-
-            artifact sourceJar {
-                classifier 'sources'
-            }
-        }
-    }
-}
-
-def bintrayUsername = project.hasProperty('bintray_user') ? bintray_user : 'unknown'
-def bintrayPassword = project.hasProperty('bintray_key') ? bintray_key : 'unknown'
-
-bintray {
-    user = bintrayUsername
-    key = bintrayPassword
-
-    dryRun = false
-    publish = false
-
-    publications = ['mavenJava']
-
-    pkg {
-        repo = 'maven-release'
-        name = project.ext.publicationName
-        userOrg = 'ihmcrobotics'
-        desc = "IHMC Open Robotics Software Project ${project.name}"
-
-        websiteUrl = project.ext.vcsUrl
-        issueTrackerUrl = "${project.ext.vcsUrl}/issues"
-        vcsUrl = "${project.ext.vcsUrl}.git"
-
-        licenses = [project.ext.bintrayLicenseName]
-        labels = ['ihmc', 'java', 'yovariable']
-        publicDownloadNumbers = true
-
-        version {
-            name = project.ext.fullVersion
-            desc = "IHMC Open Robotics Software Project ${project.name} ${project.ext.fullVersion}"
-            released = new Date()
-            vcsTag = "v${project.version}"
-        }
-    }
+testDependencies {
+   compile group: "junit", name: "junit", version: "4.12"
+   compile group: 'us.ihmc', name: 'ihmc-ci-core-api', version: '0.17.3'
+   compile group: "us.ihmc", name: "ihmc-commons-testing", version: "0.17.3"
 }

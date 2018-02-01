@@ -194,16 +194,24 @@ public abstract class YoParameter<T extends YoParameter<T>>
 
    void load(String valueString)
    {
-      setToString(valueString);
-
       loaded = true;
+      setToString(valueString);
    }
 
    void loadDefault()
    {
-      setToDefault();
-
       loaded = true;
+      setToDefault();
+   }
+   
+   /**
+    * Check if this parameter has been loaded
+    * 
+    * @return true if this parameter has been loaded and can be used
+    */
+   public boolean isLoaded()
+   {
+      return loaded;
    }
    
    /**
@@ -244,7 +252,7 @@ public abstract class YoParameter<T extends YoParameter<T>>
          parameterChangedListeners.clear();
       }
 
-
+ 
       public void add(ParameterChangedListener parameterChangedListener)
       {
          parameterChangedListeners.add(parameterChangedListener);
