@@ -32,6 +32,8 @@ public class XmlParameterReader extends AbstractParameterReader
 {
    private static final String prefix = "[" + XmlParameterReader.class.getSimpleName() + "]:";
 
+   private final boolean debug;
+
    private final HashMap<String, String> parameterValues = new HashMap<>();
 
    /**
@@ -44,6 +46,22 @@ public class XmlParameterReader extends AbstractParameterReader
     */
    public XmlParameterReader(InputStream... dataStreams) throws IOException
    {
+      this(false, dataStreams);
+   }
+
+   /**
+    * Creates a parameter reader that will read the provided data streams. If more than
+    * one data stream is passed to the reader multiple occurrences of the same parameter
+    * will cause the parameter value to be overwritten with the new value.
+    *
+    * @param debug specifies whether to print additional information
+    * @param dataStreams
+    * @throws IOException
+    */
+   public XmlParameterReader(boolean debug, InputStream... dataStreams) throws IOException
+   {
+      this.debug = debug;
+
       for (InputStream dataStream : dataStreams)
       {
          readStream(dataStream, false);
@@ -98,7 +116,10 @@ public class XmlParameterReader extends AbstractParameterReader
             String name = path + "." + param.getName();
             if (parameterValues.put(name, param.getValue()) != null)
             {
-               System.out.println(prefix + " overwriting " + param.getName());
+               if (debug)
+               {
+                  System.out.println(prefix + " overwriting " + param.getName());
+               }
             }
             else if (forceOverwrite)
             {
@@ -127,7 +148,10 @@ public class XmlParameterReader extends AbstractParameterReader
       }
       else
       {
-         System.err.println(prefix + " Parameter " + fullname + " not found, falling back to default value.");
+         if (debug)
+         {
+            System.err.println(prefix + " Parameter " + fullname + " not found, falling back to default value.");
+         }
          return false;
       }
    }
@@ -137,6 +161,11 @@ public class XmlParameterReader extends AbstractParameterReader
    {
       String fullname = namespace.getName() + "." + name;
       return parameterValues.get(fullname);
+   }
+
+   public int getNumberOfParameters()
+   {
+      return parameterValues.keySet().size();
    }
 
 }
