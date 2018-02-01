@@ -11,7 +11,7 @@ apply plugin: "us.ihmc.ihmc-build"
 
 ihmc {
    group = "us.ihmc"
-   version = "0.2.6"
+   version = "0.2.7"
    vcsUrl = "https://github.com/ihmcrobotics/ihmc-yovariables"
    openSource = true
    maintainer = "Nathan Mertins"
