@@ -152,6 +152,7 @@ public class IntegerParameter extends YoParameter<IntegerParameter> implements I
     * @return value for this parameter
     * @throws RuntimeException if the parameter is not loaded yet.
     */
+   @Override
    public int getValue()
    {
       checkLoaded();
@@ -228,8 +229,8 @@ public class IntegerParameter extends YoParameter<IntegerParameter> implements I
       public YoInteger duplicate(YoVariableRegistry newRegistry)
       {
          IntegerParameter newParameter = new IntegerParameter(getName(), getDescription(), newRegistry, initialValue, (int) getManualScalingMin(), (int) getManualScalingMax());
-         newParameter.loadDefault();
          newParameter.value.set(value.getValue());
+         newParameter.loadStatus = getLoadStatus();
          return newParameter.value;
       }
    }
