@@ -165,6 +165,7 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
     * @return value for this parameter
     * @throws RuntimeException if the parameter is not loaded yet.
     */
+   @Override
    public T getValue()
    {
       checkLoaded();
@@ -267,8 +268,8 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
             newParameter = new EnumParameter<>(getName(), getDescription(), newRegistry, getAllowNullValue(), getEnumValuesAsString());
          }
          
-         newParameter.loadDefault();
          newParameter.value.set(value.getOrdinal());
+         newParameter.loadStatus = getLoadStatus();
          return newParameter.value;
       }
    }

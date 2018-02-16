@@ -91,6 +91,7 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
     * @return value for this parameter
     * @throws RuntimeException if the parameter is not loaded yet.
     */
+   @Override
    public boolean getValue()
    {
       checkLoaded();
@@ -153,8 +154,8 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
       public YoBoolean duplicate(YoVariableRegistry newRegistry)
       {
          BooleanParameter newParameter = new BooleanParameter(getName(), getDescription(), newRegistry, initialValue);
-         newParameter.loadDefault();
          newParameter.value.set(value.getValue());
+         newParameter.loadStatus = getLoadStatus();
          return newParameter.value;
       }
    }

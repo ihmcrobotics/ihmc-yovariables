@@ -151,6 +151,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
     * @return value for this parameter
     * @throws RuntimeException if the parameter is not loaded yet.
     */
+   @Override
    public double getValue()
    {
       checkLoaded();
@@ -166,6 +167,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
     * @param min Lower end of the suggested range for this parameter.
     * @param max Upper end of the suggested range for this parameter.
     */
+   @Override
    public void setSuggestedRange(double min, double max)
    {
       super.setSuggestedRange(min, max);
@@ -226,8 +228,8 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
       public YoDouble duplicate(YoVariableRegistry newRegistry)
       {
          DoubleParameter newParameter = new DoubleParameter(getName(), getDescription(), newRegistry, initialValue, getManualScalingMin(), getManualScalingMax());
-         newParameter.loadDefault();
          newParameter.value.set(value.getValue());
+         newParameter.loadStatus = getLoadStatus();
          return newParameter.value;
       }
    }

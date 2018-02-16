@@ -46,7 +46,7 @@ public abstract class YoParameter<T extends YoParameter<T>>
 {
    private final String name;
    private final String description;
-   private boolean loaded = false;
+   protected ParameterLoadStatus loadStatus = ParameterLoadStatus.UNLOADED;
    private YoParameterChangedListenerHolder parameterChangedListenersHolder;
 
    /**
@@ -186,7 +186,7 @@ public abstract class YoParameter<T extends YoParameter<T>>
 
    void checkLoaded()
    {
-      if (!loaded)
+      if (loadStatus == ParameterLoadStatus.UNLOADED)
       {
          throw new RuntimeException("Cannot use parameter " + name + " before it's value is loaded.");
       }
@@ -194,16 +194,27 @@ public abstract class YoParameter<T extends YoParameter<T>>
 
    void load(String valueString)
    {
-      loaded = true;
+      loadStatus = ParameterLoadStatus.LOADED;
       setToString(valueString);
    }
 
    void loadDefault()
    {
-      loaded = true;
+      loadStatus = ParameterLoadStatus.DEFAULT;
       setToDefault();
    }
    
+   /**
+    * Get the load status of this parameter. It will indicate whether the parameter
+    * was load from file, is using its default value, or is still unloaded.
+    *
+    * @return the current {@link ParameterLoadStatus} of this parameter.
+    */
+   public ParameterLoadStatus getLoadStatus()
+   {
+      return loadStatus;
+   }
+
    /**
     * Check if this parameter has been loaded
     * 
@@ -211,7 +222,7 @@ public abstract class YoParameter<T extends YoParameter<T>>
     */
    public boolean isLoaded()
    {
-      return loaded;
+      return loadStatus != ParameterLoadStatus.UNLOADED;
    }
    
    /**
