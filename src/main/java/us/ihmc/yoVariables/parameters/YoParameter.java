@@ -194,7 +194,7 @@ public abstract class YoParameter<T extends YoParameter<T>>
 
    void load(String valueString)
    {
-      loadStatus = ParameterLoadStatus.FILE;
+      loadStatus = ParameterLoadStatus.LOADED;
       setToString(valueString);
    }
 

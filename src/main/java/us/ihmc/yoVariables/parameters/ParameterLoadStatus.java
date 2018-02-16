@@ -4,5 +4,5 @@ public enum ParameterLoadStatus
 {
    UNLOADED,
    DEFAULT,
-   FILE
+   LOADED
 }
