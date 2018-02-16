@@ -151,6 +151,7 @@ public class LongParameter extends YoParameter<LongParameter> implements LongPro
     * @return value for this parameter
     * @throws RuntimeException if the parameter is not loaded yet.
     */
+   @Override
    public long getValue()
    {
       checkLoaded();
@@ -226,8 +227,8 @@ public class LongParameter extends YoParameter<LongParameter> implements LongPro
       public YoLong duplicate(YoVariableRegistry newRegistry)
       {
          LongParameter newParameter = new LongParameter(getName(), getDescription(), newRegistry, initialValue, (long) getManualScalingMin(), (long) getManualScalingMax());
-         newParameter.loadDefault();
          newParameter.value.set(value.getValue());
+         newParameter.loadStatus = getLoadStatus();
          return newParameter.value;
       }
    }
