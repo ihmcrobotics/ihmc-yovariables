@@ -1,38 +1,41 @@
 /*
  * Copyright 2017 Florida Institute for Human and Machine Cognition (IHMC)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package us.ihmc.yoVariables.parameters;
 
-import static org.junit.Assert.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
-import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 public class AbstractParameterReaderTest
 {
-
-   private final static double initialValue = 42.0;
+   private final static Random random = new Random(9492L);
 
    @Test(timeout = 1000)
    @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testReadingNamespacesRegistry()
    {
-
       for (int i = 0; i < 4; i++)
       {
          YoVariableRegistry[] regs = {new YoVariableRegistry("root"), new YoVariableRegistry("a"), new YoVariableRegistry("b"), new YoVariableRegistry("c")};
@@ -43,68 +46,70 @@ public class AbstractParameterReaderTest
          regs[1].addChild(regs[2]);
          regs[2].addChild(regs[3]);
 
-         new DoubleParameter("paramA", regs[3], initialValue);
-         new DoubleParameter("paramB", regs[3], initialValue);
-         new DoubleParameter("paramC", regs[3], initialValue);
-         new DoubleParameter("paramD", regs[3], initialValue);
+         DoubleParameter parameter = new DoubleParameter("parameter", regs[3], random.nextDouble());
+         int numberOfDefaults = random.nextInt(10);
+         for (int defaultIdx = 0; defaultIdx < numberOfDefaults; defaultIdx++)
+         {
+            new DoubleParameter("Default" + defaultIdx, regs[3], 0.0);
+         }
 
-         TestParameterReaderNamespace readerRoot = new TestParameterReaderNamespace(expectedNamespaces[i]);
-         readerRoot.readParametersInRegistry(regs[i]);
+         Map<String, String> values = new HashMap<>();
+         double expectedValue = random.nextDouble();
+         values.put(expectedNamespaces[i] + "." + parameter.getName(), Double.toString(expectedValue));
+
+         int numberOfUnmatched = random.nextInt(10);
+         for (int unmatchedIdx = 0; unmatchedIdx < numberOfUnmatched; unmatchedIdx++)
+         {
+            values.put("Unmatched" + unmatchedIdx, Double.toString(0.0));
+         }
+
+         TestParameterReader readerRoot = new TestParameterReader(values);
+         Set<String> defaultParameters = new HashSet<>();
+         Set<String> unmatchedParameters = new HashSet<>();
+         readerRoot.readParametersInRegistry(regs[i], defaultParameters, unmatchedParameters);
+
+         Assert.assertEquals(numberOfDefaults, defaultParameters.size());
+         Assert.assertEquals(numberOfUnmatched, unmatchedParameters.size());
+         Assert.assertEquals(expectedValue, parameter.getValue(), Double.MIN_VALUE);
       }
-
    }
-   
+
    @Test(timeout = 1000)
    @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testDoubleRead()
    {
       YoVariableRegistry root = new YoVariableRegistry("root");
       YoVariableRegistry a = new YoVariableRegistry("a");
-      
+
       root.addChild(a);
-      new DoubleParameter("param", a, initialValue);
-      
-      TestDefaultReaderNamespace reader = new TestDefaultReaderNamespace();
+      DoubleParameter parameter = new DoubleParameter("param", a, random.nextDouble());
+
+      double loadedValue = random.nextDouble();
+
+      Map<String, String> values = new HashMap<>();
+      values.put("root.a.param", Double.toString(loadedValue));
+      TestParameterReader reader = new TestParameterReader(values);
+
+      reader.readParametersInRegistry(new YoVariableRegistry("RandomRegistry"));
       reader.readParametersInRegistry(root);
-      reader.readParametersInRegistry(a);
+      Assert.assertEquals(loadedValue, parameter.getValue(), Double.MIN_VALUE);
    }
 
-
-   
-   
-   private static class TestParameterReaderNamespace extends AbstractParameterReader
+   private static class TestParameterReader extends AbstractParameterReader
    {
-      private final String expectedNamespace;
+      private final Map<String, String> values;
 
-      private TestParameterReaderNamespace(String expectedNamespace)
+      private TestParameterReader(Map<String, String> values)
       {
-         this.expectedNamespace = expectedNamespace;
+         this.values = values;
       }
 
-      protected boolean hasValue(NameSpace namespace, String name)
+      @Override
+      protected Map<String, String> getValues()
       {
-         assertEquals(expectedNamespace, namespace.getName());
-         return false;
-      }
-
-      protected String getValue(NameSpace namespace, String name)
-      {
-         throw new RuntimeException("Should not get here, hasValue always returns false");
+         return Collections.unmodifiableMap(values);
       }
 
    }
-   
-   private static class TestDefaultReaderNamespace extends AbstractParameterReader
-   {
-      protected boolean hasValue(NameSpace namespace, String name)
-      {
-         return false;
-      }
 
-      protected String getValue(NameSpace namespace, String name)
-      {
-         throw new RuntimeException("Should not get here, hasValue always returns false");
-      }
-
-   }
 }
