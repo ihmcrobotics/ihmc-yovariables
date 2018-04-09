@@ -201,6 +201,27 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
    }
 
    /**
+    * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
+    * {@link YoVariableRegistry}.
+    * <p>
+    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate
+    * of the registry that was used to create {@code this}, this method searches for the duplicated
+    * {@code YoVariable}s and use them to duplicate {@code this}.
+    * </p>
+    *
+    * @param newRegistry YoVariableRegistry to duplicate {@code this} to.
+    * @return the duplicate of {@code this}.
+    */
+   public YoFrameQuaternion duplicate(YoVariableRegistry newRegistry)
+   {
+      YoDouble x = (YoDouble) newRegistry.getVariable(getYoQx().getFullNameWithNameSpace());
+      YoDouble y = (YoDouble) newRegistry.getVariable(getYoQy().getFullNameWithNameSpace());
+      YoDouble z = (YoDouble) newRegistry.getVariable(getYoQz().getFullNameWithNameSpace());
+      YoDouble s = (YoDouble) newRegistry.getVariable(getYoQs().getFullNameWithNameSpace());
+      return new YoFrameQuaternion(x, y, z, s, getReferenceFrame());
+   }
+
+   /**
     * Provides a {@code String} representation of {@code this} as follows: (qx, qy, qz,
     * qs)-worldFrame.
     *

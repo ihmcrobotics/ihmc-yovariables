@@ -401,6 +401,27 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
       return referenceFrame;
    }
 
+   /**
+    * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
+    * {@link YoVariableRegistry}.
+    * <p>
+    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate
+    * of the registry that was used to create {@code this}, this method searches for the duplicated
+    * {@code YoVariable}s and use them to duplicate {@code this}.
+    * </p>
+    *
+    * @param newRegistry YoVariableRegistry to duplicate {@code this} to.
+    * @return the duplicate of {@code this}.
+    */
+   public YoFrameConvexPolygon2D duplicate(YoVariableRegistry newRegistry)
+   {
+      YoInteger yoNumberOfVertices = (YoInteger) newRegistry.getVariable(numberOfVertices.getFullNameWithNameSpace());
+      List<YoFramePoint2D> yoVertexBuffer = new ArrayList<>();
+      for (int i = 0; i < vertexBuffer.size(); i++)
+         yoVertexBuffer.add(vertexBuffer.get(i).duplicate(newRegistry));
+      return new YoFrameConvexPolygon2D(yoVertexBuffer, yoNumberOfVertices, referenceFrame);
+   }
+
    /** {@inheritDoc} */
    @Override
    public String toString()

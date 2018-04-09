@@ -2,6 +2,7 @@ package us.ihmc.yoVariables.variable;
 
 import us.ihmc.euclid.geometry.tools.EuclidGeometryIOTools;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
+import us.ihmc.euclid.referenceFrame.exceptions.ReferenceFrameMismatchException;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameLine2DBasics;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
@@ -38,6 +39,21 @@ public class YoFrameLine2D implements FixedFrameLine2DBasics
    {
       point = new YoFramePoint2D(namePrefix, nameSuffix, referenceFrame, registry);
       direction = new YoFrameVector2D(namePrefix, nameSuffix, referenceFrame, registry);
+   }
+
+   /**
+    * Creates a new {@code YoFrameLine2D} using the given {@code YoVariable}s and sets its reference
+    * frame to {@code referenceFrame}.
+    *
+    * @param point the {@code YoFramePoint2D} to use internally for this line point.
+    * @param direction the {@code YoFrameVector2D} to use internally for this line direction.
+    * @throws ReferenceFrameMismatchException if {@code point} and {@code direction} are not
+    *            expressed in the same reference frame.
+    */
+   public YoFrameLine2D(YoFramePoint2D point, YoFrameVector2D direction)
+   {
+      this(point.getYoX(), point.getYoY(), direction.getYoX(), direction.getYoY(), point.getReferenceFrame());
+      point.checkReferenceFrameMatch(direction);
    }
 
    /**
@@ -115,6 +131,23 @@ public class YoFrameLine2D implements FixedFrameLine2DBasics
    public YoDouble getYoDirectionY()
    {
       return direction.getYoY();
+   }
+
+   /**
+    * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
+    * {@link YoVariableRegistry}.
+    * <p>
+    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate
+    * of the registry that was used to create {@code this}, this method searches for the duplicated
+    * {@code YoVariable}s and use them to duplicate {@code this}.
+    * </p>
+    *
+    * @param newRegistry YoVariableRegistry to duplicate {@code this} to.
+    * @return the duplicate of {@code this}.
+    */
+   public YoFrameLine2D duplicate(YoVariableRegistry newRegistry)
+   {
+      return new YoFrameLine2D(point.duplicate(newRegistry), direction.duplicate(newRegistry));
    }
 
    /**

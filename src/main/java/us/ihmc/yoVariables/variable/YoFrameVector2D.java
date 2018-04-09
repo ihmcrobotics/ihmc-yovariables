@@ -47,4 +47,23 @@ public class YoFrameVector2D extends YoFrameTuple2D implements FixedFrameVector2
    {
       super(namePrefix, nameSuffix, referenceFrame, registry);
    }
+
+   /**
+    * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
+    * {@link YoVariableRegistry}.
+    * <p>
+    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate
+    * of the registry that was used to create {@code this}, this method searches for the duplicated
+    * {@code YoVariable}s and use them to duplicate {@code this}.
+    * </p>
+    *
+    * @param newRegistry YoVariableRegistry to duplicate {@code this} to.
+    * @return the duplicate of {@code this}.
+    */
+   public YoFrameVector2D duplicate(YoVariableRegistry newRegistry)
+   {
+      YoDouble x = (YoDouble) newRegistry.getVariable(getYoX().getFullNameWithNameSpace());
+      YoDouble y = (YoDouble) newRegistry.getVariable(getYoY().getFullNameWithNameSpace());
+      return new YoFrameVector2D(x, y, getReferenceFrame());
+   }
 }

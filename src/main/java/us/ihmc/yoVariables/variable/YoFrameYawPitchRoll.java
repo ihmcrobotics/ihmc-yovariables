@@ -315,6 +315,26 @@ public class YoFrameYawPitchRoll implements ReferenceFrameHolder, Clearable
       roll.addVariableChangedListener(variableChangedListener);
    }
 
+   /**
+    * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
+    * {@link YoVariableRegistry}.
+    * <p>
+    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate
+    * of the registry that was used to create {@code this}, this method searches for the duplicated
+    * {@code YoVariable}s and use them to duplicate {@code this}.
+    * </p>
+    *
+    * @param newRegistry YoVariableRegistry to duplicate {@code this} to.
+    * @return the duplicate of {@code this}.
+    */
+   public YoFrameYawPitchRoll duplicate(YoVariableRegistry newRegistry)
+   {
+      YoDouble yaw = (YoDouble) newRegistry.getVariable(this.yaw.getFullNameWithNameSpace());
+      YoDouble pitch = (YoDouble) newRegistry.getVariable(this.pitch.getFullNameWithNameSpace());
+      YoDouble roll = (YoDouble) newRegistry.getVariable(this.roll.getFullNameWithNameSpace());
+      return new YoFrameYawPitchRoll(yaw, pitch, roll, getReferenceFrame());
+   }
+
    @Override
    public String toString()
    {

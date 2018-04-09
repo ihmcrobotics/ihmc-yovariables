@@ -2,6 +2,7 @@ package us.ihmc.yoVariables.variable;
 
 import us.ihmc.euclid.geometry.tools.EuclidGeometryIOTools;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
+import us.ihmc.euclid.referenceFrame.exceptions.ReferenceFrameMismatchException;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameLineSegment2DBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFramePoint2DBasics;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
@@ -39,6 +40,21 @@ public class YoFrameLineSegment2D implements FixedFrameLineSegment2DBasics
    {
       firstEndpoint = new YoFramePoint2D(namePrefix + "FirstEndpoint", nameSuffix, referenceFrame, registry);
       secondEndpoint = new YoFramePoint2D(namePrefix + "SecondEndpoint", nameSuffix, referenceFrame, registry);
+   }
+
+   /**
+    * Creates a new {@code YoFrameLine2D} using the given {@code YoVariable}s and sets its reference
+    * frame to {@code referenceFrame}.
+    *
+    * @param firstEndpoint the {@code YoFramePoint2D} to use internally for the first endpoint.
+    * @param secondEndpoint the {@code YoFramePoint2D} to use internally for the second endpoint.
+    * @throws ReferenceFrameMismatchException if {@code firstEndpoint} and {@code secondEndpoint}
+    *            are not expressed in the same reference frame.
+    */
+   public YoFrameLineSegment2D(YoFramePoint2D firstEndpoint, YoFramePoint2D secondEndpoint)
+   {
+      this(firstEndpoint.getYoX(), firstEndpoint.getYoY(), secondEndpoint.getYoX(), secondEndpoint.getYoY(), firstEndpoint.getReferenceFrame());
+      firstEndpoint.checkReferenceFrameMatch(secondEndpoint);
    }
 
    /**
@@ -121,6 +137,23 @@ public class YoFrameLineSegment2D implements FixedFrameLineSegment2DBasics
    public YoDouble getYoSecondEndpointY()
    {
       return secondEndpoint.getYoY();
+   }
+
+   /**
+    * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
+    * {@link YoVariableRegistry}.
+    * <p>
+    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate
+    * of the registry that was used to create {@code this}, this method searches for the duplicated
+    * {@code YoVariable}s and use them to duplicate {@code this}.
+    * </p>
+    *
+    * @param newRegistry YoVariableRegistry to duplicate {@code this} to.
+    * @return the duplicate of {@code this}.
+    */
+   public YoFrameLineSegment2D duplicate(YoVariableRegistry newRegistry)
+   {
+      return new YoFrameLineSegment2D(firstEndpoint.duplicate(newRegistry), secondEndpoint.duplicate(newRegistry));
    }
 
    /**
