@@ -93,6 +93,7 @@ public class AlphaFilteredYoVariable extends YoDouble implements ProcessingYoVar
       hasBeenCalled.set(false);
    }
 
+   @Override
    public void update()
    {
       if (position == null)
@@ -111,9 +112,11 @@ public class AlphaFilteredYoVariable extends YoDouble implements ProcessingYoVar
          hasBeenCalled.set(true);
          set(currentPosition);
       }
-
-      double alpha = alphaVariable.getValue();
-      set(alpha * getDoubleValue() + (1.0 - alpha) * currentPosition);
+      else
+      {
+         double alpha = alphaVariable.getValue();
+         set(alpha * getDoubleValue() + (1.0 - alpha) * currentPosition);
+      }
    }
 
    /**
