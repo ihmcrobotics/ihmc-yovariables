@@ -1,21 +1,21 @@
 /*
  * Copyright 2017 Florida Institute for Human and Machine Cognition (IHMC)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package us.ihmc.yoVariables.parameters;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -31,7 +31,6 @@ import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 public class XMLParameterIOTest
 {
-   
 
    public static YoVariableRegistry createRegistries()
    {
@@ -51,7 +50,6 @@ public class XMLParameterIOTest
       return regs[0];
    }
 
-   
    @Test(timeout = 30000)
    @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testEmptyFile() throws IOException
@@ -59,22 +57,21 @@ public class XMLParameterIOTest
       YoVariableRegistry target = createRegistries();
       String data = "<parameters/>";
       StringReader reader = new StringReader(data);
-      
-      
+
       XmlParameterReader parameterReader = new XmlParameterReader(new ReaderInputStream(reader));
       parameterReader.readParametersInRegistry(target);
    }
-   
+
    @Test(timeout = 30000)
    @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testWritingAndReading() throws IOException
    {
       YoVariableRegistry source = createRegistries();
       YoVariableRegistry target = createRegistries();
-      
+
       DefaultParameterReader defaultReader = new DefaultParameterReader();
       defaultReader.readParametersInRegistry(source);
-      
+
       source.getVariable("root.a.b.c.paramA").setValueFromDouble(1.0);
       source.getVariable("root.a.b.c.paramB").setValueFromDouble(2.0);
       source.getVariable("root.a.b.c.paramC").setValueFromDouble(3.0);
@@ -82,18 +79,16 @@ public class XMLParameterIOTest
       source.getVariable("root.a.b.paramE").setValueFromDouble(5.0);
       source.getVariable("root.a.paramF").setValueFromDouble(6.0);
       source.getVariable("root.paramG").setValueFromDouble(7.0);
-      
-      
+
       ByteArrayOutputStream os = new ByteArrayOutputStream();
-      
+
       XmlParameterWriter writer = new XmlParameterWriter();
       writer.writeParametersInRegistry(source);
       writer.write(os);
-      
-      
+
       XmlParameterReader reader = new XmlParameterReader(new ByteArrayInputStream(os.toByteArray()));
       reader.readParametersInRegistry(target);
-      
+
       assertEquals(source.getVariable("root.a.b.c.paramA").getValueAsDouble(), target.getVariable("root.a.b.c.paramA").getValueAsDouble(), 1e-9);
       assertEquals(source.getVariable("root.a.b.c.paramB").getValueAsDouble(), target.getVariable("root.a.b.c.paramB").getValueAsDouble(), 1e-9);
       assertEquals(source.getVariable("root.a.b.c.paramC").getValueAsDouble(), target.getVariable("root.a.b.c.paramC").getValueAsDouble(), 1e-9);
@@ -111,20 +106,14 @@ public class XMLParameterIOTest
       DoubleParameter parameter1 = new DoubleParameter("TestParameter1", target);
       DoubleParameter parameter2 = new DoubleParameter("TestParameter2", target);
 
-      String data1 = "<parameters>"
-            + "<registry name=\"TestRegistry\">"
+      String data1 = "<parameters>" + "<registry name=\"TestRegistry\">"
             + "<parameter name=\"TestParameter1\" type=\"DoubleParameter\" min=\"0.0\" max=\"1.0\" value=\"0.5\"/>"
-            + "<parameter name=\"TestParameter2\" type=\"DoubleParameter\" min=\"0.0\" max=\"1.0\" value=\"0.5\"/>"
-            + "</registry>"
-            + "</parameters>";
+            + "<parameter name=\"TestParameter2\" type=\"DoubleParameter\" min=\"0.0\" max=\"1.0\" value=\"0.5\"/>" + "</registry>" + "</parameters>";
       StringReader reader1 = new StringReader(data1);
       ReaderInputStream stream1 = new ReaderInputStream(reader1, Charset.forName("UTF-8"));
 
-      String data2 = "<parameters>"
-            + "<registry name=\"TestRegistry\">"
-            + "<parameter name=\"TestParameter1\" type=\"DoubleParameter\" min=\"0.0\" max=\"1.0\" value=\"0.0\"/>"
-            + "</registry>"
-            + "</parameters>";
+      String data2 = "<parameters>" + "<registry name=\"TestRegistry\">"
+            + "<parameter name=\"TestParameter1\" type=\"DoubleParameter\" min=\"0.0\" max=\"1.0\" value=\"0.0\"/>" + "</registry>" + "</parameters>";
       StringReader reader2 = new StringReader(data2);
       ReaderInputStream stream2 = new ReaderInputStream(reader2, Charset.forName("UTF-8"));
 
@@ -143,20 +132,14 @@ public class XMLParameterIOTest
       DoubleParameter parameter1 = new DoubleParameter("TestParameter1", target);
       DoubleParameter parameter2 = new DoubleParameter("TestParameter2", target);
 
-      String data1 = "<parameters>"
-            + "<registry name=\"TestRegistry\">"
+      String data1 = "<parameters>" + "<registry name=\"TestRegistry\">"
             + "<parameter name=\"TestParameter1\" type=\"DoubleParameter\" min=\"0.0\" max=\"1.0\" value=\"0.5\"/>"
-            + "<parameter name=\"TestParameter2\" type=\"DoubleParameter\" min=\"0.0\" max=\"1.0\" value=\"0.5\"/>"
-            + "</registry>"
-            + "</parameters>";
+            + "<parameter name=\"TestParameter2\" type=\"DoubleParameter\" min=\"0.0\" max=\"1.0\" value=\"0.5\"/>" + "</registry>" + "</parameters>";
       StringReader reader1 = new StringReader(data1);
       ReaderInputStream stream1 = new ReaderInputStream(reader1, Charset.forName("UTF-8"));
 
-      String data2 = "<parameters>"
-            + "<registry name=\"TestRegistry\">"
-            + "<parameter name=\"TestParameter1\" type=\"DoubleParameter\" min=\"0.0\" max=\"1.0\" value=\"0.0\"/>"
-            + "</registry>"
-            + "</parameters>";
+      String data2 = "<parameters>" + "<registry name=\"TestRegistry\">"
+            + "<parameter name=\"TestParameter1\" type=\"DoubleParameter\" min=\"0.0\" max=\"1.0\" value=\"0.0\"/>" + "</registry>" + "</parameters>";
       StringReader reader2 = new StringReader(data2);
       ReaderInputStream stream2 = new ReaderInputStream(reader2, Charset.forName("UTF-8"));
 
@@ -176,19 +159,13 @@ public class XMLParameterIOTest
       DoubleParameter parameter1 = new DoubleParameter("TestParameter1", target);
       DoubleParameter parameter2 = new DoubleParameter("TestParameter2", target);
 
-      String data1 = "<parameters>"
-            + "<registry name=\"TestRegistry\">"
-            + "<parameter name=\"TestParameter2\" type=\"DoubleParameter\" min=\"0.0\" max=\"1.0\" value=\"0.5\"/>"
-            + "</registry>"
-            + "</parameters>";
+      String data1 = "<parameters>" + "<registry name=\"TestRegistry\">"
+            + "<parameter name=\"TestParameter2\" type=\"DoubleParameter\" min=\"0.0\" max=\"1.0\" value=\"0.5\"/>" + "</registry>" + "</parameters>";
       StringReader reader1 = new StringReader(data1);
       ReaderInputStream stream1 = new ReaderInputStream(reader1, Charset.forName("UTF-8"));
 
-      String data2 = "<parameters>"
-            + "<registry name=\"TestRegistry\">"
-            + "<parameter name=\"TestParameter1\" type=\"DoubleParameter\" min=\"0.0\" max=\"1.0\" value=\"0.0\"/>"
-            + "</registry>"
-            + "</parameters>";
+      String data2 = "<parameters>" + "<registry name=\"TestRegistry\">"
+            + "<parameter name=\"TestParameter1\" type=\"DoubleParameter\" min=\"0.0\" max=\"1.0\" value=\"0.0\"/>" + "</registry>" + "</parameters>";
       StringReader reader2 = new StringReader(data2);
       ReaderInputStream stream2 = new ReaderInputStream(reader2, Charset.forName("UTF-8"));
 
@@ -198,5 +175,39 @@ public class XMLParameterIOTest
 
       assertEquals(0.0, parameter1.getValue(), Double.MIN_VALUE);
       assertEquals(0.5, parameter2.getValue(), Double.MIN_VALUE);
+   }
+
+   @Test(timeout = 30000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testRootNamespaceDoesNotMatch() throws IOException
+   {
+      YoVariableRegistry target = new YoVariableRegistry("Root");
+      DoubleParameter parameter = new DoubleParameter("TestParameter", target);
+
+      String data1 = "<parameters>" + "<registry name=\"" + target.getName() + "\">" + "<parameter name=\"" + parameter.getName()
+            + "\" type=\"DoubleParameter\" min=\"0.0\" max=\"1.0\" value=\"0.5\"/>" + "</registry>" + "</parameters>";
+      StringReader reader1 = new StringReader(data1);
+      ReaderInputStream stream1 = new ReaderInputStream(reader1, Charset.forName("UTF-8"));
+
+      XmlParameterReader parameterReader = new XmlParameterReader("SomeOtherRoot", stream1);
+      parameterReader.readParametersInRegistry(target);
+      assertEquals(parameter.getLoadStatus(), ParameterLoadStatus.DEFAULT);
+   }
+
+   @Test(timeout = 30000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testRootNamespaceMatches() throws IOException
+   {
+      YoVariableRegistry target = new YoVariableRegistry("Root");
+      DoubleParameter parameter = new DoubleParameter("TestParameter", target);
+
+      String data1 = "<parameters>" + "<registry name=\"" + target.getName() + "\">" + "<parameter name=\"" + parameter.getName()
+            + "\" type=\"DoubleParameter\" min=\"0.0\" max=\"1.0\" value=\"0.5\"/>" + "</registry>" + "</parameters>";
+      StringReader reader1 = new StringReader(data1);
+      ReaderInputStream stream1 = new ReaderInputStream(reader1, Charset.forName("UTF-8"));
+
+      XmlParameterReader parameterReader = new XmlParameterReader(target.getName(), stream1);
+      parameterReader.readParametersInRegistry(target);
+      assertEquals(parameter.getLoadStatus(), ParameterLoadStatus.LOADED);
    }
 }
