@@ -37,6 +37,8 @@ public class XmlParameterReader extends AbstractParameterReader
 
    private final Map<String, String> parameterValues = new HashMap<>();
 
+   private final String rootNamespace;
+
    /**
     * Creates a parameter reader that will read the provided data streams. If more than
     * one data stream is passed to the reader multiple occurrences of the same parameter
@@ -47,7 +49,23 @@ public class XmlParameterReader extends AbstractParameterReader
     */
    public XmlParameterReader(InputStream... dataStreams) throws IOException
    {
-      this(false, dataStreams);
+      this(false, null, dataStreams);
+   }
+
+   /**
+    * Creates a parameter reader that will read the provided data streams. If more than
+    * one data stream is passed to the reader multiple occurrences of the same parameter
+    * will cause the parameter value to be overwritten with the new value.
+    *
+    * @param rootNamespace allows filtering the data in the data stream this is useful if
+    * the provided data stream comes from a file that is used to load parameters in multiple
+    * registries (e.g. controller and estimator)
+    * @param dataStreams
+    * @throws IOException
+    */
+   public XmlParameterReader(String rootNamespace, InputStream... dataStreams) throws IOException
+   {
+      this(false, rootNamespace, dataStreams);
    }
 
    /**
@@ -61,7 +79,25 @@ public class XmlParameterReader extends AbstractParameterReader
     */
    public XmlParameterReader(boolean debug, InputStream... dataStreams) throws IOException
    {
+      this(debug, null, dataStreams);
+   }
+
+   /**
+    * Creates a parameter reader that will read the provided data streams. If more than
+    * one data stream is passed to the reader multiple occurrences of the same parameter
+    * will cause the parameter value to be overwritten with the new value.
+    *
+    * @param debug specifies whether to print additional information
+    * @param rootNamespace allows filtering the data in the data stream this is useful if
+    * the provided data stream comes from a file that is used to load parameters in multiple
+    * registries (e.g. controller and estimator)
+    * @param dataStreams
+    * @throws IOException
+    */
+   public XmlParameterReader(boolean debug, String rootNamespace, InputStream... dataStreams) throws IOException
+   {
       this.debug = debug;
+      this.rootNamespace = rootNamespace;
 
       for (InputStream dataStream : dataStreams)
       {
@@ -93,11 +129,14 @@ public class XmlParameterReader extends AbstractParameterReader
          Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
          Parameters parameterRoot = (Parameters) jaxbUnmarshaller.unmarshal(data);
-         if(parameterRoot.getRegistries() != null)
+         if (parameterRoot.getRegistries() != null)
          {
-            for(Registry registry : parameterRoot.getRegistries())
+            for (Registry registry : parameterRoot.getRegistries())
             {
-               addRegistry(registry.getName(), registry, forceOverwrite);
+               if (rootNamespace == null || registry.getName().equals(rootNamespace))
+               {
+                  addRegistry(registry.getName(), registry, forceOverwrite);
+               }
             }
          }
       }
@@ -129,9 +168,9 @@ public class XmlParameterReader extends AbstractParameterReader
          }
       }
 
-      if(registry.getRegistries() != null)
+      if (registry.getRegistries() != null)
       {
-         for(Registry child : registry.getRegistries())
+         for (Registry child : registry.getRegistries())
          {
             String childPath = path + "." + child.getName();
             addRegistry(childPath, child, forceOverwrite);

@@ -1,87 +1,58 @@
 package us.ihmc.yoVariables.registry;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class NameSpace implements Serializable
 {
-   private static final long serialVersionUID = -2584260031738121095L;
-   private final String name;
-   private final ArrayList<String> subNames;
+   // TODO: make YoVariables use the same seperator character.
+   private static final char SEPERATOR = '.';
+   private static final String SEPERATOR_STRING = Character.toString(SEPERATOR);
+   private static final String SEPERATOR_REGEX = Pattern.quote(SEPERATOR_STRING);
 
+   private static final long serialVersionUID = -2584260031738121095L;
+
+   private final String name;
+   private final List<String> subNames;
+
+   /**
+    * Creates a namespace from a ordered list of names starting with the name of the root.
+    *
+    * @param subNames is the list of names starting with the root name.
+    */
+   public NameSpace(List<String> subNames)
+   {
+      this.name = joinNames(subNames);
+      this.subNames = subNames;
+      doChecks(name, subNames);
+   }
+
+   /**
+    * Creates a namespace from a full name of the namespace. The name is the concatenation
+    * of all sub names starting with the root name and separated by the {@link #SEPERATOR}
+    * character.
+    *
+    * @param name of the namespace.
+    */
    public NameSpace(String name)
    {
       this.name = name;
-      subNames = getSubStrings(name);
-      checkRepInvariant();
-   }
-   
-   public ArrayList<String> getSubNames()
-   {
-      return subNames;
-   }
-
-   public NameSpace(ArrayList<String> subNamesStartingWithRoot)
-   {
-      this(recreateNameFromSubNames(subNamesStartingWithRoot));
-   }
-
-   private static ArrayList<String> getSubStrings(String name)
-   {
-      ArrayList<String> ret = new ArrayList<String>();
-
-      String endOfName = name;
-      while (true)
-      {
-         int indexOfDot = endOfName.indexOf(".");
-         if (indexOfDot == -1)
-         {
-            ret.add(endOfName);
-
-            return ret;
-         }
-
-         String nextOne = endOfName.substring(0, indexOfDot);
-         ret.add(nextOne);
-         endOfName = endOfName.substring(indexOfDot + 1);
-      }
-   }
-
-   private void checkRepInvariant()
-   {
-      String check = "";
-      for (int i = 0; i < subNames.size(); i++)
-      {
-         String partToAdd = subNames.get(i);
-         if (partToAdd.equals(""))
-            throw new RuntimeException("Cannot construct NameSpace with double .. or a . at the end or beginning, or empty!");
-         String subName = partToAdd;
-
-         check = check + subName;
-         if (i < subNames.size() - 1)
-            check = check + ".";
-      }
-
-      if (!check.equals(name))
-         throw new RuntimeException("Rep Invariant doesn't hold!! name = " + name + ", check = " + check);
-
-      // Make sure no duplicate subnames.
-      for (int i = 0; i < subNames.size() - 1; i++)
-      {
-         String subNameI = subNames.get(i);
-         for (int j = i + 1; j < subNames.size(); j++)
-         {
-            String subNameJ = subNames.get(j);
-
-            if (subNameI.equals(subNameJ))
-               throw new RuntimeException("Cannot construct NameSpace with duplicate subNameSpaces! nameSpace = " + this);
-         }
-      }
+      this.subNames = splitName(name);
+      doChecks(name, subNames);
    }
 
    public String getName()
    {
       return name;
+   }
+
+   public List<String> getSubNames()
+   {
+      return Collections.unmodifiableList(subNames);
    }
 
    public String getShortName()
@@ -94,239 +65,214 @@ public class NameSpace implements Serializable
       return subNames.get(0);
    }
 
+   public boolean isRootNameSpace()
+   {
+      return subNames.size() == 1;
+   }
+
+   public NameSpace getParent()
+   {
+      if (isRootNameSpace())
+      {
+         return null;
+      }
+
+      return new NameSpace(subNames.subList(0, subNames.size() - 1));
+   }
+
    public String getNameWithRootStripped()
    {
-      if (subNames.size() < 2)
+      if (isRootNameSpace())
+      {
          return null;
-
-      StringBuilder builder = new StringBuilder();
-      for (int i = 1; i < subNames.size() - 1; i++)
-      {
-         builder.append(subNames.get(i));
-         builder.append(".");
       }
 
-      builder.append(subNames.get(subNames.size() - 1));
-
-      return builder.toString();
+      return joinNames(subNames.subList(1, subNames.size()));
    }
 
-
-   private static String recreateNameFromSubNames(ArrayList<String> subNames)
+   /**
+    * Checks if this nameSpace ends with the provided name.
+    * <p>
+    * For example, a namespace with name {@code robot.controller.module} ends with {@code module}, {@code controller.module},
+    * and {@code robot.controller.module} but no other string. This means this method will return false for {@code troller.module}
+    * or an empty string.
+    * </p>
+    *
+    * @param nameToMatch is the name to check for.
+    * @return whether this NameSpace ends with {@code nameToMatch}.
+    */
+   public boolean endsWith(String nameToMatch)
    {
-      StringBuilder builder = new StringBuilder();
-      for (int i = 0; i < subNames.size() - 1; i++)
+      if (!name.endsWith(nameToMatch))
       {
-         builder.append(subNames.get(i));
-         builder.append(".");
+         return false;
       }
-
-      builder.append(subNames.get(subNames.size() - 1));
-
-      return builder.toString();
+      if (name.length() == nameToMatch.length())
+      {
+         return true;
+      }
+      return name.charAt(name.length() - nameToMatch.length() - 1) == SEPERATOR;
    }
 
+   /**
+    * Checks if this nameSpace starts with the provided name.
+    * <p>
+    * For example, a namespace with name {@code robot.controller.module} starts with {@code robot}, {@code robot.controller},
+    * and {@code robot.controller.module} but no other string. This means this method will return false for {@code robot.contro}
+    * or an empty string.
+    * </p>
+    *
+    * @param nameToMatch is the name to check for.
+    * @return whether this NameSpace starts with {@code nameToMatch}.
+    */
+   public boolean startsWith(String nameToMatch)
+   {
+      if (!name.startsWith(nameToMatch))
+      {
+         return false;
+      }
+      if (name.length() == nameToMatch.length())
+      {
+         return true;
+      }
+      return name.charAt(nameToMatch.length()) == SEPERATOR;
+   }
 
+   /**
+    * Checks if this nameSpace contains the provided name.
+    * <p>
+    * For example, a namespace with name {@code robot.controller} contains {@code robot}, {@code robot.controller},
+    * and {@code controller} but no other string. This means this method will return false for {@code rob}
+    * or an empty string.
+    * </p>
+    *
+    * @param nameToMatch is the name to check for.
+    * @return whether this NameSpace contains with {@code nameToMatch}.
+    */
+   public boolean contains(String nameToMatch)
+   {
+      int startIndex = name.indexOf(nameToMatch);
+      int endIndex = startIndex + nameToMatch.length();
+      if (startIndex == -1)
+      {
+         return false;
+      }
+      if (name.length() == nameToMatch.length())
+      {
+         return true;
+      }
+      if (startIndex == 0)
+      {
+         return name.charAt(endIndex) == SEPERATOR;
+      }
+      if (endIndex == name.length())
+      {
+         return name.charAt(startIndex - 1) == SEPERATOR;
+      }
+      return name.charAt(endIndex) == SEPERATOR && name.charAt(startIndex - 1) == SEPERATOR;
+   }
+
+   /**
+    * Will create a new namespace that is the sub-namespace of {@code this} with the provided {@code nameSpaceToRemove}
+    * removed from the start.
+    * <p>
+    * If {@code this} does not start with the provided namespace or the provided namesace equals {@code this} the method will
+    * return {@code null}.
+    * </p>
+    * <p>
+    * If {@code nameSpaceToRemove} is {@code null} the method will return a copy of {@code this}.
+    * </p>
+    * @param nameSpaceToRemove is the namespace to remove from the start of {@code this}.
+    * @return whether this NameSpace contains with {@code nameToMatch}.
+    */
+   public NameSpace stripOffFromBeginning(NameSpace nameSpaceToRemove)
+   {
+      if (nameSpaceToRemove == null)
+      {
+         return new NameSpace(name);
+      }
+      if (equals(nameSpaceToRemove))
+      {
+         return null;
+      }
+      if (!startsWith(nameSpaceToRemove.name))
+      {
+         return null;
+      }
+
+      return new NameSpace(subNames.subList(nameSpaceToRemove.subNames.size(), subNames.size()));
+   }
+
+   @Override
+   public int hashCode()
+   {
+      return name.hashCode();
+   }
+
+   @Override
+   public boolean equals(Object nameSpace)
+   {
+      if (nameSpace == this)
+      {
+         return true;
+      }
+      if (!(nameSpace instanceof NameSpace))
+      {
+         return false;
+      }
+
+      return ((NameSpace) nameSpace).name.equals(name);
+   }
+
+   @Override
    public String toString()
    {
       return name;
    }
 
-   /**
-    * Checks if the given name is in this nameSpace. Must match from the end up to a dot or the start.
-    * For example "robot.controller.module" endsWith("module") and endsWith("controller.module") and endsWith("robot.controller.module")
-    * but does not endsWith("bot.controller.module") or endsWith("") or anything else.
-    * @param name Name to check if this NameSpace ends with.
-    * @return boolean Whether this NameSpace ends with the given name.
-    */
-   public boolean endsWith(String nameToMatch)
-   {
-      // Only true if it does end with this and, if there are more letters, that the previous one is a "."
-      if (!this.name.endsWith(nameToMatch))
-         return false;
-      if (this.name.length() == nameToMatch.length())
-         return true;
-      if (this.name.length() < nameToMatch.length())
-         return false;    // Defensive test. Really should never get here if the previous didn't pass.
-
-      int index = this.name.length() - nameToMatch.length() - 1;
-      char character = this.name.charAt(index);
-      if (character == '.')
-         return true;
-
-      return false;
-   }
-
-   /**
-    * Checks if the given name is in this nameSpace. Must match from the start up to a dot or the end.
-    * For example "robot.controller.module" startsWith("robot") and startsWith("robot.controller") and startsWith("robot.controller.module")
-    * but does not startsWith("robot.controller.mod") or startsWith("") or anything else.
-    * @param name Name to check if this NameSpace starts with.
-    * @return boolean Whether this NameSpace starts with the given name.
-    */
-   public boolean startsWith(String nameToMatch)
-   {
-      // Only true if it does start with this and, if there are more letters, that the next one is a "."
-      if (!this.name.startsWith(nameToMatch))
-         return false;
-      if (this.name.length() == nameToMatch.length())
-         return true;
-      if (this.name.length() < nameToMatch.length())
-         return false;
-      if (this.name.charAt(nameToMatch.length()) == '.')
-         return true;
-
-      return false;
-   }
-
-   /**
-    * Checks if the given name is in this nameSpace. Must match from the start or a dot up to the end or a dot.
-    * For example "robot.controller.module" contains("robot") and contains("robot.controller") and contains("robot.controller.module")
-    * and contains("module") and contains("controller.module") and contains("robot.controller.module") and contains("controller")
-    * but does not contains("robot.controller.mod") or contains("") or anything else.
-    * @param name Name to check if this NameSpace contains it.
-    * @return boolean Whether this NameSpace contains the given name.
-    */
-   public boolean contains(String nameToMatch)
-   {
-      ArrayList<String> subNamesToMatch = getSubStrings(nameToMatch);
-
-      if (subNamesToMatch.size() > subNames.size())
-         return false;
-
-      // Throw off the ones on the front of this subNames
-      String firstSubNameToMatch = subNamesToMatch.get(0);
-
-      int index;
-      for (index = 0; index < subNames.size(); index++)
-      {
-         if (subNames.get(index).equals(firstSubNameToMatch))
-            break;
-      }
-
-      if (subNames.size() - index < subNamesToMatch.size())
-         return false;
-
-      // Now all the rest have to match.
-      for (int indexToMatch = 0; indexToMatch < subNamesToMatch.size(); indexToMatch++)
-      {
-         if (!subNames.get(index).equals(subNamesToMatch.get(indexToMatch)))
-            return false;
-
-         index++;
-      }
-
-      return true;
-   }
-
-
-   public boolean equals(Object nameSpace)
-   {
-      if (nameSpace == this)
-         return true;
-      if (!(nameSpace instanceof NameSpace))
-         return false;
-
-      NameSpace nameSpaceToCheck = (NameSpace) nameSpace;
-
-      return nameSpaceToCheck.name.equals(this.name);
-   }
-
-   /*
-    * Strips the given nameSpace off of the beginning of this nameSpace and returns a new NameSpace.
-    * If the two don't match all the way through, returns null.
-    * If the two are the same, returns null.
-    */
-   public NameSpace stripOffFromBeginning(NameSpace nameSpaceToRemove)
-   {
-      if (nameSpaceToRemove == null)
-         return new NameSpace(this.name);
-
-      ArrayList<String> thisSubNames = this.subNames;
-      ArrayList<String> stripSubNames = nameSpaceToRemove.subNames;
-
-      if (stripSubNames.size() >= thisSubNames.size())
-         return null;
-
-      ArrayList<String> newSubNames = new ArrayList<String>();
-
-      for (int i = 0; i < stripSubNames.size(); i++)
-      {
-         if (!thisSubNames.get(i).equals(stripSubNames.get(i)))
-         {
-            return null;
-         }
-      }
-
-      for (int i = stripSubNames.size(); i < thisSubNames.size(); i++)
-      {
-         newSubNames.add(thisSubNames.get(i));
-      }
-
-      return new NameSpace(newSubNames);
-   }
-
-   
-   /**
-    * Check if this is the root element
-    *  
-    * @return true if there are no sub names.
-    */
-   public boolean isRootNameSpace()
-   {
-      return this.subNames.size() == 1;
-   }
-   
-   /**
-    * Get the parent namespace.
-    * 
-    * The parent namespace is defined as this namespace with its own name stripped
-    * 
-    * @return Parent namespace, or null if isRootNameSpace() is true.
-    */
-   public NameSpace getParent()
-   {
-      if(isRootNameSpace())
-      {
-         return null;
-      }
-      
-      StringBuilder builder = new StringBuilder();
-      for(int i = 0; i < subNames.size() - 2; i++)
-      {
-         builder.append(subNames.get(i));
-         builder.append('.');
-      }
-      builder.append(subNames.get(subNames.size() - 2));
-      return new NameSpace(builder.toString());
-      
-   }
-   
-   
    public static NameSpace createNameSpaceFromAFullVariableName(String fullVariableName)
    {
-      int lastIndexOfDot = fullVariableName.lastIndexOf(".");
-      if (lastIndexOfDot < 0)
-      {
-         return new NameSpace("NoNameSpaceRegistry");
-      }
-
-      String nameSpaceString = fullVariableName.substring(0, lastIndexOfDot);
-
-      return new NameSpace(nameSpaceString);
+      NameSpace parent = new NameSpace(fullVariableName).getParent();
+      // TODO: this is silly we should return null here.
+      return parent != null ? parent : new NameSpace("NoNameSpaceRegistry");
    }
 
    public static String stripOffNameSpaceToGetVariableName(String variableName)
    {
-      int lastIndexOfDot = variableName.lastIndexOf(".");
-      if (lastIndexOfDot < 0)
-      {
-         return variableName;
-      }
-
-      return variableName.substring(lastIndexOfDot + 1);
+      List<String> subNames = splitName(variableName);
+      return subNames.get(subNames.size() - 1);
    }
 
-   
-   
+   private static List<String> splitName(String name)
+   {
+      return Arrays.asList(name.split(SEPERATOR_REGEX, -1));
+   }
+
+   private static String joinNames(List<String> subNames)
+   {
+      if (subNames.stream().anyMatch(subName -> subName.contains(SEPERATOR_REGEX)))
+      {
+         throw new RuntimeException("A sub name can not contain the seperator string " + SEPERATOR + ".");
+      }
+      return String.join(SEPERATOR_STRING, subNames);
+   }
+
+   private static void doChecks(String name, List<String> subNames)
+   {
+      if (subNames.stream().anyMatch(subName -> subName.isEmpty()))
+      {
+         throw new RuntimeException("Can not construct a namespace with an empty subname.\nNamespace: " + name);
+      }
+
+      if (!joinNames(subNames).equals(name))
+      {
+         throw new RuntimeException("Can not construct a namespace with inconsistent sub names.\nNamespace: " + name + "\nSub Names: " + joinNames(subNames));
+      }
+
+      if (new HashSet<>(subNames).size() != subNames.size())
+      {
+         throw new RuntimeException("Can not construct a namespace with duplicate sub names.\nNamespace: " + name);
+      }
+   }
+
 }
