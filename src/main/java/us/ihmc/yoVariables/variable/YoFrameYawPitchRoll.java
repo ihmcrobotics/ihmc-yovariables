@@ -5,13 +5,15 @@ import us.ihmc.euclid.matrix.RotationMatrix;
 import us.ihmc.euclid.matrix.interfaces.RotationMatrixReadOnly;
 import us.ihmc.euclid.referenceFrame.FrameQuaternion;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
+import us.ihmc.euclid.referenceFrame.interfaces.FrameQuaternionBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameQuaternionReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.ReferenceFrameHolder;
 import us.ihmc.euclid.rotationConversion.QuaternionConversion;
 import us.ihmc.euclid.rotationConversion.RotationMatrixConversion;
 import us.ihmc.euclid.transform.RigidBodyTransform;
-import us.ihmc.euclid.tuple3D.Vector3D;
-import us.ihmc.euclid.tuple4D.Quaternion;
+import us.ihmc.euclid.tuple3D.interfaces.Vector3DBasics;
+import us.ihmc.euclid.tuple3D.interfaces.Vector3DReadOnly;
+import us.ihmc.euclid.tuple4D.interfaces.QuaternionBasics;
 import us.ihmc.euclid.tuple4D.interfaces.QuaternionReadOnly;
 import us.ihmc.yoVariables.listener.VariableChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
@@ -52,7 +54,7 @@ public class YoFrameYawPitchRoll implements ReferenceFrameHolder, Clearable
       this.referenceFrame = referenceFrame;
    }
 
-   public void setEulerAngles(Vector3D eulerAngles)
+   public void setEulerAngles(Vector3DReadOnly eulerAngles)
    {
       setYawPitchRoll(eulerAngles.getZ(), eulerAngles.getY(), eulerAngles.getX());
    }
@@ -246,12 +248,12 @@ public class YoFrameYawPitchRoll implements ReferenceFrameHolder, Clearable
       return roll;
    }
 
-   public void getEulerAngles(Vector3D eulerAnglesToPack)
+   public void getEulerAngles(Vector3DBasics eulerAnglesToPack)
    {
       eulerAnglesToPack.set(roll.getDoubleValue(), pitch.getDoubleValue(), yaw.getDoubleValue());
    }
 
-   public void getQuaternion(Quaternion quaternionToPack)
+   public void getQuaternion(QuaternionBasics quaternionToPack)
    {
       QuaternionConversion.convertYawPitchRollToQuaternion(yaw.getDoubleValue(), pitch.getDoubleValue(), roll.getDoubleValue(), quaternionToPack);
    }
@@ -261,7 +263,7 @@ public class YoFrameYawPitchRoll implements ReferenceFrameHolder, Clearable
       RotationMatrixConversion.convertYawPitchRollToMatrix(yaw.getDoubleValue(), pitch.getDoubleValue(), roll.getDoubleValue(), rotationMatrixToPack);
    }
 
-   public void getFrameOrientationIncludingFrame(FrameQuaternion orientationToPack)
+   public void getFrameOrientationIncludingFrame(FrameQuaternionBasics orientationToPack)
    {
       orientationToPack.setToZero(getReferenceFrame());
       orientationToPack.setYawPitchRoll(yaw.getDoubleValue(), pitch.getDoubleValue(), roll.getDoubleValue());

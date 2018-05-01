@@ -1,11 +1,12 @@
 package us.ihmc.yoVariables.variable;
 
 import us.ihmc.euclid.interfaces.Clearable;
-import us.ihmc.euclid.referenceFrame.FramePoint3D;
-import us.ihmc.euclid.referenceFrame.FramePose3D;
 import us.ihmc.euclid.referenceFrame.FrameQuaternion;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
+import us.ihmc.euclid.referenceFrame.interfaces.FixedFramePose3DBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FramePoint3DReadOnly;
+import us.ihmc.euclid.referenceFrame.interfaces.FramePose3DBasics;
+import us.ihmc.euclid.referenceFrame.interfaces.FramePose3DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameQuaternionReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.ReferenceFrameHolder;
 import us.ihmc.euclid.transform.RigidBodyTransform;
@@ -55,7 +56,7 @@ public class YoFramePoseUsingYawPitchRoll implements ReferenceFrameHolder, Clear
       return orientation;
    }
 
-   public void getFramePose(FramePose3D framePoseToPack)
+   public void getFramePose(FixedFramePose3DBasics framePoseToPack)
    {
       orientation.getFrameOrientationIncludingFrame(tempFrameOrientation);
 
@@ -63,7 +64,7 @@ public class YoFramePoseUsingYawPitchRoll implements ReferenceFrameHolder, Clear
       framePoseToPack.setOrientation(tempFrameOrientation);
    }
 
-   public void getFramePoseIncludingFrame(FramePose3D framePoseToPack)
+   public void getFramePoseIncludingFrame(FramePose3DBasics framePoseToPack)
    {
       framePoseToPack.setToZero(getReferenceFrame());
       getFramePose(framePoseToPack);
@@ -76,7 +77,7 @@ public class YoFramePoseUsingYawPitchRoll implements ReferenceFrameHolder, Clear
       rigidBodyTransformToPack.setTranslation(position);
    }
 
-   public void set(FramePose3D framePose)
+   public void set(FramePose3DReadOnly framePose)
    {
       framePose.checkReferenceFrameMatch(getReferenceFrame());
 
@@ -84,7 +85,7 @@ public class YoFramePoseUsingYawPitchRoll implements ReferenceFrameHolder, Clear
       orientation.set(framePose.getOrientation());
    }
 
-   public void setMatchingFrame(FramePose3D framePose)
+   public void setMatchingFrame(FramePose3DReadOnly framePose)
    {
       position.setMatchingFrame(framePose.getPosition());
       orientation.setMatchingFrame(framePose.getOrientation());
@@ -101,7 +102,7 @@ public class YoFramePoseUsingYawPitchRoll implements ReferenceFrameHolder, Clear
       orientation.setFromReferenceFrame(referenceFrame);
    }
 
-   public void setPosition(FramePoint3D framePoint)
+   public void setPosition(FramePoint3DReadOnly framePoint)
    {
       position.set(framePoint);
    }
@@ -111,7 +112,7 @@ public class YoFramePoseUsingYawPitchRoll implements ReferenceFrameHolder, Clear
       this.position.set(position);
    }
 
-   public void setOrientation(FrameQuaternion frameOrientation)
+   public void setOrientation(FrameQuaternionReadOnly frameOrientation)
    {
       orientation.set(frameOrientation);
    }
