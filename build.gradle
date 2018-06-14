@@ -11,7 +11,7 @@ apply plugin: "us.ihmc.ihmc-build"
 
 ihmc {
    group = "us.ihmc"
-   version = "0.3.1"
+   version = "0.3.2"
    vcsUrl = "https://github.com/ihmcrobotics/ihmc-yovariables"
    openSource = true
    maintainer = "Sylvain Bertrand (sbertrand@ihmc.us)"
@@ -21,7 +21,7 @@ ihmc {
 }
 
 dependencies {
-   compile group: "us.ihmc", name: "ihmc-commons", version: "0.19.1"
+   compile group: "us.ihmc", name: "ihmc-commons", version: "0.20.0"
    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.3'
    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
    compile group: "us.ihmc", name: "euclid", version: "0.8.2"
