@@ -4,14 +4,14 @@ buildscript {
       mavenLocal()
    }
    dependencies {
-      classpath "us.ihmc:ihmc-build:0.13.0"
+      classpath "us.ihmc:ihmc-build:0.13.7"
    }
 }
 apply plugin: "us.ihmc.ihmc-build"
 
 ihmc {
    group = "us.ihmc"
-   version = "0.3.1"
+   version = "0.3.2"
    vcsUrl = "https://github.com/ihmcrobotics/ihmc-yovariables"
    openSource = true
    maintainer = "Sylvain Bertrand (sbertrand@ihmc.us)"
@@ -21,7 +21,7 @@ ihmc {
 }
 
 dependencies {
-   compile group: "us.ihmc", name: "ihmc-commons", version: "0.18.0"
+   compile group: "us.ihmc", name: "ihmc-commons", version: "0.20.0"
    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.3'
    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
    compile group: "us.ihmc", name: "euclid", version: "0.8.2"
@@ -29,6 +29,6 @@ dependencies {
 
 testDependencies {
    compile group: "junit", name: "junit", version: "4.12"
-   compile group: 'us.ihmc', name: 'ihmc-ci-core-api', version: '0.17.7'
-   compile group: "us.ihmc", name: "ihmc-commons-testing", version: "0.18.0"
+   compile group: 'us.ihmc', name: 'ihmc-ci-core-api', version: '0.17.14'
+   compile group: "us.ihmc", name: "ihmc-commons-testing", version: "0.19.1"
 }
