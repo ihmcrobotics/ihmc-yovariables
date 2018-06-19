@@ -53,14 +53,14 @@ public class AbstractParameterReaderTest
             new DoubleParameter("Default" + defaultIdx, regs[3], 0.0);
          }
 
-         Map<String, String> values = new HashMap<>();
+         Map<String, ParameterData> values = new HashMap<>();
          double expectedValue = random.nextDouble();
-         values.put(expectedNamespaces[i] + "." + parameter.getName(), Double.toString(expectedValue));
+         values.put(expectedNamespaces[i] + "." + parameter.getName(), new ParameterData(Double.toString(expectedValue)));
 
          int numberOfUnmatched = random.nextInt(10);
          for (int unmatchedIdx = 0; unmatchedIdx < numberOfUnmatched; unmatchedIdx++)
          {
-            values.put("Unmatched" + unmatchedIdx, Double.toString(0.0));
+            values.put("Unmatched" + unmatchedIdx, new ParameterData(Double.toString(0.0)));
          }
 
          TestParameterReader readerRoot = new TestParameterReader(values);
@@ -86,8 +86,8 @@ public class AbstractParameterReaderTest
 
       double loadedValue = random.nextDouble();
 
-      Map<String, String> values = new HashMap<>();
-      values.put("root.a.param", Double.toString(loadedValue));
+      Map<String, ParameterData> values = new HashMap<>();
+      values.put("root.a.param", new ParameterData(Double.toString(loadedValue)));
       TestParameterReader reader = new TestParameterReader(values);
 
       reader.readParametersInRegistry(new YoVariableRegistry("RandomRegistry"));
@@ -97,15 +97,15 @@ public class AbstractParameterReaderTest
 
    private static class TestParameterReader extends AbstractParameterReader
    {
-      private final Map<String, String> values;
+      private final Map<String, ParameterData> values;
 
-      private TestParameterReader(Map<String, String> values)
+      private TestParameterReader(Map<String, ParameterData> values)
       {
          this.values = values;
       }
 
       @Override
-      protected Map<String, String> getValues()
+      protected Map<String, ParameterData> getValues()
       {
          return Collections.unmodifiableMap(values);
       }

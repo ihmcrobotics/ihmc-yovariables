@@ -35,7 +35,7 @@ public class XmlParameterReader extends AbstractParameterReader
 
    private final boolean debug;
 
-   private final Map<String, String> parameterValues = new HashMap<>();
+   private final Map<String, ParameterData> parameterValues = new HashMap<>();
 
    private final String rootNamespace;
 
@@ -154,7 +154,8 @@ public class XmlParameterReader extends AbstractParameterReader
          for (Parameter param : registry.getParameters())
          {
             String name = path + "." + param.getName();
-            if (parameterValues.put(name, param.getValue()) != null)
+            ParameterData data = new ParameterData(param.getValue(), param.getMin(), param.getMax());
+            if (parameterValues.put(name, data) != null)
             {
                if (debug)
                {
@@ -179,7 +180,7 @@ public class XmlParameterReader extends AbstractParameterReader
    }
 
    @Override
-   protected Map<String, String> getValues()
+   protected Map<String, ParameterData> getValues()
    {
       return Collections.unmodifiableMap(parameterValues);
    }

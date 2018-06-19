@@ -59,7 +59,7 @@ public abstract class AbstractParameterReader
       unmatchedParametersToPack.clear();
 
       List<YoParameter<?>> parameters = registry.getAllParameters();
-      Map<String, String> localMap = new HashMap<>(getValues());
+      Map<String, ParameterData> localMap = new HashMap<>(getValues());
 
       for (int i = 0; i < parameters.size(); i++)
       {
@@ -67,12 +67,11 @@ public abstract class AbstractParameterReader
 
          NameSpace relativeNamespace = getRelativeNamespace(parameter.getNameSpace(), registry);
          String fullName = relativeNamespace + "." + parameter.getName();
-         String value = localMap.remove(fullName);
+         ParameterData data = localMap.remove(fullName);
 
-         if (value != null)
+         if (data != null)
          {
-            parameter.load(value);
-
+            data.setParameterFromThis(parameter);
          }
          else
          {
@@ -84,7 +83,7 @@ public abstract class AbstractParameterReader
       unmatchedParametersToPack.addAll(localMap.keySet());
    }
 
-   protected abstract Map<String, String> getValues();
+   protected abstract Map<String, ParameterData> getValues();
 
    static NameSpace getRelativeNamespace(NameSpace parameterNamespace, YoVariableRegistry registry)
    {
@@ -97,6 +96,5 @@ public abstract class AbstractParameterReader
       {
          return parameterNamespace.stripOffFromBeginning(registry.getNameSpace().getParent());
       }
-
    }
 }
