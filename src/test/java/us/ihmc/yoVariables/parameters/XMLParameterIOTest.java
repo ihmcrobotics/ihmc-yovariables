@@ -232,4 +232,21 @@ public class XMLParameterIOTest
       assertEquals(min, parameter.getManualScalingMin(), Double.MIN_VALUE);
       assertEquals(max, parameter.getManualScalingMax(), Double.MIN_VALUE);
    }
+
+   @Test(timeout = 30000)
+   @ContinuousIntegrationTest(estimatedDuration = 1.0)
+   public void testReadingWithoutMinMax() throws IOException
+   {
+      YoVariableRegistry target = new YoVariableRegistry("Root");
+      DoubleParameter parameter = new DoubleParameter("TestParameter", target);
+
+      String data1 = "<parameters>" + "<registry name=\"" + target.getName() + "\">" + "<parameter name=\"" + parameter.getName()
+            + "\" type=\"BooleanParameter\" value=\"0.5\"/>" + "</registry>" + "</parameters>";
+      StringReader reader1 = new StringReader(data1);
+      ReaderInputStream stream1 = new ReaderInputStream(reader1, Charset.forName("UTF-8"));
+
+      XmlParameterReader parameterReader = new XmlParameterReader(target.getName(), stream1);
+      parameterReader.readParametersInRegistry(target);
+      assertEquals(parameter.getLoadStatus(), ParameterLoadStatus.LOADED);
+   }
 }
