@@ -30,7 +30,7 @@ public class DefaultParameterReader extends AbstractParameterReader
 {
 
    @Override
-   protected Map<String, String> getValues()
+   protected Map<String, ParameterData> getValues()
    {
       return Collections.emptyMap();
    }
