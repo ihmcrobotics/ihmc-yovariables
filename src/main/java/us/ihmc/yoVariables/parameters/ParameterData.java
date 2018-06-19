@@ -9,8 +9,16 @@ public class ParameterData
    public ParameterData(String value, String min, String max)
    {
       this.value = value;
-      this.min = Double.parseDouble(min);
-      this.max = Double.parseDouble(max);
+      if (min != null && max != null)
+      {
+         this.min = Double.parseDouble(min);
+         this.max = Double.parseDouble(max);
+      }
+      else
+      {
+         this.min = 0.0;
+         this.max = 1.0;
+      }
    }
 
    public ParameterData(String value)
