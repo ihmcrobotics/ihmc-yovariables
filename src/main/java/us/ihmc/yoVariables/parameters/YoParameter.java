@@ -1,17 +1,17 @@
 /*
  * Copyright 2017 Florida Institute for Human and Machine Cognition (IHMC)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package us.ihmc.yoVariables.parameters;
 
@@ -25,19 +25,19 @@ import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 /**
- * Base class for parameters. 
- * 
- * Parameters cannot be changed from code and are only changed by the 
+ * Base class for parameters.
+ *
+ * Parameters cannot be changed from code and are only changed by the
  * user/operator.
- * 
+ *
  * Available implementations
  * - BooleanParameter
  * - DoubleParameter
  * - EnumParameter
  * - IntegerParameter
  * - LongParameter
- * 
- * 
+ *
+ *
  * @author Jesper Smith
  *
  * @param <T>
@@ -56,28 +56,28 @@ public abstract class YoParameter<T extends YoParameter<T>>
    {
       return name;
    }
-   
+
    /**
     * User readable description that describes the purpose of this parameter
-    * 
+    *
     * The description is only used as a guideline to the user.
-    * 
+    *
     * @return
     */
    public String getDescription()
    {
       return description;
    }
-   
+
    /**
-    * 
+    *
     * @return the namespace of this parameter
     */
    public NameSpace getNameSpace()
    {
       return getVariable().getNameSpace();
    }
-   
+
 
    /**
     * Attaches an object implementing {@link ParameterChangedListener} to this parameter's list of listeners.
@@ -145,18 +145,18 @@ public abstract class YoParameter<T extends YoParameter<T>>
          throw new NoSuchElementException("Listener not found");
    }
 
-   
+
    /**
     * Get the value of this parameter as a string.
-    * 
+    *
     * The value depends on the type, numeric types will return a numeric representation
     * while enum's will return the enum value string.
     *
     * @return the value as string
     */
    public abstract String getValueAsString();
-   
-   
+
+
    YoParameter(String name, String description)
    {
       checkForIllegalCharacters(name);
@@ -169,10 +169,20 @@ public abstract class YoParameter<T extends YoParameter<T>>
    abstract void setToString(String valueString);
 
    abstract void setToDefault();
-   
+
    void setSuggestedRange(double min, double max)
    {
       getVariable().setManualScalingMinMax(min, max);
+   }
+
+   public double getManualScalingMin()
+   {
+      return getVariable().getManualScalingMin();
+   }
+
+   public double getManualScalingMax()
+   {
+      return getVariable().getManualScalingMax();
    }
 
    private static void checkForIllegalCharacters(String name)
@@ -203,7 +213,7 @@ public abstract class YoParameter<T extends YoParameter<T>>
       loadStatus = ParameterLoadStatus.DEFAULT;
       setToDefault();
    }
-   
+
    /**
     * Get the load status of this parameter. It will indicate whether the parameter
     * was load from file, is using its default value, or is still unloaded.
@@ -217,24 +227,24 @@ public abstract class YoParameter<T extends YoParameter<T>>
 
    /**
     * Check if this parameter has been loaded
-    * 
+    *
     * @return true if this parameter has been loaded and can be used
     */
    public boolean isLoaded()
    {
       return loadStatus != ParameterLoadStatus.UNLOADED;
    }
-   
+
    /**
     * Helper class to delegate VariableChangedListeners to ParameterChangedListeners
-    * 
+    *
     * @author Jesper Smith
     *
     */
    private class YoParameterChangedListenerHolder implements VariableChangedListener
    {
       private final ArrayList<ParameterChangedListener> parameterChangedListeners = new ArrayList<>();
-      
+
 
       @Override
       public void notifyOfVariableChange(YoVariable<?> v)
@@ -263,12 +273,12 @@ public abstract class YoParameter<T extends YoParameter<T>>
          parameterChangedListeners.clear();
       }
 
- 
+
       public void add(ParameterChangedListener parameterChangedListener)
       {
          parameterChangedListeners.add(parameterChangedListener);
       }
-      
+
    }
 
 
