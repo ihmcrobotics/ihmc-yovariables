@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.listener.ParameterChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
@@ -47,7 +46,6 @@ public class DoubleParameterTest
    }
    
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testConstructDefaultValue()
    {
       YoVariableRegistry dummy = new YoVariableRegistry("dummy");
@@ -59,7 +57,6 @@ public class DoubleParameterTest
    }
 
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testDuplicate()
    {
       DoubleParameter param = createParameterWithNamespace();
@@ -84,7 +81,6 @@ public class DoubleParameterTest
 
 
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testGetNamespace()
    {
 
@@ -96,7 +92,6 @@ public class DoubleParameterTest
    }
    
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testLoadFromString()
    {
 
@@ -112,7 +107,6 @@ public class DoubleParameterTest
    }
 
    @Test(expected = RuntimeException.class, timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testGetBeforeLoad()
    {
       DoubleParameter param = createParameterWithNamespace();
@@ -120,7 +114,6 @@ public class DoubleParameterTest
    }
 
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testDefault()
    {
       DoubleParameter param = createParameterWithNamespace();
@@ -129,7 +122,6 @@ public class DoubleParameterTest
    }
 
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testListener()
    {
       DoubleParameter param = createParameterWithNamespace();

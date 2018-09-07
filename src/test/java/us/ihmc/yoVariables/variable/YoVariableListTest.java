@@ -13,13 +13,11 @@ import javax.swing.event.ChangeListener;
 import org.junit.Assert;
 import org.junit.Test;
 
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 public class YoVariableListTest
 {
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testCommonUsage()
    {
@@ -101,7 +99,6 @@ public class YoVariableListTest
 
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.5)
 	@Test(timeout = 30000)
    public void testGetPerformanceInLargeList()
    {
@@ -154,7 +151,6 @@ public class YoVariableListTest
       }
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testToString()
    {
@@ -173,7 +169,6 @@ public class YoVariableListTest
 
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testAddVariables()
    {
@@ -226,7 +221,6 @@ public class YoVariableListTest
       }
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testCommonUsageTwo()
    {
@@ -280,7 +274,6 @@ public class YoVariableListTest
       }
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetMatchingVariables()
    {
@@ -341,7 +334,6 @@ public class YoVariableListTest
       assertTrue(matchedNameShouldBeEmpty.isEmpty());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testAddChangeListener()
    {

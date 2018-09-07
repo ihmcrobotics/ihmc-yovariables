@@ -14,7 +14,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 public class YoDoubleTest
@@ -41,7 +40,6 @@ public class YoDoubleTest
       registry = null;
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testDoubleYoVariableConstructorWithoutDescription()
    {
@@ -49,7 +47,6 @@ public class YoDoubleTest
       Assert.assertEquals(yoDouble1.getName(), "yoDouble1");
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testDoubleYoVariableConstructorWithDescription()
    {
@@ -60,7 +57,6 @@ public class YoDoubleTest
       assertTrue(yoDoubleWithDescription.getDescription() == testDescription);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testToString()
    {
@@ -69,7 +65,6 @@ public class YoDoubleTest
       Assert.assertEquals(yoDouble1.toString(), "yoDouble1: " + randomNumber);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testIsNaN()
    {
@@ -78,7 +73,6 @@ public class YoDoubleTest
       assertTrue(yoDouble2.isNaN());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testAdditionWithDoubles()
    {
@@ -91,7 +85,6 @@ public class YoDoubleTest
       assertTrue(yoDouble1.getDoubleValue() == expectedSum);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testSubtractionWithDoubles()
    {
@@ -104,7 +97,6 @@ public class YoDoubleTest
       assertTrue(yoDouble1.getDoubleValue() == expectedDifference);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testMultiplicationWithDoubles()
    {
@@ -117,7 +109,6 @@ public class YoDoubleTest
       assertTrue(yoDouble1.getDoubleValue() == expectedProduct);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testAdditionWithDoubleYoVariables()
    {
@@ -131,7 +122,6 @@ public class YoDoubleTest
       assertTrue(yoDouble1.getDoubleValue() == expectedSum);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testSubtractionWithDoubleYoVariables()
    {
@@ -145,7 +135,6 @@ public class YoDoubleTest
       assertTrue(yoDouble1.getDoubleValue() == expectedDifference);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testMultiplicationWithDoubleYoVariables()
    {
@@ -159,7 +148,6 @@ public class YoDoubleTest
       assertTrue(yoDouble1.getDoubleValue() == expectedProduct);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testValueEquals()
    {
@@ -168,7 +156,6 @@ public class YoDoubleTest
       yoDouble1.valueEquals(randomNumber);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testSetValueWithStringBuffer()
    {
@@ -195,7 +182,6 @@ public class YoDoubleTest
       assertEquals(expectedStringBuffer.toString(), stringBufferTest.toString());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetAndSetMethods()
    {
@@ -205,7 +191,6 @@ public class YoDoubleTest
       assertTrue(yoDouble1.getDoubleValue() == yoDouble2.getDoubleValue());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetAndSetDoubleValue()
    {
@@ -215,7 +200,6 @@ public class YoDoubleTest
       assertTrue(yoDouble1.getValueAsDouble() == yoDouble2.getValueAsDouble());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testSetFinal()
    {
@@ -226,7 +210,6 @@ public class YoDoubleTest
       Assert.assertEquals(10.0, yoDouble1.getDoubleValue(), EPSILON);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetValueAsLongBitsAndSetValueFromLongBits()
    {
@@ -241,14 +224,12 @@ public class YoDoubleTest
       Assert.assertEquals(0xfff0000000000000L, yoDouble1.getValueAsLongBits());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetYoVariableType()
    {
       assertTrue(yoDouble1.getYoVariableType() == YoVariableType.DOUBLE);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testDuplicate()
    {
@@ -260,7 +241,6 @@ public class YoDoubleTest
       Assert.assertEquals(yoDouble2.getDoubleValue(), duplicate.getDoubleValue(), EPSILON);
    }
 	
-   @ContinuousIntegrationTest(estimatedDuration = 0.0)
    @Test(timeout = 300000)
    public void testProviderValue()
    {

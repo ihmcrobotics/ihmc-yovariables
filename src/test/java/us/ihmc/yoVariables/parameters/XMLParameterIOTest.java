@@ -26,7 +26,6 @@ import java.nio.charset.Charset;
 import org.apache.commons.io.input.ReaderInputStream;
 import org.junit.Test;
 
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 public class XMLParameterIOTest
@@ -51,7 +50,6 @@ public class XMLParameterIOTest
    }
 
    @Test(timeout = 30000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testEmptyFile() throws IOException
    {
       YoVariableRegistry target = createRegistries();
@@ -63,7 +61,6 @@ public class XMLParameterIOTest
    }
 
    @Test(timeout = 30000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testWritingAndReading() throws IOException
    {
       YoVariableRegistry source = createRegistries();
@@ -99,7 +96,6 @@ public class XMLParameterIOTest
    }
 
    @Test(timeout = 30000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testOverwritingDuringContruction() throws IOException
    {
       YoVariableRegistry target = new YoVariableRegistry("TestRegistry");
@@ -125,7 +121,6 @@ public class XMLParameterIOTest
    }
 
    @Test(timeout = 30000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testOverwriting() throws IOException
    {
       YoVariableRegistry target = new YoVariableRegistry("TestRegistry");
@@ -152,7 +147,6 @@ public class XMLParameterIOTest
    }
 
    @Test(timeout = 30000, expected = RuntimeException.class)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testOverwritingFails() throws IOException
    {
       YoVariableRegistry target = new YoVariableRegistry("TestRegistry");
@@ -178,7 +172,6 @@ public class XMLParameterIOTest
    }
 
    @Test(timeout = 30000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testRootNamespaceDoesNotMatch() throws IOException
    {
       YoVariableRegistry target = new YoVariableRegistry("Root");
@@ -195,7 +188,6 @@ public class XMLParameterIOTest
    }
 
    @Test(timeout = 30000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testRootNamespaceMatches() throws IOException
    {
       YoVariableRegistry target = new YoVariableRegistry("Root");
@@ -212,7 +204,6 @@ public class XMLParameterIOTest
    }
 
    @Test(timeout = 30000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testReadingWithMinMax() throws IOException
    {
       YoVariableRegistry target = new YoVariableRegistry("Root");
@@ -234,7 +225,6 @@ public class XMLParameterIOTest
    }
 
    @Test(timeout = 30000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testReadingWithoutMinMax() throws IOException
    {
       YoVariableRegistry target = new YoVariableRegistry("Root");

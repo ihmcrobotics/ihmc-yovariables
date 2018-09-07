@@ -25,7 +25,6 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 public class AbstractParameterReaderTest
@@ -33,7 +32,6 @@ public class AbstractParameterReaderTest
    private final static Random random = new Random(9492L);
 
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testReadingNamespacesRegistry()
    {
       for (int i = 0; i < 4; i++)
@@ -75,7 +73,6 @@ public class AbstractParameterReaderTest
    }
 
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testDoubleRead()
    {
       YoVariableRegistry root = new YoVariableRegistry("root");

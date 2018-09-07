@@ -10,7 +10,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 public class YoLongTest
@@ -35,7 +34,6 @@ public class YoLongTest
       yoLong = null;
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testSetAndGet()
    {
@@ -48,7 +46,6 @@ public class YoLongTest
       }
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testIncrementDecrementAddSubtract()
    {
@@ -68,7 +65,6 @@ public class YoLongTest
       Assert.assertEquals(value, yoLong.getLongValue());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testLargeValue()
    {
@@ -77,7 +73,6 @@ public class YoLongTest
       Assert.assertEquals(value, yoLong.getLongValue());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testValueEquals()
    {
@@ -88,7 +83,6 @@ public class YoLongTest
       assertTrue(yoLong.valueEquals(number));
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testSetFinal()
    {
@@ -101,7 +95,6 @@ public class YoLongTest
       Assert.assertEquals(value, yoLong.getLongValue());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testSetValueFromDouble()
    {
@@ -112,7 +105,6 @@ public class YoLongTest
       Assert.assertEquals(intValue, yoLong.getLongValue());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetValueAsDouble()
    {
@@ -123,14 +115,12 @@ public class YoLongTest
       assertEquals(15.0, result, EPSILON);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testToString()
    {
       Assert.assertEquals(yoLong.getName() + ": " + yoLong.getLongValue(), yoLong.toString());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetValueString()
    {
@@ -142,7 +132,6 @@ public class YoLongTest
       assertEquals("" + value, stringBuffer.toString());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetValueStringFromDouble()
    {
@@ -155,14 +144,12 @@ public class YoLongTest
       assertEquals("" + value, stringBuffer.toString());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetYoVariableType()
    {
       Assert.assertEquals(YoVariableType.LONG, yoLong.getYoVariableType());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetAndSetValueAsLongBits()
    {
@@ -177,7 +164,6 @@ public class YoLongTest
       Assert.assertEquals(longValue, yoLong.getValueAsLongBits());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testDuplicate()
    {
@@ -190,7 +176,6 @@ public class YoLongTest
       Assert.assertEquals(yoLong2.getManualScalingMax(), duplicate.getManualScalingMax(), EPSILON);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testSetValue()
    {
@@ -200,7 +185,6 @@ public class YoLongTest
       Assert.assertEquals(yoLong2.getLongValue(), yoLong.getLongValue());
    }
 	
-   @ContinuousIntegrationTest(estimatedDuration = 0.0)
    @Test(timeout = 300000)
    public void testProviderValue()
    {

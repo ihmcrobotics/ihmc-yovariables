@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.listener.ParameterChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 import us.ihmc.yoVariables.variable.YoEnum;
@@ -53,7 +52,6 @@ public class EnumParameterTest
    }
    
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testLoadNullValue()
    {
       YoVariableRegistry dummy = new YoVariableRegistry("dummy");
@@ -68,7 +66,6 @@ public class EnumParameterTest
    
 
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testDuplicate()
    {
       EnumParameter<TestEnum> param = createParameterWithNamespace();
@@ -93,7 +90,6 @@ public class EnumParameterTest
    }
    
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testStringDuplicate()
    {
       YoVariableRegistry root = new YoVariableRegistry("root");
@@ -121,7 +117,6 @@ public class EnumParameterTest
    }
    
    @Test(timeout = 1000, expected = RuntimeException.class)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testDisallowNullLoadValue()
    {
       YoVariableRegistry dummy = new YoVariableRegistry("dummy");
@@ -131,7 +126,6 @@ public class EnumParameterTest
    }
    
    @Test(timeout = 1000, expected = RuntimeException.class)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testDisallowNullConstructValue()
    {
       YoVariableRegistry dummy = new YoVariableRegistry("dummy");
@@ -140,7 +134,6 @@ public class EnumParameterTest
    }
 
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testConstructDefaultValue()
    {
       YoVariableRegistry dummy = new YoVariableRegistry("dummy");
@@ -156,7 +149,6 @@ public class EnumParameterTest
    }
 
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testGetNamespace()
    {
 
@@ -168,7 +160,6 @@ public class EnumParameterTest
    }
    
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testLoadFromString()
    {
 
@@ -185,7 +176,6 @@ public class EnumParameterTest
    }
 
    @Test(expected = RuntimeException.class, timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testGetBeforeLoad()
    {
       EnumParameter<TestEnum>param = createParameterWithNamespace();
@@ -193,7 +183,6 @@ public class EnumParameterTest
    }
 
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testDefault()
    {
       EnumParameter<TestEnum>param = createParameterWithNamespace();
@@ -202,7 +191,6 @@ public class EnumParameterTest
    }
 
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testListener()
    {
       EnumParameter<TestEnum>param = createParameterWithNamespace();
@@ -228,7 +216,6 @@ public class EnumParameterTest
    }
    
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testStringBased()
    {
       String[] constants = { "A", "B", "C", "D", "E", "F", "G", "H" };
@@ -262,7 +249,6 @@ public class EnumParameterTest
    }
    
    @Test(expected = RuntimeException.class, timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testStringBasedAccess()
    {
       String[] constants = { "A", "B", "C", "D", "E", "F", "G", "H" };
@@ -274,7 +260,6 @@ public class EnumParameterTest
    }
    
    @Test(expected = RuntimeException.class, timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testStringBasedAccessSetNull()
    {
       String[] constants = { "A", "B", "C", "D", "E", "F", "G", "H" };
@@ -289,7 +274,6 @@ public class EnumParameterTest
    }
    
    @Test(expected = RuntimeException.class, timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testStringBasedAccessSetNonExistant()
    {
       String[] constants = { "A", "B", "C", "D", "E", "F", "G", "H" };
@@ -304,7 +288,6 @@ public class EnumParameterTest
    }
 
    @Test(expected = RuntimeException.class, timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testStringBasedAccessNullValueConstant()
    {
       String[] constants = { "A", "B", "C", "NuLl", "E", "F", "G", "H" };
@@ -316,7 +299,6 @@ public class EnumParameterTest
    }
 
    @Test(expected = RuntimeException.class, timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testStringBasedAccessNullConstant()
    {
       String[] constants = {"A", "B", "C", null, "E", "F", "G", "H"};
@@ -328,7 +310,6 @@ public class EnumParameterTest
    }
 
    @Test(expected = RuntimeException.class, timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testStringBasedAccessEmptyConstantListNotNull()
    {
       String[] constants = {};
@@ -340,7 +321,6 @@ public class EnumParameterTest
    }
 
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testStringBasedAccessEmptyConstantList()
    {
       String[] constants = {};
