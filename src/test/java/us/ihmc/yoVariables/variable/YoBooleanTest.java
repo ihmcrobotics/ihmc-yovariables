@@ -11,7 +11,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 
@@ -35,7 +34,6 @@ public class YoBooleanTest
       registry = null;
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testBooleanYoVariable()
    {
@@ -44,7 +42,6 @@ public class YoBooleanTest
       Assert.assertEquals(false, yoBoolean.getBooleanValue());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testValueEquals()
    {
@@ -61,7 +58,6 @@ public class YoBooleanTest
       assertFalse(yoBoolean.valueEquals(false));
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetAndSetBooleanYoVariable()
    {
@@ -72,7 +68,6 @@ public class YoBooleanTest
       assertTrue(yoBoolean.getBooleanValue());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testSet_boolean_boolean()
    {
@@ -88,7 +83,6 @@ public class YoBooleanTest
       assertFalse(result);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetAndSetAsDouble()
    {
@@ -117,7 +111,6 @@ public class YoBooleanTest
       }
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetValueAsDouble()
    {
@@ -131,7 +124,6 @@ public class YoBooleanTest
       assertEquals(1.0, result, EPSILON);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testToString()
    {
@@ -141,7 +133,6 @@ public class YoBooleanTest
       Assert.assertEquals(yoBoolean.toString(), "booleanVariable: true");
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetValueWithStringBuffer()
    {
@@ -158,7 +149,6 @@ public class YoBooleanTest
       assertEquals(testStringBuffer.toString(), expectedTestStringBuffer.toString());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetAndSetValueAsLongBits()
    {
@@ -175,14 +165,12 @@ public class YoBooleanTest
       yoBoolean.setValueFromLongBits(value, notifyListeners);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testYoVariableType()
    {
       Assert.assertEquals(yoBoolean.getYoVariableType(), YoVariableType.BOOLEAN);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testDuplicate()
    {
@@ -199,7 +187,6 @@ public class YoBooleanTest
 	   newRegistry = null;
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testSetValue()
    {
@@ -214,7 +201,6 @@ public class YoBooleanTest
    }
    
 	
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
    @Test(timeout=300000)
    public void testProviderValue()
    {

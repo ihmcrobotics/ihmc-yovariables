@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.listener.ParameterChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 import us.ihmc.yoVariables.variable.YoLong;
@@ -47,7 +46,6 @@ public class LongParameterTest
    }
    
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testConstructDefaultValue()
    {
       YoVariableRegistry dummy = new YoVariableRegistry("dummy");
@@ -60,7 +58,6 @@ public class LongParameterTest
 
 
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testDuplicate()
    {
       LongParameter param = createParameterWithNamespace();
@@ -84,7 +81,6 @@ public class LongParameterTest
    }
 
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testGetNamespace()
    {
 
@@ -96,7 +92,6 @@ public class LongParameterTest
    }
    
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testLoadFromString()
    {
 
@@ -112,7 +107,6 @@ public class LongParameterTest
    }
 
    @Test(expected = RuntimeException.class, timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testGetBeforeLoad()
    {
       LongParameter param = createParameterWithNamespace();
@@ -120,7 +114,6 @@ public class LongParameterTest
    }
 
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testDefault()
    {
       LongParameter param = createParameterWithNamespace();
@@ -129,7 +122,6 @@ public class LongParameterTest
    }
 
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testListener()
    {
       LongParameter param = createParameterWithNamespace();

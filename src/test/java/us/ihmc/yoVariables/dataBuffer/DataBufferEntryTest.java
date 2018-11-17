@@ -8,7 +8,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.variable.YoDouble;
 
 public class DataBufferEntryTest
@@ -32,7 +31,6 @@ public class DataBufferEntryTest
       dataBufferEntry = null;
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetVal()
    {
@@ -43,7 +41,6 @@ public class DataBufferEntryTest
       assertEquals(tempDouble, dataBufferEntry.getVariableValueAsADouble(), 0);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testTickAndUpdate()
    {
@@ -66,7 +63,6 @@ public class DataBufferEntryTest
       }
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000) public void testComputeAverage()
    {
       Random random = new Random(768439);
@@ -89,7 +85,6 @@ public class DataBufferEntryTest
       assertEquals(average, computedAverage, 1e-7);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testUpdateValue()
    {
@@ -111,7 +106,6 @@ public class DataBufferEntryTest
       }
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testCheckIfDataIsEqual()
    {
@@ -157,7 +151,6 @@ public class DataBufferEntryTest
       assertFalse(dataBufferEntry.checkIfDataIsEqual(entry2, nPoints, nPoints - 1, epsilon)); //inPoint out of bounds
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetMinAndMaxScaling()
    {
@@ -171,14 +164,12 @@ public class DataBufferEntryTest
       assertEquals(maxScaling, dataBufferEntry.getManualMaxScaling(), 0);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetVariable()
    {
       assertEquals(yoDouble, dataBufferEntry.getVariable());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testCopyValueThrough()
    {
@@ -195,7 +186,6 @@ public class DataBufferEntryTest
       }
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testEnlargeBufferSize()
    {
@@ -220,7 +210,6 @@ public class DataBufferEntryTest
       }
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testCropData()
    {
@@ -278,7 +267,6 @@ public class DataBufferEntryTest
       }
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testCutData()
    {
@@ -363,7 +351,6 @@ public class DataBufferEntryTest
       }
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testPackData()
    {
@@ -400,7 +387,6 @@ public class DataBufferEntryTest
       }
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetMax()
    {
@@ -416,7 +402,6 @@ public class DataBufferEntryTest
       assertEquals(tempInteger + 10, dataBufferEntry.getMax(), 0);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetMin()
    {
@@ -432,7 +417,6 @@ public class DataBufferEntryTest
       assertEquals(0, dataBufferEntry.getMin(), 0);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testMinMaxWithNaN()
    {
@@ -445,7 +429,6 @@ public class DataBufferEntryTest
       assertEquals(0.0, dataBufferEntry.getMax(), 0.0);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testMinMaxWithNaN2()
    {
@@ -464,7 +447,6 @@ public class DataBufferEntryTest
       assertTrue(dataBufferEntry.getMin() <= dataBufferEntry.getMax());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testResetMinMaxChanged()
    {
@@ -478,7 +460,6 @@ public class DataBufferEntryTest
       assertFalse(dataBufferEntry.hasMinMaxChanged());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testSetData()
    {
@@ -491,7 +472,6 @@ public class DataBufferEntryTest
       assertEquals(tempDouble, dataBufferEntry.getData()[randomIndex], 0);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetWindowedData()
    {
@@ -520,7 +500,6 @@ public class DataBufferEntryTest
       }
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testEnableAutoScale()
    {
@@ -530,7 +509,6 @@ public class DataBufferEntryTest
       assertFalse(dataBufferEntry.isAutoScaleEnabled());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetMaxWithParameters()
    {
@@ -557,7 +535,6 @@ public class DataBufferEntryTest
       assertEquals(oldMax, dataBufferEntry.getMax(500,450,350,450), 0);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetMinWithParameters()
    {

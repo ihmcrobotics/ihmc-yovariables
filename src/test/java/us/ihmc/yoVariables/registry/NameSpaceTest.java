@@ -9,7 +9,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 
 public class NameSpaceTest
 {
@@ -23,7 +22,6 @@ public class NameSpaceTest
    {
    }
 
-   @ContinuousIntegrationTest(estimatedDuration = 0.0)
    @Test(timeout = 300000)
    public void testConstructors()
    {
@@ -84,7 +82,6 @@ public class NameSpaceTest
       }
    }
 
-   @ContinuousIntegrationTest(estimatedDuration = 0.0)
    @Test(timeout = 300000)
    public void testEquals()
    {
@@ -113,7 +110,6 @@ public class NameSpaceTest
       assertTrue(!nameSpace1.equals(null));
    }
 
-   @ContinuousIntegrationTest(estimatedDuration = 0.0)
    @Test(timeout = 300000)
    public void testStartsWith()
    {
@@ -132,7 +128,6 @@ public class NameSpaceTest
       assertTrue(!nameSpace.startsWith(""));
    }
 
-   @ContinuousIntegrationTest(estimatedDuration = 0.0)
    @Test(timeout = 300000)
    public void testEndsWith()
    {
@@ -151,7 +146,6 @@ public class NameSpaceTest
       assertTrue(!nameSpace.endsWith(""));
    }
 
-   @ContinuousIntegrationTest(estimatedDuration = 0.0)
    @Test(timeout = 300000)
    public void testGetShortName()
    {
@@ -164,7 +158,6 @@ public class NameSpaceTest
       assertTrue(nameSpace.getShortName().equals("module2"));
    }
 
-   @ContinuousIntegrationTest(estimatedDuration = 0.0)
    @Test(timeout = 300000)
    public void testContains()
    {
@@ -197,7 +190,6 @@ public class NameSpaceTest
       assertTrue(!nameSpace.contains(""));
    }
 
-   @ContinuousIntegrationTest(estimatedDuration = 0.0)
    @Test(timeout = 300000)
    public void testGetRootNameAndNameWithRootStripped()
    {
@@ -214,7 +206,6 @@ public class NameSpaceTest
       assertEquals("root", nameSpace.getShortName());
    }
 
-   @ContinuousIntegrationTest(estimatedDuration = 0.0)
    @Test(timeout = 300000)
    public void testStripOffFromBeginning()
    {
@@ -237,7 +228,6 @@ public class NameSpaceTest
       assertEquals(null, newNameSpace);
    }
 
-   @ContinuousIntegrationTest(estimatedDuration = 0.0)
    @Test(timeout = 300000)
    public void testCreateNameSpaceFromAFullVariableName()
    {
@@ -251,7 +241,6 @@ public class NameSpaceTest
       assertEquals(new NameSpace("NoNameSpaceRegistry"), nameSpace);
    }
 
-   @ContinuousIntegrationTest(estimatedDuration = 0.0)
    @Test(timeout = 300000)
    public void testStripOffNameSpaceToGetVariableName()
    {
@@ -260,7 +249,6 @@ public class NameSpaceTest
       assertEquals("variable", NameSpace.stripOffNameSpaceToGetVariableName("variable"));
    }
 
-   @ContinuousIntegrationTest(estimatedDuration = 0.0)
    @Test(timeout = 30000)
    public void testIsRootNamespace()
    {
@@ -279,7 +267,6 @@ public class NameSpaceTest
       assertTrue(nameSpace6.isRootNameSpace());
    }
 
-   @ContinuousIntegrationTest(estimatedDuration = 0.0)
    @Test(timeout = 30000)
    public void testGetParent()
    {

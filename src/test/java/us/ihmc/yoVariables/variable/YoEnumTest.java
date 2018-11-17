@@ -10,7 +10,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 public class YoEnumTest
@@ -38,7 +37,6 @@ public class YoEnumTest
    }
 
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testConstructorNoDescription()
    {
@@ -51,7 +49,6 @@ public class YoEnumTest
    }
 
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testConstructorWithDescription()
    {
@@ -65,7 +62,6 @@ public class YoEnumTest
    }
 
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testCreateNoDescription()
    {
@@ -77,7 +73,6 @@ public class YoEnumTest
    }
 
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testCreateWithDescription()
    {
@@ -91,7 +86,6 @@ public class YoEnumTest
       assertTrue(yoEnum.getDescription().equals("yoEnum with description"));
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testSetAndValueEquals()
    {
@@ -106,7 +100,6 @@ public class YoEnumTest
       assertTrue(yoEnum.valueEquals(null));
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testSetAndGet()
    {
@@ -122,7 +115,6 @@ public class YoEnumTest
       Assert.assertEquals(EnumYoVariableTestEnums.TWO, yoEnum.getEnumValue());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetValues()
    {
@@ -134,7 +126,6 @@ public class YoEnumTest
       assertEquals(EnumYoVariableTestEnums.TWO, enumTypeArray[1]);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testSetValueAsDoublePositiveNumber()
    {
@@ -150,7 +141,6 @@ public class YoEnumTest
       Assert.assertEquals(EnumYoVariableTestEnums.TWO, yoEnum.getEnumValue());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testSetValueAsDoubleOutOfBoundsJustIgnoresIt()
    {
@@ -165,7 +155,6 @@ public class YoEnumTest
       Assert.assertEquals(originalValue, yoEnum.getEnumValue());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testForNull()
    {
@@ -175,7 +164,6 @@ public class YoEnumTest
       Assert.assertEquals(yoEnum.getEnumValue(), null);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000,expected = RuntimeException.class)
    public void testNotAllowNull()
    {
@@ -184,7 +172,6 @@ public class YoEnumTest
       yoEnum.set(null);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testAllowNull()
    {
@@ -194,7 +181,6 @@ public class YoEnumTest
       Assert.assertEquals(yoEnum.getEnumValue(), null);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetValueAsDouble()
    {
@@ -208,7 +194,6 @@ public class YoEnumTest
       Assert.assertEquals(-1, yoEnum.getValueAsDouble(), EPSILON);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testToString()
    {
@@ -220,7 +205,6 @@ public class YoEnumTest
       Assert.assertEquals("yoEnum: TWO", yoEnum.toString());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetValueStringBufferWithNullValue()
    {
@@ -234,7 +218,6 @@ public class YoEnumTest
       assertEquals("null", valueBuffer.toString());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetValueStringBuffer()
    {
@@ -251,7 +234,6 @@ public class YoEnumTest
       assertEquals("ONETWO", valueBuffer.toString());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetYoVariableType()
    {
@@ -260,7 +242,6 @@ public class YoEnumTest
       Assert.assertEquals(YoVariableType.ENUM, yoEnum.getYoVariableType());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetValueAsLongBitsAndSetValueFromLongBits()
    {
@@ -286,7 +267,6 @@ public class YoEnumTest
       Assert.assertEquals(-1, yoEnum.getValueAsLongBits());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetEnumType()
    {
@@ -298,7 +278,6 @@ public class YoEnumTest
       Assert.assertEquals(enumValue.getClass(), yoEnum.getEnumType());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetValueStringFromDouble()
    {
@@ -338,7 +317,6 @@ public class YoEnumTest
       }
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testDuplicate()
    {
@@ -353,7 +331,6 @@ public class YoEnumTest
       Assert.assertEquals(yoEnum2.getAllowNullValue(), yoEnum.getAllowNullValue());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testSetValue()
    {
@@ -376,7 +353,6 @@ public class YoEnumTest
    }
 	
 	  
-   @ContinuousIntegrationTest(estimatedDuration = 0.0)
    @Test(timeout = 300000)
    public void testProviderValue()
    {
@@ -393,7 +369,6 @@ public class YoEnumTest
    }
    
    @Test(expected = RuntimeException.class, timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testStringBasedAccessNullConstant()
    {
       String[] constants = { "A", "B", "C", null, "E", "F", "G", "H" };
@@ -405,7 +380,6 @@ public class YoEnumTest
    }
    
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testEmptyConstantList()
    {
       String[] constants = {  };
@@ -419,7 +393,6 @@ public class YoEnumTest
    }
 
    @Test(expected = RuntimeException.class, timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testEmptyConstantListNotNull()
    {
       YoVariableRegistry registry = new YoVariableRegistry("test");
@@ -428,7 +401,6 @@ public class YoEnumTest
    }
    
    @Test(expected = RuntimeException.class, timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testEmptyStringConstantListNotNull()
    {
       YoVariableRegistry registry = new YoVariableRegistry("test");

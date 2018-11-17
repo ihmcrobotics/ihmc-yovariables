@@ -8,7 +8,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.dataBuffer.YoVariableHolderImplementation;
 import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
@@ -78,7 +77,6 @@ public class YoVariableHolderImplementationTest
       yoVariableHolderImplementation = null;
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetVariable()
    {
@@ -99,7 +97,6 @@ public class YoVariableHolderImplementationTest
 
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetVariable1()
    {
@@ -146,7 +143,6 @@ public class YoVariableHolderImplementationTest
       assert testPassed;
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetVariables()
    {
@@ -176,7 +172,6 @@ public class YoVariableHolderImplementationTest
 
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetVariables1()
    {
@@ -208,7 +203,6 @@ public class YoVariableHolderImplementationTest
       assertEquals(0, variables.size());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetVariables2()
    {
@@ -244,7 +238,6 @@ public class YoVariableHolderImplementationTest
 
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testHasUniqueVariable()
    {
@@ -264,7 +257,6 @@ public class YoVariableHolderImplementationTest
       assertTrue(!yoVariableHolderImplementation.hasUniqueVariable("registryC.variableTwo"));
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testHasUniqueVariable1()
    {

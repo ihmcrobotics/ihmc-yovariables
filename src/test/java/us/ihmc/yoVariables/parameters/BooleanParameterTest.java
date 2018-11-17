@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.listener.ParameterChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 import us.ihmc.yoVariables.variable.YoBoolean;
@@ -47,7 +46,6 @@ public class BooleanParameterTest
    }
 
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testGetNamespace()
    {
 
@@ -58,7 +56,6 @@ public class BooleanParameterTest
 
    }
 
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    @Test(expected = RuntimeException.class, timeout = 1000)
    public void testGetBeforeLoad()
    {
@@ -67,7 +64,6 @@ public class BooleanParameterTest
    }
    
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testLoadFromString()
    {
 
@@ -86,7 +82,6 @@ public class BooleanParameterTest
    }
 
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testDefault()
    {
       BooleanParameter param = createParameterWithNamespace();
@@ -95,7 +90,6 @@ public class BooleanParameterTest
    }
 
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testDuplicate()
    {
       BooleanParameter param = createParameterWithNamespace();
@@ -116,7 +110,6 @@ public class BooleanParameterTest
    }
    
    @Test(timeout = 1000)
-   @ContinuousIntegrationTest(estimatedDuration = 1.0)
    public void testListener()
    {
       BooleanParameter param = createParameterWithNamespace();

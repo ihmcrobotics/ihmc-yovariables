@@ -17,7 +17,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.yoVariables.listener.VariableChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
@@ -52,7 +51,6 @@ public class YoVariableTest
       variableChangedListeners = null;
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testFullNameEndsWith()
    {
@@ -70,77 +68,66 @@ public class YoVariableTest
       assertFalse(yoVariable.fullNameEndsWithCaseInsensitive("Robot.testRegistry.variableOne"));
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testValidVariable()
    {
       new YoDouble("foobar","",null);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000,expected = RuntimeException.class)
    public void testCantHaveADot()
    {
       new YoDouble("foo.bar", "", null);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000,expected = RuntimeException.class)
    public void testCantHaveAComma()
    {
       new YoDouble("foo,bar", "", null);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000,expected = RuntimeException.class)
    public void testCantHaveACarrot()
    {
       new YoDouble("foo^bar", "", null);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testCanHaveAClosingBracket()
    {
       new YoDouble("foo]bar", "", null);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testCanHaveAnOpeningBracket()
    {
       new YoDouble("foo[bar", "", null);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000,expected = RuntimeException.class)
    public void testCantHaveABackSlash()
    {
       new YoDouble("foo\\bar", "", null);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000,expected = RuntimeException.class)
    public void testCantHaveAQuote()
    {
       new YoDouble("foo\"bar", "", null);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000,expected = RuntimeException.class)
    public void testCantHaveASpace()
    {
       new YoDouble("foo bar", "", null);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000,expected = RuntimeException.class)
    public void testCantHaveASlash()
    {
       new YoDouble("foo/bar", "", null);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetBooleanValue()
    {
@@ -152,7 +139,6 @@ public class YoVariableTest
       assert !booleanVariable.getBooleanValue();
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetDescription()
    {
@@ -162,7 +148,6 @@ public class YoVariableTest
       assertNotNull(yoVariable.getDescription());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetDoubleValue()
    {
@@ -174,7 +159,6 @@ public class YoVariableTest
 
    private enum FooEnum {ONE, TWO, THREE;}
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetEnumValue()
    {
@@ -185,14 +169,12 @@ public class YoVariableTest
       assertFalse(enumVariable.getEnumValue() == FooEnum.ONE);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetFullNameWithNameSpace()
    {
       Assert.assertEquals(yoVariable.getFullNameWithNameSpace(), "robot.testRegistry.variableOne");
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetIntegerValue()
    {
@@ -212,14 +194,12 @@ public class YoVariableTest
 //   {
 //   }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetName()
    {
       Assert.assertEquals(yoVariable.getName(), "variableOne");
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetName1()
    {
@@ -244,7 +224,6 @@ public class YoVariableTest
 //   }
 
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testGetYoVariableRegistry()
    {
@@ -277,7 +256,6 @@ public class YoVariableTest
 //      // Not testing
 //   }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testToString()
    {
@@ -298,7 +276,6 @@ public class YoVariableTest
       Assert.assertEquals("booleanYoVariable: false", booleanyoBoolean.toString());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testValueEquals()
    {
@@ -335,7 +312,6 @@ public class YoVariableTest
 //      // Did a lot of constructing already. Not testing constructors.
 //   }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testNotifyVaribaleChangeListeners()
    {
@@ -371,7 +347,6 @@ public class YoVariableTest
       assertNull(hearNoEvil.getLastVariableChanged());
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testAddVariableChangeListener()
    {
@@ -382,7 +357,6 @@ public class YoVariableTest
       yoVariable.removeVariableChangedListener(listener);
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testRemoveAllVariableChangeListeners()
    {
@@ -411,7 +385,6 @@ public class YoVariableTest
       }
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testRemoveObserver()
    {
@@ -443,7 +416,6 @@ public class YoVariableTest
       }
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testRemoveObserverNonExistent1()
    {
@@ -459,7 +431,6 @@ public class YoVariableTest
       }
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000,expected = NoSuchElementException.class)
    public void testRemoveObserverNonExistent2()
    {
@@ -477,7 +448,6 @@ public class YoVariableTest
       }
    }
 
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
 	@Test(timeout=300000)
    public void testRecursiveCompareYoVariables() throws IllegalArgumentException, IllegalAccessException, SecurityException, NoSuchFieldException
    {
