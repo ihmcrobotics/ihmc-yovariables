@@ -11,7 +11,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import us.ihmc.commons.PrintTools;
+
+import us.ihmc.log.LogTools;
 import us.ihmc.yoVariables.dataBuffer.YoVariableHolder;
 import us.ihmc.yoVariables.listener.RewoundListener;
 import us.ihmc.yoVariables.listener.YoVariableRegistryChangedListener;
@@ -1028,7 +1029,7 @@ public class YoVariableRegistry implements YoVariableHolder
       });
 
       System.out.println("");
-      PrintTools.info("Printing children of " + root.getName() + " registry.");
+      LogTools.info("Printing children of " + root.getName() + " registry.");
       System.out.println("Total Number of YoVariables: " + totalVariables);
       System.out.println("Listing registries with at least " + minVariablesToPrint + " variables or at least " + minChildrenToPrint + " children.");
       System.out.println("Sorting by number of variables.");
