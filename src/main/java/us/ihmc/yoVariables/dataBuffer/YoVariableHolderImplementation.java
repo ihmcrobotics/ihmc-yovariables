@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 
-import us.ihmc.commons.PrintTools;
+import us.ihmc.log.LogTools;
 import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.variable.YoVariable;
 
@@ -135,7 +135,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
          {
             if (foundVariable != null)
             {
-               PrintTools.error(YoVariableHolderImplementation.this, "Called getVariable with " + fullname + ". That is insufficient name information to distinguish a unique variable! "
+               LogTools.error("Called getVariable with " + fullname + ". That is insufficient name information to distinguish a unique variable! "
                                   + "Please include more of the name space! Already found " + foundVariable.getFullNameWithNameSpace()
                                   + ". Looking for variable " + yoVariable.getFullNameWithNameSpace());
                // new Throwable().printStackTrace(); // Use to find callers.
