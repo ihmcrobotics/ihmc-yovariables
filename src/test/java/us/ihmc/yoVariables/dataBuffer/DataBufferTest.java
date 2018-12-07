@@ -1,8 +1,8 @@
 package us.ihmc.yoVariables.dataBuffer;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import us.ihmc.yoVariables.listener.RewoundListener;
 import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
@@ -11,7 +11,7 @@ import us.ihmc.yoVariables.variable.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import static us.ihmc.robotics.Assert.*;
 
 public class DataBufferTest
 {
@@ -32,7 +32,7 @@ public class DataBufferTest
    private YoDouble a, b, c;
    private DataBufferEntry aBuffer, bBuffer, cBuffer;
 
-   @Before
+   @BeforeEach
    public void setUp()
    {
       registry = new YoVariableRegistry("testRegistry");
@@ -50,14 +50,14 @@ public class DataBufferTest
       cBuffer = new DataBufferEntry(c, testBufferSize);
    }
 
-   @After
+   @AfterEach
    public void tearDown()
    {
       yoDouble = null;
       registry = null;
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testGetBufferSize()
    {
       int testBufferSize = dataBuffer.getBufferSize();
@@ -65,7 +65,7 @@ public class DataBufferTest
       assertTrue(expectedBufferSize == testBufferSize);
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testGetMaxBufferSize()
    {
       int expectedMaxBufferSize = 16384;
@@ -73,7 +73,7 @@ public class DataBufferTest
       assertTrue(expectedMaxBufferSize == testMaxBufferSize);
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testGetAndSetWrapBuffer()
    {
       dataBuffer.setWrapBuffer(false);
@@ -84,7 +84,7 @@ public class DataBufferTest
       assertTrue(testBoolean);
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testAddAndGetEntry()
    {
       DataBufferEntry doubleDataBufferEntryTest = new DataBufferEntry(yoDouble, testBufferSize);
@@ -118,7 +118,7 @@ public class DataBufferTest
 
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testAddNewEntry()
    {
       dataBuffer.addVariable(yoDouble, testBufferSize);
@@ -137,7 +137,7 @@ public class DataBufferTest
       assertTrue(enumDataBufferEntryTest.getVariable() == dataBuffer.getEntry(yoEnum).getVariable());
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testAddVariable()
    {
       dataBuffer.addVariable(yoDouble);
@@ -152,7 +152,7 @@ public class DataBufferTest
 
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testAddVariableWithArrayList()
    {
       ArrayList<YoVariable<?>> arrayListToBeAdded = new ArrayList<YoVariable<?>>();
@@ -172,7 +172,7 @@ public class DataBufferTest
 
    //add dataBuffer listener?
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testGetVariablesThatContain()
    {
       YoDouble yoVariable123456789 = new YoDouble("123456789", registry);
@@ -211,7 +211,7 @@ public class DataBufferTest
 
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testGetVariablesThatStartWith()
    {
 
@@ -233,7 +233,7 @@ public class DataBufferTest
 
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testGetEntries()
    {
       ArrayList<DataBufferEntry> expectedDataEntries = new ArrayList<DataBufferEntry>();
@@ -255,7 +255,7 @@ public class DataBufferTest
       assertEquals(expectedDataEntries, dataBuffer.getEntries());
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testGetVariables()
    {
       dataBuffer.addVariable(yoDouble, testBufferSize);
@@ -278,7 +278,7 @@ public class DataBufferTest
 
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testEmptyBufferIncreaseBufferSize()
    {
       int originalBufferSize = dataBuffer.getBufferSize();
@@ -289,7 +289,7 @@ public class DataBufferTest
       assertEquals(newBufferSize, dataBuffer.getBufferSize());
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testEmptyBufferDecreaseBufferSize()
    {
       int originalBufferSize = dataBuffer.getBufferSize();
@@ -300,7 +300,7 @@ public class DataBufferTest
       assertEquals(newBufferSize, dataBuffer.getBufferSize());
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testEnlargeBufferSize()
    {
       DataBufferEntry doubleDataBufferEntryTest = new DataBufferEntry(yoDouble, testBufferSize);
@@ -314,7 +314,7 @@ public class DataBufferTest
       assertEquals(newBufferSize, dataBuffer.getBufferSize());
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testDecreaseBufferSize()
    {
       DataBufferEntry doubleDataBufferEntryTest = new DataBufferEntry(yoDouble, testBufferSize);
@@ -328,7 +328,7 @@ public class DataBufferTest
       assertEquals(newBufferSize, dataBuffer.getBufferSize());
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testTick()
    {
       int numberOfTicksAndUpdates = 20;
@@ -360,7 +360,7 @@ public class DataBufferTest
 
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testIsIndexBetweenInAndOutPoint()
    {
       assertEquals(0, dataBuffer.getIndex());
@@ -439,7 +439,7 @@ public class DataBufferTest
 
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testSetSafeToChangeIndex() //Luke Morris
    {
       boolean isSafe = dataBuffer.isSafeToChangeIndex();
@@ -452,7 +452,7 @@ public class DataBufferTest
       assertTrue(isFinallySafe);
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testGetVariablesTwo() //Luke Morris
    {
       ArrayList<YoVariable<?>> variables = dataBuffer.getVariables();
@@ -460,7 +460,7 @@ public class DataBufferTest
       //    return variables.toString();
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testGetVars() //Luke Morris
 
    {
@@ -516,7 +516,7 @@ public class DataBufferTest
       assertFalse(neither.contains(c));
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testSetMaxBufferSize()
 
    {
@@ -539,7 +539,7 @@ public class DataBufferTest
 
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testResetDataBuffer()
    {
       dataBuffer.addEntry(aBuffer);
@@ -559,7 +559,7 @@ public class DataBufferTest
       //      assertTrue(resetVariables.size() == 0);
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testCloseAndDispose()
    {
       dataBuffer.addEntry(aBuffer);
@@ -571,7 +571,7 @@ public class DataBufferTest
       assertTrue(dataBuffer.getIndex() == -1);
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testCopyValuesThrough()
    {
       Random random = new Random(574893);
@@ -608,7 +608,7 @@ public class DataBufferTest
       }
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testPackDataWithInvalidStartPoint()
    {
       Random random = new Random(27093);
@@ -628,7 +628,7 @@ public class DataBufferTest
       assertTrue(dataBuffer.getOutPoint() == (testBufferSize - 1));
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testPackData()
    {
       int TEST_ITERATIONS = 1000;
@@ -696,7 +696,7 @@ public class DataBufferTest
       }
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testCheckIfDataIsEqual()
    {
       DataBuffer dataBuffer = new DataBuffer(0);
@@ -737,7 +737,7 @@ public class DataBufferTest
       assertFalse(dataBuffer.checkIfDataIsEqual(otherDataBuffer, 1e-6));
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testCloneDataBuffer()
    {
       Random random = new Random(19824);
@@ -765,7 +765,7 @@ public class DataBufferTest
       return cloneDataBuffer;
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testCutDataWithInvalidStartAndEnd()
    {
       Random random = new Random(6543897);
@@ -792,7 +792,7 @@ public class DataBufferTest
       assertTrue(dataBuffer.getOutPoint() == testBufferSize - 1);
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testCutDataOfEntireBuffer()
    {
       Random random = new Random(27489);
@@ -819,7 +819,7 @@ public class DataBufferTest
       }
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testCutData()
    {
       int TEST_ITERATIONS = 1000;
@@ -888,7 +888,7 @@ public class DataBufferTest
       }
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testThinData()
    {
       int TEST_ITERATIONS = 1000;
@@ -931,7 +931,7 @@ public class DataBufferTest
       }
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testAttachSimulationRewoundListeners()
    {
       final boolean[] listenerNotified = {false, false, false};
@@ -959,7 +959,7 @@ public class DataBufferTest
       assertFalse(listenerNotified[2]);
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testAttachIndexChangedListener()
    {
       final boolean[] listenerNotified = {false, false};
@@ -977,7 +977,7 @@ public class DataBufferTest
       assertFalse(listenerNotified[1]);
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testNotifyDataBufferListeners()
    {
       YoVariableRegistry registryOfInterest = new YoVariableRegistry("registryOfInterest");
@@ -1023,7 +1023,7 @@ public class DataBufferTest
       dataBuffer.notifyRewindListeners();
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testApplyDataProcessingFunction()
    {
       Random random = new Random(74523);
@@ -1084,7 +1084,7 @@ public class DataBufferTest
       assertTrue(c.getDoubleValue() == 0.0);
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testToggleKeyPointMode()
    {
       boolean keyPointModeToggled = dataBuffer.isKeyPointModeToggled();
@@ -1098,7 +1098,7 @@ public class DataBufferTest
       assertTrue(keyPointModeToggled == dataBuffer.isKeyPointModeToggled());
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testGetSetTimeVariable()
    {
       String timeVariableName = "time";
@@ -1137,7 +1137,7 @@ public class DataBufferTest
 
    //setMaxBufferSize
 
-   //   @Test(timeout=300000)
+   //   @Test// timeout=300000
    //   public void testResetDataBuffer() throws RepeatDataBufferEntryException
    //   {
    //      dataBuffer.addNewEntry(yoDouble, testBufferSize);
@@ -1153,7 +1153,7 @@ public class DataBufferTest
    //
    //   }
 
-   //   @Test(timeout=300000)
+   //   @Test// timeout=300000
    //   public void testClearAll() throws RepeatDataBufferEntryException
    //   {
    //

@@ -15,11 +15,9 @@
  */
 package us.ihmc.yoVariables.parameters;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static us.ihmc.robotics.Assert.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import us.ihmc.yoVariables.listener.ParameterChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
@@ -45,7 +43,7 @@ public class LongParameterTest
       return param;
    }
    
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testConstructDefaultValue()
    {
       YoVariableRegistry dummy = new YoVariableRegistry("dummy");
@@ -57,7 +55,7 @@ public class LongParameterTest
    }
 
 
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testDuplicate()
    {
       LongParameter param = createParameterWithNamespace();
@@ -80,7 +78,7 @@ public class LongParameterTest
       
    }
 
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testGetNamespace()
    {
 
@@ -91,7 +89,7 @@ public class LongParameterTest
 
    }
    
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testLoadFromString()
    {
 
@@ -106,14 +104,14 @@ public class LongParameterTest
       }
    }
 
-   @Test(expected = RuntimeException.class, timeout = 1000)
+   @Test// expected = RuntimeException.class, timeout = 1000
    public void testGetBeforeLoad()
    {
       LongParameter param = createParameterWithNamespace();
       param.getValue();
    }
 
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testDefault()
    {
       LongParameter param = createParameterWithNamespace();
@@ -121,7 +119,7 @@ public class LongParameterTest
       assertEquals(initialValue, param.getValue());
    }
 
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testListener()
    {
       LongParameter param = createParameterWithNamespace();

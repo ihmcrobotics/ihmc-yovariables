@@ -1,8 +1,6 @@
 package us.ihmc.yoVariables.variable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static us.ihmc.robotics.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,15 +8,15 @@ import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.junit.Assert;
-import org.junit.Test;
+import us.ihmc.robotics.Assert;
+import org.junit.jupiter.api.Test;
 
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 public class YoVariableListTest
 {
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testCommonUsage()
    {
       YoVariableList varList = new YoVariableList("listOne");
@@ -99,7 +97,7 @@ public class YoVariableListTest
 
    }
 
-	@Test(timeout = 30000)
+	@Test// timeout = 30000
    public void testGetPerformanceInLargeList()
    {
       // Test should take O(n) or O(n lg n) approximately. Was taking O(n^2)
@@ -151,7 +149,7 @@ public class YoVariableListTest
       }
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testToString()
    {
       YoVariableRegistry registry = new YoVariableRegistry("registry");
@@ -169,7 +167,7 @@ public class YoVariableListTest
 
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testAddVariables()
    {
       YoVariableRegistry registry = new YoVariableRegistry("registry");
@@ -221,7 +219,7 @@ public class YoVariableListTest
       }
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testCommonUsageTwo()
    {
       YoVariableRegistry registry = new YoVariableRegistry("registry");
@@ -274,7 +272,7 @@ public class YoVariableListTest
       }
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetMatchingVariables()
    {
       YoVariableRegistry registry = new YoVariableRegistry("registry");
@@ -334,7 +332,7 @@ public class YoVariableListTest
       assertTrue(matchedNameShouldBeEmpty.isEmpty());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testAddChangeListener()
    {
       YoVariableRegistry registry = new YoVariableRegistry("registry");

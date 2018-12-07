@@ -1,8 +1,8 @@
 package us.ihmc.yoVariables.registry;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import us.ihmc.yoVariables.listener.RewoundListener;
 import us.ihmc.yoVariables.listener.YoVariableRegistryChangedListener;
 import us.ihmc.yoVariables.parameters.DoubleParameter;
@@ -14,8 +14,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
-import static org.junit.Assert.*;
-
+import static us.ihmc.robotics.Assert.*;
 
 public class YoVariableRegistryTest
 {
@@ -33,7 +32,7 @@ public class YoVariableRegistryTest
    private YoDouble robotVariable;
    private YoDouble controlVariable;
 
-   @Before
+   @BeforeEach
    public void setUp()
    {
       robotRegistry = new YoVariableRegistry("robot");
@@ -77,7 +76,7 @@ public class YoVariableRegistryTest
       if (numberVariablesToAdd >= 4) new YoDouble("variableFour", registry);
    }
 
-   @After
+   @AfterEach
    public void tearDown() 
    {
       robotRegistry = null;
@@ -91,7 +90,7 @@ public class YoVariableRegistryTest
       lastClearedRegistry = null;
    }
 
-	@Test(timeout=300000,expected = RuntimeException.class)
+	@Test// timeout=300000,expected = RuntimeException.class
    public void testCantAddChildWithSameName()
    {
       String name = "sameName";
@@ -102,7 +101,7 @@ public class YoVariableRegistryTest
       testRegistry.addChild(child2);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetName()
    {      
       assertEquals("robot", robotRegistry.getName());
@@ -110,7 +109,7 @@ public class YoVariableRegistryTest
       assertEquals("testRegistry", testRegistry.getName());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testCreateVarList()
    {
       YoVariableList varList = testRegistry.createVarList();
@@ -118,14 +117,14 @@ public class YoVariableRegistryTest
       assertTrue(varList.getName() == testRegistry.getNameSpace().getName());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetAllVariables()
    {
       ArrayList<YoVariable<?>> allVars = testRegistry.getAllVariablesIncludingDescendants();
       assertTrue(allVars.size() == 4);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetNameSpace()
    {
       NameSpace expectedReturn = new NameSpace("robot.controller.testRegistry");
@@ -133,7 +132,7 @@ public class YoVariableRegistryTest
       assertEquals("return value", expectedReturn, actualReturn);
    }
    
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetVariable()
    {
       YoVariable<?> variableOne = testRegistry.getVariable("variableOne");
@@ -182,7 +181,7 @@ public class YoVariableRegistryTest
    }
    
    
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testCaseInsensitivityToNameButNotNamespace()
    {
       YoVariable<?> variableOne = testRegistry.getVariable("variableone");
@@ -226,7 +225,7 @@ public class YoVariableRegistryTest
       assertNull(variableFour);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetVariable1()
    {
       String nameSpace = "robot.controller.testRegistry";
@@ -291,7 +290,7 @@ public class YoVariableRegistryTest
       assertTrue(testPassed);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetVariables1()
    {
       ArrayList<YoVariable<?>> variables = testRegistry.getVariables("variableOne");
@@ -325,7 +324,7 @@ public class YoVariableRegistryTest
       assertTrue(variables.size() == 0);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetVariables2()
    {
       ArrayList<YoVariable<?>> variables = testRegistry.getVariables("robot.controller.testRegistry", "variableOne");
@@ -369,7 +368,7 @@ public class YoVariableRegistryTest
 
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testHasUniqueVariable()
    {
       String name = "";
@@ -385,7 +384,7 @@ public class YoVariableRegistryTest
       assertFalse(testRegistry.hasUniqueVariable("robot.controller", "variableTwo"));
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testHasUniqueVariable1()
    {
       String nameSpace = "";
@@ -397,7 +396,7 @@ public class YoVariableRegistryTest
       /** @todo fill in the test code */
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testRegisterVariable()
    {
       boolean testPassed = true;
@@ -417,7 +416,7 @@ public class YoVariableRegistryTest
       assertTrue(testRegistry.hasUniqueVariable("variableFive"));
    }
 
-	@Test(timeout=300000,expected = RuntimeException.class)
+	@Test// timeout=300000,expected = RuntimeException.class
    public void testCannotRegisterSameVariableName()
    {
       YoDouble variableFiveOnce = new YoDouble("variableFive", null);
@@ -428,7 +427,7 @@ public class YoVariableRegistryTest
       testRegistry.registerVariable(variableFiveTwice);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetAllVariablesInThisListOnly()
    {
       ArrayList<YoVariable<?>> robotVariablesOnly = robotRegistry.getAllVariablesInThisListOnly();
@@ -440,7 +439,7 @@ public class YoVariableRegistryTest
       assertEquals(4, testRegistryVariablesOnly.size());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testAddChildAndGetParentAndGetChildren()
    {
       assertEquals(robotRegistry.getParent(), null);
@@ -465,7 +464,7 @@ public class YoVariableRegistryTest
       assertTrue(testPassed);
    }
 
-	@Test(timeout=300000,expected = RuntimeException.class)
+	@Test// timeout=300000,expected = RuntimeException.class
    public void testDontLetAChildGetAddedToTwoRegistries()
    {
       YoVariableRegistry root1 = new YoVariableRegistry("root1");
@@ -476,7 +475,7 @@ public class YoVariableRegistryTest
       root2.addChild(child);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testIllegalName1()
    {
       String illegalName = "foo..foo";
@@ -494,26 +493,26 @@ public class YoVariableRegistryTest
       assertTrue(runtimeExceptionThrown);
    }
 
-	@Test(timeout=300000,expected = RuntimeException.class)
+	@Test// timeout=300000,expected = RuntimeException.class
    public void testIllegalName2()
    {
       testRegistry = new YoVariableRegistry("foo.");
    }
 
-	@Test(timeout=300000,expected = RuntimeException.class)
+	@Test// timeout=300000,expected = RuntimeException.class
    public void testNoDotsAllowed()
    {
       testRegistry = new YoVariableRegistry("foo.bar");
    }
 
-	@Test(timeout=300000,expected = RuntimeException.class)
+	@Test// timeout=300000,expected = RuntimeException.class
    public void testIllegalAddChild()
    {
       YoVariableRegistry childOne = new YoVariableRegistry("childOne");
       childOne.addChild(childOne);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetAllVariablesIncludingDescendants()
    {
       YoVariableRegistry childOne = new YoVariableRegistry("childOne");
@@ -537,7 +536,7 @@ public class YoVariableRegistryTest
       assertEquals(nVarsChildTwo, childTwo.getAllVariablesIncludingDescendants().size());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testFamilyRelations()
    {
       YoVariableRegistry childOne = new YoVariableRegistry("childOne");
@@ -558,7 +557,7 @@ public class YoVariableRegistryTest
       assertTrue(children.contains(childTwo));
    }
 
-	@Test(timeout=300000,expected = RuntimeException.class)
+	@Test// timeout=300000,expected = RuntimeException.class
    public void testCantAddDuplicateSubnames()
    {
       YoVariableRegistry childOne = new YoVariableRegistry("childOne");
@@ -568,7 +567,7 @@ public class YoVariableRegistryTest
       childOne.addChild(grandChildOne);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testNullChild()
    {
 
@@ -579,7 +578,7 @@ public class YoVariableRegistryTest
       assertEquals(0, testNullChild.getChildren().size());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testRegistryTree()
    {
       YoVariableRegistry root = new YoVariableRegistry("root");
@@ -666,7 +665,7 @@ public class YoVariableRegistryTest
       assertEquals(4, root.getVariables("repeatedVariable").size());
    }
 
-	@Test(timeout=300000,expected = RuntimeException.class)
+	@Test// timeout=300000,expected = RuntimeException.class
    public void testDontAllowRepeatRegistryNames()
    {
       YoVariableRegistry root = new YoVariableRegistry("root");
@@ -687,7 +686,7 @@ public class YoVariableRegistryTest
    }
    
    
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetOrCreateAndAddRegistry()
    {
       YoVariableRegistry root = new YoVariableRegistry("root");
@@ -711,7 +710,7 @@ public class YoVariableRegistryTest
       assertEquals(registry010, root.getOrCreateAndAddRegistry(new NameSpace("root.registry0.registry01.registry010")));
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testNullNameSpace()
    {
       YoVariableRegistry root = new YoVariableRegistry("");
@@ -722,7 +721,7 @@ public class YoVariableRegistryTest
       assertEquals(new NameSpace("root.registry0.registry00.registry000"), nameSpaceCheck);
    }
 
-	@Test(timeout=300000,expected = RuntimeException.class)
+	@Test// timeout=300000,expected = RuntimeException.class
    public void testCantAddAChildWithANullNamespace()
    {
       YoVariableRegistry root = new YoVariableRegistry("root");
@@ -731,7 +730,7 @@ public class YoVariableRegistryTest
 
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testCreateVarListIncludingChildren()
    {
       ArrayList<YoVariableList> varLists = robotRegistry.createVarListsIncludingChildren();
@@ -759,7 +758,7 @@ public class YoVariableRegistryTest
       assertEquals(1, containsName);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetAllRegistriesIncludingChildren()
    {
       ArrayList<YoVariableRegistry> registries = robotRegistry.getAllRegistriesIncludingChildren();
@@ -770,7 +769,7 @@ public class YoVariableRegistryTest
       assertTrue(registries.contains(testRegistry));
    }
 
-	@Test(timeout=300000) 
+	@Test// timeout=300000 
    public void testGetRegistry()
    {
       assertEquals(robotRegistry, robotRegistry.getRegistry(new NameSpace("robot")));
@@ -789,7 +788,7 @@ public class YoVariableRegistryTest
 
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testLoggingAndSending()
    {
       robotRegistry.setLoggingIncludingDescendants(false);
@@ -833,7 +832,7 @@ public class YoVariableRegistryTest
       assertTrue(testRegistry.isSent());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetNumberOfVariables()
    {
       assertEquals(1, robotRegistry.getNumberOfYoVariables());
@@ -841,7 +840,7 @@ public class YoVariableRegistryTest
       assertEquals(4, testRegistry.getNumberOfYoVariables());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testListenersOne()
    {
       this.robotRegistry.attachYoVariableRegistryChangedListener(listener);
@@ -860,13 +859,13 @@ public class YoVariableRegistryTest
       assertEquals(testRegistry, lastClearedRegistry);
    }
 
-	@Test(timeout=300000,expected = RuntimeException.class)
+	@Test// timeout=300000,expected = RuntimeException.class
    public void testThrowExceptionIfAttachListenerToNonRoot()
    {
       this.controllerRegistry.attachYoVariableRegistryChangedListener(listener);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testThrowExceptionIfAddChildRegistryWithAListener()
    {
       YoVariableRegistry childRegistry = new YoVariableRegistry("childToAdd");
@@ -882,7 +881,7 @@ public class YoVariableRegistryTest
       }
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testAreNotEqual()
    {
       assertFalse(robotRegistry.areEqual(null));
@@ -906,7 +905,7 @@ public class YoVariableRegistryTest
       assertFalse(robotRegistry.areEqual(robotRegistryClone));
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testAreEqual()
    {
       YoVariableRegistry robotRegistryClone = new YoVariableRegistry("robot");
@@ -924,7 +923,7 @@ public class YoVariableRegistryTest
       assertTrue(robotRegistry.areEqual(robotRegistryClone));
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testSetDisallowSending()
    {
       assertFalse(robotRegistry.isDisallowSendingSet());
@@ -932,7 +931,7 @@ public class YoVariableRegistryTest
       assertTrue(robotRegistry.isDisallowSendingSet());
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testPrintSizeRecursively()
    {
       YoVariableRegistry rootRegistry = new YoVariableRegistry("rootRegistry");
@@ -1002,7 +1001,7 @@ public class YoVariableRegistryTest
       }
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testRegisterSimulationRewoundListener()
    {
       RewoundListener rewoundListener = () -> {};
@@ -1013,7 +1012,7 @@ public class YoVariableRegistryTest
       assertTrue(allSimulationRewoundListeners.contains(rewoundListener));
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testChangeNameSpace()
    {
       String newNameSpace = "newNameSpace";
@@ -1022,7 +1021,7 @@ public class YoVariableRegistryTest
       assertTrue(robotRegistry.getNameSpace().getName().equals(newNameSpace));
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testRecursivelyChangingNameSpace()
    {
       String newNameSpace = "newNameSpace";
@@ -1037,7 +1036,7 @@ public class YoVariableRegistryTest
       robotRegistry.getChildren().forEach(registry -> assertTrue(registry.getNameSpace().contains(newNameSpace)));
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testClear()
    {
       assertFalse(robotRegistry.getAllVariables().size() == 0);
@@ -1049,7 +1048,7 @@ public class YoVariableRegistryTest
       assertTrue(robotRegistry.getChildren().size() == 0);
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testPrintAllVariablesIncludingDescendants()
    {
       Interceptor interceptor = new Interceptor(System.out);
@@ -1066,7 +1065,7 @@ public class YoVariableRegistryTest
       assertTrue(buffer[5].equals("robot.controller.testRegistry.variableFour"));
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testGetVariables()
    {
       NameSpace robotNameSpace = new NameSpace("robot");
@@ -1084,7 +1083,7 @@ public class YoVariableRegistryTest
       assertTrue(controllerVariables.contains(controlVariable));
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testGetMatchingVariables()
    {
       ArrayList<YoVariable<?>> nullVariables = robotRegistry.getMatchingVariables(null, null);
@@ -1100,7 +1099,7 @@ public class YoVariableRegistryTest
       assertTrue(matchingVariablesWithRegex.size() == 0);
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testParameters()
    {
       YoVariableRegistry a = new YoVariableRegistry("a");
@@ -1153,7 +1152,7 @@ public class YoVariableRegistryTest
       
    }
    
-   @Test(expected = NullPointerException.class)
+   @Test// expected = NullPointerException.class
    public void testCloseAndDispose()
    {
       assertTrue(robotRegistry != null);

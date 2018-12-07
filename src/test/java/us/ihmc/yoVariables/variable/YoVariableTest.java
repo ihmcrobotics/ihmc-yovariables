@@ -1,21 +1,16 @@
 package us.ihmc.yoVariables.variable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static us.ihmc.robotics.Assert.*;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.StandardToStringStyle;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import us.ihmc.robotics.Assert;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import us.ihmc.yoVariables.listener.VariableChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
@@ -31,7 +26,7 @@ public class YoVariableTest
    {
    }
 
-   @Before
+   @BeforeEach
    public void setUp()
    {
       YoVariableRegistry robotRegistry = new YoVariableRegistry("robot");
@@ -43,7 +38,7 @@ public class YoVariableTest
       variableChangedListeners = new ArrayList<TestVariableChangedListener>();
    }
 
-   @After
+   @AfterEach
    public void tearDown()
    {
       yoVariable = null;
@@ -51,7 +46,7 @@ public class YoVariableTest
       variableChangedListeners = null;
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testFullNameEndsWith()
    {
       assertTrue(yoVariable.fullNameEndsWithCaseInsensitive("robot.testRegistry.variableOne"));
@@ -68,67 +63,67 @@ public class YoVariableTest
       assertFalse(yoVariable.fullNameEndsWithCaseInsensitive("Robot.testRegistry.variableOne"));
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testValidVariable()
    {
       new YoDouble("foobar","",null);
    }
 
-	@Test(timeout=300000,expected = RuntimeException.class)
+	@Test// timeout=300000,expected = RuntimeException.class
    public void testCantHaveADot()
    {
       new YoDouble("foo.bar", "", null);
    }
 
-	@Test(timeout=300000,expected = RuntimeException.class)
+	@Test// timeout=300000,expected = RuntimeException.class
    public void testCantHaveAComma()
    {
       new YoDouble("foo,bar", "", null);
    }
 
-	@Test(timeout=300000,expected = RuntimeException.class)
+	@Test// timeout=300000,expected = RuntimeException.class
    public void testCantHaveACarrot()
    {
       new YoDouble("foo^bar", "", null);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testCanHaveAClosingBracket()
    {
       new YoDouble("foo]bar", "", null);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testCanHaveAnOpeningBracket()
    {
       new YoDouble("foo[bar", "", null);
    }
 
-	@Test(timeout=300000,expected = RuntimeException.class)
+	@Test// timeout=300000,expected = RuntimeException.class
    public void testCantHaveABackSlash()
    {
       new YoDouble("foo\\bar", "", null);
    }
 
-	@Test(timeout=300000,expected = RuntimeException.class)
+	@Test// timeout=300000,expected = RuntimeException.class
    public void testCantHaveAQuote()
    {
       new YoDouble("foo\"bar", "", null);
    }
 
-	@Test(timeout=300000,expected = RuntimeException.class)
+	@Test// timeout=300000,expected = RuntimeException.class
    public void testCantHaveASpace()
    {
       new YoDouble("foo bar", "", null);
    }
 
-	@Test(timeout=300000,expected = RuntimeException.class)
+	@Test// timeout=300000,expected = RuntimeException.class
    public void testCantHaveASlash()
    {
       new YoDouble("foo/bar", "", null);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetBooleanValue()
    {
       YoBoolean booleanVariable = new YoBoolean("booleanVar", registry);
@@ -139,7 +134,7 @@ public class YoVariableTest
       assert !booleanVariable.getBooleanValue();
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetDescription()
    {
       YoDouble descrVariable = new YoDouble("booleanVar", "Description", registry);
@@ -148,7 +143,7 @@ public class YoVariableTest
       assertNotNull(yoVariable.getDescription());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetDoubleValue()
    {
       YoDouble doubleVariable = new YoDouble("doubleVar", registry);
@@ -159,7 +154,7 @@ public class YoVariableTest
 
    private enum FooEnum {ONE, TWO, THREE;}
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetEnumValue()
    {
       YoEnum<FooEnum> enumVariable = YoEnum.create("booleanVar", FooEnum.class, registry);
@@ -169,13 +164,13 @@ public class YoVariableTest
       assertFalse(enumVariable.getEnumValue() == FooEnum.ONE);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetFullNameWithNameSpace()
    {
       Assert.assertEquals(yoVariable.getFullNameWithNameSpace(), "robot.testRegistry.variableOne");
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetIntegerValue()
    {
       YoInteger integerVariable = new YoInteger("integerVariable", registry);
@@ -184,23 +179,23 @@ public class YoVariableTest
       Assert.assertEquals(integerVariable.getIntegerValue(), 5);
    }
 
-//   @Test(timeout=300000)
+//   @Test// timeout=300000
 //   public void testGetManualScalingMax()
 //   {
 //   }
 //
-//   @Test(timeout=300000)
+//   @Test// timeout=300000
 //   public void testGetManualScalingMin()
 //   {
 //   }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetName()
    {
       Assert.assertEquals(yoVariable.getName(), "variableOne");
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetName1()
    {
       StringBuffer buffer = new StringBuffer();
@@ -224,7 +219,7 @@ public class YoVariableTest
 //   }
 
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetYoVariableRegistry()
    {
       YoVariableRegistry registry = yoVariable.getYoVariableRegistry();
@@ -233,7 +228,7 @@ public class YoVariableTest
       Assert.assertEquals(registry.getVariable(yoVariable.getName()), yoVariable);
    }
 
-//   @Test(timeout=300000)
+//   @Test// timeout=300000
 //   public void testHasSameFullName()
 //   {
 //      // Not testing. Just used for check of repeat variables.
@@ -256,7 +251,7 @@ public class YoVariableTest
 //      // Not testing
 //   }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testToString()
    {
       YoEnum<FooEnum> enumyoEnum = YoEnum.create("enumYoVariable", FooEnum.class, registry);
@@ -276,7 +271,7 @@ public class YoVariableTest
       Assert.assertEquals("booleanYoVariable: false", booleanyoBoolean.toString());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testValueEquals()
    {
       YoBoolean booleanVariable = new YoBoolean("booleanVar", registry);
@@ -312,7 +307,7 @@ public class YoVariableTest
 //      // Did a lot of constructing already. Not testing constructors.
 //   }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testNotifyVaribaleChangeListeners()
    {
       // create a bunch of Observers
@@ -347,7 +342,7 @@ public class YoVariableTest
       assertNull(hearNoEvil.getLastVariableChanged());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testAddVariableChangeListener()
    {
       // remove all observers, then add one new observer, and check if it can be removed without exceptions.
@@ -357,7 +352,7 @@ public class YoVariableTest
       yoVariable.removeVariableChangedListener(listener);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testRemoveAllVariableChangeListeners()
    {
       // create some observers, add them to yoVariable
@@ -385,7 +380,7 @@ public class YoVariableTest
       }
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testRemoveObserver()
    {
       // create some observers, add them to yoVariable
@@ -416,7 +411,7 @@ public class YoVariableTest
       }
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testRemoveObserverNonExistent1()
    {
       // make sure removing an observer that wasn't added throws an exception.
@@ -431,7 +426,7 @@ public class YoVariableTest
       }
    }
 
-	@Test(timeout=300000,expected = NoSuchElementException.class)
+	@Test// timeout=300000,expected = NoSuchElementException.class
    public void testRemoveObserverNonExistent2()
    {
       // make sure removing an observer that wasn't added throws an exception.
@@ -448,7 +443,7 @@ public class YoVariableTest
       }
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testRecursiveCompareYoVariables() throws IllegalArgumentException, IllegalAccessException, SecurityException, NoSuchFieldException
    {
       YoVariableRegistry root0 = new YoVariableRegistry("root");

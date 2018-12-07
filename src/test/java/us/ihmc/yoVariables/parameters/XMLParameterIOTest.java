@@ -15,7 +15,7 @@
  */
 package us.ihmc.yoVariables.parameters;
 
-import static org.junit.Assert.assertEquals;
+import static us.ihmc.robotics.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -24,7 +24,7 @@ import java.io.StringReader;
 import java.nio.charset.Charset;
 
 import org.apache.commons.io.input.ReaderInputStream;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
@@ -49,7 +49,7 @@ public class XMLParameterIOTest
       return regs[0];
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testEmptyFile() throws IOException
    {
       YoVariableRegistry target = createRegistries();
@@ -60,7 +60,7 @@ public class XMLParameterIOTest
       parameterReader.readParametersInRegistry(target);
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testWritingAndReading() throws IOException
    {
       YoVariableRegistry source = createRegistries();
@@ -95,7 +95,7 @@ public class XMLParameterIOTest
       assertEquals(source.getVariable("root.paramG").getValueAsDouble(), target.getVariable("root.paramG").getValueAsDouble(), 1e-9);
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testOverwritingDuringContruction() throws IOException
    {
       YoVariableRegistry target = new YoVariableRegistry("TestRegistry");
@@ -120,7 +120,7 @@ public class XMLParameterIOTest
       assertEquals(0.5, parameter2.getValue(), Double.MIN_VALUE);
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testOverwriting() throws IOException
    {
       YoVariableRegistry target = new YoVariableRegistry("TestRegistry");
@@ -146,7 +146,7 @@ public class XMLParameterIOTest
       assertEquals(0.5, parameter2.getValue(), Double.MIN_VALUE);
    }
 
-   @Test(timeout = 30000, expected = RuntimeException.class)
+   @Test// timeout = 30000, expected = RuntimeException.class
    public void testOverwritingFails() throws IOException
    {
       YoVariableRegistry target = new YoVariableRegistry("TestRegistry");
@@ -171,7 +171,7 @@ public class XMLParameterIOTest
       assertEquals(0.5, parameter2.getValue(), Double.MIN_VALUE);
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testRootNamespaceDoesNotMatch() throws IOException
    {
       YoVariableRegistry target = new YoVariableRegistry("Root");
@@ -187,7 +187,7 @@ public class XMLParameterIOTest
       assertEquals(parameter.getLoadStatus(), ParameterLoadStatus.DEFAULT);
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testRootNamespaceMatches() throws IOException
    {
       YoVariableRegistry target = new YoVariableRegistry("Root");
@@ -203,7 +203,7 @@ public class XMLParameterIOTest
       assertEquals(parameter.getLoadStatus(), ParameterLoadStatus.LOADED);
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testReadingWithMinMax() throws IOException
    {
       YoVariableRegistry target = new YoVariableRegistry("Root");
@@ -224,7 +224,7 @@ public class XMLParameterIOTest
       assertEquals(max, parameter.getManualScalingMax(), Double.MIN_VALUE);
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testReadingWithoutMinMax() throws IOException
    {
       YoVariableRegistry target = new YoVariableRegistry("Root");

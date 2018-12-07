@@ -1,28 +1,25 @@
 package us.ihmc.yoVariables.registry;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static us.ihmc.robotics.Assert.*;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 
 public class NameSpaceTest
 {
-   @Before
+   @BeforeEach
    public void setUp() throws Exception
    {
    }
 
-   @After
+   @AfterEach
    public void tearDown() throws Exception
    {
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testConstructors()
    {
       new NameSpace("robot1.controller1.module1");
@@ -82,7 +79,7 @@ public class NameSpaceTest
       }
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testEquals()
    {
       NameSpace nameSpace1 = new NameSpace("robot1.controller1.module1");
@@ -110,7 +107,7 @@ public class NameSpaceTest
       assertTrue(!nameSpace1.equals(null));
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testStartsWith()
    {
       NameSpace nameSpace = new NameSpace("robot1.controller1.module1");
@@ -128,7 +125,7 @@ public class NameSpaceTest
       assertTrue(!nameSpace.startsWith(""));
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testEndsWith()
    {
       NameSpace nameSpace = new NameSpace("robot1.controller1.module1");
@@ -146,7 +143,7 @@ public class NameSpaceTest
       assertTrue(!nameSpace.endsWith(""));
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testGetShortName()
    {
       NameSpace nameSpace = new NameSpace("robot1.controller1.module1");
@@ -158,7 +155,7 @@ public class NameSpaceTest
       assertTrue(nameSpace.getShortName().equals("module2"));
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testContains()
    {
       NameSpace nameSpace = new NameSpace("robot1.controller1.module1");
@@ -190,7 +187,7 @@ public class NameSpaceTest
       assertTrue(!nameSpace.contains(""));
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testGetRootNameAndNameWithRootStripped()
    {
       NameSpace nameSpace = new NameSpace("root.name1.name2");
@@ -206,7 +203,7 @@ public class NameSpaceTest
       assertEquals("root", nameSpace.getShortName());
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testStripOffFromBeginning()
    {
       NameSpace nameSpace = new NameSpace("root.name1.name2");
@@ -228,7 +225,7 @@ public class NameSpaceTest
       assertEquals(null, newNameSpace);
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testCreateNameSpaceFromAFullVariableName()
    {
       NameSpace nameSpace = NameSpace.createNameSpaceFromAFullVariableName("root.level1.level2.variableName");
@@ -241,7 +238,7 @@ public class NameSpaceTest
       assertEquals(new NameSpace("NoNameSpaceRegistry"), nameSpace);
    }
 
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testStripOffNameSpaceToGetVariableName()
    {
       assertEquals("variable", NameSpace.stripOffNameSpaceToGetVariableName("root.level1.level2.variable"));
@@ -249,7 +246,7 @@ public class NameSpaceTest
       assertEquals("variable", NameSpace.stripOffNameSpaceToGetVariableName("variable"));
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testIsRootNamespace()
    {
       NameSpace nameSpace1 = new NameSpace("robot1.controller1.module1");
@@ -267,7 +264,7 @@ public class NameSpaceTest
       assertTrue(nameSpace6.isRootNameSpace());
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testGetParent()
    {
       NameSpace nameSpace1 = new NameSpace("robot1.controller1.module1");

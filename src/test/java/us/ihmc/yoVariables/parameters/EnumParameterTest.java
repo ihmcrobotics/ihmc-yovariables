@@ -15,11 +15,9 @@
  */
 package us.ihmc.yoVariables.parameters;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static us.ihmc.robotics.Assert.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import us.ihmc.yoVariables.listener.ParameterChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
@@ -51,7 +49,7 @@ public class EnumParameterTest
       return param;
    }
    
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testLoadNullValue()
    {
       YoVariableRegistry dummy = new YoVariableRegistry("dummy");
@@ -65,7 +63,7 @@ public class EnumParameterTest
    }
    
 
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testDuplicate()
    {
       EnumParameter<TestEnum> param = createParameterWithNamespace();
@@ -89,7 +87,7 @@ public class EnumParameterTest
       
    }
    
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testStringDuplicate()
    {
       YoVariableRegistry root = new YoVariableRegistry("root");
@@ -116,7 +114,7 @@ public class EnumParameterTest
       
    }
    
-   @Test(timeout = 1000, expected = RuntimeException.class)
+   @Test// timeout = 1000, expected = RuntimeException.class
    public void testDisallowNullLoadValue()
    {
       YoVariableRegistry dummy = new YoVariableRegistry("dummy");
@@ -125,7 +123,7 @@ public class EnumParameterTest
       
    }
    
-   @Test(timeout = 1000, expected = RuntimeException.class)
+   @Test// timeout = 1000, expected = RuntimeException.class
    public void testDisallowNullConstructValue()
    {
       YoVariableRegistry dummy = new YoVariableRegistry("dummy");
@@ -133,7 +131,7 @@ public class EnumParameterTest
       
    }
 
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testConstructDefaultValue()
    {
       YoVariableRegistry dummy = new YoVariableRegistry("dummy");
@@ -148,7 +146,7 @@ public class EnumParameterTest
       
    }
 
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testGetNamespace()
    {
 
@@ -159,7 +157,7 @@ public class EnumParameterTest
 
    }
    
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testLoadFromString()
    {
 
@@ -175,14 +173,14 @@ public class EnumParameterTest
       }
    }
 
-   @Test(expected = RuntimeException.class, timeout = 1000)
+   @Test// expected = RuntimeException.class, timeout = 1000
    public void testGetBeforeLoad()
    {
       EnumParameter<TestEnum>param = createParameterWithNamespace();
       param.getValue();
    }
 
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testDefault()
    {
       EnumParameter<TestEnum>param = createParameterWithNamespace();
@@ -190,7 +188,7 @@ public class EnumParameterTest
       assertEquals(initialValue, param.getValue());
    }
 
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testListener()
    {
       EnumParameter<TestEnum>param = createParameterWithNamespace();
@@ -215,7 +213,7 @@ public class EnumParameterTest
       
    }
    
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testStringBased()
    {
       String[] constants = { "A", "B", "C", "D", "E", "F", "G", "H" };
@@ -248,7 +246,7 @@ public class EnumParameterTest
       
    }
    
-   @Test(expected = RuntimeException.class, timeout = 1000)
+   @Test// expected = RuntimeException.class, timeout = 1000
    public void testStringBasedAccess()
    {
       String[] constants = { "A", "B", "C", "D", "E", "F", "G", "H" };
@@ -259,7 +257,7 @@ public class EnumParameterTest
       nullDefault.getValue();
    }
    
-   @Test(expected = RuntimeException.class, timeout = 1000)
+   @Test// expected = RuntimeException.class, timeout = 1000
    public void testStringBasedAccessSetNull()
    {
       String[] constants = { "A", "B", "C", "D", "E", "F", "G", "H" };
@@ -273,7 +271,7 @@ public class EnumParameterTest
       constantDefault.setToString("null");
    }
    
-   @Test(expected = RuntimeException.class, timeout = 1000)
+   @Test// expected = RuntimeException.class, timeout = 1000
    public void testStringBasedAccessSetNonExistant()
    {
       String[] constants = { "A", "B", "C", "D", "E", "F", "G", "H" };
@@ -287,7 +285,7 @@ public class EnumParameterTest
       constantDefault.setToString("NONEXISTANT");
    }
 
-   @Test(expected = RuntimeException.class, timeout = 1000)
+   @Test// expected = RuntimeException.class, timeout = 1000
    public void testStringBasedAccessNullValueConstant()
    {
       String[] constants = { "A", "B", "C", "NuLl", "E", "F", "G", "H" };
@@ -298,7 +296,7 @@ public class EnumParameterTest
       
    }
 
-   @Test(expected = RuntimeException.class, timeout = 1000)
+   @Test// expected = RuntimeException.class, timeout = 1000
    public void testStringBasedAccessNullConstant()
    {
       String[] constants = {"A", "B", "C", null, "E", "F", "G", "H"};
@@ -309,7 +307,7 @@ public class EnumParameterTest
 
    }
 
-   @Test(expected = RuntimeException.class, timeout = 1000)
+   @Test// expected = RuntimeException.class, timeout = 1000
    public void testStringBasedAccessEmptyConstantListNotNull()
    {
       String[] constants = {};
@@ -320,7 +318,7 @@ public class EnumParameterTest
 
    }
 
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testStringBasedAccessEmptyConstantList()
    {
       String[] constants = {};

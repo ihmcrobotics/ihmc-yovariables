@@ -1,15 +1,13 @@
 package us.ihmc.yoVariables.variable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static us.ihmc.robotics.Assert.*;
 
 import java.util.Random;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import us.ihmc.robotics.Assert;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
@@ -20,21 +18,21 @@ public class YoBooleanTest
    private YoVariableRegistry registry;
    private static final double EPSILON = 1e-10;
 
-   @Before
+   @BeforeEach
    public void setUp()
    {
       registry = new YoVariableRegistry("testRegistry");
       yoBoolean = new YoBoolean("booleanVariable", registry);
    }
 
-   @After
+   @AfterEach
    public void tearDown()
    {
       yoBoolean = null;
       registry = null;
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testBooleanYoVariable()
    {
       Assert.assertEquals("booleanVariable", yoBoolean.getName());
@@ -42,7 +40,7 @@ public class YoBooleanTest
       Assert.assertEquals(false, yoBoolean.getBooleanValue());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testValueEquals()
    {
       yoBoolean.set(false);
@@ -58,7 +56,7 @@ public class YoBooleanTest
       assertFalse(yoBoolean.valueEquals(false));
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetAndSetBooleanYoVariable()
    {
       yoBoolean.set(false);
@@ -68,7 +66,7 @@ public class YoBooleanTest
       assertTrue(yoBoolean.getBooleanValue());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testSet_boolean_boolean()
    {
       assertFalse(yoBoolean.getBooleanValue());
@@ -83,7 +81,7 @@ public class YoBooleanTest
       assertFalse(result);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetAndSetAsDouble()
    {
       Random rng = new Random();
@@ -111,7 +109,7 @@ public class YoBooleanTest
       }
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetValueAsDouble()
    {
       assertFalse(yoBoolean.getBooleanValue());
@@ -124,7 +122,7 @@ public class YoBooleanTest
       assertEquals(1.0, result, EPSILON);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testToString()
    {
       yoBoolean.set(false);
@@ -133,7 +131,7 @@ public class YoBooleanTest
       Assert.assertEquals(yoBoolean.toString(), "booleanVariable: true");
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetValueWithStringBuffer()
    {
       StringBuffer testStringBuffer = new StringBuffer();
@@ -149,7 +147,7 @@ public class YoBooleanTest
       assertEquals(testStringBuffer.toString(), expectedTestStringBuffer.toString());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetAndSetValueAsLongBits()
    {
       assertFalse(yoBoolean.getBooleanValue());
@@ -165,13 +163,13 @@ public class YoBooleanTest
       yoBoolean.setValueFromLongBits(value, notifyListeners);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testYoVariableType()
    {
       Assert.assertEquals(yoBoolean.getYoVariableType(), YoVariableType.BOOLEAN);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testDuplicate()
    {
 	   YoVariableRegistry newRegistry = new YoVariableRegistry("newTestRegistry");
@@ -187,7 +185,7 @@ public class YoBooleanTest
 	   newRegistry = null;
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testSetValue()
    {
 	   boolean valSet = false;
@@ -201,7 +199,7 @@ public class YoBooleanTest
    }
    
 	
-   @Test(timeout=300000)
+   @Test// timeout=300000
    public void testProviderValue()
    {
 	   assertEquals(yoBoolean.getBooleanValue(), yoBoolean.getValue());

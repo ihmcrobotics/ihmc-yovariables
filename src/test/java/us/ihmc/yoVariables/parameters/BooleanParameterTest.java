@@ -15,11 +15,9 @@
  */
 package us.ihmc.yoVariables.parameters;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static us.ihmc.robotics.Assert.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import us.ihmc.yoVariables.listener.ParameterChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
@@ -45,7 +43,7 @@ public class BooleanParameterTest
       return param;
    }
 
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testGetNamespace()
    {
 
@@ -56,14 +54,14 @@ public class BooleanParameterTest
 
    }
 
-   @Test(expected = RuntimeException.class, timeout = 1000)
+   @Test// expected = RuntimeException.class, timeout = 1000
    public void testGetBeforeLoad()
    {
       BooleanParameter param = createParameterWithNamespace();
       param.getValue();
    }
    
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testLoadFromString()
    {
 
@@ -81,7 +79,7 @@ public class BooleanParameterTest
       }
    }
 
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testDefault()
    {
       BooleanParameter param = createParameterWithNamespace();
@@ -89,7 +87,7 @@ public class BooleanParameterTest
       assertEquals(initialValue, param.getValue());
    }
 
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testDuplicate()
    {
       BooleanParameter param = createParameterWithNamespace();
@@ -109,7 +107,7 @@ public class BooleanParameterTest
       
    }
    
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testListener()
    {
       BooleanParameter param = createParameterWithNamespace();

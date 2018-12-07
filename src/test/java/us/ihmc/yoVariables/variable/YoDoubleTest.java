@@ -1,18 +1,16 @@
 package us.ihmc.yoVariables.variable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static us.ihmc.robotics.Assert.*;
 
 import java.text.DecimalFormat;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.util.Random;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import us.ihmc.robotics.Assert;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
@@ -25,7 +23,7 @@ public class YoDoubleTest
    private static final double EPSILON = 1e-10;
    private Random random = new Random(345345L);
 
-   @Before
+   @BeforeEach
    public void setUp()
    {
       registry = new YoVariableRegistry("testRegistry");
@@ -33,21 +31,21 @@ public class YoDoubleTest
       yoDouble2 = new YoDouble("yoDouble2", "description2", registry, 0.0, 10.0);
    }
 
-   @After
+   @AfterEach
    public void tearDown()
    {
       yoDouble1 = null;
       registry = null;
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testDoubleYoVariableConstructorWithoutDescription()
    {
       assertTrue(yoDouble1.getDoubleValue() == 0.0);
       Assert.assertEquals(yoDouble1.getName(), "yoDouble1");
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testDoubleYoVariableConstructorWithDescription()
    {
       String testDescription = "This is a test description.";
@@ -57,7 +55,7 @@ public class YoDoubleTest
       assertTrue(yoDoubleWithDescription.getDescription() == testDescription);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testToString()
    {
       double randomNumber = Math.random();
@@ -65,7 +63,7 @@ public class YoDoubleTest
       Assert.assertEquals(yoDouble1.toString(), "yoDouble1: " + randomNumber);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testIsNaN()
    {
       assertFalse(yoDouble2.isNaN());
@@ -73,7 +71,7 @@ public class YoDoubleTest
       assertTrue(yoDouble2.isNaN());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testAdditionWithDoubles()
    {
       double randomNumber1 = Math.random();
@@ -85,7 +83,7 @@ public class YoDoubleTest
       assertTrue(yoDouble1.getDoubleValue() == expectedSum);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testSubtractionWithDoubles()
    {
       double randomNumber1 = Math.random();
@@ -97,7 +95,7 @@ public class YoDoubleTest
       assertTrue(yoDouble1.getDoubleValue() == expectedDifference);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testMultiplicationWithDoubles()
    {
       double randomNumber1 = Math.random();
@@ -109,7 +107,7 @@ public class YoDoubleTest
       assertTrue(yoDouble1.getDoubleValue() == expectedProduct);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testAdditionWithDoubleYoVariables()
    {
       double randomNumber1 = Math.random();
@@ -122,7 +120,7 @@ public class YoDoubleTest
       assertTrue(yoDouble1.getDoubleValue() == expectedSum);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testSubtractionWithDoubleYoVariables()
    {
       double randomNumber1 = Math.random();
@@ -135,7 +133,7 @@ public class YoDoubleTest
       assertTrue(yoDouble1.getDoubleValue() == expectedDifference);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testMultiplicationWithDoubleYoVariables()
    {
       double randomNumber1 = Math.random();
@@ -148,7 +146,7 @@ public class YoDoubleTest
       assertTrue(yoDouble1.getDoubleValue() == expectedProduct);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testValueEquals()
    {
       double randomNumber = Math.random();
@@ -156,7 +154,7 @@ public class YoDoubleTest
       yoDouble1.valueEquals(randomNumber);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testSetValueWithStringBuffer()
    {
       FieldPosition fieldPosition = new FieldPosition(NumberFormat.INTEGER_FIELD);
@@ -182,7 +180,7 @@ public class YoDoubleTest
       assertEquals(expectedStringBuffer.toString(), stringBufferTest.toString());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetAndSetMethods()
    {
       double randomNumber = Math.random();
@@ -191,7 +189,7 @@ public class YoDoubleTest
       assertTrue(yoDouble1.getDoubleValue() == yoDouble2.getDoubleValue());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetAndSetDoubleValue()
    {
       double randomNumber = Math.random();
@@ -200,7 +198,7 @@ public class YoDoubleTest
       assertTrue(yoDouble1.getValueAsDouble() == yoDouble2.getValueAsDouble());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testSetFinal()
    {
       yoDouble1.set(0.0);
@@ -210,7 +208,7 @@ public class YoDoubleTest
       Assert.assertEquals(10.0, yoDouble1.getDoubleValue(), EPSILON);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetValueAsLongBitsAndSetValueFromLongBits()
    {
       long longValue = random.nextLong();
@@ -224,13 +222,13 @@ public class YoDoubleTest
       Assert.assertEquals(0xfff0000000000000L, yoDouble1.getValueAsLongBits());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetYoVariableType()
    {
       assertTrue(yoDouble1.getYoVariableType() == YoVariableType.DOUBLE);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testDuplicate()
    {
       String newName = "registry2000";
@@ -241,7 +239,7 @@ public class YoDoubleTest
       Assert.assertEquals(yoDouble2.getDoubleValue(), duplicate.getDoubleValue(), EPSILON);
    }
 	
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testProviderValue()
    {
       yoDouble1.set(12509481.0);

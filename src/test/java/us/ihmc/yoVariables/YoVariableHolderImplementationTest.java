@@ -1,12 +1,12 @@
 package us.ihmc.yoVariables;
 
-import static org.junit.Assert.*;
+import static us.ihmc.robotics.Assert.*;
 
 import java.util.ArrayList;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import us.ihmc.yoVariables.dataBuffer.YoVariableHolderImplementation;
 import us.ihmc.yoVariables.registry.NameSpace;
@@ -22,7 +22,7 @@ public class YoVariableHolderImplementationTest
    {
    }
 
-   @Before
+   @BeforeEach
    public void setUp()
    {
       yoVariableHolderImplementation = new YoVariableHolderImplementation();
@@ -71,13 +71,13 @@ public class YoVariableHolderImplementationTest
       yoVariableHolderImplementation.addVariableToHolder(variableThreeC2);
    }
 
-   @After
+   @AfterEach
    public void tearDown()
    {
       yoVariableHolderImplementation = null;
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetVariable()
    {
       YoVariable<?> variable = yoVariableHolderImplementation.getVariable("robot.registryA.variableOne");
@@ -97,7 +97,7 @@ public class YoVariableHolderImplementationTest
 
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetVariable1()
    {
       YoVariable<?> variable = yoVariableHolderImplementation.getVariable("robot.registryA", "variableOne");
@@ -143,7 +143,7 @@ public class YoVariableHolderImplementationTest
       assert testPassed;
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetVariables()
    {
       NameSpace nameSpace = new NameSpace("robot.registryA");
@@ -172,7 +172,7 @@ public class YoVariableHolderImplementationTest
 
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetVariables1()
    {
       ArrayList<YoVariable<?>> variables = yoVariableHolderImplementation.getVariables("variableOne");
@@ -203,7 +203,7 @@ public class YoVariableHolderImplementationTest
       assertEquals(0, variables.size());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetVariables2()
    {
       ArrayList<YoVariable<?>> variables = yoVariableHolderImplementation.getVariables("robot.registryA", "variableOne");
@@ -238,7 +238,7 @@ public class YoVariableHolderImplementationTest
 
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testHasUniqueVariable()
    {
       
@@ -257,7 +257,7 @@ public class YoVariableHolderImplementationTest
       assertTrue(!yoVariableHolderImplementation.hasUniqueVariable("registryC.variableTwo"));
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testHasUniqueVariable1()
    {
       assert yoVariableHolderImplementation.hasUniqueVariable("robot.registryA", "variableOne");

@@ -1,14 +1,13 @@
 package us.ihmc.yoVariables.variable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static us.ihmc.robotics.Assert.*;
 
 import java.util.Random;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import us.ihmc.robotics.Assert;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
@@ -19,7 +18,7 @@ public class YoLongTest
    private YoLong yoLong;
    private static final double EPSILON = 1e-10;
 
-   @Before
+   @BeforeEach
    public void setUp()
    {
       registry = new YoVariableRegistry("testRegistry");
@@ -27,14 +26,14 @@ public class YoLongTest
       yoLong = new YoLong("test", registry);
    }
 
-   @After
+   @AfterEach
    public void tearDown()
    {
       registry = null;
       yoLong = null;
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testSetAndGet()
    {
       for (int i = 0; i < 100; i++)
@@ -46,7 +45,7 @@ public class YoLongTest
       }
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testIncrementDecrementAddSubtract()
    {
       long value = random.nextLong();
@@ -65,7 +64,7 @@ public class YoLongTest
       Assert.assertEquals(value, yoLong.getLongValue());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testLargeValue()
    {
       long value = Long.MAX_VALUE - 2;
@@ -73,7 +72,7 @@ public class YoLongTest
       Assert.assertEquals(value, yoLong.getLongValue());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testValueEquals()
    {
       assertTrue(yoLong.valueEquals(0));
@@ -83,7 +82,7 @@ public class YoLongTest
       assertTrue(yoLong.valueEquals(number));
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testSetFinal()
    {
       Assert.assertEquals(0, yoLong.getLongValue());
@@ -95,7 +94,7 @@ public class YoLongTest
       Assert.assertEquals(value, yoLong.getLongValue());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testSetValueFromDouble()
    {
       double doubleValue = random.nextDouble();
@@ -105,7 +104,7 @@ public class YoLongTest
       Assert.assertEquals(intValue, yoLong.getLongValue());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetValueAsDouble()
    {
       Assert.assertEquals(0.0, yoLong.getValueAsDouble(), EPSILON);
@@ -115,13 +114,13 @@ public class YoLongTest
       assertEquals(15.0, result, EPSILON);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testToString()
    {
       Assert.assertEquals(yoLong.getName() + ": " + yoLong.getLongValue(), yoLong.toString());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetValueString()
    {
       Assert.assertEquals(0, yoLong.getLongValue());
@@ -132,7 +131,7 @@ public class YoLongTest
       assertEquals("" + value, stringBuffer.toString());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetValueStringFromDouble()
    {
       Assert.assertEquals(0, yoLong.getLongValue());
@@ -144,13 +143,13 @@ public class YoLongTest
       assertEquals("" + value, stringBuffer.toString());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetYoVariableType()
    {
       Assert.assertEquals(YoVariableType.LONG, yoLong.getYoVariableType());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetAndSetValueAsLongBits()
    {
       int value = 57;
@@ -164,7 +163,7 @@ public class YoLongTest
       Assert.assertEquals(longValue, yoLong.getValueAsLongBits());
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testDuplicate()
    {
       YoLong yoLong2 = new YoLong("var2", "descriptionTest", registry);
@@ -176,7 +175,7 @@ public class YoLongTest
       Assert.assertEquals(yoLong2.getManualScalingMax(), duplicate.getManualScalingMax(), EPSILON);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testSetValue()
    {
       YoLong yoLong2 = new YoLong("var2", "descriptionTest", registry);
@@ -185,7 +184,7 @@ public class YoLongTest
       Assert.assertEquals(yoLong2.getLongValue(), yoLong.getLongValue());
    }
 	
-   @Test(timeout = 300000)
+   @Test// timeout = 300000
    public void testProviderValue()
    {
       yoLong.set(10L * (long)Integer.MAX_VALUE);
