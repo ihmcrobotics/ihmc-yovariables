@@ -22,6 +22,11 @@ dependencies {
    compile group: "us.ihmc", name: "euclid-frame", version: "0.11.0"
 }
 
+categories.get("fast") {
+  classesPerJVM = 1
+  maxJVMs = 1
+}
+
 testDependencies {
    compile group: "us.ihmc", name: "ihmc-commons-testing", version: "0.25.0"
 }
