@@ -17,6 +17,7 @@ package us.ihmc.yoVariables.parameters;
 
 import static us.ihmc.robotics.Assert.*;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -25,7 +26,6 @@ import us.ihmc.yoVariables.listener.ParameterChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 import us.ihmc.yoVariables.variable.YoBoolean;
 
-@Execution(ExecutionMode.SAME_THREAD)
 public class BooleanParameterTest
 {
    private final static boolean initialValue = true;
@@ -60,8 +60,11 @@ public class BooleanParameterTest
    @Test// expected = RuntimeException.class, timeout = 1000
    public void testGetBeforeLoad()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> 
+      {
       BooleanParameter param = createParameterWithNamespace();
       param.getValue();
+      });
    }
    
    @Test// timeout = 1000

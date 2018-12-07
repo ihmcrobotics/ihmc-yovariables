@@ -3,6 +3,8 @@ package us.ihmc.yoVariables.variable;
 import static us.ihmc.robotics.Assert.*;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+
 import us.ihmc.robotics.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +13,6 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
-@Execution(ExecutionMode.SAME_THREAD)
 public class YoEnumTest
 {
    private enum EnumYoVariableTestEnums
@@ -167,9 +168,11 @@ public class YoEnumTest
 	@Test// timeout=300000,expected = RuntimeException.class
    public void testNotAllowNull()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> {
       YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", registry,
             EnumYoVariableTestEnums.class);
       yoEnum.set(null);
+      });
    }
 
 	@Test// timeout=300000
@@ -371,11 +374,14 @@ public class YoEnumTest
    @Test// expected = RuntimeException.class, timeout = 1000
    public void testStringBasedAccessNullConstant()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> 
+      {
       String[] constants = { "A", "B", "C", null, "E", "F", "G", "H" };
       
       YoVariableRegistry registry = new YoVariableRegistry("test");
       
       new YoEnum<>("constantDefault", "", registry, false, constants);
+      });
       
    }
    
@@ -395,17 +401,23 @@ public class YoEnumTest
    @Test// expected = RuntimeException.class, timeout = 1000
    public void testEmptyConstantListNotNull()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> 
+      {
       YoVariableRegistry registry = new YoVariableRegistry("test");
       
       new YoEnum<>("enumConsturctor", "", registry, EmptyEnum.class, false);
+      });
    }
    
    @Test// expected = RuntimeException.class, timeout = 1000
    public void testEmptyStringConstantListNotNull()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> 
+      {
       YoVariableRegistry registry = new YoVariableRegistry("test");
       String[] constants = {  };
       new YoEnum<>("stringConstructor", "", registry, false, constants);
+      });
    }
    
    enum EmptyEnum

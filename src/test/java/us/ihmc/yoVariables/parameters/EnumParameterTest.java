@@ -17,6 +17,7 @@ package us.ihmc.yoVariables.parameters;
 
 import static us.ihmc.robotics.Assert.*;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -25,7 +26,6 @@ import us.ihmc.yoVariables.listener.ParameterChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 import us.ihmc.yoVariables.variable.YoEnum;
 
-@Execution(ExecutionMode.SAME_THREAD)
 public class EnumParameterTest
 {
    private enum TestEnum 
@@ -120,17 +120,23 @@ public class EnumParameterTest
    @Test// timeout = 1000, expected = RuntimeException.class
    public void testDisallowNullLoadValue()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> 
+      {
       YoVariableRegistry dummy = new YoVariableRegistry("dummy");
       EnumParameter<TestEnum> nonull = new EnumParameter<>("nonull", dummy, TestEnum.class, false, initialValue);
       nonull.load("null");
+      });
       
    }
    
    @Test// timeout = 1000, expected = RuntimeException.class
    public void testDisallowNullConstructValue()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> 
+      {
       YoVariableRegistry dummy = new YoVariableRegistry("dummy");
       new EnumParameter<>("nonull", dummy, TestEnum.class, false, null);
+      });
       
    }
 
@@ -179,8 +185,11 @@ public class EnumParameterTest
    @Test// expected = RuntimeException.class, timeout = 1000
    public void testGetBeforeLoad()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> 
+      {
       EnumParameter<TestEnum>param = createParameterWithNamespace();
       param.getValue();
+      });
    }
 
    @Test// timeout = 1000
@@ -252,17 +261,22 @@ public class EnumParameterTest
    @Test// expected = RuntimeException.class, timeout = 1000
    public void testStringBasedAccess()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> 
+      {
       String[] constants = { "A", "B", "C", "D", "E", "F", "G", "H" };
       
       YoVariableRegistry registry = new YoVariableRegistry("test");
       EnumParameter<?> nullDefault = new EnumParameter<>("nullDefault", "", registry, true, constants);
       nullDefault.loadDefault();
       nullDefault.getValue();
+      });
    }
    
    @Test// expected = RuntimeException.class, timeout = 1000
    public void testStringBasedAccessSetNull()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> 
+      {
       String[] constants = { "A", "B", "C", "D", "E", "F", "G", "H" };
       
       YoVariableRegistry registry = new YoVariableRegistry("test");
@@ -272,11 +286,14 @@ public class EnumParameterTest
       
       
       constantDefault.setToString("null");
+      });
    }
    
    @Test// expected = RuntimeException.class, timeout = 1000
    public void testStringBasedAccessSetNonExistant()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> 
+      {
       String[] constants = { "A", "B", "C", "D", "E", "F", "G", "H" };
       
       YoVariableRegistry registry = new YoVariableRegistry("test");
@@ -286,38 +303,48 @@ public class EnumParameterTest
       
       
       constantDefault.setToString("NONEXISTANT");
+      });
    }
 
    @Test// expected = RuntimeException.class, timeout = 1000
    public void testStringBasedAccessNullValueConstant()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> 
+      {
       String[] constants = { "A", "B", "C", "NuLl", "E", "F", "G", "H" };
       
       YoVariableRegistry registry = new YoVariableRegistry("test");
       
       new EnumParameter<>("constantDefault", "", registry, false, constants);
+      });
       
    }
 
    @Test// expected = RuntimeException.class, timeout = 1000
    public void testStringBasedAccessNullConstant()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> 
+      {
       String[] constants = {"A", "B", "C", null, "E", "F", "G", "H"};
 
       YoVariableRegistry registry = new YoVariableRegistry("test");
 
       new EnumParameter<>("constantDefault", "", registry, false, constants);
+      });
 
    }
 
    @Test// expected = RuntimeException.class, timeout = 1000
    public void testStringBasedAccessEmptyConstantListNotNull()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> 
+      {
       String[] constants = {};
 
       YoVariableRegistry registry = new YoVariableRegistry("test");
 
       new EnumParameter<>("constantDefault", "", registry, false, constants);
+      });
 
    }
 

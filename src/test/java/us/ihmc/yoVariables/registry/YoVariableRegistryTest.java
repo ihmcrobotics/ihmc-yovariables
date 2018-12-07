@@ -1,6 +1,7 @@
 package us.ihmc.yoVariables.registry;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -19,7 +20,6 @@ import java.util.ArrayList;
 
 import static us.ihmc.robotics.Assert.*;
 
-@Execution(ExecutionMode.SAME_THREAD)
 public class YoVariableRegistryTest
 {
    private static final int N_VARS_IN_ROOT = 4;
@@ -97,12 +97,14 @@ public class YoVariableRegistryTest
 	@Test// timeout=300000,expected = RuntimeException.class
    public void testCantAddChildWithSameName()
    {
-      String name = "sameName";
-      YoVariableRegistry child1 = new YoVariableRegistry(name);
-      YoVariableRegistry child2 = new YoVariableRegistry(name);
-      
-      testRegistry.addChild(child1);
-      testRegistry.addChild(child2);
+	   Assertions.assertThrows(RuntimeException.class, () -> {
+	      String name = "sameName";
+	      YoVariableRegistry child1 = new YoVariableRegistry(name);
+	      YoVariableRegistry child2 = new YoVariableRegistry(name);
+	      
+	      testRegistry.addChild(child1);
+	      testRegistry.addChild(child2);
+	   });
    }
 
 	@Test// timeout=300000
@@ -423,12 +425,14 @@ public class YoVariableRegistryTest
 	@Test// timeout=300000,expected = RuntimeException.class
    public void testCannotRegisterSameVariableName()
    {
-      YoDouble variableFiveOnce = new YoDouble("variableFive", null);
-      YoDouble variableFiveTwice = new YoDouble("variableFive", null);
-
-      testRegistry.registerVariable(variableFiveOnce);
-      assertTrue(testRegistry.hasUniqueVariable("variableFive"));
-      testRegistry.registerVariable(variableFiveTwice);
+      Assertions.assertThrows(RuntimeException.class, () -> {
+         YoDouble variableFiveOnce = new YoDouble("variableFive", null);
+         YoDouble variableFiveTwice = new YoDouble("variableFive", null);
+   
+         testRegistry.registerVariable(variableFiveOnce);
+         assertTrue(testRegistry.hasUniqueVariable("variableFive"));
+         testRegistry.registerVariable(variableFiveTwice);
+      });
    }
 
 	@Test// timeout=300000
@@ -471,12 +475,14 @@ public class YoVariableRegistryTest
 	@Test// timeout=300000,expected = RuntimeException.class
    public void testDontLetAChildGetAddedToTwoRegistries()
    {
-      YoVariableRegistry root1 = new YoVariableRegistry("root1");
-      YoVariableRegistry root2 = new YoVariableRegistry("root2");
-      
-      YoVariableRegistry child = new YoVariableRegistry("child");
-      root1.addChild(child);
-      root2.addChild(child);
+      Assertions.assertThrows(RuntimeException.class, () -> {
+         YoVariableRegistry root1 = new YoVariableRegistry("root1");
+         YoVariableRegistry root2 = new YoVariableRegistry("root2");
+         
+         YoVariableRegistry child = new YoVariableRegistry("child");
+         root1.addChild(child);
+         root2.addChild(child);
+      });
    }
 
 	@Test// timeout=300000
@@ -500,20 +506,26 @@ public class YoVariableRegistryTest
 	@Test// timeout=300000,expected = RuntimeException.class
    public void testIllegalName2()
    {
-      testRegistry = new YoVariableRegistry("foo.");
+      Assertions.assertThrows(RuntimeException.class, () -> {
+         testRegistry = new YoVariableRegistry("foo.");
+      });
    }
 
 	@Test// timeout=300000,expected = RuntimeException.class
    public void testNoDotsAllowed()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> {
       testRegistry = new YoVariableRegistry("foo.bar");
+      });
    }
 
 	@Test// timeout=300000,expected = RuntimeException.class
    public void testIllegalAddChild()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> {
       YoVariableRegistry childOne = new YoVariableRegistry("childOne");
       childOne.addChild(childOne);
+      });
    }
 
 	@Test// timeout=300000
@@ -564,11 +576,13 @@ public class YoVariableRegistryTest
 	@Test// timeout=300000,expected = RuntimeException.class
    public void testCantAddDuplicateSubnames()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> {
       YoVariableRegistry childOne = new YoVariableRegistry("childOne");
       testRegistry.addChild(childOne);
 
       YoVariableRegistry grandChildOne = new YoVariableRegistry(childOne.getParent().getNameSpace().getRootName());
       childOne.addChild(grandChildOne);
+      });
    }
 
 	@Test// timeout=300000
@@ -672,6 +686,7 @@ public class YoVariableRegistryTest
 	@Test// timeout=300000,expected = RuntimeException.class
    public void testDontAllowRepeatRegistryNames()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> {
       YoVariableRegistry root = new YoVariableRegistry("root");
 
       YoVariableRegistry levelOne = new YoVariableRegistry("levelOne");
@@ -687,6 +702,7 @@ public class YoVariableRegistryTest
       
       levelOne.addChild(registryOne);
       levelOne.addChild(registryOneRepeat);
+      });
    }
    
    
@@ -728,9 +744,11 @@ public class YoVariableRegistryTest
 	@Test// timeout=300000,expected = RuntimeException.class
    public void testCantAddAChildWithANullNamespace()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> {
       YoVariableRegistry root = new YoVariableRegistry("root");
       YoVariableRegistry child = new YoVariableRegistry("");
       root.addChild(child);
+      });
 
    }
 
@@ -866,7 +884,9 @@ public class YoVariableRegistryTest
 	@Test// timeout=300000,expected = RuntimeException.class
    public void testThrowExceptionIfAttachListenerToNonRoot()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> {
       this.controllerRegistry.attachYoVariableRegistryChangedListener(listener);
+      });
    }
 
 	@Test// timeout=300000
@@ -1159,11 +1179,14 @@ public class YoVariableRegistryTest
    @Test// expected = NullPointerException.class
    public void testCloseAndDispose()
    {
+      Assertions.assertThrows(NullPointerException.class, () -> 
+      {
       assertTrue(robotRegistry != null);
 
       robotRegistry.closeAndDispose();
 
       assertTrue(robotRegistry.getAllVariables() == null);
+      });
    }
 
    private class Interceptor extends PrintStream

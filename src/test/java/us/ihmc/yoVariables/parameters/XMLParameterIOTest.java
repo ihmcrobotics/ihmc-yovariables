@@ -24,6 +24,7 @@ import java.io.StringReader;
 import java.nio.charset.Charset;
 
 import org.apache.commons.io.input.ReaderInputStream;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -152,6 +153,8 @@ public class XMLParameterIOTest
    @Test// timeout = 30000, expected = RuntimeException.class
    public void testOverwritingFails() throws IOException
    {
+      Assertions.assertThrows(RuntimeException.class, () -> 
+      {
       YoVariableRegistry target = new YoVariableRegistry("TestRegistry");
       DoubleParameter parameter1 = new DoubleParameter("TestParameter1", target);
       DoubleParameter parameter2 = new DoubleParameter("TestParameter2", target);
@@ -172,6 +175,7 @@ public class XMLParameterIOTest
 
       assertEquals(0.0, parameter1.getValue(), Double.MIN_VALUE);
       assertEquals(0.5, parameter2.getValue(), Double.MIN_VALUE);
+      });
    }
 
    @Test// timeout = 30000

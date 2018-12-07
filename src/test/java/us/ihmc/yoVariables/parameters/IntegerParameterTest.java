@@ -17,6 +17,7 @@ package us.ihmc.yoVariables.parameters;
 
 import static us.ihmc.robotics.Assert.*;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -109,8 +110,11 @@ public class IntegerParameterTest
    @Test// expected = RuntimeException.class, timeout = 1000
    public void testGetBeforeLoad()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> 
+      {
       IntegerParameter param = createParameterWithNamespace();
       param.getValue();
+      });
    }
 
    @Test// timeout = 1000

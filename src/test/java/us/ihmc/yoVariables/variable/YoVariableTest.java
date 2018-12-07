@@ -8,6 +8,8 @@ import java.util.NoSuchElementException;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.StandardToStringStyle;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+
 import us.ihmc.robotics.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +19,6 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import us.ihmc.yoVariables.listener.VariableChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
-@Execution(ExecutionMode.SAME_THREAD)
 public class YoVariableTest
 {
    private YoVariable<?> yoVariable = null;
@@ -75,19 +76,25 @@ public class YoVariableTest
 	@Test// timeout=300000,expected = RuntimeException.class
    public void testCantHaveADot()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> {
       new YoDouble("foo.bar", "", null);
+      });
    }
 
 	@Test// timeout=300000,expected = RuntimeException.class
    public void testCantHaveAComma()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> {
       new YoDouble("foo,bar", "", null);
+      });
    }
 
 	@Test// timeout=300000,expected = RuntimeException.class
    public void testCantHaveACarrot()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> {
       new YoDouble("foo^bar", "", null);
+      });
    }
 
 	@Test// timeout=300000
@@ -105,25 +112,34 @@ public class YoVariableTest
 	@Test// timeout=300000,expected = RuntimeException.class
    public void testCantHaveABackSlash()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> {
       new YoDouble("foo\\bar", "", null);
+      });
    }
 
 	@Test// timeout=300000,expected = RuntimeException.class
    public void testCantHaveAQuote()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> {
+	   
       new YoDouble("foo\"bar", "", null);
+      });
    }
 
 	@Test// timeout=300000,expected = RuntimeException.class
    public void testCantHaveASpace()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> {
       new YoDouble("foo bar", "", null);
+      });
    }
 
 	@Test// timeout=300000,expected = RuntimeException.class
    public void testCantHaveASlash()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> {
       new YoDouble("foo/bar", "", null);
+      });
    }
 
 	@Test// timeout=300000
@@ -432,18 +448,21 @@ public class YoVariableTest
 	@Test// timeout=300000,expected = NoSuchElementException.class
    public void testRemoveObserverNonExistent2()
    {
-      // make sure removing an observer that wasn't added throws an exception.
+	   Assertions.assertThrows(NoSuchElementException.class, () -> 
+	   {
+	      // make sure removing an observer that wasn't added throws an exception.
 //      try
-      {
-         createVariableChangeListeners(5);
-         addAllListenersToYoVariable();
-         yoVariable.removeVariableChangedListener(new TestVariableChangedListener());
-         //fail();
-      }
+	      {
+	         createVariableChangeListeners(5);
+	         addAllListenersToYoVariable();
+	         yoVariable.removeVariableChangedListener(new TestVariableChangedListener());
+	         //fail();
+	      }
 //      catch (NoSuchElementException e)
-      {
-         // pass.
-      }
+	      {
+	         // pass.
+	      }
+	   });
    }
 
 	@Test// timeout=300000
