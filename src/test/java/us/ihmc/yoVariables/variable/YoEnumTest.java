@@ -6,9 +6,12 @@ import org.junit.jupiter.api.AfterEach;
 import us.ihmc.robotics.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
+@Execution(ExecutionMode.SAME_THREAD)
 public class YoEnumTest
 {
    private enum EnumYoVariableTestEnums

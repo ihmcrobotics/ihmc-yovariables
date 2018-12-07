@@ -25,9 +25,12 @@ import java.nio.charset.Charset;
 
 import org.apache.commons.io.input.ReaderInputStream;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
+@Execution(ExecutionMode.SAME_THREAD)
 public class XMLParameterIOTest
 {
 

@@ -18,11 +18,14 @@ package us.ihmc.yoVariables.parameters;
 import static us.ihmc.robotics.Assert.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import us.ihmc.yoVariables.listener.ParameterChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 import us.ihmc.yoVariables.variable.YoInteger;
 
+@Execution(ExecutionMode.SAME_THREAD)
 public class IntegerParameterTest
 {
    private final static int initialValue = 42;

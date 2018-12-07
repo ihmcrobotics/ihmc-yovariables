@@ -3,6 +3,9 @@ package us.ihmc.yoVariables.registry;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+
 import us.ihmc.yoVariables.listener.RewoundListener;
 import us.ihmc.yoVariables.listener.YoVariableRegistryChangedListener;
 import us.ihmc.yoVariables.parameters.DoubleParameter;
@@ -16,6 +19,7 @@ import java.util.ArrayList;
 
 import static us.ihmc.robotics.Assert.*;
 
+@Execution(ExecutionMode.SAME_THREAD)
 public class YoVariableRegistryTest
 {
    private static final int N_VARS_IN_ROOT = 4;
