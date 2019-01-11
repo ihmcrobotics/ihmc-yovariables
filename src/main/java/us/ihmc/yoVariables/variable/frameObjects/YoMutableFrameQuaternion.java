@@ -15,6 +15,7 @@ import us.ihmc.euclid.tuple4D.interfaces.Tuple4DReadOnly;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
 import us.ihmc.yoVariables.variable.YoDouble;
+import us.ihmc.yoVariables.variable.YoLong;
 
 public class YoMutableFrameQuaternion extends YoMutableFrameObject implements FrameQuaternionBasics
 {
@@ -97,6 +98,15 @@ public class YoMutableFrameQuaternion extends YoMutableFrameObject implements Fr
       qz = new YoDouble(YoFrameVariableNameTools.createQzName(namePrefix, nameSuffix), registry);
       qs = new YoDouble(YoFrameVariableNameTools.createQsName(namePrefix, nameSuffix), registry);
       setToZero();
+   }
+
+   public YoMutableFrameQuaternion(YoDouble qx, YoDouble qy, YoDouble qz, YoDouble qs, YoLong frameIndex, FrameIndexMapper frameIndexMapper)
+   {
+      super(frameIndex, frameIndexMapper);
+      this.qx = qx;
+      this.qy = qy;
+      this.qz = qz;
+      this.qs = qs;
    }
 
    @Override

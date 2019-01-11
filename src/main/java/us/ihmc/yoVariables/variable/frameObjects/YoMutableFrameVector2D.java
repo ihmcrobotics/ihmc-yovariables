@@ -7,6 +7,8 @@ import us.ihmc.euclid.referenceFrame.interfaces.FrameVector2DBasics;
 import us.ihmc.euclid.tuple2D.interfaces.Tuple2DReadOnly;
 import us.ihmc.euclid.tuple3D.interfaces.Tuple3DReadOnly;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.variable.YoDouble;
+import us.ihmc.yoVariables.variable.YoLong;
 
 public class YoMutableFrameVector2D extends YoMutableFrameTuple2D implements FrameVector2DBasics
 {
@@ -48,6 +50,11 @@ public class YoMutableFrameVector2D extends YoMutableFrameTuple2D implements Fra
    public YoMutableFrameVector2D(String namePrefix, String nameSuffix, YoVariableRegistry registry, FrameTuple3DReadOnly other)
    {
       super(namePrefix, nameSuffix, registry, other);
+   }
+
+   public YoMutableFrameVector2D(YoDouble x, YoDouble y, YoLong frameIndex, FrameIndexMapper frameIndexMapper)
+   {
+      super(x, y, frameIndex, frameIndexMapper);
    }
 
    @Override

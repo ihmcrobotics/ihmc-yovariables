@@ -12,6 +12,7 @@ import us.ihmc.euclid.tuple3D.interfaces.Tuple3DReadOnly;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
 import us.ihmc.yoVariables.variable.YoDouble;
+import us.ihmc.yoVariables.variable.YoLong;
 
 public abstract class YoMutableFrameTuple2D extends YoMutableFrameObject implements FrameTuple2DBasics
 {
@@ -68,6 +69,13 @@ public abstract class YoMutableFrameTuple2D extends YoMutableFrameObject impleme
       super(namePrefix, nameSuffix, registry);
       x = new YoDouble(YoFrameVariableNameTools.createXName(namePrefix, nameSuffix), registry);
       y = new YoDouble(YoFrameVariableNameTools.createYName(namePrefix, nameSuffix), registry);
+   }
+
+   public YoMutableFrameTuple2D(YoDouble x, YoDouble y, YoLong frameIndex, FrameIndexMapper frameIndexMapper)
+   {
+      super(frameIndex, frameIndexMapper);
+      this.x = x;
+      this.y = y;
    }
 
    @Override
