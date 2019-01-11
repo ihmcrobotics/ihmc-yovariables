@@ -33,4 +33,9 @@ public class YoMutableFrameObject
       frameIndexMapper.put(referenceFrame);
       frameId.set(frameIndexMapper.getFrameIndex(referenceFrame));
    }
+
+   public YoLong getYoFrameIndex()
+   {
+      return frameId;
+   }
 }

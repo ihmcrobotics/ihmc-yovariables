@@ -95,6 +95,21 @@ public abstract class YoMutableFrameTuple3D extends YoMutableFrameObject impleme
       return z.getValue();
    }
 
+   public YoDouble getYoX()
+   {
+      return x;
+   }
+
+   public YoDouble getYoY()
+   {
+      return y;
+   }
+
+   public YoDouble getYoZ()
+   {
+      return z;
+   }
+
    @Override
    public void setX(double x)
    {

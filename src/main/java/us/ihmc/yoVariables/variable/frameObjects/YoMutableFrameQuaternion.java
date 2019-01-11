@@ -133,6 +133,26 @@ public class YoMutableFrameQuaternion extends YoMutableFrameObject implements Fr
       return qz.getValue();
    }
 
+   public YoDouble getYoS()
+   {
+      return qs;
+   }
+
+   public YoDouble getYoX()
+   {
+      return qx;
+   }
+
+   public YoDouble getYoY()
+   {
+      return qy;
+   }
+
+   public YoDouble getYoZ()
+   {
+      return qz;
+   }
+
    @Override
    public void setUnsafe(double qx, double qy, double qz, double qs)
    {
