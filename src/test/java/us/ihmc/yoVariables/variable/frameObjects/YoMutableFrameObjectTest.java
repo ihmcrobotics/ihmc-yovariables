@@ -7,10 +7,6 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import gnu.trove.map.TLongObjectMap;
-import gnu.trove.map.TObjectLongMap;
-import gnu.trove.map.hash.TLongObjectHashMap;
-import gnu.trove.map.hash.TObjectLongHashMap;
 import us.ihmc.commons.Assertions;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.tools.EuclidFrameRandomTools;
@@ -44,7 +40,7 @@ public class YoMutableFrameObjectTest
          Assert.assertTrue(frame == mutableFrameObject.getReferenceFrame());
          if (frame == null)
          {
-            Assert.assertEquals(FrameIndexMapper.NO_ENTRY_KEY, frameIndex.getValueAsLongBits());
+            Assert.assertEquals(FrameIndexMap.NO_ENTRY_KEY, frameIndex.getValueAsLongBits());
          }
          else
          {
@@ -54,7 +50,7 @@ public class YoMutableFrameObjectTest
    }
 
    @Test
-   public void testDefaultMapper()
+   public void testFrameIndexHashMap()
    {
       Random random = new Random(4290L);
 
@@ -62,14 +58,14 @@ public class YoMutableFrameObjectTest
       frames.addAll(Arrays.asList(EuclidFrameRandomTools.nextReferenceFrameTree(random)));
       frames.add(null);
 
-      FrameIndexMapper mapper = new FrameIndexMapper.DefaultFrameIndexMapper();
+      FrameIndexMap mapper = new FrameIndexMap.FrameIndexHashMap();
       mapper.putAll(frames);
 
       frames.forEach(frame -> {
          if (frame == null)
          {
-            Assert.assertEquals(FrameIndexMapper.NO_ENTRY_KEY, mapper.getFrameIndex(frame));
-            Assert.assertTrue(mapper.getReferenceFrame(FrameIndexMapper.NO_ENTRY_KEY) == frame);
+            Assert.assertEquals(FrameIndexMap.NO_ENTRY_KEY, mapper.getFrameIndex(frame));
+            Assert.assertTrue(mapper.getReferenceFrame(FrameIndexMap.NO_ENTRY_KEY) == frame);
          }
          else
          {
@@ -85,10 +81,10 @@ public class YoMutableFrameObjectTest
    }
 
    @Test
-   public void testSearchingMapper()
+   public void testFrameIndexFinder()
    {
       // Create map but do not put any frames in!
-      FrameIndexMapper mapper = new FrameIndexMapper.SearchingFrameIndexMapper(ReferenceFrame.getWorldFrame());
+      FrameIndexMap mapper = new FrameIndexMap.FrameIndexFinder(ReferenceFrame.getWorldFrame());
 
       Random random = new Random(4290L);
       List<ReferenceFrame> frames = new ArrayList<>();
@@ -98,8 +94,8 @@ public class YoMutableFrameObjectTest
       frames.forEach(frame -> {
          if (frame == null)
          {
-            Assert.assertEquals(FrameIndexMapper.NO_ENTRY_KEY, mapper.getFrameIndex(frame));
-            Assert.assertTrue(mapper.getReferenceFrame(FrameIndexMapper.NO_ENTRY_KEY) == frame);
+            Assert.assertEquals(FrameIndexMap.NO_ENTRY_KEY, mapper.getFrameIndex(frame));
+            Assert.assertTrue(mapper.getReferenceFrame(FrameIndexMap.NO_ENTRY_KEY) == frame);
          }
          else
          {
@@ -116,57 +112,5 @@ public class YoMutableFrameObjectTest
       frames = null;
       System.gc();
       Assertions.assertExceptionThrown(RuntimeException.class, () -> mapper.getReferenceFrame(frameIndex));
-   }
-
-   @Test
-   public void testImmutableMapper()
-   {
-      Random random = new Random(4290L);
-
-      List<ReferenceFrame> frames = new ArrayList<>();
-      frames.addAll(Arrays.asList(EuclidFrameRandomTools.nextReferenceFrameTree(random)));
-      frames.add(null);
-
-      TLongObjectMap<ReferenceFrame> frameIndexMap = new TLongObjectHashMap<>();
-      TObjectLongMap<ReferenceFrame> indexFrameMap = new TObjectLongHashMap<>();
-      frames.forEach(frame -> {
-         long randomIndex = random.nextLong();
-         if (frameIndexMap.put(randomIndex, frame) != null)
-         {
-            Assert.fail("Really unlikely random long collision. Change your seed.");
-         }
-         indexFrameMap.put(frame, randomIndex);
-      });
-
-      FrameIndexMapper mapper = new FrameIndexMapper.ImmutableFrameIndexMapper(frameIndexMap);
-
-      // Putting existing frames is fine and does not change anything.
-      mapper.putAll(frames);
-
-      frames.forEach(frame -> {
-         Assert.assertEquals(indexFrameMap.get(frame), mapper.getFrameIndex(frame));
-         Assert.assertTrue(mapper.getReferenceFrame(indexFrameMap.get(frame)) == frame);
-      });
-
-      // Change original map and make sure nothing changed.
-      frameIndexMap.clear();
-      frames.forEach(frame -> {
-         long randomIndex = random.nextLong();
-         if (frameIndexMap.put(randomIndex, frame) != null)
-         {
-            Assert.fail("Really unlikely random long collision. Change your seed.");
-         }
-      });
-
-      frames.forEach(frame -> {
-         Assert.assertEquals(indexFrameMap.get(frame), mapper.getFrameIndex(frame));
-         Assert.assertTrue(mapper.getReferenceFrame(indexFrameMap.get(frame)) == frame);
-      });
-
-      // Test unknown frame fails:
-      ReferenceFrame unknown = ReferenceFrameTools.constructFrameWithUnchangingTranslationFromParent("Unknown", ReferenceFrame.getWorldFrame(), new Vector3D());
-      Assertions.assertExceptionThrown(RuntimeException.class, () -> mapper.put(unknown));
-      Assertions.assertExceptionThrown(RuntimeException.class, () -> mapper.getFrameIndex(unknown));
-      Assertions.assertExceptionThrown(RuntimeException.class, () -> mapper.getReferenceFrame(unknown.getFrameIndex()));
    }
 }

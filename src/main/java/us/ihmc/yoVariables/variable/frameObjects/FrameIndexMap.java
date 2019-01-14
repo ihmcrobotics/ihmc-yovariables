@@ -8,21 +8,19 @@ import java.util.List;
 import java.util.Optional;
 
 import gnu.trove.map.TLongObjectMap;
-import gnu.trove.map.TObjectLongMap;
 import gnu.trove.map.hash.TLongObjectHashMap;
-import gnu.trove.map.hash.TObjectLongHashMap;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.tools.ReferenceFrameTools;
 
 /**
- * A mapper used by the {@link YoMutableFrameObject} to map between frames and frame indices.
+ * A map used by the {@link YoMutableFrameObject} to map between frames and frame indices.
  * <p>
  * Several default implementations are provided in this interface.
  *
  * @author Georg Wiedebach
  *
  */
-public interface FrameIndexMapper
+public interface FrameIndexMap
 {
    static final long NO_ENTRY_KEY = -1;
 
@@ -53,7 +51,7 @@ public interface FrameIndexMapper
       }
    }
 
-   public class DefaultFrameIndexMapper implements FrameIndexMapper
+   public class FrameIndexHashMap implements FrameIndexMap
    {
       private final TLongObjectMap<ReferenceFrame> frameIndexMap = new TLongObjectHashMap<>(DEFAULT_CAPACITY, DEFAULT_LOAD_FACTOR, NO_ENTRY_KEY);
 
@@ -96,11 +94,11 @@ public interface FrameIndexMapper
       }
    }
 
-   public class SearchingFrameIndexMapper implements FrameIndexMapper
+   public class FrameIndexFinder implements FrameIndexMap
    {
       private final ReferenceFrame rootFrame;
 
-      public SearchingFrameIndexMapper(ReferenceFrame frame)
+      public FrameIndexFinder(ReferenceFrame frame)
       {
          rootFrame = frame.getRootFrame();
       }
@@ -139,51 +137,6 @@ public interface FrameIndexMapper
             return NO_ENTRY_KEY;
          }
          return referenceFrame.getFrameIndex();
-      }
-   }
-
-   public class ImmutableFrameIndexMapper implements FrameIndexMapper
-   {
-      private final TLongObjectMap<ReferenceFrame> frameIndexMap = new TLongObjectHashMap<>();
-      private final TObjectLongMap<ReferenceFrame> frameMap = new TObjectLongHashMap<>();
-
-      public ImmutableFrameIndexMapper(TLongObjectMap<ReferenceFrame> frameIndexMap)
-      {
-         this.frameIndexMap.putAll(frameIndexMap);
-         this.frameIndexMap.forEachEntry((frameId, referenceFrame) -> {
-            frameMap.put(referenceFrame, frameId);
-            return true;
-         });
-      }
-
-      @Override
-      public void put(ReferenceFrame referenceFrame)
-      {
-         if (!frameMap.containsKey(referenceFrame))
-         {
-            throw new RuntimeException("This mapper does not support adding new frames through put. Reference frame " + referenceFrame.getName()
-                  + " is unknown to the mapper.");
-         }
-      }
-
-      @Override
-      public ReferenceFrame getReferenceFrame(long frameIndex)
-      {
-         if (!frameIndexMap.containsKey(frameIndex))
-         {
-            throw new RuntimeException("This mapper does not contain a frame index " + frameIndex + ".");
-         }
-         return frameIndexMap.get(frameIndex);
-      }
-
-      @Override
-      public long getFrameIndex(ReferenceFrame referenceFrame)
-      {
-         if (!frameMap.containsKey(referenceFrame))
-         {
-            throw new RuntimeException("This mapper does not contain reference frame " + referenceFrame.getName() + ".");
-         }
-         return frameMap.get(referenceFrame);
       }
    }
 }

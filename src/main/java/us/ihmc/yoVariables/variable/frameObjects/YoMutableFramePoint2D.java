@@ -52,9 +52,9 @@ public class YoMutableFramePoint2D extends YoMutableFrameTuple2D implements Fram
       super(namePrefix, nameSuffix, registry, other);
    }
 
-   public YoMutableFramePoint2D(YoDouble x, YoDouble y, YoLong frameIndex, FrameIndexMapper frameIndexMapper)
+   public YoMutableFramePoint2D(YoDouble x, YoDouble y, YoLong frameIndex, FrameIndexMap frameIndexMap)
    {
-      super(x, y, frameIndex, frameIndexMapper);
+      super(x, y, frameIndex, frameIndexMap);
    }
 
    @Override

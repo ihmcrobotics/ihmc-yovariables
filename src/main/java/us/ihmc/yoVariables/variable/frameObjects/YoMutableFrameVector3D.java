@@ -52,9 +52,9 @@ public class YoMutableFrameVector3D extends YoMutableFrameTuple3D implements Fra
       super(namePrefix, nameSuffix, registry, frameTuple3DReadOnly);
    }
 
-   public YoMutableFrameVector3D(YoDouble x, YoDouble y, YoDouble z, YoLong frameIndex, FrameIndexMapper frameIndexMapper)
+   public YoMutableFrameVector3D(YoDouble x, YoDouble y, YoDouble z, YoLong frameIndex, FrameIndexMap frameIndexMap)
    {
-      super(x, y, z, frameIndex, frameIndexMapper);
+      super(x, y, z, frameIndex, frameIndexMap);
    }
 
    @Override

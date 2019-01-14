@@ -9,31 +9,36 @@ import us.ihmc.yoVariables.variable.YoLong;
 public class YoMutableFrameObject implements ReferenceFrameHolder
 {
    private final YoLong frameId;
-   private final FrameIndexMapper frameIndexMapper;
+   private final FrameIndexMap frameIndexMap;
 
    public YoMutableFrameObject(String namePrefix, String nameSuffix, YoVariableRegistry registry)
    {
       frameId = new YoLong(YoFrameVariableNameTools.createName(namePrefix, "frame", nameSuffix), registry);
-      frameIndexMapper = new FrameIndexMapper.DefaultFrameIndexMapper();
+      frameIndexMap = new FrameIndexMap.FrameIndexHashMap();
       setReferenceFrame(ReferenceFrame.getWorldFrame());
    }
 
-   public YoMutableFrameObject(YoLong frameId, FrameIndexMapper frameIndexMapper)
+   public YoMutableFrameObject(YoLong frameId, FrameIndexMap frameIndexMap)
    {
       this.frameId = frameId;
-      this.frameIndexMapper = frameIndexMapper;
+      this.frameIndexMap = frameIndexMap;
    }
 
    @Override
    public ReferenceFrame getReferenceFrame()
    {
-      return frameIndexMapper.getReferenceFrame(frameId.getValue());
+      return frameIndexMap.getReferenceFrame(frameId.getValue());
    }
 
    public void setReferenceFrame(ReferenceFrame referenceFrame)
    {
-      frameIndexMapper.put(referenceFrame);
-      frameId.set(frameIndexMapper.getFrameIndex(referenceFrame));
+      frameIndexMap.put(referenceFrame);
+      frameId.set(frameIndexMap.getFrameIndex(referenceFrame));
+   }
+
+   public long getFrameIndex()
+   {
+      return frameId.getValue();
    }
 
    public YoLong getYoFrameIndex()

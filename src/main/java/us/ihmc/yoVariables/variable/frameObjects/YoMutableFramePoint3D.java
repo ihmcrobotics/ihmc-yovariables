@@ -52,9 +52,9 @@ public class YoMutableFramePoint3D extends YoMutableFrameTuple3D implements Fram
       super(namePrefix, nameSuffix, registry, frameTuple3DReadOnly);
    }
 
-   public YoMutableFramePoint3D(YoDouble x, YoDouble y, YoDouble z, YoLong frameIndex, FrameIndexMapper frameIndexMapper)
+   public YoMutableFramePoint3D(YoDouble x, YoDouble y, YoDouble z, YoLong frameIndex, FrameIndexMap frameIndexMap)
    {
-      super(x, y, z, frameIndex, frameIndexMapper);
+      super(x, y, z, frameIndex, frameIndexMap);
    }
 
    @Override

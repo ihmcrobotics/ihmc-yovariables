@@ -69,9 +69,9 @@ public abstract class YoMutableFrameTuple3D extends YoMutableFrameObject impleme
       z = new YoDouble(YoFrameVariableNameTools.createZName(namePrefix, nameSuffix), registry);
    }
 
-   public YoMutableFrameTuple3D(YoDouble x, YoDouble y, YoDouble z, YoLong frameIndex, FrameIndexMapper frameIndexMapper)
+   public YoMutableFrameTuple3D(YoDouble x, YoDouble y, YoDouble z, YoLong frameIndex, FrameIndexMap frameIndexMap)
    {
-      super(frameIndex, frameIndexMapper);
+      super(frameIndex, frameIndexMap);
       this.x = x;
       this.y = y;
       this.z = z;

@@ -100,19 +100,13 @@ public class YoMutableFrameQuaternion extends YoMutableFrameObject implements Fr
       setToZero();
    }
 
-   public YoMutableFrameQuaternion(YoDouble qx, YoDouble qy, YoDouble qz, YoDouble qs, YoLong frameIndex, FrameIndexMapper frameIndexMapper)
+   public YoMutableFrameQuaternion(YoDouble qx, YoDouble qy, YoDouble qz, YoDouble qs, YoLong frameIndex, FrameIndexMap frameIndexMap)
    {
-      super(frameIndex, frameIndexMapper);
+      super(frameIndex, frameIndexMap);
       this.qx = qx;
       this.qy = qy;
       this.qz = qz;
       this.qs = qs;
-   }
-
-   @Override
-   public double getS()
-   {
-      return qs.getValue();
    }
 
    @Override
@@ -133,9 +127,10 @@ public class YoMutableFrameQuaternion extends YoMutableFrameObject implements Fr
       return qz.getValue();
    }
 
-   public YoDouble getYoS()
+   @Override
+   public double getS()
    {
-      return qs;
+      return qs.getValue();
    }
 
    public YoDouble getYoX()
@@ -151,6 +146,11 @@ public class YoMutableFrameQuaternion extends YoMutableFrameObject implements Fr
    public YoDouble getYoZ()
    {
       return qz;
+   }
+
+   public YoDouble getYoS()
+   {
+      return qs;
    }
 
    @Override

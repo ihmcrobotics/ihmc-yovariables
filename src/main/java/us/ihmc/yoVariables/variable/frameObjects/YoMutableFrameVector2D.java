@@ -52,9 +52,9 @@ public class YoMutableFrameVector2D extends YoMutableFrameTuple2D implements Fra
       super(namePrefix, nameSuffix, registry, other);
    }
 
-   public YoMutableFrameVector2D(YoDouble x, YoDouble y, YoLong frameIndex, FrameIndexMapper frameIndexMapper)
+   public YoMutableFrameVector2D(YoDouble x, YoDouble y, YoLong frameIndex, FrameIndexMap frameIndexMap)
    {
-      super(x, y, frameIndex, frameIndexMapper);
+      super(x, y, frameIndex, frameIndexMap);
    }
 
    @Override
