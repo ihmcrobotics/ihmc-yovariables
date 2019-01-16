@@ -15,11 +15,12 @@
  */
 package us.ihmc.yoVariables.parameters;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static us.ihmc.robotics.Assert.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import us.ihmc.yoVariables.listener.ParameterChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
@@ -45,7 +46,7 @@ public class DoubleParameterTest
       return param;
    }
    
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testConstructDefaultValue()
    {
       YoVariableRegistry dummy = new YoVariableRegistry("dummy");
@@ -56,7 +57,7 @@ public class DoubleParameterTest
       
    }
 
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testDuplicate()
    {
       DoubleParameter param = createParameterWithNamespace();
@@ -80,7 +81,7 @@ public class DoubleParameterTest
    }
 
 
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testGetNamespace()
    {
 
@@ -91,7 +92,7 @@ public class DoubleParameterTest
 
    }
    
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testLoadFromString()
    {
 
@@ -106,14 +107,17 @@ public class DoubleParameterTest
       }
    }
 
-   @Test(expected = RuntimeException.class, timeout = 1000)
+   @Test// expected = RuntimeException.class, timeout = 1000
    public void testGetBeforeLoad()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> 
+      {
       DoubleParameter param = createParameterWithNamespace();
       param.getValue();
+      });
    }
 
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testDefault()
    {
       DoubleParameter param = createParameterWithNamespace();
@@ -121,7 +125,7 @@ public class DoubleParameterTest
       assertEquals(initialValue, param.getValue(), 1e-9);
    }
 
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testListener()
    {
       DoubleParameter param = createParameterWithNamespace();

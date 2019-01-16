@@ -22,8 +22,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import org.junit.Assert;
-import org.junit.Test;
+import us.ihmc.robotics.Assert;
+import org.junit.jupiter.api.Test;
 
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
@@ -31,7 +31,7 @@ public class AbstractParameterReaderTest
 {
    private final static Random random = new Random(9492L);
 
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testReadingNamespacesRegistry()
    {
       for (int i = 0; i < 4; i++)
@@ -72,7 +72,7 @@ public class AbstractParameterReaderTest
       }
    }
 
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testDoubleRead()
    {
       YoVariableRegistry root = new YoVariableRegistry("root");

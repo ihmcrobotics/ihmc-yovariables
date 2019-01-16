@@ -1,12 +1,12 @@
 package us.ihmc.yoVariables;
 
-import static org.junit.Assert.*;
+import static us.ihmc.robotics.Assert.*;
 
 import java.util.ArrayList;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import us.ihmc.yoVariables.dataBuffer.YoVariableHolderImplementation;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
@@ -30,7 +30,7 @@ public class YoVariableHolderImplementationNewTest
 
    }
 
-   @Before
+   @BeforeEach
    public void setUp()
    {
       yoVariableHolderImplementation = new YoVariableHolderImplementation();
@@ -41,14 +41,14 @@ public class YoVariableHolderImplementationNewTest
       testVariables.add(new YoEnum<EnumYoVariableTestEnums>("yoEnum", null, EnumYoVariableTestEnums.class));
    }
 
-   @After
+   @AfterEach
    public void tearDown()
    {
       yoVariableHolderImplementation = null;
       testVariables = null;
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testAddSingleYoVariableToHolderAndGetVariableByName()
    {
       YoDouble yoDoubleFromArrayList = (YoDouble) testVariables.get(0);
@@ -56,7 +56,7 @@ public class YoVariableHolderImplementationNewTest
       assertEquals(yoDoubleFromArrayList, yoVariableHolderImplementation.getVariable("yoDouble"));
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testAddMultipleYoVariablesToHolderAndGetAllVariables()
    {
       yoVariableHolderImplementation.addVariablesToHolder(testVariables);
@@ -67,7 +67,7 @@ public class YoVariableHolderImplementationNewTest
       }
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetAllVariablesArray()
    {
       yoVariableHolderImplementation.addVariablesToHolder(testVariables);
@@ -81,7 +81,7 @@ public class YoVariableHolderImplementationNewTest
       
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetVariableUsingFullNamespace()
    {
       yoVariableHolderImplementation.addVariablesToHolder(testVariables);
@@ -89,7 +89,7 @@ public class YoVariableHolderImplementationNewTest
    }
    
    
-//   @Test(timeout=300000)
+//   @Test// timeout=300000
 //   public void testGetVariableUsingFullNamespaceError()
 //   {
 //      yoVariableHolderImplementation.addVariablesToHolder(testVariables);
@@ -103,14 +103,14 @@ public class YoVariableHolderImplementationNewTest
 //      
 //   }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetVariable()
    {
       yoVariableHolderImplementation.addVariablesToHolder(testVariables);
       assertTrue(testVariables.get(0) == yoVariableHolderImplementation.getVariable("yoDouble"));
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetVariableCaseInsensitive()
    {
       yoVariableHolderImplementation.addVariablesToHolder(testVariables);
@@ -118,7 +118,7 @@ public class YoVariableHolderImplementationNewTest
       assertTrue(testVariables.get(0) == variable);
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetVariableWithNameSpace() 
    {
       YoVariableRegistry testRegistry;
@@ -128,7 +128,7 @@ public class YoVariableHolderImplementationNewTest
       assertEquals(yoDoubleWithNameSpace, yoVariableHolderImplementation.getVariable("testRegistry", "yoDoubleWithNameSpace"));
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetVariableWithNameSpaceCaseInsensitiveExceptNameSpace() 
    {
       YoVariableRegistry testRegistry;
@@ -139,7 +139,7 @@ public class YoVariableHolderImplementationNewTest
       assertNull(yoVariableHolderImplementation.getVariable("TESTRegistry", "yoDoubleWithNameSpace"));
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testHasUniqueVariable()
    {
       yoVariableHolderImplementation.addVariablesToHolder(testVariables);      
@@ -150,7 +150,7 @@ public class YoVariableHolderImplementationNewTest
       assertFalse(yoVariableHolderImplementation.hasUniqueVariable("yoIntegerNotPresent"));
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testHasUniqueVariableWithNameSpace()
    {
       YoVariableRegistry testRegistry1;
@@ -167,7 +167,7 @@ public class YoVariableHolderImplementationNewTest
       assertFalse(yoVariableHolderImplementation.hasUniqueVariable("testRegistry2", "yoDoubleWithNameSpace1"));
    }
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetVariablesArrayList() //returns an ArrayList of size 1?
    {
       yoVariableHolderImplementation.addVariablesToHolder(testVariables);
@@ -176,7 +176,7 @@ public class YoVariableHolderImplementationNewTest
    
    //testGetVariables(String fullName)
 
-	@Test(timeout=300000)
+	@Test// timeout=300000
    public void testGetVariablesInNameSpace()
    {
       YoVariableRegistry testRegistry1;

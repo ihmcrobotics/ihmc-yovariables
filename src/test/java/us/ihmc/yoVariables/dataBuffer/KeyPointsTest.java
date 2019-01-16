@@ -1,29 +1,28 @@
 package us.ihmc.yoVariables.dataBuffer;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static us.ihmc.robotics.Assert.*;
 
 public class KeyPointsTest
 {
    private KeyPoints keyPoints;
 
-   @Before
+   @BeforeEach
    public void setup()
    {
       keyPoints = new KeyPoints();
    }
 
-   @After
+   @AfterEach
    public void tearDown()
    {
       keyPoints = null;
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testSetKeyPoint()
    {
       assertTrue(keyPoints.getPoints().size() == 0);
@@ -35,7 +34,7 @@ public class KeyPointsTest
       assertTrue(keyPoints.getPoints().size() == 3);
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testRemoveDuplicateKeyPoint()
    {
       assertTrue(keyPoints.getPoints().size() == 0);
@@ -46,7 +45,7 @@ public class KeyPointsTest
       assertTrue(keyPoints.getPoints().size() == 0);
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testGetNextTime()
    {
       int[] keyPointTimes = new int[]{3,16,20,48,75};
@@ -63,7 +62,7 @@ public class KeyPointsTest
       assertTrue(nextTimeOutOfRange == 3);
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void getPreviousTime()
    {
       int[] keyPointTimes = new int[]{3,16,20,48,75};
@@ -80,7 +79,7 @@ public class KeyPointsTest
       assertTrue(previousTimeOutOfRange == 75);
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testTrim()
    {
       int[] keyPointTimes = new int[]{3,16,20,48,75};
@@ -103,7 +102,7 @@ public class KeyPointsTest
       assertTrue(keyPoints.getPoints().get(3) == 75);
    }
 
-   @Test(timeout = 30000)
+   @Test// timeout = 30000
    public void testUseKeyPoints()
    {
       assertFalse(keyPoints.useKeyPoints());

@@ -15,9 +15,9 @@
  */
 package us.ihmc.yoVariables.parameters;
 
-import static org.junit.Assert.*;
+import static us.ihmc.robotics.Assert.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
@@ -26,7 +26,7 @@ public class DefaultParameterReaderTest
 
    public static final double initialValue = 42.0;
    
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testReadDefault()
    {
       YoVariableRegistry root = new YoVariableRegistry("root");

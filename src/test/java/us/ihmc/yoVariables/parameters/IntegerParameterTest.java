@@ -15,16 +15,18 @@
  */
 package us.ihmc.yoVariables.parameters;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static us.ihmc.robotics.Assert.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import us.ihmc.yoVariables.listener.ParameterChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 import us.ihmc.yoVariables.variable.YoInteger;
 
+@Execution(ExecutionMode.SAME_THREAD)
 public class IntegerParameterTest
 {
    private final static int initialValue = 42;
@@ -45,7 +47,7 @@ public class IntegerParameterTest
       return param;
    }
    
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testConstructDefaultValue()
    {
       YoVariableRegistry dummy = new YoVariableRegistry("dummy");
@@ -56,7 +58,7 @@ public class IntegerParameterTest
       
    }
 
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testDuplicate()
    {
       IntegerParameter param = createParameterWithNamespace();
@@ -79,7 +81,7 @@ public class IntegerParameterTest
       
    }
 
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testGetNamespace()
    {
 
@@ -90,7 +92,7 @@ public class IntegerParameterTest
 
    }
    
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testLoadFromString()
    {
 
@@ -105,14 +107,17 @@ public class IntegerParameterTest
       }
    }
 
-   @Test(expected = RuntimeException.class, timeout = 1000)
+   @Test// expected = RuntimeException.class, timeout = 1000
    public void testGetBeforeLoad()
    {
+      Assertions.assertThrows(RuntimeException.class, () -> 
+      {
       IntegerParameter param = createParameterWithNamespace();
       param.getValue();
+      });
    }
 
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testDefault()
    {
       IntegerParameter param = createParameterWithNamespace();
@@ -120,7 +125,7 @@ public class IntegerParameterTest
       assertEquals(initialValue, param.getValue());
    }
 
-   @Test(timeout = 1000)
+   @Test// timeout = 1000
    public void testListener()
    {
       IntegerParameter param = createParameterWithNamespace();
