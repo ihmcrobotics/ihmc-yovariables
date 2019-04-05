@@ -81,6 +81,8 @@ public class YoMutableFramePose3D extends YoMutableFrameObject implements FrameP
    {
       checkFrameConsistency();
       super.setReferenceFrame(referenceFrame);
+      // When constructing this with two YoMutableFramePoint3D objects the position part is updated only by the super implementation.
+      orientation.setReferenceFrame(referenceFrame);
    }
 
    /**
