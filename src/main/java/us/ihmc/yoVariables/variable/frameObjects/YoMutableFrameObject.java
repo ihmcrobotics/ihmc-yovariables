@@ -45,4 +45,9 @@ public class YoMutableFrameObject implements ReferenceFrameHolder
    {
       return frameId;
    }
+
+   public FrameIndexMap getFrameIndexMap()
+   {
+      return frameIndexMap;
+   }
 }
