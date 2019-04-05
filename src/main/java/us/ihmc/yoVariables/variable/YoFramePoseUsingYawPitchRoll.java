@@ -112,7 +112,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     */
    public void setPosition(Tuple2DReadOnly position2D)
    {
-      getPosition().set(position2D);
+      position.set(position2D);
    }
 
    /**
@@ -123,7 +123,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     */
    public void setPosition(Tuple2DReadOnly position2D, double z)
    {
-      getPosition().set(position2D, z);
+      position.set(position2D, z);
    }
 
    /**
@@ -242,7 +242,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
    @Override
    public boolean containsNaN()
    {
-      return yawPitchRoll.containsNaN() || getPosition().containsNaN();
+      return yawPitchRoll.containsNaN() || position.containsNaN();
    }
 
    /** {@inheritDoc} */
@@ -250,7 +250,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
    public void setToNaN()
    {
       yawPitchRoll.setToNaN();
-      getPosition().setToNaN();
+      position.setToNaN();
    }
 
    /**
@@ -260,7 +260,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
    public void setToZero()
    {
       yawPitchRoll.setToZero();
-      getPosition().setToZero();
+      position.setToZero();
    }
 
    /**
@@ -278,7 +278,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     */
    public void interpolate(Pose3DReadOnly other, double alpha)
    {
-      getPosition().interpolate(other.getPosition(), alpha);
+      position.interpolate(other.getPosition(), alpha);
       frameQuaternion.setReferenceFrame(getReferenceFrame());
       frameQuaternion.interpolate(other.getOrientation(), alpha);
       yawPitchRoll.set(frameQuaternion);
@@ -300,7 +300,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     */
    public void interpolate(Pose3DReadOnly pose1, Pose3DReadOnly pose2, double alpha)
    {
-      getPosition().interpolate(pose1.getPosition(), pose2.getPosition(), alpha);
+      position.interpolate(pose1.getPosition(), pose2.getPosition(), alpha);
       frameQuaternion.setReferenceFrame(getReferenceFrame());
       frameQuaternion.interpolate(pose1.getOrientation(), pose2.getOrientation(), alpha);
       yawPitchRoll.set(frameQuaternion);
@@ -320,7 +320,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     */
    public void prependTranslation(double x, double y, double z)
    {
-      getPosition().add(x, y, z);
+      position.add(x, y, z);
    }
 
    /**
@@ -346,7 +346,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     */
    public void prependRotation(Orientation3DReadOnly rotation)
    {
-      rotation.transform(getPosition());
+      rotation.transform(position);
       rotation.transform(yawPitchRoll);
    }
 
@@ -358,7 +358,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     */
    public void prependYawRotation(double yaw)
    {
-      RotationMatrixTools.applyYawRotation(yaw, getPosition(), getPosition());
+      RotationMatrixTools.applyYawRotation(yaw, position, position);
       yawPitchRoll.prependYawRotation(yaw);
    }
 
@@ -370,7 +370,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     */
    public void prependPitchRotation(double pitch)
    {
-      RotationMatrixTools.applyPitchRotation(pitch, getPosition(), getPosition());
+      RotationMatrixTools.applyPitchRotation(pitch, position, position);
       yawPitchRoll.prependPitchRotation(pitch);
    }
 
@@ -382,7 +382,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     */
    public void prependRollRotation(double roll)
    {
-      RotationMatrixTools.applyRollRotation(roll, getPosition(), getPosition());
+      RotationMatrixTools.applyRollRotation(roll, position, position);
       yawPitchRoll.prependRollRotation(roll);
    }
 
@@ -430,8 +430,8 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
       double thisZ = getZ();
 
       setPosition(x, y, z);
-      yawPitchRoll.transform(getPosition());
-      getPosition().add(thisX, thisY, thisZ);
+      yawPitchRoll.transform(position);
+      position.add(thisX, thisY, thisZ);
    }
 
    /**
@@ -529,7 +529,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     */
    public void appendTransform(RigidBodyTransform transform)
    {
-      YawPitchRollTools.addTransform(yawPitchRoll, transform.getTranslationVector(), getPosition());
+      YawPitchRollTools.addTransform(yawPitchRoll, transform.getTranslationVector(), position);
       yawPitchRoll.append(transform.getRotationMatrix());
    }
 
@@ -540,7 +540,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     */
    public void appendTransform(QuaternionBasedTransform transform)
    {
-      YawPitchRollTools.addTransform(yawPitchRoll, transform.getTranslationVector(), getPosition());
+      YawPitchRollTools.addTransform(yawPitchRoll, transform.getTranslationVector(), position);
       yawPitchRoll.append(transform.getQuaternion());
    }
 
@@ -552,7 +552,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
    @Override
    public void applyTransform(Transform transform)
    {
-      transform.transform(getPosition());
+      transform.transform(position);
       transform.transform(yawPitchRoll);
    }
 
@@ -565,7 +565,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
    @Override
    public void applyInverseTransform(Transform transform)
    {
-      transform.inverseTransform(getPosition());
+      transform.inverseTransform(position);
       transform.inverseTransform(yawPitchRoll);
    }
 
@@ -1046,7 +1046,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
    @Deprecated
    public double getDistance(YoFramePoseUsingYawPitchRoll goalYoPose)
    {
-      return position.distance(goalYoPose.getPosition());
+      return position.distance(goalYoPose.position);
    }
 
    public void setX(double x)
