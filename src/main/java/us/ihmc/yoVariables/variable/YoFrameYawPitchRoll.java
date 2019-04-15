@@ -1,20 +1,21 @@
 package us.ihmc.yoVariables.variable;
 
-import us.ihmc.euclid.interfaces.Clearable;
 import us.ihmc.euclid.matrix.RotationMatrix;
-import us.ihmc.euclid.matrix.interfaces.RotationMatrixReadOnly;
+import us.ihmc.euclid.orientation.interfaces.Orientation3DReadOnly;
 import us.ihmc.euclid.referenceFrame.FrameQuaternion;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
+import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameYawPitchRollBasics;
+import us.ihmc.euclid.referenceFrame.interfaces.FrameOrientation3DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameQuaternionBasics;
-import us.ihmc.euclid.referenceFrame.interfaces.FrameQuaternionReadOnly;
-import us.ihmc.euclid.referenceFrame.interfaces.ReferenceFrameHolder;
+import us.ihmc.euclid.referenceFrame.interfaces.FrameYawPitchRollReadOnly;
 import us.ihmc.euclid.rotationConversion.QuaternionConversion;
-import us.ihmc.euclid.rotationConversion.RotationMatrixConversion;
+import us.ihmc.euclid.tools.EuclidCoreIOTools;
+import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.transform.RigidBodyTransform;
+import us.ihmc.euclid.tuple3D.interfaces.Tuple3DBasics;
 import us.ihmc.euclid.tuple3D.interfaces.Vector3DBasics;
 import us.ihmc.euclid.tuple3D.interfaces.Vector3DReadOnly;
 import us.ihmc.euclid.tuple4D.interfaces.QuaternionBasics;
-import us.ihmc.euclid.tuple4D.interfaces.QuaternionReadOnly;
 import us.ihmc.yoVariables.listener.VariableChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
@@ -22,12 +23,14 @@ import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
 /**
  * Defines a 3D representation as {@code YoFrameQuaternion} but using the Euler angles.
  */
-public class YoFrameYawPitchRoll implements ReferenceFrameHolder, Clearable
+public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
 {
    private final YoDouble yaw, pitch, roll; // This is where the data is stored. All operations must act on these numbers.
    private final ReferenceFrame referenceFrame;
-   private final double[] tempYawPitchRoll = new double[3];
-   private final FrameQuaternion tempFrameOrientation = new FrameQuaternion();
+
+   private final FrameQuaternion frameQuaternion = new FrameQuaternion();
+
+   private boolean enableNotifications = true;
 
    public YoFrameYawPitchRoll(String namePrefix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
    {
@@ -41,8 +44,6 @@ public class YoFrameYawPitchRoll implements ReferenceFrameHolder, Clearable
       roll = new YoDouble(YoFrameVariableNameTools.createName(namePrefix, "roll", nameSuffix), registry);
 
       this.referenceFrame = referenceFrame;
-
-      // frameVector = new FrameVector(frame);
    }
 
    public YoFrameYawPitchRoll(YoDouble yaw, YoDouble pitch, YoDouble roll, ReferenceFrame referenceFrame)
@@ -54,16 +55,16 @@ public class YoFrameYawPitchRoll implements ReferenceFrameHolder, Clearable
       this.referenceFrame = referenceFrame;
    }
 
+   /**
+    * Use {@link #setEuler(Vector3DReadOnly)} instead.
+    */
+   @Deprecated
    public void setEulerAngles(Vector3DReadOnly eulerAngles)
    {
-      setYawPitchRoll(eulerAngles.getZ(), eulerAngles.getY(), eulerAngles.getX());
+      setEuler(eulerAngles);
    }
 
-   public void setYawPitchRoll(double[] yawPitchRoll)
-   {
-      setYawPitchRoll(yawPitchRoll[0], yawPitchRoll[1], yawPitchRoll[2]);
-   }
-
+   @Override
    public void setYawPitchRoll(double yaw, double pitch, double roll)
    {
       setYawPitchRoll(yaw, pitch, roll, true);
@@ -76,94 +77,52 @@ public class YoFrameYawPitchRoll implements ReferenceFrameHolder, Clearable
       this.roll.set(roll, notifyListeners);
    }
    
+   @Override
    public void setYaw(double yaw)
    {
-      this.yaw.set(yaw);
+      this.yaw.set(yaw, enableNotifications);
    }
    
+   @Override
    public void setPitch(double pitch)
    {
-      this.pitch.set(pitch);
+      this.pitch.set(pitch, enableNotifications);
    }
    
+   @Override
    public void setRoll(double roll)
    {
-      this.roll.set(roll);
+      this.roll.set(roll, enableNotifications);
    }
 
-   public void set(RotationMatrixReadOnly rotation)
+   public void set(FrameOrientation3DReadOnly frameOrientation, boolean notifyListeners)
    {
-      tempFrameOrientation.setIncludingFrame(getReferenceFrame(), rotation);
-      set(tempFrameOrientation);
+      enableNotifications = notifyListeners;
+      set(frameOrientation);
+      enableNotifications = true;
    }
 
-   public void set(QuaternionReadOnly quaternion)
+   public void set(Orientation3DReadOnly orientation, boolean notifyListeners)
    {
-      set(quaternion, true);
+      enableNotifications = notifyListeners;
+      set(orientation);
+      enableNotifications = true;
    }
 
-   public void set(QuaternionReadOnly quaternion, boolean notifyListeners)
+   /**
+    * Use {@code this.set(transform.getRotationMatrix())} instead.
+    */
+   @Deprecated
+   public void set(RigidBodyTransform transform)
    {
-      tempFrameOrientation.setIncludingFrame(getReferenceFrame(), quaternion);
-      set(tempFrameOrientation, notifyListeners);
+      set(transform.getRotationMatrix());
    }
 
-   public void set(RigidBodyTransform transform3D)
+   public void setMatchingFrame(FrameOrientation3DReadOnly orientation, boolean notifyListeners)
    {
-      tempFrameOrientation.setIncludingFrame(getReferenceFrame(), transform3D.getRotationMatrix());
-      set(tempFrameOrientation);
-   }
-
-   public void set(FrameQuaternionReadOnly orientation)
-   {
-      set(orientation, true);
-   }
-
-   public void set(FrameQuaternionReadOnly orientation, boolean notifyListeners)
-   {
-      orientation.checkReferenceFrameMatch(getReferenceFrame());
-      orientation.getYawPitchRoll(tempYawPitchRoll);
-      yaw.set(tempYawPitchRoll[0], notifyListeners);
-      pitch.set(tempYawPitchRoll[1], notifyListeners);
-      roll.set(tempYawPitchRoll[2], notifyListeners);
-   }
-
-   public void set(YoFrameYawPitchRoll orientation)
-   {
-      orientation.checkReferenceFrameMatch(getReferenceFrame());
-      yaw.set(orientation.yaw.getDoubleValue());
-      pitch.set(orientation.pitch.getDoubleValue());
-      roll.set(orientation.roll.getDoubleValue());
-   }
-
-   public void setMatchingFrame(FrameQuaternionReadOnly orientation)
-   {
-      setMatchingFrame(orientation, true);
-   }
-
-   public void setMatchingFrame(FrameQuaternionReadOnly orientation, boolean notifyListeners)
-   {
-      tempFrameOrientation.setIncludingFrame(orientation);
-      tempFrameOrientation.changeFrame(getReferenceFrame());
-      tempFrameOrientation.getYawPitchRoll(tempYawPitchRoll);
-      yaw.set(tempYawPitchRoll[0], notifyListeners);
-      pitch.set(tempYawPitchRoll[1], notifyListeners);
-      roll.set(tempYawPitchRoll[2], notifyListeners);
-   }
-
-   public void setMatchingFrame(YoFrameYawPitchRoll yoFrameOrientation)
-   {
-      setMatchingFrame(yoFrameOrientation, true);
-   }
-
-   public void setMatchingFrame(YoFrameYawPitchRoll yoFrameOrientation, boolean notifyListeners)
-   {
-      yoFrameOrientation.getFrameOrientationIncludingFrame(tempFrameOrientation);
-      tempFrameOrientation.changeFrame(getReferenceFrame());
-      tempFrameOrientation.getYawPitchRoll(tempYawPitchRoll);
-      yaw.set(tempYawPitchRoll[0], notifyListeners);
-      pitch.set(tempYawPitchRoll[1], notifyListeners);
-      roll.set(tempYawPitchRoll[2], notifyListeners);
+      enableNotifications = notifyListeners;
+      setMatchingFrame(orientation);
+      enableNotifications = true;
    }
    
    /**
@@ -173,38 +132,9 @@ public class YoFrameYawPitchRoll implements ReferenceFrameHolder, Clearable
     */
    public void setFromReferenceFrame(ReferenceFrame referenceFrame, boolean notifyListeners)
    {
-      tempFrameOrientation.setToZero(referenceFrame);
-      tempFrameOrientation.changeFrame(getReferenceFrame());
-      tempFrameOrientation.getYawPitchRoll(tempYawPitchRoll);
-      yaw.set(tempYawPitchRoll[0], notifyListeners);
-      pitch.set(tempYawPitchRoll[1], notifyListeners);
-      roll.set(tempYawPitchRoll[2], notifyListeners);
-   }
-   
-   /**
-    * Sets the orientation of this to the origin of the passed in ReferenceFrame.
-    * 
-    * @param referenceFrame
-    */
-   public void setFromReferenceFrame(ReferenceFrame referenceFrame)
-   {
-      setFromReferenceFrame(referenceFrame, true);
-   }
-
-   @Override
-   public void setToNaN()
-   {
-      yaw.set(Double.NaN);
-      pitch.set(Double.NaN);
-      roll.set(Double.NaN);
-   }
-
-   @Override
-   public void setToZero()
-   {
-      yaw.set(0.0);
-      pitch.set(0.0);
-      roll.set(0.0);
+      enableNotifications = notifyListeners;
+      setFromReferenceFrame(referenceFrame);
+      enableNotifications = true;
    }
 
    public void add(YoFrameYawPitchRoll orientation)
@@ -226,6 +156,7 @@ public class YoFrameYawPitchRoll implements ReferenceFrameHolder, Clearable
       return new double[] { yaw.getDoubleValue(), pitch.getDoubleValue(), roll.getDoubleValue() };
    }
 
+   @Override
    public void getYawPitchRoll(double[] yawPitchRollToPack)
    {
       yawPitchRollToPack[0] = yaw.getDoubleValue();
@@ -233,81 +164,99 @@ public class YoFrameYawPitchRoll implements ReferenceFrameHolder, Clearable
       yawPitchRollToPack[2] = roll.getDoubleValue();
    }
 
-   public YoDouble getYaw()
+   @Override
+   public double getYaw()
+   {
+      return yaw.getValue();
+   }
+
+   @Override
+   public double getPitch()
+   {
+      return pitch.getValue();
+   }
+
+   @Override
+   public double getRoll()
+   {
+      return roll.getValue();
+   }
+
+   public YoDouble getYoYaw()
    {
       return yaw;
    }
 
-   public YoDouble getPitch()
+   public YoDouble getYoPitch()
    {
       return pitch;
    }
 
-   public YoDouble getRoll()
+   public YoDouble getYoRoll()
    {
       return roll;
    }
 
+   /**
+    * Use {@link #getEuler(Tuple3DBasics)} instead.
+    */
+   @Deprecated
    public void getEulerAngles(Vector3DBasics eulerAnglesToPack)
    {
-      eulerAnglesToPack.set(roll.getDoubleValue(), pitch.getDoubleValue(), yaw.getDoubleValue());
+      getEuler(eulerAnglesToPack);
    }
 
+   /**
+    * Use {@code quaternionToPack.set(this)} instead.
+    */
+   @Deprecated
    public void getQuaternion(QuaternionBasics quaternionToPack)
    {
       QuaternionConversion.convertYawPitchRollToQuaternion(yaw.getDoubleValue(), pitch.getDoubleValue(), roll.getDoubleValue(), quaternionToPack);
    }
 
+   /**
+    * Use {@code rotationMatrixToPack.set(this)} instead.
+    */
+   @Deprecated
    public void getMatrix3d(RotationMatrix rotationMatrixToPack)
    {
-      RotationMatrixConversion.convertYawPitchRollToMatrix(yaw.getDoubleValue(), pitch.getDoubleValue(), roll.getDoubleValue(), rotationMatrixToPack);
+      get(rotationMatrixToPack);
    }
 
+   /**
+    * Use {@code orientationToPack.set(this)} instead.
+    */
+   @Deprecated
    public void getFrameOrientationIncludingFrame(FrameQuaternionBasics orientationToPack)
    {
       orientationToPack.setToZero(getReferenceFrame());
       orientationToPack.setYawPitchRoll(yaw.getDoubleValue(), pitch.getDoubleValue(), roll.getDoubleValue());
    }
 
+   /**
+    * Use {@code new FrameQuaternion(this)} instead.
+    */
+   @Deprecated
    public FrameQuaternion getFrameOrientationCopy()
    {
-      FrameQuaternion orientation = new FrameQuaternion(getReferenceFrame(), yaw.getDoubleValue(), pitch.getDoubleValue(), roll.getDoubleValue());
-      return orientation;
-   }
-   
-   public FrameQuaternion getFrameOrientation()
-   {
-      putYoValuesIntoFrameOrientation();
-      return tempFrameOrientation;
+      return new FrameQuaternion(getReferenceFrame(), yaw.getDoubleValue(), pitch.getDoubleValue(), roll.getDoubleValue());
    }
 
    public void interpolate(YoFrameYawPitchRoll orientationOne, YoFrameYawPitchRoll orientationTwo, double alpha)
    {
-      orientationOne.putYoValuesIntoFrameOrientation();
-      orientationTwo.putYoValuesIntoFrameOrientation();
+      frameQuaternion.setIncludingFrame(this);
+      orientationOne.frameQuaternion.setIncludingFrame(orientationOne);
+      orientationTwo.frameQuaternion.setIncludingFrame(orientationTwo);
 
-      tempFrameOrientation.setToZero(getReferenceFrame());
-      tempFrameOrientation.interpolate(orientationOne.tempFrameOrientation, orientationTwo.tempFrameOrientation, alpha);
-
-      this.set(tempFrameOrientation);
+      frameQuaternion.interpolate(orientationOne.frameQuaternion, orientationTwo.frameQuaternion, alpha);
+      set(frameQuaternion);
    }
 
    @Override
    public ReferenceFrame getReferenceFrame()
    {
       return referenceFrame;
-   }
-
-   private void putYoValuesIntoFrameOrientation()
-   {
-      tempFrameOrientation.setToZero(getReferenceFrame());
-      tempFrameOrientation.setYawPitchRoll(yaw.getDoubleValue(), pitch.getDoubleValue(), roll.getDoubleValue());
-   }
-
-   @Override
-   public boolean containsNaN()
-   {
-      return Double.isNaN(yaw.getDoubleValue()) || Double.isNaN(pitch.getDoubleValue()) || Double.isNaN(roll.getDoubleValue());
    }
 
    public void attachVariableChangedListener(VariableChangedListener variableChangedListener)
@@ -338,8 +287,34 @@ public class YoFrameYawPitchRoll implements ReferenceFrameHolder, Clearable
    }
 
    @Override
+   public boolean equals(Object object)
+   {
+      if (object == this)
+      {
+         return true;
+      }
+      else if (object instanceof FrameYawPitchRollReadOnly)
+      {
+         return FixedFrameYawPitchRollBasics.super.equals((FrameYawPitchRollReadOnly) object);
+      }
+      else
+      {
+         return false;
+      }
+   }
+
+   @Override
+   public int hashCode()
+   {
+      long bits = EuclidHashCodeTools.addToHashCode(1L, getYaw());
+      bits = EuclidHashCodeTools.addToHashCode(bits, getPitch());
+      bits = EuclidHashCodeTools.addToHashCode(bits, getRoll());
+      return EuclidHashCodeTools.toIntHashCode(bits);
+   }
+
+   @Override
    public String toString()
    {
-      return "(yaw = " + yaw.getDoubleValue() + ", pitch = " + pitch.getDoubleValue() + ", roll = " + roll.getDoubleValue() + ")-" + getReferenceFrame().getName();
+      return EuclidCoreIOTools.getYawPitchRollString(this) + "-" + getReferenceFrame().getName();
    }
 }
