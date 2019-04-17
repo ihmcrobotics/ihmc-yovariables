@@ -69,7 +69,7 @@ public class YoFramePose3D implements FixedFramePose3DBasics
     */
    public void set(YoFramePoseUsingYawPitchRoll yoFramePose)
    {
-      set(yoFramePose.getPosition(), yoFramePose.getOrientation().getFrameOrientation());
+      set(yoFramePose.getPosition(), yoFramePose.getOrientation());
    }
 
    /**
