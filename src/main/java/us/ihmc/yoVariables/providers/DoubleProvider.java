@@ -16,11 +16,9 @@
 package us.ihmc.yoVariables.providers;
 
 /**
- * Interface for providing doubles
- * 
- * @author Jesper Smith
- *
+ * Use {@link java.util.function.DoubleSupplier} instead.
  */
+@Deprecated
 public interface DoubleProvider
 {
    /**

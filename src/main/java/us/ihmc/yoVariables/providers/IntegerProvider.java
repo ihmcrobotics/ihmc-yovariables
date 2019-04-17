@@ -16,11 +16,9 @@
 package us.ihmc.yoVariables.providers;
 
 /**
- * Interface for providing Integers
- * 
- * @author Jesper Smith
- *
+ * Use {@link java.util.function.IntSupplier} instead.
  */
+@Deprecated
 public interface IntegerProvider
 {
    /**

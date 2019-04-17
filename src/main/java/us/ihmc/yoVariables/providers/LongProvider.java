@@ -16,11 +16,9 @@
 package us.ihmc.yoVariables.providers;
 
 /**
- * Interface for providing Longs
- * 
- * @author Jesper Smith
- *
+ * Use {@link java.util.function.LongSupplier} instead.
  */
+@Deprecated
 public interface LongProvider
 {
    /**

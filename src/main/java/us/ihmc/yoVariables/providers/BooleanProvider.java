@@ -16,11 +16,9 @@
 package us.ihmc.yoVariables.providers;
 
 /**
- * Interface for providing boolean
- * 
- * @author Jesper Smith
- *
+ * Use {@link java.util.function.BooleanSupplier} instead.
  */
+@Deprecated
 public interface BooleanProvider
 {
    /**
