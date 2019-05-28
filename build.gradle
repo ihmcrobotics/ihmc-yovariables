@@ -1,6 +1,7 @@
 plugins {
    id("us.ihmc.ihmc-build") version "0.15.7"
    id("us.ihmc.ihmc-ci") version "4.23"
+   id("us.ihmc.ihmc-cd") version "0.1"
 }
 
 ihmc {
@@ -16,7 +17,7 @@ ihmc {
 }
 
 dependencies {
-   compile group: "us.ihmc", name: "ihmc-commons", version: "0.25.4"
+   compile group: "us.ihmc", name: "ihmc-commons", version: "0.26.3"
    compile group: "org.apache.commons", name: "commons-math3", version: "3.3"
    compile group: "org.apache.commons", name: "commons-lang3", version: "3.8.1"
    compile group: "us.ihmc", name: "euclid-frame", version: "0.11.0"
@@ -24,6 +25,6 @@ dependencies {
 }
 
 testDependencies {
-   compile group: "us.ihmc", name: "ihmc-commons-testing", version: "0.25.4"
+   compile group: "us.ihmc", name: "ihmc-commons-testing", version: "0.26.3"
    compile group: "us.ihmc", name: "euclid-test", version: "0.11.0"
 }
