@@ -23,8 +23,8 @@ import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple3DReadOnly;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.tools.RotationMatrixTools;
 import us.ihmc.euclid.tools.YawPitchRollTools;
-import us.ihmc.euclid.transform.QuaternionBasedTransform;
-import us.ihmc.euclid.transform.RigidBodyTransform;
+import us.ihmc.euclid.transform.interfaces.RigidBodyTransformBasics;
+import us.ihmc.euclid.transform.interfaces.RigidBodyTransformReadOnly;
 import us.ihmc.euclid.transform.interfaces.Transform;
 import us.ihmc.euclid.tuple2D.interfaces.Tuple2DReadOnly;
 import us.ihmc.euclid.tuple3D.interfaces.Tuple3DReadOnly;
@@ -209,21 +209,10 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     *
     * @param rigidBodyTransform the transform use to set this pose 3D. Not modified.
     */
-   public void set(RigidBodyTransform rigidBodyTransform)
+   public void set(RigidBodyTransformReadOnly rigidBodyTransform)
    {
-      setPosition(rigidBodyTransform.getTranslationVector());
-      setOrientation(rigidBodyTransform.getRotationMatrix());
-   }
-
-   /**
-    * Sets this pose 3D to match the given quaternion-based transform.
-    *
-    * @param quaternionBasedTransform the transform use to set this pose 3D. Not modified.
-    */
-   public void set(QuaternionBasedTransform quaternionBasedTransform)
-   {
-      setPosition(quaternionBasedTransform.getTranslationVector());
-      setOrientation(quaternionBasedTransform.getQuaternion());
+      setPosition(rigidBodyTransform.getTranslation());
+      setOrientation(rigidBodyTransform.getRotation());
    }
 
    /**
@@ -394,20 +383,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     *
     * @param transform the transform to prepend to this pose 3D. Not modified.
     */
-   public void prependTransform(RigidBodyTransform transform)
-   {
-      applyTransform(transform);
-   }
-
-   /**
-    * Prepends the given transform to this pose 3D.
-    * <p>
-    * This is the same as {@link #applyTransform(Transform)}.
-    * </p>
-    *
-    * @param transform the transform to prepend to this pose 3D. Not modified.
-    */
-   public void prependTransform(QuaternionBasedTransform transform)
+   public void prependTransform(RigidBodyTransformReadOnly transform)
    {
       applyTransform(transform);
    }
@@ -527,21 +503,10 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     *
     * @param transform the rigid-body transform to append to this pose 3D. Not modified.
     */
-   public void appendTransform(RigidBodyTransform transform)
+   public void appendTransform(RigidBodyTransformReadOnly transform)
    {
-      YawPitchRollTools.addTransform(yawPitchRoll, transform.getTranslationVector(), position);
-      yawPitchRoll.append(transform.getRotationMatrix());
-   }
-
-   /**
-    * Appends the given {@code transform} to this pose 3D.
-    *
-    * @param transform the quaternion-based transform to append to this pose 3D. Not modified.
-    */
-   public void appendTransform(QuaternionBasedTransform transform)
-   {
-      YawPitchRollTools.addTransform(yawPitchRoll, transform.getTranslationVector(), position);
-      yawPitchRoll.append(transform.getQuaternion());
+      YawPitchRollTools.addTransform(yawPitchRoll, transform.getTranslation(), position);
+      yawPitchRoll.append(transform.getRotation());
    }
 
    /**
@@ -946,10 +911,10 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
    }
 
    /**
-    * Use {@link #get(RigidBodyTransform)} instead.
+    * Use {@link #get(RigidBodyTransformBasics)} instead.
     */
    @Deprecated
-   public void getPose(RigidBodyTransform rigidBodyTransformToPack)
+   public void getPose(RigidBodyTransformBasics rigidBodyTransformToPack)
    {
       get(rigidBodyTransformToPack);
    }
