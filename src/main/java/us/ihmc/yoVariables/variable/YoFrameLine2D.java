@@ -37,8 +37,8 @@ public class YoFrameLine2D implements FixedFrameLine2DBasics
     */
    public YoFrameLine2D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
    {
-      point = new YoFramePoint2D(namePrefix, nameSuffix, referenceFrame, registry);
-      direction = new YoFrameVector2D(namePrefix, nameSuffix, referenceFrame, registry);
+      point = new YoFramePoint2D(namePrefix + "Point", nameSuffix, referenceFrame, registry);
+      direction = new YoFrameVector2D(namePrefix + "Direction", nameSuffix, referenceFrame, registry);
    }
 
    /**
