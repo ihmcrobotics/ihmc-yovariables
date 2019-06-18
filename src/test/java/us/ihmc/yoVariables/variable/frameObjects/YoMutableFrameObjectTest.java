@@ -19,6 +19,11 @@ import us.ihmc.yoVariables.variable.YoVariable;
 
 public class YoMutableFrameObjectTest
 {
+   static
+   {
+      YoVariable.SAVE_STACK_TRACE = false;
+   }
+
    @Test
    public void testMutableFrameObject()
    {

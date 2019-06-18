@@ -1,7 +1,7 @@
 package us.ihmc.yoVariables.variable.frameObjects;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static us.ihmc.euclid.EuclidTestConstants.ITERATIONS;
+import static us.ihmc.euclid.EuclidTestConstants.*;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -49,6 +49,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
 {
    static
    {
+      YoVariable.SAVE_STACK_TRACE = false;
       YoVariable.warnAboutNullRegistries = false;
    }
 

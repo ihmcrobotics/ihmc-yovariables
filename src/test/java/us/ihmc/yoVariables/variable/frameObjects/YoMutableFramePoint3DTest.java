@@ -1,7 +1,7 @@
 package us.ihmc.yoVariables.variable.frameObjects;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static us.ihmc.euclid.EuclidTestConstants.ITERATIONS;
+import static us.ihmc.euclid.EuclidTestConstants.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +31,7 @@ public class YoMutableFramePoint3DTest extends FrameTuple3DBasicsTest<YoMutableF
 {
    static
    {
+      YoVariable.SAVE_STACK_TRACE = false;
       YoVariable.warnAboutNullRegistries = false;
    }
 
