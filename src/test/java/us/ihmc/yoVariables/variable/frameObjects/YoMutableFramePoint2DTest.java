@@ -1,16 +1,13 @@
 package us.ihmc.yoVariables.variable.frameObjects;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static us.ihmc.euclid.testSuite.EuclidTestSuite.ITERATIONS;
+import static org.junit.jupiter.api.Assertions.*;
+import static us.ihmc.euclid.EuclidTestConstants.*;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import us.ihmc.euclid.referenceFrame.FramePoint3D;
 import us.ihmc.euclid.referenceFrame.FrameTuple2DBasicsTest;
@@ -34,6 +31,7 @@ public class YoMutableFramePoint2DTest extends FrameTuple2DBasicsTest<YoMutableF
 {
    static
    {
+      YoVariable.SAVE_STACK_TRACE = false;
       YoVariable.warnAboutNullRegistries = false;
    }
 

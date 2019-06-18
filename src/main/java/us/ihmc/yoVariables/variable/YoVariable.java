@@ -22,6 +22,7 @@ import us.ihmc.yoVariables.registry.YoVariableRegistry;
  */
 public abstract class YoVariable<T extends YoVariable<T>>
 {
+   public static boolean SAVE_STACK_TRACE = true;
    public static final Pattern ILLEGAL_CHARACTERS = Pattern.compile("[ .*?@#$%/^&()<>,:{}'\"\\\\]");
    private static final String SPACE_STRING = "  ";
 
@@ -58,14 +59,17 @@ public abstract class YoVariable<T extends YoVariable<T>>
       this.registry = registry;
       this.variableChangedListeners = null;
 
-      Throwable t = new Throwable();
-      StringWriter sw = new StringWriter();
-      PrintWriter pw = new PrintWriter(sw);
-      t.printStackTrace(pw);
-      stackTraceAtInitialization = sw.toString();
-      stackTraceAtInitialization = stackTraceAtInitialization.substring(21);
-      stackTraceAtInitialization = stackTraceAtInitialization.replaceAll("at(.*)\\(", "at ");
-      stackTraceAtInitialization = stackTraceAtInitialization.replaceAll("\\)", "");
+      if (SAVE_STACK_TRACE)
+      {
+         Throwable t = new Throwable();
+         StringWriter sw = new StringWriter();
+         PrintWriter pw = new PrintWriter(sw);
+         t.printStackTrace(pw);
+         stackTraceAtInitialization = sw.toString();
+         stackTraceAtInitialization = stackTraceAtInitialization.substring(21);
+         stackTraceAtInitialization = stackTraceAtInitialization.replaceAll("at(.*)\\(", "at ");
+         stackTraceAtInitialization = stackTraceAtInitialization.replaceAll("\\)", "");
+      }
 
       registerVariable(registry, this);
    }
