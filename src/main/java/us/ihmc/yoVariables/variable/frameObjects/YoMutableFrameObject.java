@@ -15,7 +15,6 @@ public class YoMutableFrameObject implements ReferenceFrameHolder
    {
       frameId = new YoLong(YoFrameVariableNameTools.createName(namePrefix, "frame", nameSuffix), registry);
       frameIndexMap = new FrameIndexMap.FrameIndexHashMap();
-      setReferenceFrame(ReferenceFrame.getWorldFrame());
    }
 
    public YoMutableFrameObject(YoLong frameId, FrameIndexMap frameIndexMap)

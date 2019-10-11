@@ -98,6 +98,7 @@ public class YoMutableFrameQuaternion extends YoMutableFrameObject implements Fr
       qz = new YoDouble(YoFrameVariableNameTools.createQzName(namePrefix, nameSuffix), registry);
       qs = new YoDouble(YoFrameVariableNameTools.createQsName(namePrefix, nameSuffix), registry);
       setToZero();
+      setReferenceFrame(ReferenceFrame.getWorldFrame());
    }
 
    public YoMutableFrameQuaternion(YoDouble qx, YoDouble qy, YoDouble qz, YoDouble qs, YoLong frameIndex, FrameIndexMap frameIndexMap)

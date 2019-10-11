@@ -69,6 +69,7 @@ public abstract class YoMutableFrameTuple2D extends YoMutableFrameObject impleme
       super(namePrefix, nameSuffix, registry);
       x = new YoDouble(YoFrameVariableNameTools.createXName(namePrefix, nameSuffix), registry);
       y = new YoDouble(YoFrameVariableNameTools.createYName(namePrefix, nameSuffix), registry);
+      setReferenceFrame(ReferenceFrame.getWorldFrame());
    }
 
    public YoMutableFrameTuple2D(YoDouble x, YoDouble y, YoLong frameIndex, FrameIndexMap frameIndexMap)
