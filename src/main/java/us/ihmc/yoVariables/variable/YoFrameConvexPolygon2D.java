@@ -28,8 +28,8 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
    private final List<YoFramePoint2D> vertexBuffer = new ArrayList<>();
    private final List<FixedFramePoint2DBasics> vertexBufferView = Collections.unmodifiableList(vertexBuffer);
    /**
-    * Field for future expansion of {@code ConvexPolygon2d} to enable having the vertices in
-    * clockwise or counter-clockwise ordered.
+    * Field for future expansion of {@code ConvexPolygon2d} to enable having the vertices in clockwise
+    * or counter-clockwise ordered.
     */
    private final boolean clockwiseOrdered = true;
    /** Rigid-body transform used to perform garbage-free operations. */
@@ -119,12 +119,12 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
    /**
     * Creates a new empty polygon.
     *
-    * @param namePrefix a unique name string to use as the prefix for child variable names.
-    * @param referenceFrame the reference frame in which this polygon will <b>always</b> be
-    *           expressed.
+    * @param namePrefix          a unique name string to use as the prefix for child variable names.
+    * @param referenceFrame      the reference frame in which this polygon will <b>always</b> be
+    *                            expressed.
     * @param maxNumberOfVertices refers to the number of {@code YoVariable}s to be created. This
-    *           polygon cannot grow bigger than this number.
-    * @param registry the registry to register child variables to.
+    *                            polygon cannot grow bigger than this number.
+    * @param registry            the registry to register child variables to.
     */
    public YoFrameConvexPolygon2D(String namePrefix, ReferenceFrame referenceFrame, int maxNumberOfVertices, YoVariableRegistry registry)
    {
@@ -134,13 +134,13 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
    /**
     * Creates a new empty polygon.
     *
-    * @param namePrefix a unique name string to use as the prefix for child variable names.
-    * @param nameSuffix a string to use as the suffix for child variable names.
-    * @param referenceFrame the reference frame in which this polygon will <b>always</b> be
-    *           expressed.
+    * @param namePrefix          a unique name string to use as the prefix for child variable names.
+    * @param nameSuffix          a string to use as the suffix for child variable names.
+    * @param referenceFrame      the reference frame in which this polygon will <b>always</b> be
+    *                            expressed.
     * @param maxNumberOfVertices refers to the number of {@code YoVariable}s to be created. This
-    *           polygon cannot grow bigger than this number.
-    * @param registry the registry to register child variables to.
+    *                            polygon cannot grow bigger than this number.
+    * @param registry            the registry to register child variables to.
     */
    public YoFrameConvexPolygon2D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, int maxNumberOfVertices, YoVariableRegistry registry)
    {
@@ -158,11 +158,11 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
    /**
     * Creates a new empty polygon.
     * 
-    * @param yoVertexBuffer the buffer of vertices baked by {@code YoFramePoint2D}s to be used by
-    *           this polygon.
+    * @param yoVertexBuffer     the buffer of vertices baked by {@code YoFramePoint2D}s to be used by
+    *                           this polygon.
     * @param yoNumberOfVertices the {@code YoVariable} to be used by this polygon.
-    * @param referenceFrame the reference frame in which this polygon will <b>always</b> be
-    *           expressed.
+    * @param referenceFrame     the reference frame in which this polygon will <b>always</b> be
+    *                           expressed.
     */
    public YoFrameConvexPolygon2D(List<YoFramePoint2D> yoVertexBuffer, YoInteger yoNumberOfVertices, ReferenceFrame referenceFrame)
    {
@@ -288,11 +288,10 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
       if (indexOfVertexToRemove == numberOfVertices.getValue() - 1)
       {
          numberOfVertices.decrement();
-         ;
          return;
       }
       isUpToDate = false;
-      swap(vertexBuffer, indexOfVertexToRemove, numberOfVertices.getValue());
+      swap(vertexBuffer, indexOfVertexToRemove, numberOfVertices.getValue() - 1);
       numberOfVertices.decrement();
    }
 
@@ -405,8 +404,8 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
     * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
     * {@link YoVariableRegistry}.
     * <p>
-    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate
-    * of the registry that was used to create {@code this}, this method searches for the duplicated
+    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate of
+    * the registry that was used to create {@code this}, this method searches for the duplicated
     * {@code YoVariable}s and use them to duplicate {@code this}.
     * </p>
     *
