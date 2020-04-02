@@ -1,20 +1,24 @@
 package us.ihmc.yoVariables.variable.frameObjects;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static us.ihmc.euclid.EuclidTestConstants.*;
+import static us.ihmc.euclid.EuclidTestConstants.ITERATIONS;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
 import us.ihmc.euclid.referenceFrame.FramePoint3D;
 import us.ihmc.euclid.referenceFrame.FrameTuple2DBasicsTest;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
+import us.ihmc.euclid.referenceFrame.api.EuclidFrameAPIDefaultConfiguration;
+import us.ihmc.euclid.referenceFrame.api.EuclidFrameAPITester;
+import us.ihmc.euclid.referenceFrame.api.MethodSignature;
 import us.ihmc.euclid.referenceFrame.interfaces.FramePoint2DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple2DReadOnly;
-import us.ihmc.euclid.referenceFrame.tools.EuclidFrameAPITestTools;
 import us.ihmc.euclid.referenceFrame.tools.EuclidFrameRandomTools;
 import us.ihmc.euclid.referenceFrame.tools.EuclidFrameTestTools;
 import us.ihmc.euclid.referenceFrame.tools.ReferenceFrameTools;
@@ -264,11 +268,13 @@ public class YoMutableFramePoint2DTest extends FrameTuple2DBasicsTest<YoMutableF
    public void testOverloading() throws Exception
    {
       super.testOverloading();
-      Map<String, Class<?>[]> framelessMethodsToIgnore = new HashMap<>();
-      framelessMethodsToIgnore.put("set", new Class<?>[] {Point2D.class});
-      framelessMethodsToIgnore.put("epsilonEquals", new Class<?>[] {Point2D.class, Double.TYPE});
-      framelessMethodsToIgnore.put("geometricallyEquals", new Class<?>[] {Point2D.class, Double.TYPE});
-      EuclidFrameAPITestTools.assertOverloadingWithFrameObjects(YoMutableFramePoint2D.class, Point2D.class, true, 1, framelessMethodsToIgnore);
+      List<MethodSignature> signaturesToIgnore = new ArrayList<>();
+      signaturesToIgnore.add(new MethodSignature("set", Point2D.class));
+      signaturesToIgnore.add(new MethodSignature("epsilonEquals", Point2D.class, Double.TYPE));
+      signaturesToIgnore.add(new MethodSignature("geometricallyEquals", Point2D.class, Double.TYPE));
+      Predicate<Method> methodFilter = EuclidFrameAPITester.methodFilterFromSignature(signaturesToIgnore);
+
+      EuclidFrameAPITester tester = new EuclidFrameAPITester(new EuclidFrameAPIDefaultConfiguration());
+      tester.assertOverloadingWithFrameObjects(YoMutableFramePoint2D.class, Point2D.class, true, 1, methodFilter);
    }
 }
-
