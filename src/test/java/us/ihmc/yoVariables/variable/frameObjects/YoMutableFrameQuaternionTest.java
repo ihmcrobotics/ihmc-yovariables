@@ -351,19 +351,6 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
       }
 
       for (int i = 0; i < ITERATIONS; i++)
-      { // Tests setYawPitchRollIncludingFrame(ReferenceFrame referenceFrame, double[] yawPitchRoll)
-         double[] yawPitchRoll = EuclidCoreRandomTools.nextYawPitchRollArray(random);
-         ReferenceFrame newFrame = EuclidFrameRandomTools.nextReferenceFrame(random);
-         YoMutableFrameQuaternion YoMutableFrameQuaternion = createRandomFrameTuple(random, initialFrame);
-         Quaternion quaternion = new Quaternion();
-         assertEquals(initialFrame, YoMutableFrameQuaternion.getReferenceFrame());
-         YoMutableFrameQuaternion.setYawPitchRollIncludingFrame(newFrame, yawPitchRoll);
-         quaternion.setYawPitchRoll(yawPitchRoll);
-         assertEquals(newFrame, YoMutableFrameQuaternion.getReferenceFrame());
-         EuclidCoreTestTools.assertTuple4DEquals(quaternion, YoMutableFrameQuaternion, EPSILON);
-      }
-
-      for (int i = 0; i < ITERATIONS; i++)
       { // Tests setYawPitchRollIncludingFrame(ReferenceFrame referenceFrame, double yaw, double pitch, double roll)
          double yaw = EuclidCoreRandomTools.nextDouble(random, Math.PI);
          double pitch = EuclidCoreRandomTools.nextDouble(random, YawPitchRollConversion.MAX_SAFE_PITCH_ANGLE);
