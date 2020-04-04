@@ -896,8 +896,8 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
    @Deprecated
    public void getFramePose(FixedFramePose3DBasics framePoseToPack)
    {
-      framePoseToPack.setPosition(position);
-      framePoseToPack.setOrientation(yawPitchRoll);
+      framePoseToPack.getPosition().set(position);
+      framePoseToPack.getOrientation().set(yawPitchRoll);
    }
 
    /**
