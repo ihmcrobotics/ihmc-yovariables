@@ -13,7 +13,7 @@ import us.ihmc.yoVariables.registry.YoVariableRegistry;
 public class YoFrameLine2D implements FixedFrameLine2DBasics
 {
    private final YoFramePoint2D point;
-   private final YoFrameVector2D direction;
+   private final YoFrameUnitVector2D direction;
 
    /**
     * Creates a new {@code YoFrameLine2D}.
@@ -38,7 +38,7 @@ public class YoFrameLine2D implements FixedFrameLine2DBasics
    public YoFrameLine2D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
    {
       point = new YoFramePoint2D(namePrefix + "Point", nameSuffix, referenceFrame, registry);
-      direction = new YoFrameVector2D(namePrefix + "Direction", nameSuffix, referenceFrame, registry);
+      direction = new YoFrameUnitVector2D(namePrefix + "Direction", nameSuffix, referenceFrame, registry);
    }
 
    /**
@@ -60,6 +60,21 @@ public class YoFrameLine2D implements FixedFrameLine2DBasics
     * Creates a new {@code YoFrameLine2D} using the given {@code YoVariable}s and sets its reference
     * frame to {@code referenceFrame}.
     *
+    * @param point the {@code YoFramePoint2D} to use internally for this line point.
+    * @param direction the {@code YoFrameVector2D} to use internally for this line direction.
+    * @throws ReferenceFrameMismatchException if {@code point} and {@code direction} are not
+    *            expressed in the same reference frame.
+    */
+   public YoFrameLine2D(YoFramePoint2D point, YoFrameUnitVector2D direction)
+   {
+      this(point.getYoX(), point.getYoY(), direction.getYoX(), direction.getYoY(), point.getReferenceFrame());
+      point.checkReferenceFrameMatch(direction);
+   }
+
+   /**
+    * Creates a new {@code YoFrameLine2D} using the given {@code YoVariable}s and sets its reference
+    * frame to {@code referenceFrame}.
+    *
     * @param pointX the variable to use for the x-coordinate of this line point.
     * @param pointY the variable to use for the y-coordinate of this line point.
     * @param directionX the variable to use for the x-component of this line direction.
@@ -69,7 +84,7 @@ public class YoFrameLine2D implements FixedFrameLine2DBasics
    public YoFrameLine2D(YoDouble pointX, YoDouble pointY, YoDouble directionX, YoDouble directionY, ReferenceFrame referenceFrame)
    {
       point = new YoFramePoint2D(pointX, pointY, referenceFrame);
-      direction = new YoFrameVector2D(directionX, directionY, referenceFrame);
+      direction = new YoFrameUnitVector2D(directionX, directionY, referenceFrame);
    }
 
    /** {@inheritDoc} */
@@ -81,7 +96,7 @@ public class YoFrameLine2D implements FixedFrameLine2DBasics
 
    /** {@inheritDoc} */
    @Override
-   public YoFrameVector2D getDirection()
+   public YoFrameUnitVector2D getDirection()
    {
       return direction;
    }

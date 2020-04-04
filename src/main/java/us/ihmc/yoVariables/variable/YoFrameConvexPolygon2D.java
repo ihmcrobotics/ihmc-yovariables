@@ -263,7 +263,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
    @Override
    public void updateCentroidAndArea()
    {
-      area = EuclidGeometryPolygonTools.computeConvexPolyong2DArea(vertexBuffer, numberOfVertices.getValue(), clockwiseOrdered, centroid);
+      area = EuclidGeometryPolygonTools.computeConvexPolygon2DArea(vertexBuffer, numberOfVertices.getValue(), clockwiseOrdered, centroid);
    }
 
    /** {@inheritDoc} */
