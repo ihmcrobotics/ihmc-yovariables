@@ -8,7 +8,7 @@ import us.ihmc.euclid.referenceFrame.interfaces.FixedFramePoint2DBasics;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 /**
- * {@code FixedFrameLineSegment2DBasics} implementation which endpoints baked with
+ * {@code FixedFrameLineSegment2DBasics} implementation which endpoints backed with
  * {@code YoVariable}s.
  */
 public class YoFrameLineSegment2D implements FixedFrameLineSegment2DBasics

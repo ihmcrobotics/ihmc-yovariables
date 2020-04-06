@@ -1,33 +1,31 @@
 package us.ihmc.yoVariables.variable.frameObjects;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static us.ihmc.euclid.EuclidTestConstants.*;
+import static us.ihmc.euclid.EuclidTestConstants.ITERATIONS;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 
 import org.ejml.data.DenseMatrix64F;
 import org.junit.jupiter.api.Test;
 
+import us.ihmc.euclid.EuclidTestConstants;
 import us.ihmc.euclid.axisAngle.AxisAngle;
 import us.ihmc.euclid.axisAngle.interfaces.AxisAngleReadOnly;
 import us.ihmc.euclid.matrix.interfaces.RotationMatrixReadOnly;
 import us.ihmc.euclid.referenceFrame.FrameQuaternionReadOnlyTest;
 import us.ihmc.euclid.referenceFrame.FrameVector3D;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
+import us.ihmc.euclid.referenceFrame.api.*;
 import us.ihmc.euclid.referenceFrame.exceptions.ReferenceFrameMismatchException;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameQuaternionReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple4DBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple4DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameVector3DReadOnly;
-import us.ihmc.euclid.referenceFrame.interfaces.ReferenceFrameHolder;
-import us.ihmc.euclid.referenceFrame.tools.EuclidFrameAPITestTools;
-import us.ihmc.euclid.referenceFrame.tools.EuclidFrameAPITestTools.FrameTypeBuilder;
-import us.ihmc.euclid.referenceFrame.tools.EuclidFrameAPITestTools.GenericTypeBuilder;
 import us.ihmc.euclid.referenceFrame.tools.EuclidFrameRandomTools;
 import us.ihmc.euclid.referenceFrame.tools.EuclidFrameTestTools;
 import us.ihmc.euclid.referenceFrame.tools.ReferenceFrameTools;
@@ -353,19 +351,6 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
       }
 
       for (int i = 0; i < ITERATIONS; i++)
-      { // Tests setYawPitchRollIncludingFrame(ReferenceFrame referenceFrame, double[] yawPitchRoll)
-         double[] yawPitchRoll = EuclidCoreRandomTools.nextYawPitchRollArray(random);
-         ReferenceFrame newFrame = EuclidFrameRandomTools.nextReferenceFrame(random);
-         YoMutableFrameQuaternion YoMutableFrameQuaternion = createRandomFrameTuple(random, initialFrame);
-         Quaternion quaternion = new Quaternion();
-         assertEquals(initialFrame, YoMutableFrameQuaternion.getReferenceFrame());
-         YoMutableFrameQuaternion.setYawPitchRollIncludingFrame(newFrame, yawPitchRoll);
-         quaternion.setYawPitchRoll(yawPitchRoll);
-         assertEquals(newFrame, YoMutableFrameQuaternion.getReferenceFrame());
-         EuclidCoreTestTools.assertTuple4DEquals(quaternion, YoMutableFrameQuaternion, EPSILON);
-      }
-
-      for (int i = 0; i < ITERATIONS; i++)
       { // Tests setYawPitchRollIncludingFrame(ReferenceFrame referenceFrame, double yaw, double pitch, double roll)
          double yaw = EuclidCoreRandomTools.nextDouble(random, Math.PI);
          double pitch = EuclidCoreRandomTools.nextDouble(random, YawPitchRollConversion.MAX_SAFE_PITCH_ANGLE);
@@ -413,15 +398,21 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
    @Test
    public void testConsistencyWithQuaternion()
    {
-      Random random = new Random(234235L);
-
-      FrameTypeBuilder<? extends ReferenceFrameHolder> frameTypeBuilder = (frame, quaternion) -> createFrameTuple(frame, (QuaternionReadOnly) quaternion);
-      GenericTypeBuilder framelessTypeBuilder = () -> EuclidCoreRandomTools.nextQuaternion(random);
+      FrameTypeCopier frameTypeBuilder = (frame, quaternion) -> createFrameTuple(frame, (QuaternionReadOnly) quaternion);
+      RandomFramelessTypeBuilder framelessTypeBuilder = EuclidCoreRandomTools::nextQuaternion;
       Predicate<Method> methodFilter = m -> !m.getName().equals("hashCode");
-      EuclidFrameAPITestTools.assertFrameMethodsOfFrameHolderPreserveFunctionality(frameTypeBuilder, framelessTypeBuilder, methodFilter);
+      EuclidFrameAPITester tester = new EuclidFrameAPITester(new EuclidFrameAPIDefaultConfiguration());
+      tester.assertFrameMethodsOfFrameHolderPreserveFunctionality(frameTypeBuilder,
+                                                                  framelessTypeBuilder,
+                                                                  methodFilter,
+                                                                  EuclidTestConstants.API_FUNCTIONALITY_TEST_ITERATIONS);
 
-      GenericTypeBuilder frameless2DTypeBuilder = () -> new Quaternion(createRandom2DFrameTuple(random, ReferenceFrame.getWorldFrame()));
-      EuclidFrameAPITestTools.assertFrameMethodsOfFrameHolderPreserveFunctionality(frameTypeBuilder, frameless2DTypeBuilder, methodFilter);
+      RandomFramelessTypeBuilder frameless2DTypeBuilder = (random) -> new Quaternion(createRandom2DFrameTuple(random, ReferenceFrame.getWorldFrame()));
+      tester.assertFrameMethodsOfFrameHolderPreserveFunctionality(frameTypeBuilder,
+                                                                  frameless2DTypeBuilder,
+                                                                  methodFilter,
+                                                                  EuclidTestConstants.API_FUNCTIONALITY_TEST_ITERATIONS);
+   
    }
 
    @Override
@@ -429,11 +420,14 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
    public void testOverloading() throws Exception
    {
       super.testOverloading();
-      Map<String, Class<?>[]> framelessMethodsToIgnore = new HashMap<>();
-      framelessMethodsToIgnore.put("set", new Class<?>[] {Quaternion.class});
-      framelessMethodsToIgnore.put("epsilonEquals", new Class<?>[] {Quaternion.class, Double.TYPE});
-      framelessMethodsToIgnore.put("geometricallyEquals", new Class<?>[] {Quaternion.class, Double.TYPE});
-      EuclidFrameAPITestTools.assertOverloadingWithFrameObjects(YoMutableFrameQuaternion.class, Quaternion.class, true, 1, framelessMethodsToIgnore);
+      List<MethodSignature> signaturesToIgnore = new ArrayList<>();
+      signaturesToIgnore.add(new MethodSignature("set", Quaternion.class));
+      signaturesToIgnore.add(new MethodSignature("epsilonEquals", Quaternion.class, Double.TYPE));
+      signaturesToIgnore.add(new MethodSignature("geometricallyEquals", Quaternion.class, Double.TYPE));
+      Predicate<Method> methodFilter = EuclidFrameAPITester.methodFilterFromSignature(signaturesToIgnore);
+
+      EuclidFrameAPITester tester = new EuclidFrameAPITester(new EuclidFrameAPIDefaultConfiguration());
+      tester.assertOverloadingWithFrameObjects(YoMutableFrameQuaternion.class, Quaternion.class, true, 1, methodFilter);
    }
 
    @Test

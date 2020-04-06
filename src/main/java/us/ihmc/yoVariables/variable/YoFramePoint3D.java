@@ -6,7 +6,7 @@ import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 /**
  * {@code FixedFramePoint3DBasics} implementation which coordinates {@code x}, {@code y}, {@code z}
- * are baked with {@code YoDouble}s.
+ * are backed with {@code YoDouble}s.
  */
 public class YoFramePoint3D extends YoFrameTuple3D implements FixedFramePoint3DBasics
 {

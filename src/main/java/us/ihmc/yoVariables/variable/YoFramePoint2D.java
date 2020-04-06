@@ -5,7 +5,7 @@ import us.ihmc.euclid.referenceFrame.interfaces.FixedFramePoint2DBasics;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 /**
- * {@code FixedFramePoint2DBasics} implementation which coordinates {@code x}, {@code y} are baked
+ * {@code FixedFramePoint2DBasics} implementation which coordinates {@code x}, {@code y} are backed
  * with {@code YoDouble}s.
  */
 public class YoFramePoint2D extends YoFrameTuple2D implements FixedFramePoint2DBasics
