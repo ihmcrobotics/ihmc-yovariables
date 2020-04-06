@@ -1,21 +1,13 @@
 package us.ihmc.yoVariables.variable;
 
-import us.ihmc.euclid.matrix.RotationMatrix;
 import us.ihmc.euclid.orientation.interfaces.Orientation3DReadOnly;
 import us.ihmc.euclid.referenceFrame.FrameQuaternion;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameYawPitchRollBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameOrientation3DReadOnly;
-import us.ihmc.euclid.referenceFrame.interfaces.FrameQuaternionBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameYawPitchRollReadOnly;
-import us.ihmc.euclid.rotationConversion.QuaternionConversion;
 import us.ihmc.euclid.tools.EuclidCoreIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
-import us.ihmc.euclid.transform.RigidBodyTransform;
-import us.ihmc.euclid.tuple3D.interfaces.Tuple3DBasics;
-import us.ihmc.euclid.tuple3D.interfaces.Vector3DBasics;
-import us.ihmc.euclid.tuple3D.interfaces.Vector3DReadOnly;
-import us.ihmc.euclid.tuple4D.interfaces.QuaternionBasics;
 import us.ihmc.yoVariables.listener.VariableChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
@@ -53,15 +45,6 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
       this.roll = roll;
 
       this.referenceFrame = referenceFrame;
-   }
-
-   /**
-    * Use {@link #setEuler(Vector3DReadOnly)} instead.
-    */
-   @Deprecated
-   public void setEulerAngles(Vector3DReadOnly eulerAngles)
-   {
-      setEuler(eulerAngles);
    }
 
    @Override
@@ -109,15 +92,6 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
       enableNotifications = true;
    }
 
-   /**
-    * Use {@code this.set(transform.getRotationMatrix())} instead.
-    */
-   @Deprecated
-   public void set(RigidBodyTransform transform)
-   {
-      set(transform.getRotationMatrix());
-   }
-
    public void setMatchingFrame(FrameOrientation3DReadOnly orientation, boolean notifyListeners)
    {
       enableNotifications = notifyListeners;
@@ -157,14 +131,6 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
    }
 
    @Override
-   public void getYawPitchRoll(double[] yawPitchRollToPack)
-   {
-      yawPitchRollToPack[0] = yaw.getDoubleValue();
-      yawPitchRollToPack[1] = pitch.getDoubleValue();
-      yawPitchRollToPack[2] = roll.getDoubleValue();
-   }
-
-   @Override
    public double getYaw()
    {
       return yaw.getValue();
@@ -195,52 +161,6 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
    public YoDouble getYoRoll()
    {
       return roll;
-   }
-
-   /**
-    * Use {@link #getEuler(Tuple3DBasics)} instead.
-    */
-   @Deprecated
-   public void getEulerAngles(Vector3DBasics eulerAnglesToPack)
-   {
-      getEuler(eulerAnglesToPack);
-   }
-
-   /**
-    * Use {@code quaternionToPack.set(this)} instead.
-    */
-   @Deprecated
-   public void getQuaternion(QuaternionBasics quaternionToPack)
-   {
-      QuaternionConversion.convertYawPitchRollToQuaternion(yaw.getDoubleValue(), pitch.getDoubleValue(), roll.getDoubleValue(), quaternionToPack);
-   }
-
-   /**
-    * Use {@code rotationMatrixToPack.set(this)} instead.
-    */
-   @Deprecated
-   public void getMatrix3d(RotationMatrix rotationMatrixToPack)
-   {
-      get(rotationMatrixToPack);
-   }
-
-   /**
-    * Use {@code orientationToPack.set(this)} instead.
-    */
-   @Deprecated
-   public void getFrameOrientationIncludingFrame(FrameQuaternionBasics orientationToPack)
-   {
-      orientationToPack.setToZero(getReferenceFrame());
-      orientationToPack.setYawPitchRoll(yaw.getDoubleValue(), pitch.getDoubleValue(), roll.getDoubleValue());
-   }
-
-   /**
-    * Use {@code new FrameQuaternion(this)} instead.
-    */
-   @Deprecated
-   public FrameQuaternion getFrameOrientationCopy()
-   {
-      return new FrameQuaternion(getReferenceFrame(), yaw.getDoubleValue(), pitch.getDoubleValue(), roll.getDoubleValue());
    }
 
    public void interpolate(YoFrameYawPitchRoll orientationOne, YoFrameYawPitchRoll orientationTwo, double alpha)

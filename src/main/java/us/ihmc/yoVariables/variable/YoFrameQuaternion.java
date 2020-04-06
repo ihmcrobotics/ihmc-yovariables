@@ -9,7 +9,7 @@ import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
 
 /**
  * {@code FixedFrameQuaternionBasics} implementation which components {@code x}, {@code y},
- * {@code z}, {@code s} are baked with {@code YoDouble}s.
+ * {@code z}, {@code s} are backed with {@code YoDouble}s.
  */
 public class YoFrameQuaternion implements FixedFrameQuaternionBasics
 {

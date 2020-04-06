@@ -8,7 +8,7 @@ import us.ihmc.yoVariables.registry.YoVariableRegistry;
 import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
 
 /**
- * {@code FixedFrameTuple3DBasics} abstract implementation baked with {@code YoDouble}s.
+ * {@code FixedFrameTuple3DBasics} abstract implementation backed with {@code YoDouble}s.
  */
 public abstract class YoFrameTuple2D implements FixedFrameTuple2DBasics
 {

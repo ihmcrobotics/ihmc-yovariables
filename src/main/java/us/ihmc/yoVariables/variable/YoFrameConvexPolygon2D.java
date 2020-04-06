@@ -20,7 +20,7 @@ import us.ihmc.euclid.tuple3D.interfaces.Point3DReadOnly;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 /**
- * {@code FixedFrameConvexPolygon2DBasics} implementation which components vertices are baked with
+ * {@code FixedFrameConvexPolygon2DBasics} implementation which components vertices are backed with
  * {@code YoFramePoint2D}s.
  */
 public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
@@ -158,7 +158,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
    /**
     * Creates a new empty polygon.
     * 
-    * @param yoVertexBuffer     the buffer of vertices baked by {@code YoFramePoint2D}s to be used by
+    * @param yoVertexBuffer     the buffer of vertices backed by {@code YoFramePoint2D}s to be used by
     *                           this polygon.
     * @param yoNumberOfVertices the {@code YoVariable} to be used by this polygon.
     * @param referenceFrame     the reference frame in which this polygon will <b>always</b> be
@@ -263,7 +263,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
    @Override
    public void updateCentroidAndArea()
    {
-      area = EuclidGeometryPolygonTools.computeConvexPolyong2DArea(vertexBuffer, numberOfVertices.getValue(), clockwiseOrdered, centroid);
+      area = EuclidGeometryPolygonTools.computeConvexPolygon2DArea(vertexBuffer, numberOfVertices.getValue(), clockwiseOrdered, centroid);
    }
 
    /** {@inheritDoc} */
@@ -370,7 +370,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
    }
 
    /**
-    * Gets the buffer of vertices baked by {@code YoFramePoint2D}s used by this polygon.
+    * Gets the buffer of vertices backed by {@code YoFramePoint2D}s used by this polygon.
     * 
     * @return the internal reference to this polygon vertex buffer.
     */

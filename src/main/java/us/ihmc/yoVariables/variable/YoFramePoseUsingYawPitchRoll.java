@@ -1,11 +1,11 @@
 package us.ihmc.yoVariables.variable;
 
-import us.ihmc.euclid.geometry.interfaces.Orientation2DReadOnly;
 import us.ihmc.euclid.geometry.interfaces.Pose2DReadOnly;
 import us.ihmc.euclid.geometry.interfaces.Pose3DReadOnly;
 import us.ihmc.euclid.geometry.tools.EuclidGeometryIOTools;
 import us.ihmc.euclid.interfaces.Clearable;
 import us.ihmc.euclid.interfaces.Transformable;
+import us.ihmc.euclid.orientation.interfaces.Orientation2DReadOnly;
 import us.ihmc.euclid.orientation.interfaces.Orientation3DBasics;
 import us.ihmc.euclid.orientation.interfaces.Orientation3DReadOnly;
 import us.ihmc.euclid.referenceFrame.FrameQuaternion;
@@ -896,8 +896,8 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
    @Deprecated
    public void getFramePose(FixedFramePose3DBasics framePoseToPack)
    {
-      framePoseToPack.setPosition(position);
-      framePoseToPack.setOrientation(yawPitchRoll);
+      framePoseToPack.getPosition().set(position);
+      framePoseToPack.getOrientation().set(yawPitchRoll);
    }
 
    /**

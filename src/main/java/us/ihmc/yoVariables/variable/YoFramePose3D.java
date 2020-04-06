@@ -12,7 +12,7 @@ import us.ihmc.yoVariables.listener.VariableChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 /**
- * {@code FixedFramePose3DBasics} implementation which position and orientation baked with
+ * {@code FixedFramePose3DBasics} implementation which position and orientation backed with
  * {@code YoVariable}s.
  */
 public class YoFramePose3D implements FixedFramePose3DBasics
