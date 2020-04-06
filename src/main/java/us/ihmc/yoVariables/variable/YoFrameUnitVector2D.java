@@ -7,8 +7,8 @@ import us.ihmc.euclid.tuple2D.interfaces.UnitVector2DReadOnly;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 /**
- * {@code FixedFrameVector2DBasics} implementation which components {@code x}, {@code y} are baked
- * with {@code YoDouble}s.
+ * {@code FixedFrameUnitVector2DBasics} implementation which components {@code x}, {@code y} are
+ * baked with {@code YoDouble}s.
  */
 public class YoFrameUnitVector2D extends YoFrameTuple2D implements FixedFrameUnitVector2DBasics
 {
@@ -16,8 +16,12 @@ public class YoFrameUnitVector2D extends YoFrameTuple2D implements FixedFrameUni
    private boolean dirty = false;
 
    /**
-    * Creates a new {@code YoFrameVector2D} using the given {@code YoVariable}s and sets its reference
-    * frame to {@code referenceFrame}.
+    * Creates a new {@code YoFrameUnitVector2D} using the given {@code YoVariable}s and sets its
+    * reference frame to {@code referenceFrame}.
+    * <p>
+    * WARNING: This constructor assumes that the variables have been previously initialized such that
+    * this vector is already unitary.
+    * </p>
     *
     * @param xVariable      the variable to use for the x-component.
     * @param yVariable      the variable to use for the y-component.
@@ -26,10 +30,12 @@ public class YoFrameUnitVector2D extends YoFrameTuple2D implements FixedFrameUni
    public YoFrameUnitVector2D(YoDouble xVariable, YoDouble yVariable, ReferenceFrame referenceFrame)
    {
       super(xVariable, yVariable, referenceFrame);
+      // So this vector does not modify the YoVariable by attempting to normalize them.
+      dirty = false;
    }
 
    /**
-    * Creates a new {@code YoFrameVector2D}.
+    * Creates a new {@code YoFrameUnitVector2D}.
     *
     * @param namePrefix     a unique name string to use as the prefix for child variable names.
     * @param referenceFrame the reference frame for this vector.
@@ -42,7 +48,7 @@ public class YoFrameUnitVector2D extends YoFrameTuple2D implements FixedFrameUni
    }
 
    /**
-    * Creates a new {@code YoFrameVector2D}.
+    * Creates a new {@code YoFrameUnitVector2D}.
     *
     * @param namePrefix     a unique name string to use as the prefix for child variable names.
     * @param nameSuffix     a string to use as the suffix for child variable names.
@@ -128,8 +134,8 @@ public class YoFrameUnitVector2D extends YoFrameTuple2D implements FixedFrameUni
    @Override
    public void set(UnitVector2DReadOnly other)
    {
-      getYoX().set(-other.getRawX());
-      getYoY().set(-other.getRawY());
+      getYoX().set(other.getRawX());
+      getYoY().set(other.getRawY());
       dirty = other.isDirty();
    }
 
