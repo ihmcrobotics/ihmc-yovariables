@@ -6,7 +6,7 @@ import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 /**
  * {@code FixedFrameVector3DBasics} implementation which components {@code x}, {@code y}, {@code z}
- * are baked with {@code YoDouble}s.
+ * are backed with {@code YoDouble}s.
  */
 public class YoFrameVector3D extends YoFrameTuple3D implements FixedFrameVector3DBasics
 {

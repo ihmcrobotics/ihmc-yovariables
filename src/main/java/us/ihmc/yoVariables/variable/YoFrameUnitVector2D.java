@@ -8,7 +8,7 @@ import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 /**
  * {@code FixedFrameUnitVector2DBasics} implementation which components {@code x}, {@code y} are
- * baked with {@code YoDouble}s.
+ * backed with {@code YoDouble}s.
  */
 public class YoFrameUnitVector2D extends YoFrameTuple2D implements FixedFrameUnitVector2DBasics
 {

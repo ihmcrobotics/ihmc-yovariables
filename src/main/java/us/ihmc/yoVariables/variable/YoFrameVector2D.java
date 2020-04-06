@@ -5,7 +5,7 @@ import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameVector2DBasics;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 /**
- * {@code FixedFrameVector2DBasics} implementation which components {@code x}, {@code y} are baked
+ * {@code FixedFrameVector2DBasics} implementation which components {@code x}, {@code y} are backed
  * with {@code YoDouble}s.
  */
 public class YoFrameVector2D extends YoFrameTuple2D implements FixedFrameVector2DBasics

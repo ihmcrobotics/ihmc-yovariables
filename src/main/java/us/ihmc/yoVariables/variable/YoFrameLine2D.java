@@ -7,7 +7,7 @@ import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameLine2DBasics;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 /**
- * {@code FixedFrameLine2DBasics} implementation which point and line are baked with
+ * {@code FixedFrameLine2DBasics} implementation which point and line are backed with
  * {@code YoVariable}s.
  */
 public class YoFrameLine2D implements FixedFrameLine2DBasics
