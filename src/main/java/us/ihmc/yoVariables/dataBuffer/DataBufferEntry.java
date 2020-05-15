@@ -456,7 +456,7 @@ public class DataBufferEntry implements DataEntry
          total = total + data[i];
       }
 
-      return total / ((double) length);
+      return total / (length);
    }
 
    public double[] getWindowedData(int in, /* int out, */int bufferLength)

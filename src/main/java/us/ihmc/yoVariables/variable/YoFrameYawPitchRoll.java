@@ -118,6 +118,7 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
       roll.add(orientation.getRoll());
    }
 
+   @Override
    public void add(double yaw, double pitch, double roll)
    {
       this.yaw.add(yaw);

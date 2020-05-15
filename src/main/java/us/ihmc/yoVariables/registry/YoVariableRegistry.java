@@ -183,6 +183,7 @@ public class YoVariableRegistry implements YoVariableHolder
       }
    }
 
+   @Override
    public YoVariable<?>[] getAllVariablesArray()
    {
       ArrayList<YoVariable<?>> variables = getAllVariablesIncludingDescendants();
@@ -207,6 +208,7 @@ public class YoVariableRegistry implements YoVariableHolder
     * name. It will first check this registry, then it's children in the order
     * in which they were added. Returns null if no variable is found.
     */
+   @Override
    public YoVariable<?> getVariable(String nameSpace, String name)
    {
       if (name.contains("."))
@@ -220,6 +222,7 @@ public class YoVariableRegistry implements YoVariableHolder
     * name. It will first check this registry, then it's children in the order
     * in which they were added. Returns null if no variable is found.
     */
+   @Override
    public YoVariable<?> getVariable(String name)
    {
       String matchedName = matchNameSpace(name);
@@ -247,6 +250,7 @@ public class YoVariableRegistry implements YoVariableHolder
     * Returns all of the variables matching the given name, searching in this
     * YoVariableRegistry and all of its children.
     */
+   @Override
    public ArrayList<YoVariable<?>> getVariables(String nameSpace, String name)
    {
       if (name.contains("."))
@@ -259,6 +263,7 @@ public class YoVariableRegistry implements YoVariableHolder
     * Returns all of the variables matching the given name, searching in this
     * YoVariableRegistry and all of its children.
     */
+   @Override
    public ArrayList<YoVariable<?>> getVariables(String name)
    {
       ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>();
@@ -297,6 +302,7 @@ public class YoVariableRegistry implements YoVariableHolder
     * given name, the variable's nameSpace must end with the given nameSpace and
     * the variables name must be the given name.
     */
+   @Override
    public boolean hasUniqueVariable(String nameSpace, String name)
    {
       if (name.contains("."))
@@ -315,6 +321,7 @@ public class YoVariableRegistry implements YoVariableHolder
     * and it has a child b, with a child c, which has a variable named
     * variableName.
     */
+   @Override
    public boolean hasUniqueVariable(String name)
    {
       int numberOfInstances = this.getNumberOfInstancesRecursively(name);
@@ -518,6 +525,7 @@ public class YoVariableRegistry implements YoVariableHolder
       notifyListenersYoVariableRegistryWasCleared(this);
    }
 
+   @Override
    public String toString()
    {
       //    StringBuffer buf = new StringBuffer();
@@ -703,11 +711,13 @@ public class YoVariableRegistry implements YoVariableHolder
       }
    }
 
+   @Override
    public ArrayList<YoVariable<?>> getAllVariables()
    {
       return this.getAllVariablesIncludingDescendants();
    }
 
+   @Override
    public ArrayList<YoVariable<?>> getVariables(NameSpace nameSpace)
    {
       ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>();

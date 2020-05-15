@@ -701,7 +701,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
    public void set(FrameTuple3DReadOnly position, Orientation3DReadOnly orientation)
    {
       checkReferenceFrameMatch(position);
-      set((Tuple3DReadOnly) position, (Orientation3DReadOnly) orientation);
+      set((Tuple3DReadOnly) position, orientation);
    }
 
    /**
@@ -715,7 +715,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
    public void set(Tuple3DReadOnly position, FrameOrientation3DReadOnly orientation)
    {
       checkReferenceFrameMatch(orientation);
-      set((Tuple3DReadOnly) position, (Orientation3DReadOnly) orientation);
+      set(position, (Orientation3DReadOnly) orientation);
    }
 
    /**
@@ -842,7 +842,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
    public void interpolate(FramePose3DReadOnly pose1, Pose3DReadOnly pose2, double alpha)
    {
       checkReferenceFrameMatch(pose1);
-      interpolate((Pose3DReadOnly) pose1, (Pose3DReadOnly) pose2, alpha);
+      interpolate((Pose3DReadOnly) pose1, pose2, alpha);
    }
 
    /**
@@ -864,7 +864,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
    public void interpolate(Pose3DReadOnly pose1, FramePose3DReadOnly pose2, double alpha)
    {
       checkReferenceFrameMatch(pose2);
-      interpolate((Pose3DReadOnly) pose1, (Pose3DReadOnly) pose2, alpha);
+      interpolate(pose1, (Pose3DReadOnly) pose2, alpha);
    }
 
    /**

@@ -7,15 +7,13 @@ import java.util.NoSuchElementException;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.StandardToStringStyle;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 
 import us.ihmc.robotics.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
-
 import us.ihmc.yoVariables.listener.VariableChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
@@ -545,6 +543,7 @@ public class YoVariableTest
    {
       private YoVariable<?> lastVariableChanged = null;
 
+      @Override
       public void notifyOfVariableChange(YoVariable<?> v)
       {
          lastVariableChanged = v;
@@ -570,13 +569,13 @@ public class YoVariableTest
 
       public boolean compare(YoDouble variable01, YoDouble variable11)
       {
-         return ReflectionToStringBuilder.toString(variable01, StandardToStringStyle.NO_CLASS_NAME_STYLE).equals(ReflectionToStringBuilder.toString(variable11, StandardToStringStyle.NO_CLASS_NAME_STYLE));
+         return ReflectionToStringBuilder.toString(variable01, ToStringStyle.NO_CLASS_NAME_STYLE).equals(ReflectionToStringBuilder.toString(variable11, ToStringStyle.NO_CLASS_NAME_STYLE));
 
       }
 
       public boolean compare(YoVariableRegistry root0, YoVariableRegistry root1)
       {
-         return ReflectionToStringBuilder.toString(root0, StandardToStringStyle.NO_CLASS_NAME_STYLE).equals(ReflectionToStringBuilder.toString(root1, StandardToStringStyle.NO_CLASS_NAME_STYLE));
+         return ReflectionToStringBuilder.toString(root0, ToStringStyle.NO_CLASS_NAME_STYLE).equals(ReflectionToStringBuilder.toString(root1, ToStringStyle.NO_CLASS_NAME_STYLE));
       }
    }
 }

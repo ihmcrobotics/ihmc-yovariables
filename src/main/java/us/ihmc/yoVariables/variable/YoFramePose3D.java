@@ -85,6 +85,7 @@ public class YoFramePose3D implements FixedFramePose3DBasics
     *
     * @param other the other frame pose to set this to. Not modified.
     */
+   @Override
    public void setMatchingFrame(FramePose3DReadOnly other)
    {
       position.setMatchingFrame(other.getPosition());

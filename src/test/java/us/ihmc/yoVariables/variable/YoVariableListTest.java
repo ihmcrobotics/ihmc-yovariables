@@ -353,6 +353,7 @@ public class YoVariableListTest
    {
       private boolean wasCalled = false;
       
+      @Override
       public void stateChanged(ChangeEvent e)
       {
          this.wasCalled = true;

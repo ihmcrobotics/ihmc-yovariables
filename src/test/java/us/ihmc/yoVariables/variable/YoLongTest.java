@@ -110,7 +110,7 @@ public class YoLongTest
       Assert.assertEquals(0.0, yoLong.getValueAsDouble(), EPSILON);
       long value = 15;
       yoLong.set(value);
-      double result = (double) yoLong.getValueAsDouble();
+      double result = yoLong.getValueAsDouble();
       assertEquals(15.0, result, EPSILON);
    }
 
@@ -187,9 +187,9 @@ public class YoLongTest
    @Test// timeout = 300000
    public void testProviderValue()
    {
-      yoLong.set(10L * (long)Integer.MAX_VALUE);
+      yoLong.set(10L * Integer.MAX_VALUE);
       assertEquals(yoLong.getLongValue(), yoLong.getValue());
-      yoLong.set(10L * (long)Integer.MIN_VALUE);
+      yoLong.set(10L * Integer.MIN_VALUE);
       assertEquals(yoLong.getLongValue(), yoLong.getValue());
       
       

@@ -8,9 +8,6 @@ import org.junit.jupiter.api.Assertions;
 import us.ihmc.robotics.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
-
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 public class YoEnumTest

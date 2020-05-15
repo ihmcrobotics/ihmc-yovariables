@@ -4,9 +4,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
-
 import us.ihmc.yoVariables.listener.RewoundListener;
 import us.ihmc.yoVariables.listener.YoVariableRegistryChangedListener;
 import us.ihmc.yoVariables.parameters.DoubleParameter;
@@ -55,16 +52,19 @@ public class YoVariableRegistryTest
       
       listener = new YoVariableRegistryChangedListener()
       {
+         @Override
          public void yoVariableWasRegistered(YoVariableRegistry registry, YoVariable<?> variable)
          {            
             lastRegisteredVariable = variable;
          }
          
+         @Override
          public void yoVariableRegistryWasCleared(YoVariableRegistry yoVariableRegistry)
          {        
             lastClearedRegistry = yoVariableRegistry;
          }
 
+         @Override
          public void yoVariableRegistryWasAdded(YoVariableRegistry addedYoVariableRegistry)
          {          
             lastAddedRegistry = addedYoVariableRegistry;

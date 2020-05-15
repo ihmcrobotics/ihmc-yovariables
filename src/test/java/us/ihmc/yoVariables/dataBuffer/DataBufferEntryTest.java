@@ -80,7 +80,7 @@ public class DataBufferEntryTest
          dataBufferEntry.setDataAtIndexToYoVariableValue(i);
       }
 
-      double average = total / ((double) nPoints);
+      double average = total / (nPoints);
       double computedAverage = dataBufferEntry.computeAverage();
 
       assertEquals(average, computedAverage, 1e-7);
