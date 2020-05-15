@@ -181,7 +181,7 @@ public class NameSpace implements Serializable
     * <p>
     * If {@code nameSpaceToRemove} is {@code null} the method will return a copy of {@code this}.
     * </p>
-    * 
+    *
     * @param nameSpaceToRemove is the namespace to remove from the start of {@code this}.
     * @return whether this NameSpace contains with {@code nameToMatch}.
     */

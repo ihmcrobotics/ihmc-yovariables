@@ -40,7 +40,7 @@ public class YoVariableTest
       robotRegistry.addChild(registry);
 
       yoVariable = new YoDouble("variableOne", registry);
-      variableChangedListeners = new ArrayList<TestVariableChangedListener>();
+      variableChangedListeners = new ArrayList<>();
    }
 
    @AfterEach

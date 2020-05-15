@@ -15,7 +15,7 @@ import us.ihmc.yoVariables.variable.YoVariable;
  */
 public class YoVariableHolderImplementation implements YoVariableHolder
 {
-   private final LinkedHashMap<String, ArrayList<YoVariable<?>>> yoVariableSet = new LinkedHashMap<String, ArrayList<YoVariable<?>>>();
+   private final LinkedHashMap<String, ArrayList<YoVariable<?>>> yoVariableSet = new LinkedHashMap<>();
 
    public YoVariableHolderImplementation()
    {
@@ -24,7 +24,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    @Override
    public ArrayList<YoVariable<?>> getAllVariables()
    {
-      ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>();
+      ArrayList<YoVariable<?>> ret = new ArrayList<>();
 
       Collection<ArrayList<YoVariable<?>>> variableLists = yoVariableSet.values();
 
@@ -52,7 +52,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    /**
     * Adds the given YoVariables to this YoVariableHolder. If any Variable is not unique, throws a
     * RuntimeException.
-    * 
+    *
     * @param variables YoVariables to add to this YoVariableHolder
     */
    public void addVariablesToHolder(ArrayList<YoVariable<?>> variables)
@@ -66,7 +66,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    /**
     * Adds the given YoVariable to this YoVariableHolder. If this Variable is not unique, throws a
     * RuntimeException.
-    * 
+    *
     * @param variable YoVariable to add to this YoVariableHolder
     */
    public void addVariableToHolder(YoVariable<?> variable)
@@ -77,7 +77,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
       ArrayList<YoVariable<?>> variablesWithThisName = yoVariableSet.get(lowerCaseName);
       if (variablesWithThisName == null)
       {
-         variablesWithThisName = new ArrayList<YoVariable<?>>();
+         variablesWithThisName = new ArrayList<>();
          yoVariableSet.put(lowerCaseName, variablesWithThisName);
       }
 
@@ -263,10 +263,10 @@ public class YoVariableHolderImplementation implements YoVariableHolder
       ArrayList<YoVariable<?>> variablesWithThisName = yoVariableSet.get(name.toLowerCase());
       if (variablesWithThisName == null)
       {
-         return new ArrayList<YoVariable<?>>(0);
+         return new ArrayList<>(0);
       }
 
-      ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>();
+      ArrayList<YoVariable<?>> ret = new ArrayList<>();
 
       for (int i = 0; i < variablesWithThisName.size(); i++)
       {
@@ -289,10 +289,10 @@ public class YoVariableHolderImplementation implements YoVariableHolder
       ArrayList<YoVariable<?>> variablesWithThisName = yoVariableSet.get(name.toLowerCase());
       if (variablesWithThisName == null)
       {
-         return new ArrayList<YoVariable<?>>(0);
+         return new ArrayList<>(0);
       }
 
-      ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>();
+      ArrayList<YoVariable<?>> ret = new ArrayList<>();
 
       for (int i = 0; i < variablesWithThisName.size(); i++)
       {
@@ -310,7 +310,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    @Override
    public ArrayList<YoVariable<?>> getVariables(NameSpace nameSpace)
    {
-      ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>();
+      ArrayList<YoVariable<?>> ret = new ArrayList<>();
 
       Collection<ArrayList<YoVariable<?>>> variableLists = yoVariableSet.values();
 

@@ -39,11 +39,11 @@ public class YoVariableHolderImplementationNewTest
    public void setUp()
    {
       yoVariableHolderImplementation = new YoVariableHolderImplementation();
-      testVariables = new ArrayList<YoVariable<?>>();
+      testVariables = new ArrayList<>();
       testVariables.add(new YoDouble("yoDouble", null));
       testVariables.add(new YoBoolean("yoBoolean", null));
       testVariables.add(new YoInteger("yoInteger", null));
-      testVariables.add(new YoEnum<EnumYoVariableTestEnums>("yoEnum", null, EnumYoVariableTestEnums.class));
+      testVariables.add(new YoEnum<>("yoEnum", null, EnumYoVariableTestEnums.class));
    }
 
    @AfterEach
@@ -103,8 +103,8 @@ public class YoVariableHolderImplementationNewTest
    //      System.setErr(new PrintStream(stdErrorContents));allihmc
    //      System.setErr(stdErr);
    //      assertEquals("Warning: " + "notPresent" + " not found. (YoVariableHolderImplementation.getVariable)", stdErrorContents.toString());
-   //      
-   //      
+   //
+   //
    //   }
 
    @Test // timeout=300000
@@ -200,7 +200,7 @@ public class YoVariableHolderImplementationNewTest
       yoVariableHolderImplementation.addVariableToHolder(yoIntegerWithNameSpace1);
       yoVariableHolderImplementation.addVariableToHolder(yoIntegerWithNameSpace2);
 
-      ArrayList<YoVariable<?>> expectedArrayListFromNameSpaceTestRegistry1 = new ArrayList<YoVariable<?>>();
+      ArrayList<YoVariable<?>> expectedArrayListFromNameSpaceTestRegistry1 = new ArrayList<>();
       expectedArrayListFromNameSpaceTestRegistry1.add(yoDoubleWithNameSpace1);
       expectedArrayListFromNameSpaceTestRegistry1.add(yoBooleanWithNameSpace1);
       expectedArrayListFromNameSpaceTestRegistry1.add(yoIntegerWithNameSpace1);

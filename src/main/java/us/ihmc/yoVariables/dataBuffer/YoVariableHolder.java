@@ -9,14 +9,14 @@ public interface YoVariableHolder
 {
    /**
     * Returns all the YoVariables in this YoVariableHolder
-    * 
+    *
     * @return ArrayList
     */
    public abstract ArrayList<YoVariable<?>> getAllVariables();
 
    /**
     * Returns all the YoVariables in this YoVariableHolder
-    * 
+    *
     * @return YoVariable[]
     */
    public abstract YoVariable<?>[] getAllVariablesArray();

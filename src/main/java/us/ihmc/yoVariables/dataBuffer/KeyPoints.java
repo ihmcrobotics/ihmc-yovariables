@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 public class KeyPoints
 {
-   ArrayList<Integer> keyPoints = new ArrayList<Integer>();
+   ArrayList<Integer> keyPoints = new ArrayList<>();
    boolean toggleKeyPoints = false;
    boolean DEBUG = false;
 

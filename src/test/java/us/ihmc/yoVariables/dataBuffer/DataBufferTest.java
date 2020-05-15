@@ -46,7 +46,7 @@ public class DataBufferTest
       yoDouble = new YoDouble("yoDouble", registry);
       yoBoolean = new YoBoolean("yoBoolean", registry);
       yoInteger = new YoInteger("yoInteger", registry);
-      yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", registry, EnumYoVariableTestEnums.class);
+      yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class);
 
       a = new YoDouble("a_arm", registry);
       b = new YoDouble("b_arm", registry);
@@ -162,7 +162,7 @@ public class DataBufferTest
    @Test // timeout = 300000
    public void testAddVariableWithArrayList()
    {
-      ArrayList<YoVariable<?>> arrayListToBeAdded = new ArrayList<YoVariable<?>>();
+      ArrayList<YoVariable<?>> arrayListToBeAdded = new ArrayList<>();
       arrayListToBeAdded.add(yoDouble);
       arrayListToBeAdded.add(yoBoolean);
       arrayListToBeAdded.add(yoInteger);
@@ -192,7 +192,7 @@ public class DataBufferTest
       YoDouble yoVariable12 = new YoDouble("12", registry);
       YoDouble yoVariable1 = new YoDouble("1", registry);
 
-      ArrayList<YoVariable<?>> currentlyMatched = new ArrayList<YoVariable<?>>();
+      ArrayList<YoVariable<?>> currentlyMatched = new ArrayList<>();
 
       currentlyMatched.add(yoVariable123456789);
       currentlyMatched.add(yoVariable12345678);
@@ -243,7 +243,7 @@ public class DataBufferTest
    @Test // timeout = 300000
    public void testGetEntries()
    {
-      ArrayList<DataBufferEntry> expectedDataEntries = new ArrayList<DataBufferEntry>();
+      ArrayList<DataBufferEntry> expectedDataEntries = new ArrayList<>();
       DataBufferEntry doubleDataBufferEntryTest = new DataBufferEntry(yoDouble, testBufferSize);
       DataBufferEntry booleanDataBufferEntryTest = new DataBufferEntry(yoBoolean, testBufferSize);
       DataBufferEntry integerDataBufferEntryTest = new DataBufferEntry(yoInteger, testBufferSize);
@@ -270,7 +270,7 @@ public class DataBufferTest
       dataBuffer.addVariable(yoInteger, testBufferSize);
       dataBuffer.addVariable(yoEnum, testBufferSize);
 
-      ArrayList<YoVariable<?>> expectedArrayOfVariables = new ArrayList<YoVariable<?>>();
+      ArrayList<YoVariable<?>> expectedArrayOfVariables = new ArrayList<>();
       expectedArrayOfVariables.add(yoDouble);
       expectedArrayOfVariables.add(yoBoolean);
       expectedArrayOfVariables.add(yoInteger);

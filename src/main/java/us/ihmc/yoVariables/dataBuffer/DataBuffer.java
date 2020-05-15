@@ -24,16 +24,16 @@ public class DataBuffer extends YoVariableHolderImplementation
    private int outPoint = 0;
    private ArrayList<RewoundListener> simulationRewoundListeners = null;
    private YoDouble t = null;
-   private final LinkedHashSet<YoVariable<?>> yoVariableSet = new LinkedHashSet<YoVariable<?>>();
+   private final LinkedHashSet<YoVariable<?>> yoVariableSet = new LinkedHashSet<>();
    private boolean wrapBuffer = false; // Default to Expand, not Wrap!  true;
 
    public KeyPoints keyPoints = new KeyPoints();
-   private ArrayList<DataBufferListener> dataBufferListeners = new ArrayList<DataBufferListener>();
+   private ArrayList<DataBufferListener> dataBufferListeners = new ArrayList<>();
    private int bufferSize;
    private ArrayList<DataBufferEntry> entries;
    private ArrayList<IndexChangedListener> indexChangedListeners;
 
-   public ArrayList<ToggleKeyPointModeCommandListener> toggleKeyPointModeCommandListeners = new ArrayList<ToggleKeyPointModeCommandListener>();
+   public ArrayList<ToggleKeyPointModeCommandListener> toggleKeyPointModeCommandListeners = new ArrayList<>();
 
    private boolean clearing = false;
 
@@ -53,7 +53,7 @@ public class DataBuffer extends YoVariableHolderImplementation
 
    public DataBuffer(int bufferSize)
    {
-      entries = new ArrayList<DataBufferEntry>();
+      entries = new ArrayList<>();
 
       this.bufferSize = bufferSize;
    }
@@ -150,7 +150,7 @@ public class DataBuffer extends YoVariableHolderImplementation
             {
                if (ret == null)
                {
-                  ret = new ArrayList<YoVariable<?>>();
+                  ret = new ArrayList<>();
                }
 
                ret.add(entry);
@@ -173,7 +173,7 @@ public class DataBuffer extends YoVariableHolderImplementation
          {
             if (ret == null)
             {
-               ret = new ArrayList<YoVariable<?>>();
+               ret = new ArrayList<>();
             }
 
             ret.add(entry.getVariable());
@@ -222,7 +222,7 @@ public class DataBuffer extends YoVariableHolderImplementation
 
    public ArrayList<YoVariable<?>> getVariables()
    {
-      ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>(entries.size());
+      ArrayList<YoVariable<?>> ret = new ArrayList<>(entries.size());
 
       for (int i = 0; i < entries.size(); i++)
       {
@@ -682,7 +682,7 @@ public class DataBuffer extends YoVariableHolderImplementation
    {
       if (simulationRewoundListeners == null)
       {
-         simulationRewoundListeners = new ArrayList<RewoundListener>();
+         simulationRewoundListeners = new ArrayList<>();
       }
 
       simulationRewoundListeners.add(simulationRewoundListener);
@@ -692,7 +692,7 @@ public class DataBuffer extends YoVariableHolderImplementation
    {
       if (indexChangedListeners == null)
       {
-         indexChangedListeners = new ArrayList<IndexChangedListener>();
+         indexChangedListeners = new ArrayList<>();
       }
 
       indexChangedListeners.add(indexChangedListener);
@@ -999,7 +999,7 @@ public class DataBuffer extends YoVariableHolderImplementation
          {
             if (ret == null)
             {
-               ret = new ArrayList<YoVariable<?>>();
+               ret = new ArrayList<>();
             }
 
             ret.add(entry.getVariable());

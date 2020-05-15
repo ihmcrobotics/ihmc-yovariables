@@ -257,7 +257,7 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
                initialValue = getEnumValues()[initialOrdinal];
             }
 
-            newParameter = new EnumParameter<T>(getName(), getDescription(), newRegistry, getEnumType(), getAllowNullValue(), initialValue);
+            newParameter = new EnumParameter<>(getName(), getDescription(), newRegistry, getEnumType(), getAllowNullValue(), initialValue);
          }
          else
          {

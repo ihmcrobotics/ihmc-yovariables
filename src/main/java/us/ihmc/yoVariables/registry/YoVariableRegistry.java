@@ -24,14 +24,14 @@ public class YoVariableRegistry implements YoVariableHolder
 {
 
    // User defined control variables will be placed in this ArrayList when they are registered:
-   private ArrayList<YoVariable<?>> controlVars = new ArrayList<YoVariable<?>>();
-   private LinkedHashMap<String, YoVariable<?>> controlVarsHashMap = new LinkedHashMap<String, YoVariable<?>>(); // From name to the variable with that name.
+   private ArrayList<YoVariable<?>> controlVars = new ArrayList<>();
+   private LinkedHashMap<String, YoVariable<?>> controlVarsHashMap = new LinkedHashMap<>(); // From name to the variable with that name.
    private ArrayList<YoParameter<?>> parameters = new ArrayList<>();
    private LinkedHashMap<String, YoParameter<?>> parametersHashMap = new LinkedHashMap<>();
 
    private final String name;
    private NameSpace nameSpace;
-   private ArrayList<YoVariableRegistry> children = new ArrayList<YoVariableRegistry>();
+   private ArrayList<YoVariableRegistry> children = new ArrayList<>();
    private YoVariableRegistry parent;
 
    private ArrayList<RewoundListener> simulationRewoundListeners;
@@ -89,7 +89,7 @@ public class YoVariableRegistry implements YoVariableHolder
    {
       if (yoVariableRegistryChangedListeners == null)
       {
-         yoVariableRegistryChangedListeners = new ArrayList<YoVariableRegistryChangedListener>();
+         yoVariableRegistryChangedListeners = new ArrayList<>();
       }
 
       yoVariableRegistryChangedListeners.add(listener);
@@ -101,7 +101,7 @@ public class YoVariableRegistry implements YoVariableHolder
    {
       if (simulationRewoundListeners == null)
       {
-         simulationRewoundListeners = new ArrayList<RewoundListener>();
+         simulationRewoundListeners = new ArrayList<>();
       }
 
       simulationRewoundListeners.add(simulationRewoundListener);
@@ -109,7 +109,7 @@ public class YoVariableRegistry implements YoVariableHolder
 
    public ArrayList<RewoundListener> getAllSimulationRewoundListeners()
    {
-      ArrayList<RewoundListener> ret = new ArrayList<RewoundListener>();
+      ArrayList<RewoundListener> ret = new ArrayList<>();
 
       getAllSimulationRewoundListenersRecursively(ret);
 
@@ -157,7 +157,7 @@ public class YoVariableRegistry implements YoVariableHolder
 
    public ArrayList<YoVariable<?>> getAllVariablesInThisListOnly()
    {
-      ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>();
+      ArrayList<YoVariable<?>> ret = new ArrayList<>();
       ret.addAll(controlVars);
 
       return ret;
@@ -165,7 +165,7 @@ public class YoVariableRegistry implements YoVariableHolder
 
    public ArrayList<YoVariable<?>> getAllVariablesIncludingDescendants()
    {
-      ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>();
+      ArrayList<YoVariable<?>> ret = new ArrayList<>();
       getAllVariablesIncludingDescendantsRecursively(ret);
 
       return ret;
@@ -266,7 +266,7 @@ public class YoVariableRegistry implements YoVariableHolder
    @Override
    public ArrayList<YoVariable<?>> getVariables(String name)
    {
-      ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>();
+      ArrayList<YoVariable<?>> ret = new ArrayList<>();
 
       getVariables(ret, name);
 
@@ -463,10 +463,10 @@ public class YoVariableRegistry implements YoVariableHolder
 
    public ArrayList<YoVariableList> createVarListsIncludingChildren()
    {
-      LinkedHashMap<String, YoVariableList> hashMap = new LinkedHashMap<String, YoVariableList>();
+      LinkedHashMap<String, YoVariableList> hashMap = new LinkedHashMap<>();
       createVarListsIncludingChildren(hashMap);
 
-      ArrayList<YoVariableList> ret = new ArrayList<YoVariableList>(hashMap.values());
+      ArrayList<YoVariableList> ret = new ArrayList<>(hashMap.values());
       Collections.sort(ret);
 
       return ret;
@@ -495,7 +495,7 @@ public class YoVariableRegistry implements YoVariableHolder
 
    public ArrayList<YoVariableRegistry> getAllRegistriesIncludingChildren()
    {
-      ArrayList<YoVariableRegistry> ret = new ArrayList<YoVariableRegistry>();
+      ArrayList<YoVariableRegistry> ret = new ArrayList<>();
       getAllRegistrysIncludingDescendants(ret);
 
       return ret;
@@ -717,7 +717,7 @@ public class YoVariableRegistry implements YoVariableHolder
    @Override
    public ArrayList<YoVariable<?>> getVariables(NameSpace nameSpace)
    {
-      ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>();
+      ArrayList<YoVariable<?>> ret = new ArrayList<>();
 
       ArrayList<YoVariable<?>> allVariables = getAllVariables();
 
@@ -734,7 +734,7 @@ public class YoVariableRegistry implements YoVariableHolder
 
    public synchronized ArrayList<YoVariable<?>> getMatchingVariables(String[] names, String[] regularExpressions)
    {
-      ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>();
+      ArrayList<YoVariable<?>> ret = new ArrayList<>();
 
       if (names != null)
       {

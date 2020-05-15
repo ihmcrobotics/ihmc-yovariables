@@ -124,7 +124,7 @@ public class YoVariableListTest
       time.set(2.2);
 
       int numberOfVariables = 4000;
-      ArrayList<YoVariable<?>> variables = new ArrayList<YoVariable<?>>();
+      ArrayList<YoVariable<?>> variables = new ArrayList<>();
       YoVariableList varList = new YoVariableList("test");
 
       for (int i = 0; i < numberOfVariables; i++)
@@ -205,7 +205,7 @@ public class YoVariableListTest
       listThree.addVariables(array);
 
       //ArrayList
-      ArrayList<YoVariable<?>> arrayList = new ArrayList<YoVariable<?>>();
+      ArrayList<YoVariable<?>> arrayList = new ArrayList<>();
       arrayList.add(b);
       arrayList.add(c);
 

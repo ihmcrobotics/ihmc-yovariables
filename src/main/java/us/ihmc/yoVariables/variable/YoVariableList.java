@@ -19,10 +19,10 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
    public YoVariableList(String name)
    {
       this.name = name;
-      variables = new ArrayList<YoVariable<?>>();
-      variablesMappedByName = new LinkedHashMap<String, ArrayList<YoVariable<?>>>();
+      variables = new ArrayList<>();
+      variablesMappedByName = new LinkedHashMap<>();
 
-      listeners = new ArrayList<ChangeListener>();
+      listeners = new ArrayList<>();
    }
 
    public String getName()
@@ -55,7 +55,7 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
       ArrayList<YoVariable<?>> arrayList = variablesMappedByName.get(variableName);
       if (arrayList == null)
       {
-         arrayList = new ArrayList<YoVariable<?>>(1);
+         arrayList = new ArrayList<>(1);
          variablesMappedByName.put(variable.getName(), arrayList);
       }
 
@@ -136,7 +136,7 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
 
    public ArrayList<YoVariable<?>> getVariables()
    {
-      ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>();
+      ArrayList<YoVariable<?>> ret = new ArrayList<>();
       ret.addAll(variables);
 
       return ret;
@@ -213,7 +213,7 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
    // TODO: duplicated in YoVariableRegistry
    public synchronized ArrayList<YoVariable<?>> getMatchingVariables(String[] names, String[] regularExpressions)
    {
-      ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>();
+      ArrayList<YoVariable<?>> ret = new ArrayList<>();
 
       if (names != null)
       {
