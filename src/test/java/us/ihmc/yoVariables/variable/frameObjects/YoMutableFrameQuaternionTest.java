@@ -1,6 +1,9 @@
 package us.ihmc.yoVariables.variable.frameObjects;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static us.ihmc.euclid.EuclidTestConstants.ITERATIONS;
 
 import java.lang.reflect.Method;
@@ -20,7 +23,11 @@ import us.ihmc.euclid.matrix.interfaces.RotationMatrixReadOnly;
 import us.ihmc.euclid.referenceFrame.FrameQuaternionReadOnlyTest;
 import us.ihmc.euclid.referenceFrame.FrameVector3D;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
-import us.ihmc.euclid.referenceFrame.api.*;
+import us.ihmc.euclid.referenceFrame.api.EuclidFrameAPIDefaultConfiguration;
+import us.ihmc.euclid.referenceFrame.api.EuclidFrameAPITester;
+import us.ihmc.euclid.referenceFrame.api.FrameTypeCopier;
+import us.ihmc.euclid.referenceFrame.api.MethodSignature;
+import us.ihmc.euclid.referenceFrame.api.RandomFramelessTypeBuilder;
 import us.ihmc.euclid.referenceFrame.exceptions.ReferenceFrameMismatchException;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameQuaternionReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple4DBasics;
@@ -94,8 +101,14 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
       { // Test YoMutableFrameQuaternion(ReferenceFrame referenceFrame, double x, double y, double z, double s)
          ReferenceFrame randomFrame = EuclidFrameRandomTools.nextReferenceFrame(random);
          Quaternion randomQuaternion = EuclidCoreRandomTools.nextQuaternion(random);
-         YoMutableFrameQuaternion YoMutableFrameQuaternion = new YoMutableFrameQuaternion("", "", null, randomFrame, randomQuaternion.getX(), randomQuaternion.getY(), randomQuaternion.getZ(),
-                                                               randomQuaternion.getS());
+         YoMutableFrameQuaternion YoMutableFrameQuaternion = new YoMutableFrameQuaternion("",
+                                                                                          "",
+                                                                                          null,
+                                                                                          randomFrame,
+                                                                                          randomQuaternion.getX(),
+                                                                                          randomQuaternion.getY(),
+                                                                                          randomQuaternion.getZ(),
+                                                                                          randomQuaternion.getS());
          assertTrue(YoMutableFrameQuaternion.getReferenceFrame() == randomFrame);
          EuclidCoreTestTools.assertTuple4DEquals(randomQuaternion, YoMutableFrameQuaternion, EPSILON);
       }
@@ -412,7 +425,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
                                                                   frameless2DTypeBuilder,
                                                                   methodFilter,
                                                                   EuclidTestConstants.API_FUNCTIONALITY_TEST_ITERATIONS);
-   
+
    }
 
    @Override

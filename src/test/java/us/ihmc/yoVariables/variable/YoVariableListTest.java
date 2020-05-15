@@ -1,6 +1,8 @@
 package us.ihmc.yoVariables.variable;
 
-import static us.ihmc.robotics.Assert.*;
+import static us.ihmc.robotics.Assert.assertEquals;
+import static us.ihmc.robotics.Assert.assertFalse;
+import static us.ihmc.robotics.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,15 +10,15 @@ import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import us.ihmc.robotics.Assert;
 import org.junit.jupiter.api.Test;
 
+import us.ihmc.robotics.Assert;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 public class YoVariableListTest
 {
 
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testCommonUsage()
    {
       YoVariableList varList = new YoVariableList("listOne");
@@ -97,7 +99,7 @@ public class YoVariableListTest
 
    }
 
-	@Test// timeout = 30000
+   @Test // timeout = 30000
    public void testGetPerformanceInLargeList()
    {
       // Test should take O(n) or O(n lg n) approximately. Was taking O(n^2)
@@ -149,7 +151,7 @@ public class YoVariableListTest
       }
    }
 
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testToString()
    {
       YoVariableRegistry registry = new YoVariableRegistry("registry");
@@ -167,7 +169,7 @@ public class YoVariableListTest
 
    }
 
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testAddVariables()
    {
       YoVariableRegistry registry = new YoVariableRegistry("registry");
@@ -219,7 +221,7 @@ public class YoVariableListTest
       }
    }
 
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testCommonUsageTwo()
    {
       YoVariableRegistry registry = new YoVariableRegistry("registry");
@@ -272,7 +274,7 @@ public class YoVariableListTest
       }
    }
 
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testGetMatchingVariables()
    {
       YoVariableRegistry registry = new YoVariableRegistry("registry");
@@ -300,7 +302,7 @@ public class YoVariableListTest
       assertFalse(matchedName.contains(c));
       assertFalse(matchedName.contains(f));
 
-      String[] regularExpressions = { ".*" };
+      String[] regularExpressions = {".*"};
 
       List<YoVariable<?>> matchedAll = list.getMatchingVariables(null, regularExpressions);
 
@@ -309,7 +311,7 @@ public class YoVariableListTest
       assertTrue(matchedAll.contains(c));
       assertFalse(matchedAll.contains(f));
 
-      String regexpStartWithC[] = { "c.*" };
+      String regexpStartWithC[] = {"c.*"};
       List<YoVariable<?>> matchedStartWithC = list.getMatchingVariables(new String[0], regexpStartWithC);
 
       assertFalse(matchedStartWithC.contains(a));
@@ -323,7 +325,7 @@ public class YoVariableListTest
       assertTrue(namesOrStartWithC.contains(b));
       assertTrue(namesOrStartWithC.contains(c));
       assertFalse(namesOrStartWithC.contains(f));
-      
+
       // Return empty list when none match.
       String[] namesThatAreNotInList = new String[2];
       namesThatAreNotInList[0] = "foo";
@@ -332,37 +334,37 @@ public class YoVariableListTest
       assertTrue(matchedNameShouldBeEmpty.isEmpty());
    }
 
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testAddChangeListener()
    {
       YoVariableRegistry registry = new YoVariableRegistry("registry");
       YoVariableList list = new YoVariableList("list");
-            
+
       ChangeListenerForTest listener = new ChangeListenerForTest();
       list.addChangeListener(listener);
 
       assertFalse(listener.getWasCalled());
-      
+
       YoBoolean variable = new YoBoolean("testBoolean", registry);
       list.addVariable(variable);
 
       assertTrue(listener.getWasCalled());
    }
-   
+
    private class ChangeListenerForTest implements ChangeListener
    {
       private boolean wasCalled = false;
-      
+
       @Override
       public void stateChanged(ChangeEvent e)
       {
-         this.wasCalled = true;
+         wasCalled = true;
       }
-      
+
       public boolean getWasCalled()
       {
          return wasCalled;
       }
-      
+
    }
 }

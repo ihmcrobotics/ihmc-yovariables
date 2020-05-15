@@ -19,11 +19,11 @@ public abstract class YoFrameTuple2D implements FixedFrameTuple2DBasics
    private final ReferenceFrame referenceFrame;
 
    /**
-    * Creates a new {@code YoFrameTuple2D} using the given {@code YoVariable}s and sets its
-    * reference frame to {@code referenceFrame}.
+    * Creates a new {@code YoFrameTuple2D} using the given {@code YoVariable}s and sets its reference
+    * frame to {@code referenceFrame}.
     *
-    * @param xVariable the variable to use for the x-component.
-    * @param yVariable the variable to use for the y-component.
+    * @param xVariable      the variable to use for the x-component.
+    * @param yVariable      the variable to use for the y-component.
     * @param referenceFrame the reference frame for this tuple.
     */
    public YoFrameTuple2D(YoDouble xVariable, YoDouble yVariable, ReferenceFrame referenceFrame)
@@ -39,9 +39,9 @@ public abstract class YoFrameTuple2D implements FixedFrameTuple2DBasics
    /**
     * Creates a new {@code YoFrameTuple2D}.
     *
-    * @param namePrefix a unique name string to use as the prefix for child variable names.
+    * @param namePrefix     a unique name string to use as the prefix for child variable names.
     * @param referenceFrame the reference frame for this tuple.
-    * @param registry the registry to register child variables to.
+    * @param registry       the registry to register child variables to.
     */
    public YoFrameTuple2D(String namePrefix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
    {
@@ -51,10 +51,10 @@ public abstract class YoFrameTuple2D implements FixedFrameTuple2DBasics
    /**
     * Creates a new {@code YoFrameTuple2D}.
     *
-    * @param namePrefix a unique name string to use as the prefix for child variable names.
-    * @param nameSuffix a string to use as the suffix for child variable names.
+    * @param namePrefix     a unique name string to use as the prefix for child variable names.
+    * @param nameSuffix     a string to use as the suffix for child variable names.
     * @param referenceFrame the reference frame for this tuple.
-    * @param registry the registry to register child variables to.
+    * @param registry       the registry to register child variables to.
     */
    public YoFrameTuple2D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
    {
@@ -103,7 +103,7 @@ public abstract class YoFrameTuple2D implements FixedFrameTuple2DBasics
 
    /**
     * Gets the internal reference to the x-component used for this tuple.
-    * 
+    *
     * @return the x-component as {@code YoVariable}.
     */
    public final YoDouble getYoX()
@@ -113,7 +113,7 @@ public abstract class YoFrameTuple2D implements FixedFrameTuple2DBasics
 
    /**
     * Gets the internal reference to the y-component used for this tuple.
-    * 
+    *
     * @return the y-component as {@code YoVariable}.
     */
    public final YoDouble getYoY()
@@ -131,7 +131,7 @@ public abstract class YoFrameTuple2D implements FixedFrameTuple2DBasics
 
    /**
     * Attaches a listener to {@code this} that is to be triggered when this tuple components change.
-    * 
+    *
     * @param variableChangedListener the listener to be attached.
     */
    public final void attachVariableChangedListener(VariableChangedListener variableChangedListener)
@@ -142,7 +142,7 @@ public abstract class YoFrameTuple2D implements FixedFrameTuple2DBasics
 
    /**
     * The name prefix used at creation of this {@code this}.
-    * 
+    *
     * @return the name prefix {@code String}.
     */
    public String getNamePrefix()
@@ -152,7 +152,7 @@ public abstract class YoFrameTuple2D implements FixedFrameTuple2DBasics
 
    /**
     * The name suffix used at creation of this {@code this}.
-    * 
+    *
     * @return the name suffix {@code String}.
     */
    public String getNameSuffix()

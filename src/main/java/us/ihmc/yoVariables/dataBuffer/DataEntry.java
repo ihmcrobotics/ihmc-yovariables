@@ -9,7 +9,7 @@ public interface DataEntry
    public abstract String getFullVariableNameWithNameSpace();
 
    public abstract void getVariableNameAndValue(StringBuffer stringBuffer);
-   
+
    public abstract void getVariableNameAndValueAtIndex(StringBuffer stringBuffer, int index);
 
    public abstract double[] getData();

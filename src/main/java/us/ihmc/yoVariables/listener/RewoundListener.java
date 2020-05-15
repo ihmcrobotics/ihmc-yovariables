@@ -7,9 +7,9 @@ import us.ihmc.yoVariables.dataBuffer.DataBuffer;
  */
 public interface RewoundListener
 {
-	/**
-	 * Called when the {@link DataBuffer#index} is changed using its setter.
-	 * This method is not be called when the index ticks forward naturally.
-	 */
-	public void notifyOfRewind();
+   /**
+    * Called when the {@link DataBuffer#index} is changed using its setter. This method is not be
+    * called when the index ticks forward naturally.
+    */
+   public void notifyOfRewind();
 }

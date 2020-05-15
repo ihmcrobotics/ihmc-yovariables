@@ -19,13 +19,15 @@ public abstract class YoMutableFrameTuple3D extends YoMutableFrameObject impleme
    private final YoDouble y;
    private final YoDouble z;
 
-   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, Tuple3DReadOnly tuple3DReadOnly)
+   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame,
+                                Tuple3DReadOnly tuple3DReadOnly)
    {
       this(namePrefix, nameSuffix, registry);
       setIncludingFrame(referenceFrame, tuple3DReadOnly);
    }
 
-   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, Tuple2DReadOnly tuple2DReadOnly)
+   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame,
+                                Tuple2DReadOnly tuple2DReadOnly)
    {
       this(namePrefix, nameSuffix, registry);
       setIncludingFrame(referenceFrame, tuple2DReadOnly, 0.0);

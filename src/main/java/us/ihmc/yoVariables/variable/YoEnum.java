@@ -7,8 +7,8 @@ import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 /**
  * Enum implementation of the YoVariable class.
- *
- * <p>All abstract functions of YoVariable will be implemented using enum type for interpretation.
+ * <p>
+ * All abstract functions of YoVariable will be implemented using enum type for interpretation.
  * Values will be interpreted, compared, and returned as enums rather than any native types.
  */
 public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements EnumProvider<T>
@@ -23,13 +23,14 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
    private int valueOrdinal;
 
    /**
-    * Create a new YoEnum. This will call {@link YoVariable(YoVariableType, String, String, YoVariableRegistry)} with
-    * {@link YoVariableType#ENUM} and the given values.
+    * Create a new YoEnum. This will call {@link YoVariable(YoVariableType, String, String,
+    * YoVariableRegistry)} with {@link YoVariableType#ENUM} and the given values.
     *
-    * @param name String uniquely identifying this YoEnum
-    * @param description String describing this YoEnum's purpose
-    * @param registry YoVariableRegistry for this YoEnum to register itself to after initialization
-    * @param enumType the class representing the type of the enum
+    * @param name           String uniquely identifying this YoEnum
+    * @param description    String describing this YoEnum's purpose
+    * @param registry       YoVariableRegistry for this YoEnum to register itself to after
+    *                       initialization
+    * @param enumType       the class representing the type of the enum
     * @param allowNullValue boolean determining if null enum values are permitted
     */
    public YoEnum(String name, String description, YoVariableRegistry registry, Class<T> enumType, boolean allowNullValue)
@@ -52,7 +53,7 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
       }
       else
       {
-         if(allowNullValue)
+         if (allowNullValue)
          {
             set(NULL_VALUE, true);
          }
@@ -61,13 +62,14 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
             throw new RuntimeException("Cannot initialize an enum variable with zero elements if allowNullValue is false.");
          }
       }
-         
+
    }
 
    /**
-    * Create a new YoEnum. This will call {@link YoEnum(String, YoVariableRegistry, Class)} with the given values.
+    * Create a new YoEnum. This will call {@link YoEnum(String, YoVariableRegistry, Class)} with the
+    * given values.
     *
-    * @param name String uniquely identifying this YoEnum
+    * @param name     String uniquely identifying this YoEnum
     * @param registry YoVariableRegistry for this YoEnum to register itself to after initialization
     * @param enumType the class representing the type of the enum
     */
@@ -77,12 +79,14 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
    }
 
    /**
-    * Create a new YoEnum. This will call {@link YoEnum(String, String, YoVariableRegistry, Class, Boolean)} with the given values.
+    * Create a new YoEnum. This will call {@link YoEnum(String, String, YoVariableRegistry, Class,
+    * Boolean)} with the given values.
     *
-    * @param name String uniquely identifying this YoEnum
-    * @param description String describing this YoEnum's purpose
-    * @param registry YoVariableRegistry for this YoEnum to register itself to after initialization
-    * @param enumType the class representing the type of the enum
+    * @param name           String uniquely identifying this YoEnum
+    * @param description    String describing this YoEnum's purpose
+    * @param registry       YoVariableRegistry for this YoEnum to register itself to after
+    *                       initialization
+    * @param enumType       the class representing the type of the enum
     * @param allowNullValue boolean determining if null enum values are permitted
     */
    public static <T extends Enum<T>> YoEnum<T> create(String name, String description, Class<T> enumType, YoVariableRegistry registry, boolean allowNullValue)
@@ -92,16 +96,18 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
 
    /**
     * Create a new YoEnum based on Strings.
+    * <p>
+    * When a new YoEnum has to be created based on data from an external source, this constructor can
+    * be used. The main use case is the LogVisualizer and the SCSVisualizer code. Do not use this
+    * constructor in controls code.
+    * <p>
+    * The functions working on Enums directly will throw UnsupportedOperationException when this
+    * constructor is used.
     *
-    * <p>When a new YoEnum has to be created based on data from an external source, this constructor can be used.
-    * The main use case is the LogVisualizer and the SCSVisualizer code. Do not use this constructor in controls code.
-    *
-    * <p>The functions working on Enums directly will throw UnsupportedOperationException when this constructor is used.
-    *
-    * @param name String uniquely identifying this YoEnum
+    * @param name        String uniquely identifying this YoEnum
     * @param description String describing this YoEnum's purpose
-    * @param registry YoVariableRegistry for this YoEnum to register itself to after initialization
-    * @param constants String array of constants for this enum
+    * @param registry    YoVariableRegistry for this YoEnum to register itself to after initialization
+    * @param constants   String array of constants for this enum
     */
    public YoEnum(String name, String description, YoVariableRegistry registry, boolean allowNullValues, String... constants)
    {
@@ -110,23 +116,23 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
       this.enumType = null;
       this.allowNullValue = allowNullValues;
       this.enumValues = null;
-      
-      for(String constant : constants)
+
+      for (String constant : constants)
       {
-         if(constant == null)
+         if (constant == null)
          {
             throw new RuntimeException("One of the enum constants is null.");
          }
       }
 
       enumValuesAsString = Arrays.copyOf(constants, constants.length);
-      if(constants.length > 0)
+      if (constants.length > 0)
       {
          set(0, true);
       }
       else
       {
-         if(allowNullValue)
+         if (allowNullValue)
          {
             set(NULL_VALUE, true);
          }
@@ -138,10 +144,11 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
    }
 
    /**
-    * Create a new YoEnum. This will call {@link #YoEnum(String, String, YoVariableRegistry, Class, boolean)} with the given values,
-    * an empty description and false for allowNullValue.
+    * Create a new YoEnum. This will call
+    * {@link #YoEnum(String, String, YoVariableRegistry, Class, boolean)} with the given values, an
+    * empty description and false for allowNullValue.
     *
-    * @param name String uniquely identifying this YoEnum
+    * @param name     String uniquely identifying this YoEnum
     * @param registry YoVariableRegistry for this YoEnum to register itself to after initialization
     * @param enumType the class representing the type of the enum
     */
@@ -151,12 +158,14 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
    }
 
    /**
-    * Create a new YoEnum. This will call {@link #YoEnum(String, String, YoVariableRegistry, Class, boolean)} with the given values
-    * and an empty description.
+    * Create a new YoEnum. This will call
+    * {@link #YoEnum(String, String, YoVariableRegistry, Class, boolean)} with the given values and an
+    * empty description.
     *
-    * @param name String uniquely identifying this YoEnum
-    * @param registry YoVariableRegistry for this YoEnum to register itself to after initialization
-    * @param enumType the class representing the type of the enum
+    * @param name           String uniquely identifying this YoEnum
+    * @param registry       YoVariableRegistry for this YoEnum to register itself to after
+    *                       initialization
+    * @param enumType       the class representing the type of the enum
     * @param allowNullValue boolean determining if null enum values are permitted
     */
    public YoEnum(String name, YoVariableRegistry registry, Class<T> enumType, boolean allowNullValue)
@@ -202,7 +211,7 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
       if (valueOrdinal == NULL_VALUE)
          return value == null;
 
-      return (value.ordinal() == valueOrdinal);
+      return value.ordinal() == valueOrdinal;
    }
 
    /**
@@ -251,8 +260,9 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
    /**
     * Sets the YoEnum to the given enum.
     *
-    * @param enumValue enum to set this YoEnum's internal enum state to
-    * @param notifyListeners boolean determining whether or not to call {@link #notifyVariableChangedListeners()}
+    * @param enumValue       enum to set this YoEnum's internal enum state to
+    * @param notifyListeners boolean determining whether or not to call
+    *                        {@link #notifyVariableChangedListeners()}
     * @return boolean if given value is valid and YoEnum is set or the same
     * @throws RuntimeException if enumValue is null and null values are disallowed for this YoEnum
     * @throws RuntimeException if enumValue ordinal falls out of allowed range for this YoEnum
@@ -260,10 +270,10 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
    public boolean set(T enumValue, boolean notifyListeners)
    {
       checkIfBackedByEnum();
-      if (!allowNullValue && (enumValue == null))
+      if (!allowNullValue && enumValue == null)
       {
-         throw new RuntimeException(
-               "Setting YoEnum " + getName() + " to null. Must set allowNullValue to true in the constructor if you ever want to set it to null.");
+         throw new RuntimeException("Setting YoEnum " + getName()
+               + " to null. Must set allowNullValue to true in the constructor if you ever want to set it to null.");
       }
 
       return set(enumValue == null ? NULL_VALUE : enumValue.ordinal(), notifyListeners);
@@ -272,8 +282,9 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
    /**
     * Sets the YoEnum to the given ordinal.
     *
-    * @param ordinal integer ordinal for the enum value to set this YoEnum to
-    * @param notifyListeners boolean determining whether or not to call {@link #notifyVariableChangedListeners()}
+    * @param ordinal         integer ordinal for the enum value to set this YoEnum to
+    * @param notifyListeners boolean determining whether or not to call
+    *                        {@link #notifyVariableChangedListeners()}
     * @return boolean if given value is valid and YoEnum is set or the same
     * @throws RuntimeException if ordinal falls out of allowed range for this YoEnum
     */
@@ -311,13 +322,14 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
     * Exception-throwing check if the given value falls within the allowed range for this YoEnum.
     *
     * @param ordinal integer ordinal value to check
-    * @throws RuntimeException if the given value is null and null is not allowed for this YoEnum or if the value falls out of the allowed range
+    * @throws RuntimeException if the given value is null and null is not allowed for this YoEnum or if
+    *                          the value falls out of the allowed range
     */
    private void checkBounds(int ordinal)
    {
-      if ((ordinal < 0 && !(allowNullValue && ordinal == NULL_VALUE)) || ordinal >= enumValuesAsString.length)
+      if (ordinal < 0 && !(allowNullValue && ordinal == NULL_VALUE) || ordinal >= enumValuesAsString.length)
       {
-         throw new RuntimeException("Enum constant associated with value " + ordinal + " not present. VariableName = " + this.getFullNameWithNameSpace());
+         throw new RuntimeException("Enum constant associated with value " + ordinal + " not present. VariableName = " + getFullNameWithNameSpace());
       }
    }
 
@@ -383,12 +395,15 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
    }
 
    /**
-    * Set the value of this YoEnum using the given double, interpreted as a rounded integer ordinal for an enum value.
+    * Set the value of this YoEnum using the given double, interpreted as a rounded integer ordinal for
+    * an enum value.
     *
-    * @param value double to convert and set this YoEnum to
-    * @param notifyListeners boolean determining whether or not to call {@link #notifyVariableChangedListeners()}
+    * @param value           double to convert and set this YoEnum to
+    * @param notifyListeners boolean determining whether or not to call
+    *                        {@link #notifyVariableChangedListeners()}
     */
-   @Override public void setValueFromDouble(double value, boolean notifyListeners)
+   @Override
+   public void setValueFromDouble(double value, boolean notifyListeners)
    {
       try
       {
@@ -406,7 +421,8 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
     *
     * @return return-casted double value of this YoEnum's internal enum value
     */
-   @Override public double getValueAsDouble()
+   @Override
+   public double getValueAsDouble()
    {
       return valueOrdinal;
    }
@@ -416,7 +432,8 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
     *
     * @return String representing this YoEnum and its current value as an integer
     */
-   @Override public String toString()
+   @Override
+   public String toString()
    {
       return String.format("%s: %s", getName(), getStringValue());
    }
@@ -426,7 +443,8 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
     *
     * @param stringBuffer StringBuffer to which the value will be appended
     */
-   @Override public void getValueString(StringBuffer stringBuffer)
+   @Override
+   public void getValueString(StringBuffer stringBuffer)
    {
       stringBuffer.append(getStringValue());
    }
@@ -435,9 +453,10 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
     * Appends the YoEnum representation of the given double value to the given StringBuffer.
     *
     * @param stringBuffer StringBuffer to append to
-    * @param doubleValue double value to convert to YoEnum representation
+    * @param doubleValue  double value to convert to YoEnum representation
     */
-   @Override public void getValueStringFromDouble(StringBuffer stringBuffer, double doubleValue)
+   @Override
+   public void getValueStringFromDouble(StringBuffer stringBuffer, double doubleValue)
    {
       int index = (int) Math.round(doubleValue);
       checkBounds(index);
@@ -456,29 +475,35 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
     *
     * @return return-casted long value of this YoEnum's internal enum value
     */
-   @Override public long getValueAsLongBits()
+   @Override
+   public long getValueAsLongBits()
    {
       return valueOrdinal;
    }
 
    /**
-    * Sets the internal enum value of this YoEnum using the static integer enum ordinal cast of the passed long value.
+    * Sets the internal enum value of this YoEnum using the static integer enum ordinal cast of the
+    * passed long value.
     *
-    * @param value long to set this variable's value to
-    * @param notifyListeners boolean determining whether or not to call {@link #notifyVariableChangedListeners()}
+    * @param value           long to set this variable's value to
+    * @param notifyListeners boolean determining whether or not to call
+    *                        {@link #notifyVariableChangedListeners()}
     */
-   @Override public void setValueFromLongBits(long value, boolean notifyListeners)
+   @Override
+   public void setValueFromLongBits(long value, boolean notifyListeners)
    {
       set((int) value, notifyListeners);
    }
 
    /**
-    * Creates a new YoEnum with the same parameters as this one, and registers it to the passed {@link YoVariableRegistry}.
+    * Creates a new YoEnum with the same parameters as this one, and registers it to the passed
+    * {@link YoVariableRegistry}.
     *
     * @param newRegistry YoVariableRegistry to duplicate this YoEnum to
     * @return the newly created and registered YoEnum
     */
-   @Override public YoEnum<T> duplicate(YoVariableRegistry newRegistry)
+   @Override
+   public YoEnum<T> duplicate(YoVariableRegistry newRegistry)
    {
       YoEnum<T> retVar = new YoEnum<>(getName(), getDescription(), newRegistry, getEnumType(), getAllowNullValue());
       retVar.set(getEnumValue());
@@ -488,11 +513,13 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
    /**
     * Sets the internal value of this YoEnum to the current value of the passed YoEnum.
     *
-    * @param value YoEnum value to set this variable's value to
-    * @param notifyListeners boolean determining whether or not to call {@link #notifyVariableChangedListeners()}
+    * @param value           YoEnum value to set this variable's value to
+    * @param notifyListeners boolean determining whether or not to call
+    *                        {@link #notifyVariableChangedListeners()}
     * @return boolean whether or not internal state differed from the passed value
     */
-   @Override public boolean setValue(YoEnum<T> value, boolean notifyListeners)
+   @Override
+   public boolean setValue(YoEnum<T> value, boolean notifyListeners)
    {
       return set(value.getEnumValue(), notifyListeners);
    }
@@ -522,11 +549,12 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
     *
     * @return boolean if this YoEnum's internal enum value is equal to null
     */
-   @Override public boolean isZero()
+   @Override
+   public boolean isZero()
    {
       return getEnumValue() == null;
    }
-   
+
    @Override
    public T getValue()
    {

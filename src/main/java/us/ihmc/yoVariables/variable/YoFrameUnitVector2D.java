@@ -143,7 +143,7 @@ public class YoFrameUnitVector2D extends YoFrameTuple2D implements FixedFrameUni
    @Override
    public void setX(double x)
    {
-      if (this.getRawX() != x)
+      if (getRawX() != x)
       {
          getYoX().set(x);
          markAsDirty();

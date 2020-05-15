@@ -59,19 +59,19 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
       this.pitch.set(pitch, notifyListeners);
       this.roll.set(roll, notifyListeners);
    }
-   
+
    @Override
    public void setYaw(double yaw)
    {
       this.yaw.set(yaw, enableNotifications);
    }
-   
+
    @Override
    public void setPitch(double pitch)
    {
       this.pitch.set(pitch, enableNotifications);
    }
-   
+
    @Override
    public void setRoll(double roll)
    {
@@ -98,10 +98,10 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
       setMatchingFrame(orientation);
       enableNotifications = true;
    }
-   
+
    /**
     * Sets the orientation of this to the origin of the passed in ReferenceFrame.
-    * 
+    *
     * @param referenceFrame
     */
    public void setFromReferenceFrame(ReferenceFrame referenceFrame, boolean notifyListeners)
@@ -128,7 +128,7 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
 
    public double[] getYawPitchRoll()
    {
-      return new double[] { yaw.getDoubleValue(), pitch.getDoubleValue(), roll.getDoubleValue() };
+      return new double[] {yaw.getDoubleValue(), pitch.getDoubleValue(), roll.getDoubleValue()};
    }
 
    @Override
@@ -191,8 +191,8 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
     * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
     * {@link YoVariableRegistry}.
     * <p>
-    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate
-    * of the registry that was used to create {@code this}, this method searches for the duplicated
+    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate of
+    * the registry that was used to create {@code this}, this method searches for the duplicated
     * {@code YoVariable}s and use them to duplicate {@code this}.
     * </p>
     *

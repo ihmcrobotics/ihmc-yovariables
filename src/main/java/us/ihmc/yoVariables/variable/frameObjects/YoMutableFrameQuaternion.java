@@ -30,7 +30,8 @@ public class YoMutableFrameQuaternion extends YoMutableFrameObject implements Fr
       setToZero(referenceFrame);
    }
 
-   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, double x, double y, double z, double s)
+   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, double x, double y,
+                                   double z, double s)
    {
       this(namePrefix, nameSuffix, registry);
       setIncludingFrame(referenceFrame, x, y, z, s);
@@ -48,31 +49,36 @@ public class YoMutableFrameQuaternion extends YoMutableFrameObject implements Fr
       setIncludingFrame(referenceFrame, matrix);
    }
 
-   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, QuaternionReadOnly quaternionReadOnly)
+   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame,
+                                   QuaternionReadOnly quaternionReadOnly)
    {
       this(namePrefix, nameSuffix, registry);
       setIncludingFrame(referenceFrame, quaternionReadOnly);
    }
 
-   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, Tuple4DReadOnly tuple4DReadOnly)
+   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame,
+                                   Tuple4DReadOnly tuple4DReadOnly)
    {
       this(namePrefix, nameSuffix, registry);
       setIncludingFrame(referenceFrame, tuple4DReadOnly);
    }
 
-   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, Orientation3DReadOnly orientation3DReadOnly)
+   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame,
+                                   Orientation3DReadOnly orientation3DReadOnly)
    {
       this(namePrefix, nameSuffix, registry);
       setIncludingFrame(referenceFrame, orientation3DReadOnly);
    }
 
-   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, Vector3DReadOnly rotationVector)
+   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame,
+                                   Vector3DReadOnly rotationVector)
    {
       this(namePrefix, nameSuffix, registry);
       setRotationVectorIncludingFrame(referenceFrame, rotationVector);
    }
 
-   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, double yaw, double pitch, double roll)
+   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, double yaw, double pitch,
+                                   double roll)
    {
       this(namePrefix, nameSuffix, registry);
       setYawPitchRollIncludingFrame(referenceFrame, yaw, pitch, roll);

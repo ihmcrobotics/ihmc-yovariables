@@ -17,12 +17,14 @@ public class YoMutableFrameVector3D extends YoMutableFrameTuple3D implements Fra
       super(namePrefix, nameSuffix, registry);
    }
 
-   public YoMutableFrameVector3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, Tuple3DReadOnly tuple3DReadOnly)
+   public YoMutableFrameVector3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame,
+                                 Tuple3DReadOnly tuple3DReadOnly)
    {
       super(namePrefix, nameSuffix, registry, referenceFrame, tuple3DReadOnly);
    }
 
-   public YoMutableFrameVector3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, Tuple2DReadOnly tuple2DReadOnly)
+   public YoMutableFrameVector3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame,
+                                 Tuple2DReadOnly tuple2DReadOnly)
    {
       super(namePrefix, nameSuffix, registry, referenceFrame, tuple2DReadOnly);
    }

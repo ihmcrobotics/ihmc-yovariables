@@ -28,14 +28,12 @@ import us.ihmc.yoVariables.registry.YoVariableRegistry;
  * Base class for parameter readers
  *
  * @author Jesper Smith
- *
  */
 public abstract class AbstractParameterReader
 {
    /**
-    * Read all parameters registered to the registry and all its children.
-    *
-    * If a parameter cannot be found in the parameter store, it is initialized to its default.
+    * Read all parameters registered to the registry and all its children. If a parameter cannot be
+    * found in the parameter store, it is initialized to its default.
     *
     * @param registry with parameters that need to be loaded.
     */
@@ -45,13 +43,15 @@ public abstract class AbstractParameterReader
    }
 
    /**
-    * Read all parameters registered to the registry and all its children.
+    * Read all parameters registered to the registry and all its children. If a parameter cannot be
+    * found in the parameter store, it is initialized to its default.
     *
-    * If a parameter cannot be found in the parameter store, it is initialized to its default.
-    *
-    * @param registry with parameters that need to be loaded.
-    * @param defaultParametersToPack will be set to contain all parameter names (incl. namespace) that use their default value.
-    * @param unmatchedParametersToPack will be set to contain all parameter names (incl. namespace) that exist in the loader but have no matching parameter in the registry.
+    * @param registry                  with parameters that need to be loaded.
+    * @param defaultParametersToPack   will be set to contain all parameter names (incl. namespace)
+    *                                  that use their default value.
+    * @param unmatchedParametersToPack will be set to contain all parameter names (incl. namespace)
+    *                                  that exist in the loader but have no matching parameter in the
+    *                                  registry.
     */
    public void readParametersInRegistry(YoVariableRegistry registry, Set<String> defaultParametersToPack, Set<String> unmatchedParametersToPack)
    {

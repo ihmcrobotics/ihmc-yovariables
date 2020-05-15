@@ -19,12 +19,10 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * Parameter reader that always initializes parameters to the value provided
- * as initialValue in the constructor.
- *
+ * Parameter reader that always initializes parameters to the value provided as initialValue in the
+ * constructor.
  *
  * @author Jesper Smith
- *
  */
 public class DefaultParameterReader extends AbstractParameterReader
 {

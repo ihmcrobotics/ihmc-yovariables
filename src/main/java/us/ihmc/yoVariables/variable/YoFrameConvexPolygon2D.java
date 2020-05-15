@@ -157,7 +157,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
 
    /**
     * Creates a new empty polygon.
-    * 
+    *
     * @param yoVertexBuffer     the buffer of vertices backed by {@code YoFramePoint2D}s to be used by
     *                           this polygon.
     * @param yoNumberOfVertices the {@code YoVariable} to be used by this polygon.
@@ -351,7 +351,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
     * <p>
     * This value is immutable.
     * </p>
-    * 
+    *
     * @return the maximum possible number of vertices for this polygon.
     */
    public int getMaxNumberOfVertices()
@@ -361,7 +361,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
 
    /**
     * Gets the {@code YoVariable} size used by this polygon.
-    * 
+    *
     * @return the internal reference to this polygon size variable.
     */
    public YoInteger getYoNumberOfVertices()
@@ -371,7 +371,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
 
    /**
     * Gets the buffer of vertices backed by {@code YoFramePoint2D}s used by this polygon.
-    * 
+    *
     * @return the internal reference to this polygon vertex buffer.
     */
    public List<YoFramePoint2D> getVertexBuffer()

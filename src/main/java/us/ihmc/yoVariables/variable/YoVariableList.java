@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-
 public class YoVariableList implements java.io.Serializable, java.lang.Comparable<YoVariableList>
 {
    private static final long serialVersionUID = -393664925453518934L;
@@ -20,15 +19,15 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
    public YoVariableList(String name)
    {
       this.name = name;
-      this.variables = new ArrayList<YoVariable<?>>();
-      this.variablesMappedByName = new LinkedHashMap<String, ArrayList<YoVariable<?>>>();
+      variables = new ArrayList<YoVariable<?>>();
+      variablesMappedByName = new LinkedHashMap<String, ArrayList<YoVariable<?>>>();
 
-      this.listeners = new ArrayList<ChangeListener>();
+      listeners = new ArrayList<ChangeListener>();
    }
 
    public String getName()
    {
-      return this.name;
+      return name;
    }
 
    @Override
@@ -47,7 +46,7 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
 
    public boolean isEmpty()
    {
-      return (this.variables.size() == 0);
+      return variables.size() == 0;
    }
 
    public void addVariable(YoVariable<?> variable)
@@ -70,8 +69,8 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
    }
 
    /**
-    * Tell all listeners that a change in the variable count occurred.  At time of writing
-    * only VarPanelsHolders are listeners for this.
+    * Tell all listeners that a change in the variable count occurred. At time of writing only
+    * VarPanelsHolders are listeners for this.
     */
    private void notifyListeners()
    {
@@ -92,7 +91,7 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
    {
       for (YoVariable<?> variable : list)
       {
-         this.addVariable(variable);
+         addVariable(variable);
       }
    }
 
@@ -100,7 +99,7 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
    {
       for (int i = 0; i < variables.length; i++)
       {
-         this.addVariable(variables[i]);
+         addVariable(variables[i]);
       }
    }
 
@@ -129,7 +128,7 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
       String variableName = variable.getName();
       ArrayList<YoVariable<?>> arrayList = variablesMappedByName.get(variableName);
 
-      if ((arrayList != null) && (arrayList.contains(variable)))
+      if (arrayList != null && arrayList.contains(variable))
          return true;
 
       return false;
@@ -138,19 +137,19 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
    public ArrayList<YoVariable<?>> getVariables()
    {
       ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>();
-      ret.addAll(this.variables);
+      ret.addAll(variables);
 
       return ret;
    }
 
    public int size()
    {
-      return this.variables.size();
+      return variables.size();
    }
 
    public synchronized YoVariable<?> getVariable(int index)
    {
-      if ((index <= (variables.size() - 1)) && (index >= 0))
+      if (index <= variables.size() - 1 && index >= 0)
       {
          return variables.get(index);
       }
@@ -267,17 +266,15 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
    }
 
    /**
-    * //  * Compares this VarList to the specified object returning > = < as 1 0 -1 respectively.
-    * //  * Reference object must be another VarList otherwise a runtime exception will be thrown.
-    * /
-    * //  * @param other Object to which this will be compared
-    * //  * @return indicates > = < as 1 0 -1 respectively
-    * /
+    * // * Compares this VarList to the specified object returning > = < as 1 0 -1 respectively. // *
+    * Reference object must be another VarList otherwise a runtime exception will be thrown. / //
+    * * @param other Object to which this will be compared // * @return indicates > = < as 1 0 -1
+    * respectively /
     */
    @Override
    public int compareTo(YoVariableList other)
    {
-      return (int) Math.signum(this.getName().compareToIgnoreCase(other.getName()));
+      return (int) Math.signum(getName().compareToIgnoreCase(other.getName()));
 
    }
 

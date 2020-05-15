@@ -18,9 +18,9 @@ public class YoFrameLine2D implements FixedFrameLine2DBasics
    /**
     * Creates a new {@code YoFrameLine2D}.
     *
-    * @param namePrefix a unique name string to use as the prefix for child variable names.
+    * @param namePrefix     a unique name string to use as the prefix for child variable names.
     * @param referenceFrame the reference frame for this line.
-    * @param registry the registry to register child variables to.
+    * @param registry       the registry to register child variables to.
     */
    public YoFrameLine2D(String namePrefix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
    {
@@ -30,10 +30,10 @@ public class YoFrameLine2D implements FixedFrameLine2DBasics
    /**
     * Creates a new {@code YoFrameLine2D}.
     *
-    * @param namePrefix a unique name string to use as the prefix for child variable names.
-    * @param nameSuffix a string to use as the suffix for child variable names.
+    * @param namePrefix     a unique name string to use as the prefix for child variable names.
+    * @param nameSuffix     a string to use as the suffix for child variable names.
     * @param referenceFrame the reference frame for this line.
-    * @param registry the registry to register child variables to.
+    * @param registry       the registry to register child variables to.
     */
    public YoFrameLine2D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
    {
@@ -45,10 +45,10 @@ public class YoFrameLine2D implements FixedFrameLine2DBasics
     * Creates a new {@code YoFrameLine2D} using the given {@code YoVariable}s and sets its reference
     * frame to {@code referenceFrame}.
     *
-    * @param point the {@code YoFramePoint2D} to use internally for this line point.
+    * @param point     the {@code YoFramePoint2D} to use internally for this line point.
     * @param direction the {@code YoFrameVector2D} to use internally for this line direction.
-    * @throws ReferenceFrameMismatchException if {@code point} and {@code direction} are not
-    *            expressed in the same reference frame.
+    * @throws ReferenceFrameMismatchException if {@code point} and {@code direction} are not expressed
+    *                                         in the same reference frame.
     */
    public YoFrameLine2D(YoFramePoint2D point, YoFrameVector2D direction)
    {
@@ -60,10 +60,10 @@ public class YoFrameLine2D implements FixedFrameLine2DBasics
     * Creates a new {@code YoFrameLine2D} using the given {@code YoVariable}s and sets its reference
     * frame to {@code referenceFrame}.
     *
-    * @param point the {@code YoFramePoint2D} to use internally for this line point.
+    * @param point     the {@code YoFramePoint2D} to use internally for this line point.
     * @param direction the {@code YoFrameVector2D} to use internally for this line direction.
-    * @throws ReferenceFrameMismatchException if {@code point} and {@code direction} are not
-    *            expressed in the same reference frame.
+    * @throws ReferenceFrameMismatchException if {@code point} and {@code direction} are not expressed
+    *                                         in the same reference frame.
     */
    public YoFrameLine2D(YoFramePoint2D point, YoFrameUnitVector2D direction)
    {
@@ -75,10 +75,10 @@ public class YoFrameLine2D implements FixedFrameLine2DBasics
     * Creates a new {@code YoFrameLine2D} using the given {@code YoVariable}s and sets its reference
     * frame to {@code referenceFrame}.
     *
-    * @param pointX the variable to use for the x-coordinate of this line point.
-    * @param pointY the variable to use for the y-coordinate of this line point.
-    * @param directionX the variable to use for the x-component of this line direction.
-    * @param directionY the variable to use for the x-component of this line direction.
+    * @param pointX         the variable to use for the x-coordinate of this line point.
+    * @param pointY         the variable to use for the y-coordinate of this line point.
+    * @param directionX     the variable to use for the x-component of this line direction.
+    * @param directionY     the variable to use for the x-component of this line direction.
     * @param referenceFrame the reference frame for this line.
     */
    public YoFrameLine2D(YoDouble pointX, YoDouble pointY, YoDouble directionX, YoDouble directionY, ReferenceFrame referenceFrame)
@@ -110,7 +110,7 @@ public class YoFrameLine2D implements FixedFrameLine2DBasics
 
    /**
     * Gets the internal reference to the x-coordinate used for this line point.
-    * 
+    *
     * @return the point x-coordinate as {@code YoVariable}.
     */
    public YoDouble getYoPointX()
@@ -120,7 +120,7 @@ public class YoFrameLine2D implements FixedFrameLine2DBasics
 
    /**
     * Gets the internal reference to the y-coordinate used for this line point.
-    * 
+    *
     * @return the point y-coordinate as {@code YoVariable}.
     */
    public YoDouble getYoPointY()
@@ -130,7 +130,7 @@ public class YoFrameLine2D implements FixedFrameLine2DBasics
 
    /**
     * Gets the internal reference to the x-component used for this line direction.
-    * 
+    *
     * @return the direction x-component as {@code YoVariable}.
     */
    public YoDouble getYoDirectionX()
@@ -140,7 +140,7 @@ public class YoFrameLine2D implements FixedFrameLine2DBasics
 
    /**
     * Gets the internal reference to the y-component used for this line direction.
-    * 
+    *
     * @return the direction y-component as {@code YoVariable}.
     */
    public YoDouble getYoDirectionY()
@@ -152,8 +152,8 @@ public class YoFrameLine2D implements FixedFrameLine2DBasics
     * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
     * {@link YoVariableRegistry}.
     * <p>
-    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate
-    * of the registry that was used to create {@code this}, this method searches for the duplicated
+    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate of
+    * the registry that was used to create {@code this}, this method searches for the duplicated
     * {@code YoVariable}s and use them to duplicate {@code this}.
     * </p>
     *

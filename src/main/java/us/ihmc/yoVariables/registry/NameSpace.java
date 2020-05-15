@@ -26,22 +26,21 @@ public class NameSpace implements Serializable
     */
    public NameSpace(List<String> subNames)
    {
-      this.name = joinNames(subNames);
+      name = joinNames(subNames);
       this.subNames = subNames;
       doChecks(name, subNames);
    }
 
    /**
-    * Creates a namespace from a full name of the namespace. The name is the concatenation
-    * of all sub names starting with the root name and separated by the {@link #SEPERATOR}
-    * character.
+    * Creates a namespace from a full name of the namespace. The name is the concatenation of all sub
+    * names starting with the root name and separated by the {@link #SEPERATOR} character.
     *
     * @param name of the namespace.
     */
    public NameSpace(String name)
    {
       this.name = name;
-      this.subNames = splitName(name);
+      subNames = splitName(name);
       doChecks(name, subNames);
    }
 
@@ -93,9 +92,9 @@ public class NameSpace implements Serializable
    /**
     * Checks if this nameSpace ends with the provided name.
     * <p>
-    * For example, a namespace with name {@code robot.controller.module} ends with {@code module}, {@code controller.module},
-    * and {@code robot.controller.module} but no other string. This means this method will return false for {@code troller.module}
-    * or an empty string.
+    * For example, a namespace with name {@code robot.controller.module} ends with {@code module},
+    * {@code controller.module}, and {@code robot.controller.module} but no other string. This means
+    * this method will return false for {@code troller.module} or an empty string.
     * </p>
     *
     * @param nameToMatch is the name to check for.
@@ -117,9 +116,9 @@ public class NameSpace implements Serializable
    /**
     * Checks if this nameSpace starts with the provided name.
     * <p>
-    * For example, a namespace with name {@code robot.controller.module} starts with {@code robot}, {@code robot.controller},
-    * and {@code robot.controller.module} but no other string. This means this method will return false for {@code robot.contro}
-    * or an empty string.
+    * For example, a namespace with name {@code robot.controller.module} starts with {@code robot},
+    * {@code robot.controller}, and {@code robot.controller.module} but no other string. This means
+    * this method will return false for {@code robot.contro} or an empty string.
     * </p>
     *
     * @param nameToMatch is the name to check for.
@@ -141,9 +140,9 @@ public class NameSpace implements Serializable
    /**
     * Checks if this nameSpace contains the provided name.
     * <p>
-    * For example, a namespace with name {@code robot.controller} contains {@code robot}, {@code robot.controller},
-    * and {@code controller} but no other string. This means this method will return false for {@code rob}
-    * or an empty string.
+    * For example, a namespace with name {@code robot.controller} contains {@code robot},
+    * {@code robot.controller}, and {@code controller} but no other string. This means this method will
+    * return false for {@code rob} or an empty string.
     * </p>
     *
     * @param nameToMatch is the name to check for.
@@ -173,15 +172,16 @@ public class NameSpace implements Serializable
    }
 
    /**
-    * Will create a new namespace that is the sub-namespace of {@code this} with the provided {@code nameSpaceToRemove}
-    * removed from the start.
+    * Will create a new namespace that is the sub-namespace of {@code this} with the provided
+    * {@code nameSpaceToRemove} removed from the start.
     * <p>
-    * If {@code this} does not start with the provided namespace or the provided namesace equals {@code this} the method will
-    * return {@code null}.
+    * If {@code this} does not start with the provided namespace or the provided namesace equals
+    * {@code this} the method will return {@code null}.
     * </p>
     * <p>
     * If {@code nameSpaceToRemove} is {@code null} the method will return a copy of {@code this}.
     * </p>
+    * 
     * @param nameSpaceToRemove is the namespace to remove from the start of {@code this}.
     * @return whether this NameSpace contains with {@code nameToMatch}.
     */

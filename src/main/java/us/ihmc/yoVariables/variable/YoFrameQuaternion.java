@@ -24,8 +24,8 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
     * reference frame to {@code referenceFrame}, and registers variables to {@code registry}.
     *
     * @param referenceFrame the reference frame for this {@code YoFrameQuaternion}.
-    * @param namePrefix a unique name string to use as the prefix for child variable names.
-    * @param registry the registry to register child variables to.
+    * @param namePrefix     a unique name string to use as the prefix for child variable names.
+    * @param registry       the registry to register child variables to.
     */
    public YoFrameQuaternion(String namePrefix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
    {
@@ -36,10 +36,10 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
     * Creates a new {@code YoFrameQuaternion} using the given {@code YoVariable}s and sets its
     * reference frame to {@code referenceFrame}.
     *
-    * @param namePrefix a unique name string to use as the prefix for child variable names.
-    * @param nameSuffix a string to use as the suffix for child variable names.
+    * @param namePrefix     a unique name string to use as the prefix for child variable names.
+    * @param nameSuffix     a string to use as the suffix for child variable names.
     * @param referenceFrame the reference frame for this {@code YoFrameQuaternion}.
-    * @param registry the registry to register child variables to.
+    * @param registry       the registry to register child variables to.
     */
    public YoFrameQuaternion(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
    {
@@ -59,14 +59,14 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
     * Creates a new {@code YoFrameQuaternion} using the given {@code YoVariable}s and sets its
     * reference frame to {@code referenceFrame}.
     *
-    * @param qxVariable an existing variable representing the x value of this
-    *           {@code YoFrameQuaternion}.
-    * @param qyVariable an existing variable representing the y value of this
-    *           {@code YoFrameQuaternion}.
-    * @param qzVariable an existing variable representing the z value of this
-    *           {@code YoFrameQuaternion}.
-    * @param qsVariable an existing variable representing the z value of this
-    *           {@code YoFrameQuaternion}.
+    * @param qxVariable     an existing variable representing the x value of this
+    *                       {@code YoFrameQuaternion}.
+    * @param qyVariable     an existing variable representing the y value of this
+    *                       {@code YoFrameQuaternion}.
+    * @param qzVariable     an existing variable representing the z value of this
+    *                       {@code YoFrameQuaternion}.
+    * @param qsVariable     an existing variable representing the z value of this
+    *                       {@code YoFrameQuaternion}.
     * @param referenceFrame the reference frame for this {@code YoFrameQuaternion}.
     */
    public YoFrameQuaternion(YoDouble qxVariable, YoDouble qyVariable, YoDouble qzVariable, YoDouble qsVariable, ReferenceFrame referenceFrame)
@@ -74,10 +74,10 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
       namePrefix = YoFrameVariableNameTools.getCommonPrefix(qxVariable.getName(), qyVariable.getName(), qzVariable.getName(), qsVariable.getName());
       nameSuffix = YoFrameVariableNameTools.getCommonSuffix(qxVariable.getName(), qyVariable.getName(), qzVariable.getName(), qsVariable.getName());
 
-      this.qx = qxVariable;
-      this.qy = qyVariable;
-      this.qz = qzVariable;
-      this.qs = qsVariable;
+      qx = qxVariable;
+      qy = qyVariable;
+      qz = qzVariable;
+      qs = qsVariable;
       this.referenceFrame = referenceFrame;
    }
 
@@ -128,7 +128,7 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
 
    /**
     * Gets the internal reference to the x-component used for this quaternion.
-    * 
+    *
     * @return the x-component as {@code YoVariable}.
     */
    public YoDouble getYoQx()
@@ -138,7 +138,7 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
 
    /**
     * Gets the internal reference to the y-component used for this quaternion.
-    * 
+    *
     * @return the y-component as {@code YoVariable}.
     */
    public YoDouble getYoQy()
@@ -148,7 +148,7 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
 
    /**
     * Gets the internal reference to the z-component used for this quaternion.
-    * 
+    *
     * @return the z-component as {@code YoVariable}.
     */
    public YoDouble getYoQz()
@@ -158,7 +158,7 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
 
    /**
     * Gets the internal reference to the s-component used for this quaternion.
-    * 
+    *
     * @return the s-component as {@code YoVariable}.
     */
    public YoDouble getYoQs()
@@ -169,7 +169,7 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
    /**
     * Attaches a listener to {@code this} that is to be triggered when this quaternion components
     * change.
-    * 
+    *
     * @param variableChangedListener the listener to be attached.
     */
    public void attachVariableChangedListener(VariableChangedListener variableChangedListener)
@@ -182,7 +182,7 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
 
    /**
     * The name prefix used at creation of this {@code this}.
-    * 
+    *
     * @return the name prefix {@code String}.
     */
    public String getNamePrefix()
@@ -192,7 +192,7 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
 
    /**
     * The name suffix used at creation of this {@code this}.
-    * 
+    *
     * @return the name suffix {@code String}.
     */
    public String getNameSuffix()
@@ -204,8 +204,8 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
     * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
     * {@link YoVariableRegistry}.
     * <p>
-    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate
-    * of the registry that was used to create {@code this}, this method searches for the duplicated
+    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate of
+    * the registry that was used to create {@code this}, this method searches for the duplicated
     * {@code YoVariable}s and use them to duplicate {@code this}.
     * </p>
     *
@@ -222,8 +222,7 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
    }
 
    /**
-    * Provides a {@code String} representation of {@code this} as follows: (qx, qy, qz,
-    * qs)-worldFrame.
+    * Provides a {@code String} representation of {@code this} as follows: (qx, qy, qz, qs)-worldFrame.
     *
     * @return the {@code String} representing this quaternion.
     */

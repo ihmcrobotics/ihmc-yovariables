@@ -40,13 +40,15 @@ public abstract class YoMutableFrameTuple2D extends YoMutableFrameObject impleme
       setIncludingFrame(referenceFrame, tupleArray);
    }
 
-   public YoMutableFrameTuple2D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, Tuple2DReadOnly tuple2DReadOnly)
+   public YoMutableFrameTuple2D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame,
+                                Tuple2DReadOnly tuple2DReadOnly)
    {
       this(namePrefix, nameSuffix, registry);
       setIncludingFrame(referenceFrame, tuple2DReadOnly);
    }
 
-   public YoMutableFrameTuple2D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, Tuple3DReadOnly tuple3DReadOnly)
+   public YoMutableFrameTuple2D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame,
+                                Tuple3DReadOnly tuple3DReadOnly)
    {
       this(namePrefix, nameSuffix, registry);
       setIncludingFrame(referenceFrame, tuple3DReadOnly);

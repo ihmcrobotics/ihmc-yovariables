@@ -22,11 +22,11 @@ public class YoFramePose3D implements FixedFramePose3DBasics
 
    /**
     * Creates a new {@code YoFramePose3D} using the given {@code position} and {@code orientation}.
-    * 
-    * @param position the {@code YoFramePoint3D} to use internally for the position.
+    *
+    * @param position    the {@code YoFramePoint3D} to use internally for the position.
     * @param orientation the {@code YoFrameQuaternion} to use internally for the orientation.
     * @throws ReferenceFrameMismatchException if {@code position} and {@code orientation} are not
-    *            expressed in the same reference frame.
+    *                                         expressed in the same reference frame.
     */
    public YoFramePose3D(YoFramePoint3D position, YoFrameQuaternion orientation)
    {
@@ -39,9 +39,9 @@ public class YoFramePose3D implements FixedFramePose3DBasics
    /**
     * Creates a new {@code YoFramePose3D}.
     *
-    * @param namePrefix a unique name string to use as the prefix for child variable names.
+    * @param namePrefix     a unique name string to use as the prefix for child variable names.
     * @param referenceFrame the reference frame for this pose.
-    * @param registry the registry to register child variables to.
+    * @param registry       the registry to register child variables to.
     */
    public YoFramePose3D(String namePrefix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
    {
@@ -51,10 +51,10 @@ public class YoFramePose3D implements FixedFramePose3DBasics
    /**
     * Creates a new {@code YoFramePose3D}.
     *
-    * @param namePrefix a unique name string to use as the prefix for child variable names.
-    * @param nameSuffix a string to use as the suffix for child variable names.
+    * @param namePrefix     a unique name string to use as the prefix for child variable names.
+    * @param nameSuffix     a string to use as the suffix for child variable names.
     * @param referenceFrame the reference frame for this pose.
-    * @param registry the registry to register child variables to.
+    * @param registry       the registry to register child variables to.
     */
    public YoFramePose3D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
    {
@@ -64,7 +64,7 @@ public class YoFramePose3D implements FixedFramePose3DBasics
 
    /**
     * Sets this pose to represent the same geometry as the given {@code yoFramePose}.
-    * 
+    *
     * @param yoFramePose the pose used to set this. Not modified.
     */
    public void set(YoFramePoseUsingYawPitchRoll yoFramePose)
@@ -79,8 +79,8 @@ public class YoFramePose3D implements FixedFramePose3DBasics
     * {@link #set(FramePose3DReadOnly)}.
     * </p>
     * <p>
-    * If {@code other} is expressed in a different frame than {@code this}, then {@code this} is set
-    * to {@code other} once transformed to be expressed in {@code this.getReferenceFrame()}.
+    * If {@code other} is expressed in a different frame than {@code this}, then {@code this} is set to
+    * {@code other} once transformed to be expressed in {@code this.getReferenceFrame()}.
     * </p>
     *
     * @param other the other frame pose to set this to. Not modified.
@@ -99,12 +99,12 @@ public class YoFramePose3D implements FixedFramePose3DBasics
     * {@link #set(FrameTuple3DReadOnly, FrameQuaternionReadOnly)}.
     * </p>
     * <p>
-    * If the arguments are expressed in a different frame than {@code this}, then {@code this} is
-    * set to {@code position} and {@code orientation} once transformed to be expressed in
+    * If the arguments are expressed in a different frame than {@code this}, then {@code this} is set
+    * to {@code position} and {@code orientation} once transformed to be expressed in
     * {@code this.getReferenceFrame()}.
     * </p>
     *
-    * @param position the frame point used to set this position to. Not modified.
+    * @param position    the frame point used to set this position to. Not modified.
     * @param orientation the frame quaternion to set this orientation to. Not modified.
     */
    public void setMatchingFrame(FramePoint3DReadOnly position, FrameQuaternionReadOnly orientation)
@@ -136,7 +136,7 @@ public class YoFramePose3D implements FixedFramePose3DBasics
 
    /**
     * Gets the internal reference to the x-coordinate used for the position of this pose.
-    * 
+    *
     * @return the position x-coordinate as {@code YoVariable}.
     */
    public YoDouble getYoX()
@@ -146,7 +146,7 @@ public class YoFramePose3D implements FixedFramePose3DBasics
 
    /**
     * Gets the internal reference to the y-coordinate used for the position of this pose.
-    * 
+    *
     * @return the position y-coordinate as {@code YoVariable}.
     */
    public YoDouble getYoY()
@@ -156,7 +156,7 @@ public class YoFramePose3D implements FixedFramePose3DBasics
 
    /**
     * Gets the internal reference to the z-coordinate used for the position of this pose.
-    * 
+    *
     * @return the position z-coordinate as {@code YoVariable}.
     */
    public YoDouble getYoZ()
@@ -166,7 +166,7 @@ public class YoFramePose3D implements FixedFramePose3DBasics
 
    /**
     * Gets the internal reference to the s-component used for the orientation of this pose.
-    * 
+    *
     * @return the position s-coordinate as {@code YoVariable}.
     */
    public YoDouble getYoQs()
@@ -176,7 +176,7 @@ public class YoFramePose3D implements FixedFramePose3DBasics
 
    /**
     * Gets the internal reference to the x-component used for the orientation of this pose.
-    * 
+    *
     * @return the position x-coordinate as {@code YoVariable}.
     */
    public YoDouble getYoQx()
@@ -186,7 +186,7 @@ public class YoFramePose3D implements FixedFramePose3DBasics
 
    /**
     * Gets the internal reference to the y-component used for the orientation of this pose.
-    * 
+    *
     * @return the position y-coordinate as {@code YoVariable}.
     */
    public YoDouble getYoQy()
@@ -196,7 +196,7 @@ public class YoFramePose3D implements FixedFramePose3DBasics
 
    /**
     * Gets the internal reference to the z-component used for the orientation of this pose.
-    * 
+    *
     * @return the position z-coordinate as {@code YoVariable}.
     */
    public YoDouble getYoQz()
@@ -206,7 +206,7 @@ public class YoFramePose3D implements FixedFramePose3DBasics
 
    /**
     * Attaches a listener to {@code this} that is to be triggered when this pose components change.
-    * 
+    *
     * @param variableChangedListener the listener to be attached.
     */
    public void attachVariableChangedListener(VariableChangedListener variableChangedListener)
@@ -219,8 +219,8 @@ public class YoFramePose3D implements FixedFramePose3DBasics
     * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
     * {@link YoVariableRegistry}.
     * <p>
-    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate
-    * of the registry that was used to create {@code this}, this method searches for the duplicated
+    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate of
+    * the registry that was used to create {@code this}, this method searches for the duplicated
     * {@code YoVariable}s and use them to duplicate {@code this}.
     * </p>
     *

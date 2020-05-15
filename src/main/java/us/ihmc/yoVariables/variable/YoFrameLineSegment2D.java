@@ -19,9 +19,9 @@ public class YoFrameLineSegment2D implements FixedFrameLineSegment2DBasics
    /**
     * Creates a new {@code YoFrameLineSegment2D}.
     *
-    * @param namePrefix a unique name string to use as the prefix for child variable names.
+    * @param namePrefix     a unique name string to use as the prefix for child variable names.
     * @param referenceFrame the reference frame for this line segment.
-    * @param registry the registry to register child variables to.
+    * @param registry       the registry to register child variables to.
     */
    public YoFrameLineSegment2D(String namePrefix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
    {
@@ -31,10 +31,10 @@ public class YoFrameLineSegment2D implements FixedFrameLineSegment2DBasics
    /**
     * Creates a new {@code YoFrameLineSegment2D}.
     *
-    * @param namePrefix a unique name string to use as the prefix for child variable names.
-    * @param nameSuffix a string to use as the suffix for child variable names.
+    * @param namePrefix     a unique name string to use as the prefix for child variable names.
+    * @param nameSuffix     a string to use as the suffix for child variable names.
     * @param referenceFrame the reference frame for this line segment.
-    * @param registry the registry to register child variables to.
+    * @param registry       the registry to register child variables to.
     */
    public YoFrameLineSegment2D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
    {
@@ -46,10 +46,10 @@ public class YoFrameLineSegment2D implements FixedFrameLineSegment2DBasics
     * Creates a new {@code YoFrameLine2D} using the given {@code YoVariable}s and sets its reference
     * frame to {@code referenceFrame}.
     *
-    * @param firstEndpoint the {@code YoFramePoint2D} to use internally for the first endpoint.
+    * @param firstEndpoint  the {@code YoFramePoint2D} to use internally for the first endpoint.
     * @param secondEndpoint the {@code YoFramePoint2D} to use internally for the second endpoint.
-    * @throws ReferenceFrameMismatchException if {@code firstEndpoint} and {@code secondEndpoint}
-    *            are not expressed in the same reference frame.
+    * @throws ReferenceFrameMismatchException if {@code firstEndpoint} and {@code secondEndpoint} are
+    *                                         not expressed in the same reference frame.
     */
    public YoFrameLineSegment2D(YoFramePoint2D firstEndpoint, YoFramePoint2D secondEndpoint)
    {
@@ -61,11 +61,11 @@ public class YoFrameLineSegment2D implements FixedFrameLineSegment2DBasics
     * Creates a new {@code YoFrameLine2D} using the given {@code YoVariable}s and sets its reference
     * frame to {@code referenceFrame}.
     *
-    * @param firstEndpointX the variable to use for the x-coordinate of the first endpoint.
-    * @param firstEndpointY the variable to use for the y-coordinate of the first endpoint.
+    * @param firstEndpointX  the variable to use for the x-coordinate of the first endpoint.
+    * @param firstEndpointY  the variable to use for the y-coordinate of the first endpoint.
     * @param secondEndpointX the variable to use for the x-coordinate of the second endpoint.
     * @param secondEndpointY the variable to use for the y-coordinate of the second endpoint.
-    * @param referenceFrame the reference frame for this line.
+    * @param referenceFrame  the reference frame for this line.
     */
    public YoFrameLineSegment2D(YoDouble firstEndpointX, YoDouble firstEndpointY, YoDouble secondEndpointX, YoDouble secondEndpointY,
                                ReferenceFrame referenceFrame)
@@ -96,9 +96,8 @@ public class YoFrameLineSegment2D implements FixedFrameLineSegment2DBasics
    }
 
    /**
-    * Gets the internal reference to the x-coordinate used for the first endpoint of this line
-    * segment.
-    * 
+    * Gets the internal reference to the x-coordinate used for the first endpoint of this line segment.
+    *
     * @return the first endpoint x-coordinate as {@code YoVariable}.
     */
    public YoDouble getYoFirstEndpointX()
@@ -107,9 +106,8 @@ public class YoFrameLineSegment2D implements FixedFrameLineSegment2DBasics
    }
 
    /**
-    * Gets the internal reference to the y-coordinate used for the first endpoint of this line
-    * segment.
-    * 
+    * Gets the internal reference to the y-coordinate used for the first endpoint of this line segment.
+    *
     * @return the first endpoint y-coordinate as {@code YoVariable}.
     */
    public YoDouble getYoFirstEndpointY()
@@ -120,7 +118,7 @@ public class YoFrameLineSegment2D implements FixedFrameLineSegment2DBasics
    /**
     * Gets the internal reference to the x-coordinate used for the second endpoint of this line
     * segment.
-    * 
+    *
     * @return the second endpoint x-coordinate as {@code YoVariable}.
     */
    public YoDouble getYoSecondEndpointX()
@@ -131,7 +129,7 @@ public class YoFrameLineSegment2D implements FixedFrameLineSegment2DBasics
    /**
     * Gets the internal reference to the y-coordinate used for the second endpoint of this line
     * segment.
-    * 
+    *
     * @return the second endpoint y-coordinate as {@code YoVariable}.
     */
    public YoDouble getYoSecondEndpointY()
@@ -143,8 +141,8 @@ public class YoFrameLineSegment2D implements FixedFrameLineSegment2DBasics
     * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
     * {@link YoVariableRegistry}.
     * <p>
-    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate
-    * of the registry that was used to create {@code this}, this method searches for the duplicated
+    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate of
+    * the registry that was used to create {@code this}, this method searches for the duplicated
     * {@code YoVariable}s and use them to duplicate {@code this}.
     * </p>
     *
@@ -158,8 +156,8 @@ public class YoFrameLineSegment2D implements FixedFrameLineSegment2DBasics
 
    /**
     * Provides a {@code String} representation of this line segment as follows:<br>
-    * Line segment 2D: 1st endpoint = ( 0.174, 0.732, -0.222 ), 2nd endpoint = (-0.558, -0.380,
-    * 0.130 )-worldFrame
+    * Line segment 2D: 1st endpoint = ( 0.174, 0.732, -0.222 ), 2nd endpoint = (-0.558, -0.380, 0.130
+    * )-worldFrame
     *
     * @return the {@code String} representing this line segment.
     */

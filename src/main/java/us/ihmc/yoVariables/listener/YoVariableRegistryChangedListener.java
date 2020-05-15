@@ -11,14 +11,15 @@ public interface YoVariableRegistryChangedListener
    /**
     * Called when registrying a YoVariable with {@link YoVariableRegistry#registerVariable(YoVariable)}
     *
-    * @param registry YoVariableRegistry the listener is attached to
+    * @param registry             YoVariableRegistry the listener is attached to
     * @param registeredYoVariable YoVariable being added to {@code registry}
     */
    public void yoVariableWasRegistered(YoVariableRegistry registry, YoVariable<?> registeredYoVariable);
 
    /**
-    * Called when adding a child registry with {@link YoVariableRegistry#addChild(YoVariableRegistry)} or
-    * {@link YoVariableRegistry#addChild(YoVariableRegistry, boolean)} and {@code notifyListeners} is {@code true}
+    * Called when adding a child registry with {@link YoVariableRegistry#addChild(YoVariableRegistry)}
+    * or {@link YoVariableRegistry#addChild(YoVariableRegistry, boolean)} and {@code notifyListeners}
+    * is {@code true}
     *
     * @param addedYoVariableRegistry child YoVariableRegistry being added
     */

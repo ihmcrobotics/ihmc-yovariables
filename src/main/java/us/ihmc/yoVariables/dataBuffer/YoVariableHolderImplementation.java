@@ -9,7 +9,9 @@ import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 /**
- * <p>Description: An implementation of a YoVariableHolder. </p>
+ * <p>
+ * Description: An implementation of a YoVariableHolder.
+ * </p>
  */
 public class YoVariableHolderImplementation implements YoVariableHolder
 {
@@ -47,10 +49,11 @@ public class YoVariableHolderImplementation implements YoVariableHolder
       return ret;
    }
 
-
    /**
-    *   Adds the given YoVariables to this YoVariableHolder. If any Variable is not unique, throws a RuntimeException.
-    *   @param variables YoVariables to add to this YoVariableHolder
+    * Adds the given YoVariables to this YoVariableHolder. If any Variable is not unique, throws a
+    * RuntimeException.
+    * 
+    * @param variables YoVariables to add to this YoVariableHolder
     */
    public void addVariablesToHolder(ArrayList<YoVariable<?>> variables)
    {
@@ -60,16 +63,17 @@ public class YoVariableHolderImplementation implements YoVariableHolder
       }
    }
 
-
    /**
-    * Adds the given YoVariable to this YoVariableHolder. If this Variable is not unique, throws a RuntimeException.
+    * Adds the given YoVariable to this YoVariableHolder. If this Variable is not unique, throws a
+    * RuntimeException.
+    * 
     * @param variable YoVariable to add to this YoVariableHolder
     */
    public void addVariableToHolder(YoVariable<?> variable)
    {
       String lowerCaseName = variable.getName();
       lowerCaseName = lowerCaseName.toLowerCase();
-      
+
       ArrayList<YoVariable<?>> variablesWithThisName = yoVariableSet.get(lowerCaseName);
       if (variablesWithThisName == null)
       {
@@ -83,14 +87,14 @@ public class YoVariableHolderImplementation implements YoVariableHolder
          if (variablesWithThisName.get(i).hasSameFullName(variable))
          {
             System.err.println("Not a unique variable! " + variable.getFullNameWithNameSpace()
-                               + " has already been added to this YoVariableHolder!. FullNames are \n");
+                  + " has already been added to this YoVariableHolder!. FullNames are \n");
 
             for (YoVariable<?> variableToPrint : variablesWithThisName)
             {
                System.err.println(variableToPrint.getFullNameWithNameSpace());
             }
 
-          throw new RuntimeException("Not a unique variable! " + variable.getFullNameWithNameSpace() + " has already been added to this YoVariableHolder!. ");
+            throw new RuntimeException("Not a unique variable! " + variable.getFullNameWithNameSpace() + " has already been added to this YoVariableHolder!. ");
          }
       }
 
@@ -115,13 +119,13 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    @Override
    public YoVariable<?> getVariable(String fullname)
    {
-      String name = NameSpace.stripOffNameSpaceToGetVariableName(fullname);      
+      String name = NameSpace.stripOffNameSpaceToGetVariableName(fullname);
       ArrayList<YoVariable<?>> variablesWithThisName = yoVariableSet.get(name.toLowerCase());
 
       if (variablesWithThisName == null)
       {
-//         String error = "Warning: " + fullname + " not found. (YoVariableHolderImplementation.getVariable)";
-//         System.err.println(error);
+         //         String error = "Warning: " + fullname + " not found. (YoVariableHolderImplementation.getVariable)";
+         //         System.err.println(error);
 
          return null;
       }
@@ -136,8 +140,8 @@ public class YoVariableHolderImplementation implements YoVariableHolder
             if (foundVariable != null)
             {
                LogTools.error("Called getVariable with " + fullname + ". That is insufficient name information to distinguish a unique variable! "
-                                  + "Please include more of the name space! Already found " + foundVariable.getFullNameWithNameSpace()
-                                  + ". Looking for variable " + yoVariable.getFullNameWithNameSpace());
+                     + "Please include more of the name space! Already found " + foundVariable.getFullNameWithNameSpace() + ". Looking for variable "
+                     + yoVariable.getFullNameWithNameSpace());
                // new Throwable().printStackTrace(); // Use to find callers.
             }
             else
@@ -155,7 +159,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
       {
          throw new RuntimeException(name + " contains a dot. It must not when calling getVariable(String nameSpace, String name)");
       }
-      
+
       ArrayList<YoVariable<?>> variablesWithThisName = yoVariableSet.get(name.toLowerCase());
       if (variablesWithThisName == null)
       {
@@ -173,7 +177,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
             if (foundVariable != null)
             {
                throw new RuntimeException("Called getVariable with " + nameSpaceEnding + ", " + name
-                                          + ". That is insufficient name information to distinguish a unique variable! Please include more of the name space!");
+                     + ". That is insufficient name information to distinguish a unique variable! Please include more of the name space!");
             }
 
             foundVariable = yoVariable;
@@ -187,7 +191,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    public boolean hasUniqueVariable(String fullname)
    {
       String name = NameSpace.stripOffNameSpaceToGetVariableName(fullname);
-      
+
       ArrayList<YoVariable<?>> variablesWithThisName = yoVariableSet.get(name.toLowerCase());
       if (variablesWithThisName == null)
       {

@@ -11,11 +11,11 @@ import us.ihmc.yoVariables.registry.YoVariableRegistry;
 public class YoFramePoint2D extends YoFrameTuple2D implements FixedFramePoint2DBasics
 {
    /**
-    * Creates a new {@code YoFramePoint2D} using the given {@code YoVariable}s and sets its
-    * reference frame to {@code referenceFrame}.
+    * Creates a new {@code YoFramePoint2D} using the given {@code YoVariable}s and sets its reference
+    * frame to {@code referenceFrame}.
     *
-    * @param xVariable the variable to use for the x-coordinate.
-    * @param yVariable the variable to use for the y-coordinate.
+    * @param xVariable      the variable to use for the x-coordinate.
+    * @param yVariable      the variable to use for the y-coordinate.
     * @param referenceFrame the reference frame for this point.
     */
    public YoFramePoint2D(YoDouble xVariable, YoDouble yVariable, ReferenceFrame referenceFrame)
@@ -26,9 +26,9 @@ public class YoFramePoint2D extends YoFrameTuple2D implements FixedFramePoint2DB
    /**
     * Creates a new {@code YoFramePoint2D}.
     *
-    * @param namePrefix a unique name string to use as the prefix for child variable names.
+    * @param namePrefix     a unique name string to use as the prefix for child variable names.
     * @param referenceFrame the reference frame for this point.
-    * @param registry the registry to register child variables to.
+    * @param registry       the registry to register child variables to.
     */
    public YoFramePoint2D(String namePrefix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
    {
@@ -38,10 +38,10 @@ public class YoFramePoint2D extends YoFrameTuple2D implements FixedFramePoint2DB
    /**
     * Creates a new {@code YoFramePoint2D}.
     *
-    * @param namePrefix a unique name string to use as the prefix for child variable names.
-    * @param nameSuffix a string to use as the suffix for child variable names.
+    * @param namePrefix     a unique name string to use as the prefix for child variable names.
+    * @param nameSuffix     a string to use as the suffix for child variable names.
     * @param referenceFrame the reference frame for this point.
-    * @param registry the registry to register child variables to.
+    * @param registry       the registry to register child variables to.
     */
    public YoFramePoint2D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
    {
@@ -52,8 +52,8 @@ public class YoFramePoint2D extends YoFrameTuple2D implements FixedFramePoint2DB
     * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
     * {@link YoVariableRegistry}.
     * <p>
-    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate
-    * of the registry that was used to create {@code this}, this method searches for the duplicated
+    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate of
+    * the registry that was used to create {@code this}, this method searches for the duplicated
     * {@code YoVariable}s and use them to duplicate {@code this}.
     * </p>
     *
