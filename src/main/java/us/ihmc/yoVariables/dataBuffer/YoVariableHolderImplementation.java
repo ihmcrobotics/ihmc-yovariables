@@ -3,6 +3,8 @@ package us.ihmc.yoVariables.dataBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import us.ihmc.log.LogTools;
 import us.ihmc.yoVariables.registry.NameSpace;
@@ -15,14 +17,14 @@ import us.ihmc.yoVariables.variable.YoVariable;
  */
 public class YoVariableHolderImplementation implements YoVariableHolder
 {
-   private final LinkedHashMap<String, ArrayList<YoVariable<?>>> yoVariableSet = new LinkedHashMap<>();
+   private final Map<String, ArrayList<YoVariable<?>>> yoVariableSet = new LinkedHashMap<>();
 
    public YoVariableHolderImplementation()
    {
    }
 
    @Override
-   public ArrayList<YoVariable<?>> getAllVariables()
+   public List<YoVariable<?>> getAllVariables()
    {
       ArrayList<YoVariable<?>> ret = new ArrayList<>();
 
@@ -42,7 +44,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    @Override
    public YoVariable<?>[] getAllVariablesArray()
    {
-      ArrayList<YoVariable<?>> variables = getAllVariables();
+      List<YoVariable<?>> variables = getAllVariables();
       YoVariable<?>[] ret = new YoVariable[variables.size()];
       variables.toArray(ret);
 
@@ -55,7 +57,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
     *
     * @param variables YoVariables to add to this YoVariableHolder
     */
-   public void addVariablesToHolder(ArrayList<YoVariable<?>> variables)
+   public void addVariablesToHolder(List<YoVariable<?>> variables)
    {
       for (YoVariable<?> variable : variables)
       {
@@ -253,7 +255,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    }
 
    @Override
-   public ArrayList<YoVariable<?>> getVariables(String nameSpaceEnding, String name)
+   public List<YoVariable<?>> getVariables(String nameSpaceEnding, String name)
    {
       if (name.contains("."))
       {
@@ -282,7 +284,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    }
 
    @Override
-   public ArrayList<YoVariable<?>> getVariables(String fullname)
+   public List<YoVariable<?>> getVariables(String fullname)
    {
       String name = NameSpace.stripOffNameSpaceToGetVariableName(fullname);
 
@@ -308,7 +310,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    }
 
    @Override
-   public ArrayList<YoVariable<?>> getVariables(NameSpace nameSpace)
+   public List<YoVariable<?>> getVariables(NameSpace nameSpace)
    {
       ArrayList<YoVariable<?>> ret = new ArrayList<>();
 

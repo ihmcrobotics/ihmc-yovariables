@@ -1,6 +1,6 @@
 package us.ihmc.yoVariables.dataBuffer;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.variable.YoVariable;
@@ -12,7 +12,7 @@ public interface YoVariableHolder
     *
     * @return ArrayList
     */
-   public abstract ArrayList<YoVariable<?>> getAllVariables();
+   public abstract List<YoVariable<?>> getAllVariables();
 
    /**
     * Returns all the YoVariables in this YoVariableHolder
@@ -81,7 +81,7 @@ public interface YoVariableHolder
     *                        RuntimeException.
     * @return ArrayList<YoVariable> matching the given nameSpace and name.
     */
-   public abstract ArrayList<YoVariable<?>> getVariables(String nameSpaceEnding, String name);
+   public abstract List<YoVariable<?>> getVariables(String nameSpaceEnding, String name);
 
    /**
     * Returns all the YoVariables with the given name that are in this YoVariableHolder, empty if there
@@ -91,7 +91,7 @@ public interface YoVariableHolder
     *             nameSpace ending must match that of name.
     * @return ArrayList<YoVariable> matching the given name.
     */
-   public abstract ArrayList<YoVariable<?>> getVariables(String name);
+   public abstract List<YoVariable<?>> getVariables(String name);
 
    /**
     * Returns all the YoVariables with the given nameSpace that are in this YoVariableHolder, empty if
@@ -100,6 +100,6 @@ public interface YoVariableHolder
     * @param nameSpace NameSpace to match.
     * @return ArrayList<YoVariable> matching YoVariables.
     */
-   public abstract ArrayList<YoVariable<?>> getVariables(NameSpace nameSpace);
+   public abstract List<YoVariable<?>> getVariables(NameSpace nameSpace);
 
 }

@@ -330,7 +330,7 @@ public class YoVariableListTest
       String[] namesThatAreNotInList = new String[2];
       namesThatAreNotInList[0] = "foo";
       namesThatAreNotInList[1] = "bar";
-      ArrayList<YoVariable<?>> matchedNameShouldBeEmpty = list.getMatchingVariables(namesThatAreNotInList, null);
+      List<YoVariable<?>> matchedNameShouldBeEmpty = list.getMatchingVariables(namesThatAreNotInList, null);
       assertTrue(matchedNameShouldBeEmpty.isEmpty());
    }
 

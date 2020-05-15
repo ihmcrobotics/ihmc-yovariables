@@ -8,7 +8,7 @@ import static us.ihmc.robotics.Assert.fail;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -136,7 +136,7 @@ public class YoVariableRegistryTest
    @Test // timeout=300000
    public void testGetAllVariables()
    {
-      ArrayList<YoVariable<?>> allVars = testRegistry.getAllVariablesIncludingDescendants();
+      List<YoVariable<?>> allVars = testRegistry.getAllVariablesIncludingDescendants();
       assertTrue(allVars.size() == 4);
    }
 
@@ -306,7 +306,7 @@ public class YoVariableRegistryTest
    @Test // timeout=300000
    public void testGetVariables1()
    {
-      ArrayList<YoVariable<?>> variables = testRegistry.getVariables("variableOne");
+      List<YoVariable<?>> variables = testRegistry.getVariables("variableOne");
       assertTrue(variables.size() == 1);
 
       variables = testRegistry.getVariables("variableTwo");
@@ -340,7 +340,7 @@ public class YoVariableRegistryTest
    @Test // timeout=300000
    public void testGetVariables2()
    {
-      ArrayList<YoVariable<?>> variables = testRegistry.getVariables("robot.controller.testRegistry", "variableOne");
+      List<YoVariable<?>> variables = testRegistry.getVariables("robot.controller.testRegistry", "variableOne");
       assertTrue(variables.size() == 1);
 
       variables = testRegistry.getVariables("robot.controller.testRegistry", "variableTwo");
@@ -446,9 +446,9 @@ public class YoVariableRegistryTest
    @Test // timeout=300000
    public void testGetAllVariablesInThisListOnly()
    {
-      ArrayList<YoVariable<?>> robotVariablesOnly = robotRegistry.getAllVariablesInThisListOnly();
-      ArrayList<YoVariable<?>> controlVariablesOnly = controllerRegistry.getAllVariablesInThisListOnly();
-      ArrayList<YoVariable<?>> testRegistryVariablesOnly = testRegistry.getAllVariablesInThisListOnly();
+      List<YoVariable<?>> robotVariablesOnly = robotRegistry.getAllVariablesInThisListOnly();
+      List<YoVariable<?>> controlVariablesOnly = controllerRegistry.getAllVariablesInThisListOnly();
+      List<YoVariable<?>> testRegistryVariablesOnly = testRegistry.getAllVariablesInThisListOnly();
 
       assertEquals(1, robotVariablesOnly.size());
       assertEquals(1, controlVariablesOnly.size());
@@ -556,7 +556,7 @@ public class YoVariableRegistryTest
 
       int nVarsExpected = nVarsChildOne + nVarsChildTwo + N_VARS_IN_ROOT;
 
-      ArrayList<YoVariable<?>> allVariables = testRegistry.getAllVariablesIncludingDescendants();
+      List<YoVariable<?>> allVariables = testRegistry.getAllVariablesIncludingDescendants();
       assertEquals(nVarsExpected, allVariables.size());
       YoVariable<?>[] allVariablesArray = testRegistry.getAllVariablesArray();
       assertEquals(nVarsExpected, allVariablesArray.length);
@@ -576,7 +576,7 @@ public class YoVariableRegistryTest
       assertEquals(childOne.getParent(), testRegistry);
       assertEquals(childTwo.getParent(), testRegistry);
 
-      ArrayList<YoVariableRegistry> children = testRegistry.getChildren();
+      List<YoVariableRegistry> children = testRegistry.getChildren();
 
       int childrenSize = children.size();
 
@@ -655,7 +655,7 @@ public class YoVariableRegistryTest
       assertEquals("root.registry1.registry10.variable10_A", variable10_A.getFullNameWithNameSpace());
       assertEquals("root.registry0.registry01.registry011.variable011_A", variable011_A.getFullNameWithNameSpace());
 
-      ArrayList<YoVariable<?>> allRootVariables = root.getAllVariablesIncludingDescendants();
+      List<YoVariable<?>> allRootVariables = root.getAllVariablesIncludingDescendants();
       assertEquals(8, allRootVariables.size());
 
       assertTrue(registry10.hasUniqueVariable("root.registry1.registry10.variable10_A"));
@@ -767,7 +767,7 @@ public class YoVariableRegistryTest
    @Test // timeout=300000
    public void testCreateVarListIncludingChildren()
    {
-      ArrayList<YoVariableList> varLists = robotRegistry.createVarListsIncludingChildren();
+      List<YoVariableList> varLists = robotRegistry.createVarListsIncludingChildren();
       assertEquals(3, varLists.size());
 
       assertContainsListWithNameAndVariables(varLists, "robot", 1);
@@ -776,7 +776,7 @@ public class YoVariableRegistryTest
 
    }
 
-   private void assertContainsListWithNameAndVariables(ArrayList<YoVariableList> varLists, String name, int numVariables)
+   private void assertContainsListWithNameAndVariables(List<YoVariableList> varLists, String name, int numVariables)
    {
       int containsName = 0;
 
@@ -795,7 +795,7 @@ public class YoVariableRegistryTest
    @Test // timeout=300000
    public void testGetAllRegistriesIncludingChildren()
    {
-      ArrayList<YoVariableRegistry> registries = robotRegistry.getAllRegistriesIncludingChildren();
+      List<YoVariableRegistry> registries = robotRegistry.getAllRegistriesIncludingChildren();
 
       assertEquals(3, registries.size());
       assertTrue(registries.contains(robotRegistry));
@@ -1045,7 +1045,7 @@ public class YoVariableRegistryTest
       };
 
       robotRegistry.registerSimulationRewoundListener(rewoundListener);
-      ArrayList<RewoundListener> allSimulationRewoundListeners = robotRegistry.getAllSimulationRewoundListeners();
+      List<RewoundListener> allSimulationRewoundListeners = robotRegistry.getAllSimulationRewoundListeners();
 
       assertTrue(allSimulationRewoundListeners.contains(rewoundListener));
    }
@@ -1107,14 +1107,14 @@ public class YoVariableRegistryTest
    public void testGetVariables()
    {
       NameSpace robotNameSpace = new NameSpace("robot");
-      ArrayList<YoVariable<?>> robotVariables = robotRegistry.getVariables(robotNameSpace);
+      List<YoVariable<?>> robotVariables = robotRegistry.getVariables(robotNameSpace);
 
       assertTrue(robotVariables.size() == 1);
       assertTrue(robotVariables.contains(robotVariable));
       assertFalse(robotVariables.contains(controlVariable));
 
       NameSpace controllerNameSpace = new NameSpace("robot.controller");
-      ArrayList<YoVariable<?>> controllerVariables = robotRegistry.getVariables(controllerNameSpace);
+      List<YoVariable<?>> controllerVariables = robotRegistry.getVariables(controllerNameSpace);
 
       assertTrue(controllerVariables.size() == 1);
       assertFalse(controllerVariables.contains(robotVariable));
@@ -1124,16 +1124,16 @@ public class YoVariableRegistryTest
    @Test // timeout = 30000
    public void testGetMatchingVariables()
    {
-      ArrayList<YoVariable<?>> nullVariables = robotRegistry.getMatchingVariables(null, null);
+      List<YoVariable<?>> nullVariables = robotRegistry.getMatchingVariables(null, null);
       assertTrue(nullVariables.size() == 0);
 
       String[] variableNames = new String[] {"robotVariable", "controlVariable"};
       String[] regularExpressions = new String[] {"&controller&"};
 
-      ArrayList<YoVariable<?>> matchingVariablesWithNullRegex = robotRegistry.getMatchingVariables(variableNames, null);
+      List<YoVariable<?>> matchingVariablesWithNullRegex = robotRegistry.getMatchingVariables(variableNames, null);
       assertTrue(matchingVariablesWithNullRegex.size() == 2);
 
-      ArrayList<YoVariable<?>> matchingVariablesWithRegex = robotRegistry.getMatchingVariables(null, regularExpressions);
+      List<YoVariable<?>> matchingVariablesWithRegex = robotRegistry.getMatchingVariables(null, regularExpressions);
       assertTrue(matchingVariablesWithRegex.size() == 0);
    }
 
