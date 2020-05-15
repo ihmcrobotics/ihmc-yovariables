@@ -26,8 +26,14 @@ import us.ihmc.yoVariables.variable.YoVariable;
 
 /**
  * Base class for parameters. Parameters cannot be changed from code and are only changed by the
- * user/operator. Available implementations - BooleanParameter - DoubleParameter - EnumParameter -
- * IntegerParameter - LongParameter
+ * user/operator. Available implementations
+ * <ul>
+ * <li>BooleanParameter
+ * <li>DoubleParameter
+ * <li>EnumParameter
+ * <li>IntegerParameter
+ * <li>LongParameter
+ * </ul>
  *
  * @author Jesper Smith
  * @param <T>
