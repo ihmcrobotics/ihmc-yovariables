@@ -1,71 +1,63 @@
 package us.ihmc.yoVariables.variable;
 
-import us.ihmc.euclid.referenceFrame.ReferenceFrame;
-import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameTuple2DBasics;
-import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple2DReadOnly;
-import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
+import us.ihmc.euclid.tools.EuclidCoreIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
+import us.ihmc.euclid.tuple2D.interfaces.Tuple2DBasics;
+import us.ihmc.euclid.tuple2D.interfaces.Tuple2DReadOnly;
 import us.ihmc.yoVariables.listener.VariableChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
 
 /**
- * {@code FixedFrameTuple2DBasics} abstract implementation backed with {@code YoDouble}s.
+ * {@code Tuple2DBasics} abstract implementation backed with {@code YoDouble}s.
  */
-public abstract class YoFrameTuple2D implements FixedFrameTuple2DBasics
+public abstract class YoTuple2D implements Tuple2DBasics
 {
    private final String namePrefix;
    private final String nameSuffix;
 
    private final YoDouble x, y;
-   private final ReferenceFrame referenceFrame;
 
    /**
-    * Creates a new {@code YoFrameTuple2D} using the given {@code YoVariable}s and sets its reference
-    * frame to {@code referenceFrame}.
+    * Creates a new {@code YoTuple2D} using the given {@code YoVariable}s.
     *
-    * @param xVariable      the variable to use for the x-component.
-    * @param yVariable      the variable to use for the y-component.
-    * @param referenceFrame the reference frame for this tuple.
+    * @param xVariable the variable to use for the x-component.
+    * @param yVariable the variable to use for the y-component.
     */
-   public YoFrameTuple2D(YoDouble xVariable, YoDouble yVariable, ReferenceFrame referenceFrame)
+   public YoTuple2D(YoDouble xVariable, YoDouble yVariable)
    {
       namePrefix = YoFrameVariableNameTools.getCommonPrefix(xVariable.getName(), yVariable.getName());
       nameSuffix = YoFrameVariableNameTools.getCommonSuffix(xVariable.getName(), yVariable.getName());
 
       x = xVariable;
       y = yVariable;
-      this.referenceFrame = referenceFrame;
    }
 
    /**
-    * Creates a new {@code YoFrameTuple2D}.
+    * Creates a new {@code YoTuple2D}.
     *
-    * @param namePrefix     a unique name string to use as the prefix for child variable names.
-    * @param referenceFrame the reference frame for this tuple.
-    * @param registry       the registry to register child variables to.
+    * @param namePrefix a unique name string to use as the prefix for child variable names.
+    * @param registry   the registry to register child variables to.
     */
-   public YoFrameTuple2D(String namePrefix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
+   public YoTuple2D(String namePrefix, YoVariableRegistry registry)
    {
-      this(namePrefix, "", referenceFrame, registry);
+      this(namePrefix, "", registry);
    }
 
    /**
-    * Creates a new {@code YoFrameTuple2D}.
+    * Creates a new {@code YoTuple2D}.
     *
-    * @param namePrefix     a unique name string to use as the prefix for child variable names.
-    * @param nameSuffix     a string to use as the suffix for child variable names.
-    * @param referenceFrame the reference frame for this tuple.
-    * @param registry       the registry to register child variables to.
+    * @param namePrefix a unique name string to use as the prefix for child variable names.
+    * @param nameSuffix a string to use as the suffix for child variable names.
+    * @param registry   the registry to register child variables to.
     */
-   public YoFrameTuple2D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
+   public YoTuple2D(String namePrefix, String nameSuffix, YoVariableRegistry registry)
    {
       this.namePrefix = namePrefix;
       this.nameSuffix = nameSuffix;
 
       x = new YoDouble(YoFrameVariableNameTools.createXName(namePrefix, nameSuffix), registry);
       y = new YoDouble(YoFrameVariableNameTools.createYName(namePrefix, nameSuffix), registry);
-      this.referenceFrame = referenceFrame;
    }
 
    /** {@inheritDoc} */
@@ -80,13 +72,6 @@ public abstract class YoFrameTuple2D implements FixedFrameTuple2DBasics
    public void setY(double y)
    {
       this.y.set(y);
-   }
-
-   /** {@inheritDoc} */
-   @Override
-   public ReferenceFrame getReferenceFrame()
-   {
-      return referenceFrame;
    }
 
    /** {@inheritDoc} */
@@ -163,21 +148,21 @@ public abstract class YoFrameTuple2D implements FixedFrameTuple2DBasics
    }
 
    /**
-    * Provides a {@code String} representation of {@code this} as follows: (x, y)-worldFrame.
+    * Provides a {@code String} representation of {@code this} as follows: (x, y).
     *
     * @return the {@code String} representing this tuple.
     */
    @Override
    public String toString()
    {
-      return EuclidFrameIOTools.getFrameTuple2DString(this);
+      return EuclidCoreIOTools.getTuple2DString(this);
    }
 
    @Override
    public boolean equals(Object object)
    {
-      if (object instanceof FrameTuple2DReadOnly)
-         return equals((FrameTuple2DReadOnly) object);
+      if (object instanceof Tuple2DReadOnly)
+         return equals((Tuple2DReadOnly) object);
       else
          return false;
    }
@@ -185,6 +170,6 @@ public abstract class YoFrameTuple2D implements FixedFrameTuple2DBasics
    @Override
    public int hashCode()
    {
-      return EuclidHashCodeTools.toIntHashCode(EuclidHashCodeTools.toIntHashCode(getX(), getY()), getReferenceFrame());
+      return EuclidHashCodeTools.toIntHashCode(getX(), getY());
    }
 }

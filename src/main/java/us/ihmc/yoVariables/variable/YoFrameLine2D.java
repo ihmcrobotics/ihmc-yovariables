@@ -1,9 +1,11 @@
 package us.ihmc.yoVariables.variable;
 
-import us.ihmc.euclid.geometry.tools.EuclidGeometryIOTools;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.exceptions.ReferenceFrameMismatchException;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameLine2DBasics;
+import us.ihmc.euclid.referenceFrame.interfaces.FrameLine2DReadOnly;
+import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
+import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 /**
@@ -174,6 +176,21 @@ public class YoFrameLine2D implements FixedFrameLine2DBasics
    @Override
    public String toString()
    {
-      return EuclidGeometryIOTools.getLine2DString(this) + "-" + getReferenceFrame();
+      return EuclidFrameIOTools.getFrameLine2DString(this);
+   }
+
+   @Override
+   public boolean equals(Object object)
+   {
+      if (object instanceof FrameLine2DReadOnly)
+         return equals((FrameLine2DReadOnly) object);
+      else
+         return false;
+   }
+
+   @Override
+   public int hashCode()
+   {
+      return EuclidHashCodeTools.toIntHashCode(getPoint(), getDirection());
    }
 }
