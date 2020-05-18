@@ -24,8 +24,8 @@ public class ParameterData
    public ParameterData(String value)
    {
       this.value = value;
-      this.min = 0.0;
-      this.max = 1.0;
+      min = 0.0;
+      max = 1.0;
    }
 
    public void setParameterFromThis(YoParameter<?> parameter)

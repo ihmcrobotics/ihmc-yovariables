@@ -4,7 +4,7 @@ import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple2DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple3DBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple3DReadOnly;
-import us.ihmc.euclid.tools.EuclidCoreIOTools;
+import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.tuple2D.interfaces.Tuple2DReadOnly;
 import us.ihmc.euclid.tuple3D.interfaces.Tuple3DReadOnly;
@@ -19,13 +19,15 @@ public abstract class YoMutableFrameTuple3D extends YoMutableFrameObject impleme
    private final YoDouble y;
    private final YoDouble z;
 
-   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, Tuple3DReadOnly tuple3DReadOnly)
+   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame,
+                                Tuple3DReadOnly tuple3DReadOnly)
    {
       this(namePrefix, nameSuffix, registry);
       setIncludingFrame(referenceFrame, tuple3DReadOnly);
    }
 
-   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, Tuple2DReadOnly tuple2DReadOnly)
+   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame,
+                                Tuple2DReadOnly tuple2DReadOnly)
    {
       this(namePrefix, nameSuffix, registry);
       setIncludingFrame(referenceFrame, tuple2DReadOnly, 0.0);
@@ -132,7 +134,7 @@ public abstract class YoMutableFrameTuple3D extends YoMutableFrameObject impleme
    @Override
    public String toString()
    {
-      return EuclidCoreIOTools.getTuple3DString(this) + "-" + getReferenceFrame();
+      return EuclidFrameIOTools.getFrameTuple3DString(this);
    }
 
    @Override
@@ -147,10 +149,6 @@ public abstract class YoMutableFrameTuple3D extends YoMutableFrameObject impleme
    @Override
    public int hashCode()
    {
-      long bits = 1L;
-      bits = EuclidHashCodeTools.addToHashCode(bits, getX());
-      bits = EuclidHashCodeTools.addToHashCode(bits, getY());
-      bits = EuclidHashCodeTools.addToHashCode(bits, getZ());
-      return EuclidHashCodeTools.toIntHashCode(bits);
+      return EuclidHashCodeTools.toIntHashCode(EuclidHashCodeTools.toIntHashCode(getX(), getY(), getZ()), getReferenceFrame());
    }
 }

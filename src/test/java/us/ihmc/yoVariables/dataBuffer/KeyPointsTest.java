@@ -1,10 +1,11 @@
 package us.ihmc.yoVariables.dataBuffer;
 
+import static us.ihmc.robotics.Assert.assertFalse;
+import static us.ihmc.robotics.Assert.assertTrue;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static us.ihmc.robotics.Assert.*;
 
 public class KeyPointsTest
 {
@@ -22,7 +23,7 @@ public class KeyPointsTest
       keyPoints = null;
    }
 
-   @Test// timeout = 30000
+   @Test // timeout = 30000
    public void testSetKeyPoint()
    {
       assertTrue(keyPoints.getPoints().size() == 0);
@@ -34,7 +35,7 @@ public class KeyPointsTest
       assertTrue(keyPoints.getPoints().size() == 3);
    }
 
-   @Test// timeout = 30000
+   @Test // timeout = 30000
    public void testRemoveDuplicateKeyPoint()
    {
       assertTrue(keyPoints.getPoints().size() == 0);
@@ -45,10 +46,10 @@ public class KeyPointsTest
       assertTrue(keyPoints.getPoints().size() == 0);
    }
 
-   @Test// timeout = 30000
+   @Test // timeout = 30000
    public void testGetNextTime()
    {
-      int[] keyPointTimes = new int[]{3,16,20,48,75};
+      int[] keyPointTimes = new int[] {3, 16, 20, 48, 75};
 
       int nextTimeNotAdded = keyPoints.getNextTime(88);
       assertTrue(nextTimeNotAdded == 88);
@@ -62,10 +63,10 @@ public class KeyPointsTest
       assertTrue(nextTimeOutOfRange == 3);
    }
 
-   @Test// timeout = 30000
+   @Test // timeout = 30000
    public void getPreviousTime()
    {
-      int[] keyPointTimes = new int[]{3,16,20,48,75};
+      int[] keyPointTimes = new int[] {3, 16, 20, 48, 75};
 
       int previousTimeNotAdded = keyPoints.getPreviousTime(1);
       assertTrue(previousTimeNotAdded == 1);
@@ -79,10 +80,10 @@ public class KeyPointsTest
       assertTrue(previousTimeOutOfRange == 75);
    }
 
-   @Test// timeout = 30000
+   @Test // timeout = 30000
    public void testTrim()
    {
-      int[] keyPointTimes = new int[]{3,16,20,48,75};
+      int[] keyPointTimes = new int[] {3, 16, 20, 48, 75};
 
       clearAndFillKeyPoints(keyPointTimes);
 
@@ -102,7 +103,7 @@ public class KeyPointsTest
       assertTrue(keyPoints.getPoints().get(3) == 75);
    }
 
-   @Test// timeout = 30000
+   @Test // timeout = 30000
    public void testUseKeyPoints()
    {
       assertFalse(keyPoints.useKeyPoints());
@@ -115,7 +116,7 @@ public class KeyPointsTest
    private void clearAndFillKeyPoints(int[] keyPointTimes)
    {
       keyPoints.getPoints().clear();
-      for(int keyPointTime : keyPointTimes)
+      for (int keyPointTime : keyPointTimes)
       {
          keyPoints.setKeyPoint(keyPointTime);
       }

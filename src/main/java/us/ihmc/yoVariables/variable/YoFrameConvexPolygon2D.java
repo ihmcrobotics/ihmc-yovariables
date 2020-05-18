@@ -6,13 +6,15 @@ import java.util.List;
 
 import us.ihmc.euclid.geometry.BoundingBox2D;
 import us.ihmc.euclid.geometry.interfaces.BoundingBox2DBasics;
-import us.ihmc.euclid.geometry.tools.EuclidGeometryIOTools;
 import us.ihmc.euclid.geometry.tools.EuclidGeometryPolygonTools;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameConvexPolygon2DBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFramePoint2DBasics;
+import us.ihmc.euclid.referenceFrame.interfaces.FrameConvexPolygon2DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FramePoint2DReadOnly;
+import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidCoreIOTools;
+import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.transform.RigidBodyTransform;
 import us.ihmc.euclid.tuple2D.interfaces.Point2DReadOnly;
 import us.ihmc.euclid.tuple3D.Point3D;
@@ -157,7 +159,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
 
    /**
     * Creates a new empty polygon.
-    * 
+    *
     * @param yoVertexBuffer     the buffer of vertices backed by {@code YoFramePoint2D}s to be used by
     *                           this polygon.
     * @param yoNumberOfVertices the {@code YoVariable} to be used by this polygon.
@@ -351,7 +353,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
     * <p>
     * This value is immutable.
     * </p>
-    * 
+    *
     * @return the maximum possible number of vertices for this polygon.
     */
    public int getMaxNumberOfVertices()
@@ -361,7 +363,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
 
    /**
     * Gets the {@code YoVariable} size used by this polygon.
-    * 
+    *
     * @return the internal reference to this polygon size variable.
     */
    public YoInteger getYoNumberOfVertices()
@@ -371,7 +373,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
 
    /**
     * Gets the buffer of vertices backed by {@code YoFramePoint2D}s used by this polygon.
-    * 
+    *
     * @return the internal reference to this polygon vertex buffer.
     */
    public List<YoFramePoint2D> getVertexBuffer()
@@ -425,6 +427,23 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
    @Override
    public String toString()
    {
-      return EuclidGeometryIOTools.getConvexPolygon2DString(this) + "-" + referenceFrame;
+      return EuclidFrameIOTools.getFrameConvexPolygon2DString(this);
+   }
+
+   @Override
+   public boolean equals(Object object)
+   {
+      if (object instanceof FrameConvexPolygon2DReadOnly)
+         return equals((FrameConvexPolygon2DReadOnly) object);
+      else
+         return false;
+   }
+
+   @Override
+   public int hashCode()
+   {
+      long bits = EuclidHashCodeTools.addToHashCode(Boolean.hashCode(clockwiseOrdered), vertexBufferView);
+      bits = EuclidHashCodeTools.addToHashCode(bits, referenceFrame);
+      return EuclidHashCodeTools.toIntHashCode(bits);
    }
 }

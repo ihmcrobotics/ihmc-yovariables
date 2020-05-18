@@ -1,16 +1,16 @@
 package us.ihmc.yoVariables.variable;
 
-import static us.ihmc.robotics.Assert.*;
+import static us.ihmc.robotics.Assert.assertEquals;
+import static us.ihmc.robotics.Assert.assertFalse;
+import static us.ihmc.robotics.Assert.assertTrue;
+import static us.ihmc.robotics.Assert.fail;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-
-import us.ihmc.robotics.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 
+import us.ihmc.robotics.Assert;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 public class YoEnumTest
@@ -37,24 +37,24 @@ public class YoEnumTest
       registry = null;
    }
 
-
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testConstructorNoDescription()
    {
-      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", registry,
-            EnumYoVariableTestEnums.class);
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class);
       assertFalse(yoEnum == null);
       assertTrue(registry.getAllVariables().size() == 1);
       assertTrue(yoEnum.getName().equals("yoEnum"));
       assertTrue(registry.getVariable("yoEnum").equals(yoEnum));
    }
 
-
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testConstructorWithDescription()
    {
-      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", "yoEnum with description",
-            registry, EnumYoVariableTestEnums.class, false);
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum",
+                                                                                   "yoEnum with description",
+                                                                                   registry,
+                                                                                   EnumYoVariableTestEnums.class,
+                                                                                   false);
       assertFalse(yoEnum == null);
       assertTrue(registry.getAllVariables().size() == 1);
       assertTrue(yoEnum.getName().equals("yoEnum"));
@@ -62,8 +62,7 @@ public class YoEnumTest
       assertTrue(yoEnum.getDescription().equals("yoEnum with description"));
    }
 
-
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testCreateNoDescription()
    {
       YoEnum<EnumYoVariableTestEnums> yoEnum = YoEnum.create("yoEnum", EnumYoVariableTestEnums.class, registry);
@@ -73,25 +72,22 @@ public class YoEnumTest
       assertTrue(registry.getVariable("yoEnum").equals(yoEnum));
    }
 
-
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testCreateWithDescription()
    {
-      YoEnum<EnumYoVariableTestEnums> yoEnum = YoEnum.create("yoEnum", "yoEnum with description",
-            EnumYoVariableTestEnums.class, registry, false);
+      YoEnum<EnumYoVariableTestEnums> yoEnum = YoEnum.create("yoEnum", "yoEnum with description", EnumYoVariableTestEnums.class, registry, false);
       assertFalse(yoEnum == null);
       assertTrue(registry.getAllVariables().size() == 1);
       assertTrue(yoEnum.getName().equals("yoEnum"));
       assertTrue(registry.getVariable("yoEnum").equals(yoEnum));
-      
+
       assertTrue(yoEnum.getDescription().equals("yoEnum with description"));
    }
 
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testSetAndValueEquals()
    {
-      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", registry,
-            EnumYoVariableTestEnums.class, true);
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class, true);
       yoEnum.set(EnumYoVariableTestEnums.ONE);
       assertTrue(yoEnum.valueEquals(EnumYoVariableTestEnums.ONE));
       yoEnum.set(EnumYoVariableTestEnums.TWO);
@@ -101,37 +97,34 @@ public class YoEnumTest
       assertTrue(yoEnum.valueEquals(null));
    }
 
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testSetAndGet()
    {
-      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", registry,
-            EnumYoVariableTestEnums.class);
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class);
       yoEnum.set(EnumYoVariableTestEnums.ONE);
       Assert.assertEquals(EnumYoVariableTestEnums.ONE, yoEnum.getEnumValue());
       yoEnum.set(EnumYoVariableTestEnums.TWO);
       Assert.assertEquals(EnumYoVariableTestEnums.TWO, yoEnum.getEnumValue());
-      yoEnum.set(EnumYoVariableTestEnums.ONE,false);
+      yoEnum.set(EnumYoVariableTestEnums.ONE, false);
       Assert.assertEquals(EnumYoVariableTestEnums.ONE, yoEnum.getEnumValue());
-      yoEnum.set(EnumYoVariableTestEnums.TWO,false);
+      yoEnum.set(EnumYoVariableTestEnums.TWO, false);
       Assert.assertEquals(EnumYoVariableTestEnums.TWO, yoEnum.getEnumValue());
    }
 
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testGetValues()
    {
-      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", registry,
-            EnumYoVariableTestEnums.class);
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class);
       EnumYoVariableTestEnums[] enumTypeArray = yoEnum.getEnumValues();
       assertEquals(2, enumTypeArray.length);
       assertEquals(EnumYoVariableTestEnums.ONE, enumTypeArray[0]);
       assertEquals(EnumYoVariableTestEnums.TWO, enumTypeArray[1]);
    }
 
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testSetValueAsDoublePositiveNumber()
    {
-      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", registry,
-            EnumYoVariableTestEnums.class);
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class);
       yoEnum.setValueFromDouble(0.0);
       Assert.assertEquals(EnumYoVariableTestEnums.ONE, yoEnum.getEnumValue());
       yoEnum.setValueFromDouble(0.25);
@@ -142,11 +135,10 @@ public class YoEnumTest
       Assert.assertEquals(EnumYoVariableTestEnums.TWO, yoEnum.getEnumValue());
    }
 
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testSetValueAsDoubleOutOfBoundsJustIgnoresIt()
    {
-      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", registry,
-            EnumYoVariableTestEnums.class);
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class);
       EnumYoVariableTestEnums originalValue = yoEnum.getEnumValue();
 
       yoEnum.setValueFromDouble(2.0);
@@ -156,39 +148,36 @@ public class YoEnumTest
       Assert.assertEquals(originalValue, yoEnum.getEnumValue());
    }
 
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testForNull()
    {
-      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", "", registry,
-            EnumYoVariableTestEnums.class, true);
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", "", registry, EnumYoVariableTestEnums.class, true);
       yoEnum.setValueFromDouble(YoEnum.NULL_VALUE);
       Assert.assertEquals(yoEnum.getEnumValue(), null);
    }
 
-	@Test// timeout=300000,expected = RuntimeException.class
+   @Test // timeout=300000,expected = RuntimeException.class
    public void testNotAllowNull()
    {
-      Assertions.assertThrows(RuntimeException.class, () -> {
-      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", registry,
-            EnumYoVariableTestEnums.class);
-      yoEnum.set(null);
+      Assertions.assertThrows(RuntimeException.class, () ->
+      {
+         YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class);
+         yoEnum.set(null);
       });
    }
 
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testAllowNull()
    {
-      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", "", registry,
-            EnumYoVariableTestEnums.class, true);
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", "", registry, EnumYoVariableTestEnums.class, true);
       yoEnum.set(null);
       Assert.assertEquals(yoEnum.getEnumValue(), null);
    }
 
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testGetValueAsDouble()
    {
-      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", registry,
-            EnumYoVariableTestEnums.class, true);
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class, true);
       yoEnum.set(EnumYoVariableTestEnums.ONE);
       Assert.assertEquals(0.0, yoEnum.getValueAsDouble(), EPSILON);
       yoEnum.set(EnumYoVariableTestEnums.TWO);
@@ -197,22 +186,20 @@ public class YoEnumTest
       Assert.assertEquals(-1, yoEnum.getValueAsDouble(), EPSILON);
    }
 
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testToString()
    {
-      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", registry,
-            EnumYoVariableTestEnums.class);
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class);
       yoEnum.set(EnumYoVariableTestEnums.ONE);
       Assert.assertEquals("yoEnum: ONE", yoEnum.toString());
       yoEnum.set(EnumYoVariableTestEnums.TWO);
       Assert.assertEquals("yoEnum: TWO", yoEnum.toString());
    }
 
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testGetValueStringBufferWithNullValue()
    {
-      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", "", registry,
-            EnumYoVariableTestEnums.class, true);
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", "", registry, EnumYoVariableTestEnums.class, true);
       yoEnum.set(null);
 
       StringBuffer valueBuffer = new StringBuffer();
@@ -221,12 +208,11 @@ public class YoEnumTest
       assertEquals("null", valueBuffer.toString());
    }
 
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testGetValueStringBuffer()
    {
       StringBuffer valueBuffer = new StringBuffer();
-      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", registry,
-            EnumYoVariableTestEnums.class);
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class);
 
       yoEnum.set(EnumYoVariableTestEnums.ONE);
       yoEnum.getValueString(valueBuffer);
@@ -237,21 +223,19 @@ public class YoEnumTest
       assertEquals("ONETWO", valueBuffer.toString());
    }
 
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testGetYoVariableType()
    {
-      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", registry,
-            EnumYoVariableTestEnums.class);
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class);
       Assert.assertEquals(YoVariableType.ENUM, yoEnum.getYoVariableType());
    }
 
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testGetValueAsLongBitsAndSetValueFromLongBits()
    {
       boolean notifyListeners = true;
       long longValue = 1;
-      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", registry,
-            EnumYoVariableTestEnums.class, true);
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class, true);
       yoEnum.setValueFromLongBits(longValue, notifyListeners);
       Assert.assertEquals(longValue, yoEnum.getValueAsLongBits());
 
@@ -265,27 +249,25 @@ public class YoEnumTest
       {
          //do nothing
       }
-      
+
       yoEnum.set(null);
       Assert.assertEquals(-1, yoEnum.getValueAsLongBits());
    }
 
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testGetEnumType()
    {
       enumValue = EnumYoVariableTestEnums.ONE;
-      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", registry,
-            EnumYoVariableTestEnums.class);
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class);
       yoEnum.set(enumValue);
 
       Assert.assertEquals(enumValue.getClass(), yoEnum.getEnumType());
    }
 
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testGetValueStringFromDouble()
    {
-      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", registry,
-            EnumYoVariableTestEnums.class, true);
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class, true);
       StringBuffer stringBuffer = new StringBuffer();
       double doubleValue;
 
@@ -320,12 +302,11 @@ public class YoEnumTest
       }
    }
 
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testDuplicate()
    {
       YoVariableRegistry newRegistry = new YoVariableRegistry("newRegistry");
-      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", registry,
-            EnumYoVariableTestEnums.class);
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class);
       YoEnum<EnumYoVariableTestEnums> yoEnum2 = yoEnum.duplicate(newRegistry);
 
       assertTrue(yoEnum2.getName().equals(yoEnum.getName()));
@@ -334,15 +315,13 @@ public class YoEnumTest
       Assert.assertEquals(yoEnum2.getAllowNullValue(), yoEnum.getAllowNullValue());
    }
 
-	@Test// timeout=300000
+   @Test // timeout=300000
    public void testSetValue()
    {
       YoVariableRegistry newRegistry = new YoVariableRegistry("newRegistry2");
       boolean notifyListeners = true;
-      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", registry,
-            EnumYoVariableTestEnums.class);
-      YoEnum<EnumYoVariableTestEnums> yoEnum2 = new YoEnum<EnumYoVariableTestEnums>("yoEnum", newRegistry,
-            EnumYoVariableTestEnums.class);
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class);
+      YoEnum<EnumYoVariableTestEnums> yoEnum2 = new YoEnum<>("yoEnum", newRegistry, EnumYoVariableTestEnums.class);
 
       enumValue = EnumYoVariableTestEnums.TWO;
       yoEnum2.set(enumValue);
@@ -354,74 +333,71 @@ public class YoEnumTest
       yoEnum.setValue(yoEnum2, notifyListeners);
       Assert.assertEquals(enumValue, yoEnum.getEnumValue());
    }
-	
-	  
-   @Test// timeout = 300000
+
+   @Test // timeout = 300000
    public void testProviderValue()
    {
-      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<EnumYoVariableTestEnums>("yoEnum", registry,
-            EnumYoVariableTestEnums.class);
-      YoEnum<EnumYoVariableTestEnums> yoEnum2 = new YoEnum<EnumYoVariableTestEnums>("yoEnum2", registry,
-            EnumYoVariableTestEnums.class);
-      
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class);
+      YoEnum<EnumYoVariableTestEnums> yoEnum2 = new YoEnum<>("yoEnum2", registry, EnumYoVariableTestEnums.class);
+
       yoEnum.set(EnumYoVariableTestEnums.ONE);
       yoEnum2.set(EnumYoVariableTestEnums.TWO);
 
       assertEquals(yoEnum.getEnumValue(), yoEnum.getValue());
       assertEquals(yoEnum2.getEnumValue(), yoEnum2.getValue());
    }
-   
-   @Test// expected = RuntimeException.class, timeout = 1000
+
+   @Test // expected = RuntimeException.class, timeout = 1000
    public void testStringBasedAccessNullConstant()
    {
-      Assertions.assertThrows(RuntimeException.class, () -> 
+      Assertions.assertThrows(RuntimeException.class, () ->
       {
-      String[] constants = { "A", "B", "C", null, "E", "F", "G", "H" };
-      
-      YoVariableRegistry registry = new YoVariableRegistry("test");
-      
-      new YoEnum<>("constantDefault", "", registry, false, constants);
+         String[] constants = {"A", "B", "C", null, "E", "F", "G", "H"};
+
+         YoVariableRegistry registry = new YoVariableRegistry("test");
+
+         new YoEnum<>("constantDefault", "", registry, false, constants);
       });
-      
+
    }
-   
-   @Test// timeout = 1000
+
+   @Test // timeout = 1000
    public void testEmptyConstantList()
    {
-      String[] constants = {  };
+      String[] constants = {};
       YoVariableRegistry registry = new YoVariableRegistry("test");
-      
+
       YoEnum<?> stringConstructor = new YoEnum<>("stringConstructor", "", registry, true, constants);
       YoEnum<?> enumConstructor = new YoEnum<>("enumConsturctor", "", registry, EmptyEnum.class, true);
-      
-      assertEquals(null,enumConstructor.getEnumValue());
+
+      assertEquals(null, enumConstructor.getEnumValue());
       assertEquals("null", stringConstructor.getStringValue());
    }
 
-   @Test// expected = RuntimeException.class, timeout = 1000
+   @Test // expected = RuntimeException.class, timeout = 1000
    public void testEmptyConstantListNotNull()
    {
-      Assertions.assertThrows(RuntimeException.class, () -> 
+      Assertions.assertThrows(RuntimeException.class, () ->
       {
-      YoVariableRegistry registry = new YoVariableRegistry("test");
-      
-      new YoEnum<>("enumConsturctor", "", registry, EmptyEnum.class, false);
+         YoVariableRegistry registry = new YoVariableRegistry("test");
+
+         new YoEnum<>("enumConsturctor", "", registry, EmptyEnum.class, false);
       });
    }
-   
-   @Test// expected = RuntimeException.class, timeout = 1000
+
+   @Test // expected = RuntimeException.class, timeout = 1000
    public void testEmptyStringConstantListNotNull()
    {
-      Assertions.assertThrows(RuntimeException.class, () -> 
+      Assertions.assertThrows(RuntimeException.class, () ->
       {
-      YoVariableRegistry registry = new YoVariableRegistry("test");
-      String[] constants = {  };
-      new YoEnum<>("stringConstructor", "", registry, false, constants);
+         YoVariableRegistry registry = new YoVariableRegistry("test");
+         String[] constants = {};
+         new YoEnum<>("stringConstructor", "", registry, false, constants);
       });
    }
-   
+
    enum EmptyEnum
    {
-      
+
    }
 }

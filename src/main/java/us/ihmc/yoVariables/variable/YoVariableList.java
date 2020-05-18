@@ -2,33 +2,34 @@ package us.ihmc.yoVariables.variable;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-
 public class YoVariableList implements java.io.Serializable, java.lang.Comparable<YoVariableList>
 {
    private static final long serialVersionUID = -393664925453518934L;
    private final ArrayList<ChangeListener> listeners;
    private final String name;
-   private final ArrayList<YoVariable<?>> variables;
-   private final LinkedHashMap<String, ArrayList<YoVariable<?>>> variablesMappedByName;
+   private final List<YoVariable<?>> variables;
+   private final Map<String, List<YoVariable<?>>> variablesMappedByName;
 
    public YoVariableList(String name)
    {
       this.name = name;
-      this.variables = new ArrayList<YoVariable<?>>();
-      this.variablesMappedByName = new LinkedHashMap<String, ArrayList<YoVariable<?>>>();
+      variables = new ArrayList<>();
+      variablesMappedByName = new LinkedHashMap<>();
 
-      this.listeners = new ArrayList<ChangeListener>();
+      listeners = new ArrayList<>();
    }
 
    public String getName()
    {
-      return this.name;
+      return name;
    }
 
    @Override
@@ -47,16 +48,16 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
 
    public boolean isEmpty()
    {
-      return (this.variables.size() == 0);
+      return variables.size() == 0;
    }
 
    public void addVariable(YoVariable<?> variable)
    {
       String variableName = variable.getName();
-      ArrayList<YoVariable<?>> arrayList = variablesMappedByName.get(variableName);
+      List<YoVariable<?>> arrayList = variablesMappedByName.get(variableName);
       if (arrayList == null)
       {
-         arrayList = new ArrayList<YoVariable<?>>(1);
+         arrayList = new ArrayList<>(1);
          variablesMappedByName.put(variable.getName(), arrayList);
       }
 
@@ -70,8 +71,8 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
    }
 
    /**
-    * Tell all listeners that a change in the variable count occurred.  At time of writing
-    * only VarPanelsHolders are listeners for this.
+    * Tell all listeners that a change in the variable count occurred. At time of writing only
+    * VarPanelsHolders are listeners for this.
     */
    private void notifyListeners()
    {
@@ -83,16 +84,16 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
 
    public void addVariables(YoVariableList controlVars)
    {
-      ArrayList<YoVariable<?>> variables = controlVars.getVariables();
+      List<YoVariable<?>> variables = controlVars.getVariables();
 
       this.addVariables(variables);
    }
 
-   public void addVariables(ArrayList<YoVariable<?>> list)
+   public void addVariables(List<YoVariable<?>> list)
    {
       for (YoVariable<?> variable : list)
       {
-         this.addVariable(variable);
+         addVariable(variable);
       }
    }
 
@@ -100,7 +101,7 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
    {
       for (int i = 0; i < variables.length; i++)
       {
-         this.addVariable(variables[i]);
+         addVariable(variables[i]);
       }
    }
 
@@ -110,7 +111,7 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
 
       if (variablesMappedByName.containsKey(variableName))
       {
-         ArrayList<YoVariable<?>> arrayList = variablesMappedByName.get(variableName);
+         List<YoVariable<?>> arrayList = variablesMappedByName.get(variableName);
          arrayList.remove(variable);
          variables.remove(variable);
       }
@@ -127,30 +128,30 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
    public boolean containsVariable(YoVariable<?> variable)
    {
       String variableName = variable.getName();
-      ArrayList<YoVariable<?>> arrayList = variablesMappedByName.get(variableName);
+      List<YoVariable<?>> arrayList = variablesMappedByName.get(variableName);
 
-      if ((arrayList != null) && (arrayList.contains(variable)))
+      if (arrayList != null && arrayList.contains(variable))
          return true;
 
       return false;
    }
 
-   public ArrayList<YoVariable<?>> getVariables()
+   public List<YoVariable<?>> getVariables()
    {
-      ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>();
-      ret.addAll(this.variables);
+      List<YoVariable<?>> ret = new ArrayList<>();
+      ret.addAll(variables);
 
       return ret;
    }
 
    public int size()
    {
-      return this.variables.size();
+      return variables.size();
    }
 
    public synchronized YoVariable<?> getVariable(int index)
    {
-      if ((index <= (variables.size() - 1)) && (index >= 0))
+      if (index <= variables.size() - 1 && index >= 0)
       {
          return variables.get(index);
       }
@@ -160,7 +161,7 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
 
    public synchronized YoVariable<?> getVariable(String name)
    {
-      ArrayList<YoVariable<?>> arrayList;
+      List<YoVariable<?>> arrayList;
       int lastDotIndex = name.lastIndexOf(".");
 
       if (lastDotIndex == -1)
@@ -212,9 +213,9 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
    }
 
    // TODO: duplicated in YoVariableRegistry
-   public synchronized ArrayList<YoVariable<?>> getMatchingVariables(String[] names, String[] regularExpressions)
+   public synchronized List<YoVariable<?>> getMatchingVariables(String[] names, String[] regularExpressions)
    {
-      ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>();
+      List<YoVariable<?>> ret = new ArrayList<>();
 
       if (names != null)
       {
@@ -267,17 +268,15 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
    }
 
    /**
-    * //  * Compares this VarList to the specified object returning > = < as 1 0 -1 respectively.
-    * //  * Reference object must be another VarList otherwise a runtime exception will be thrown.
-    * /
-    * //  * @param other Object to which this will be compared
-    * //  * @return indicates > = < as 1 0 -1 respectively
-    * /
+    * // * Compares this VarList to the specified object returning > = < as 1 0 -1 respectively. // *
+    * Reference object must be another VarList otherwise a runtime exception will be thrown. / //
+    * * @param other Object to which this will be compared // * @return indicates > = < as 1 0 -1
+    * respectively /
     */
    @Override
    public int compareTo(YoVariableList other)
    {
-      return (int) Math.signum(this.getName().compareToIgnoreCase(other.getName()));
+      return (int) Math.signum(getName().compareToIgnoreCase(other.getName()));
 
    }
 

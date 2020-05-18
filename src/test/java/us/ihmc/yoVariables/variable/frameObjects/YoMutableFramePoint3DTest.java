@@ -1,6 +1,9 @@
 package us.ihmc.yoVariables.variable.frameObjects;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static us.ihmc.euclid.EuclidTestConstants.ITERATIONS;
 
 import java.lang.reflect.Method;
@@ -12,6 +15,7 @@ import java.util.function.Predicate;
 import org.junit.jupiter.api.Test;
 
 import us.ihmc.euclid.referenceFrame.FramePoint2D;
+import us.ihmc.euclid.referenceFrame.FramePoint3D;
 import us.ihmc.euclid.referenceFrame.FrameTuple3DBasicsTest;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.api.EuclidFrameAPIDefaultConfiguration;
@@ -76,7 +80,13 @@ public class YoMutableFramePoint3DTest extends FrameTuple3DBasicsTest<YoMutableF
       { // Test YoMutableFramePoint3D(ReferenceFrame referenceFrame, double x, double y, double z)
          ReferenceFrame randomFrame = EuclidFrameRandomTools.nextReferenceFrame(random);
          Point3D randomTuple = EuclidCoreRandomTools.nextPoint3D(random);
-         YoMutableFramePoint3D YoMutableFramePoint3D = new YoMutableFramePoint3D("", "", null, randomFrame, randomTuple.getX(), randomTuple.getY(), randomTuple.getZ());
+         YoMutableFramePoint3D YoMutableFramePoint3D = new YoMutableFramePoint3D("",
+                                                                                 "",
+                                                                                 null,
+                                                                                 randomFrame,
+                                                                                 randomTuple.getX(),
+                                                                                 randomTuple.getY(),
+                                                                                 randomTuple.getZ());
          assertTrue(YoMutableFramePoint3D.getReferenceFrame() == randomFrame);
          EuclidCoreTestTools.assertTuple3DEquals(randomTuple, YoMutableFramePoint3D, EPSILON);
       }
@@ -256,7 +266,7 @@ public class YoMutableFramePoint3DTest extends FrameTuple3DBasicsTest<YoMutableF
 
       for (int i = 0; i < ITERATIONS; i++)
       {
-         Point3D expected = EuclidCoreRandomTools.nextPoint3D(random, -1.0e15, 1.0e15);
+         FramePoint3D expected = EuclidFrameRandomTools.nextFramePoint3D(random, worldFrame, -1.0e15, 1.0e15);
          YoMutableFramePoint3D actual = new YoMutableFramePoint3D("", "", null, worldFrame, expected);
 
          assertEquals(expected.hashCode(), actual.hashCode());

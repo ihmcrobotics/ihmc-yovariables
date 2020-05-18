@@ -67,7 +67,8 @@ public class YoFrameUnitVector2DTest
    public void testSetMatchingFrame()
    {
       EuclidFrameAPITester tester = new EuclidFrameAPITester(new EuclidFrameAPIDefaultConfiguration());
-      tester.assertSetMatchingFramePreserveFunctionality(YoFrameUnitVector2DTest::nextYoFrameUnitVector2D, EuclidTestConstants.API_FUNCTIONALITY_TEST_ITERATIONS);
+      tester.assertSetMatchingFramePreserveFunctionality(YoFrameUnitVector2DTest::nextYoFrameUnitVector2D,
+                                                         EuclidTestConstants.API_FUNCTIONALITY_TEST_ITERATIONS);
    }
 
    private static YoFrameUnitVector2D nextYoFrameUnitVector2D(Random random, ReferenceFrame referenceFrame)

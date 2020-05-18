@@ -6,7 +6,7 @@ import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameYawPitchRollBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameOrientation3DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameYawPitchRollReadOnly;
-import us.ihmc.euclid.tools.EuclidCoreIOTools;
+import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.yoVariables.listener.VariableChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
@@ -59,19 +59,19 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
       this.pitch.set(pitch, notifyListeners);
       this.roll.set(roll, notifyListeners);
    }
-   
+
    @Override
    public void setYaw(double yaw)
    {
       this.yaw.set(yaw, enableNotifications);
    }
-   
+
    @Override
    public void setPitch(double pitch)
    {
       this.pitch.set(pitch, enableNotifications);
    }
-   
+
    @Override
    public void setRoll(double roll)
    {
@@ -98,10 +98,10 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
       setMatchingFrame(orientation);
       enableNotifications = true;
    }
-   
+
    /**
     * Sets the orientation of this to the origin of the passed in ReferenceFrame.
-    * 
+    *
     * @param referenceFrame
     */
    public void setFromReferenceFrame(ReferenceFrame referenceFrame, boolean notifyListeners)
@@ -118,6 +118,7 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
       roll.add(orientation.getRoll());
    }
 
+   @Override
    public void add(double yaw, double pitch, double roll)
    {
       this.yaw.add(yaw);
@@ -127,7 +128,7 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
 
    public double[] getYawPitchRoll()
    {
-      return new double[] { yaw.getDoubleValue(), pitch.getDoubleValue(), roll.getDoubleValue() };
+      return new double[] {yaw.getDoubleValue(), pitch.getDoubleValue(), roll.getDoubleValue()};
    }
 
    @Override
@@ -190,8 +191,8 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
     * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
     * {@link YoVariableRegistry}.
     * <p>
-    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate
-    * of the registry that was used to create {@code this}, this method searches for the duplicated
+    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate of
+    * the registry that was used to create {@code this}, this method searches for the duplicated
     * {@code YoVariable}s and use them to duplicate {@code this}.
     * </p>
     *
@@ -209,32 +210,22 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
    @Override
    public boolean equals(Object object)
    {
-      if (object == this)
-      {
-         return true;
-      }
-      else if (object instanceof FrameYawPitchRollReadOnly)
-      {
+      if (object instanceof FrameYawPitchRollReadOnly)
          return FixedFrameYawPitchRollBasics.super.equals((FrameYawPitchRollReadOnly) object);
-      }
       else
-      {
          return false;
-      }
    }
 
    @Override
    public int hashCode()
    {
-      long bits = EuclidHashCodeTools.addToHashCode(1L, getYaw());
-      bits = EuclidHashCodeTools.addToHashCode(bits, getPitch());
-      bits = EuclidHashCodeTools.addToHashCode(bits, getRoll());
+      long bits = EuclidHashCodeTools.addToHashCode(EuclidHashCodeTools.toLongHashCode(getYaw(), getPitch(), getRoll()), referenceFrame);
       return EuclidHashCodeTools.toIntHashCode(bits);
    }
 
    @Override
    public String toString()
    {
-      return EuclidCoreIOTools.getYawPitchRollString(this) + "-" + getReferenceFrame().getName();
+      return EuclidFrameIOTools.getFrameYawPitchRollString(this);
    }
 }

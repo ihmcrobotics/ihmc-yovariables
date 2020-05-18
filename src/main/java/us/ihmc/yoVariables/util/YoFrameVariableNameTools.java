@@ -59,7 +59,7 @@ public class YoFrameVariableNameTools
 
    public static String createName(String namePrefix, String between, String nameSuffix)
    {
-      if ((namePrefix == null) || (namePrefix.equals("") || namePrefix.endsWith("_")))
+      if (namePrefix == null || namePrefix.equals("") || namePrefix.endsWith("_"))
       {
          return namePrefix + StringUtils.uncapitalize(between) + nameSuffix;
       }

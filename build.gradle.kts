@@ -1,12 +1,12 @@
 plugins {
-   id("us.ihmc.ihmc-build") version "0.20.1"
-   id("us.ihmc.ihmc-ci") version "5.3"
-   id("us.ihmc.ihmc-cd") version "1.8"
+   id("us.ihmc.ihmc-build") version "0.20.2"
+   id("us.ihmc.ihmc-ci") version "5.9"
+   id("us.ihmc.ihmc-cd") version "1.14"
 }
 
 ihmc {
    group = "us.ihmc"
-   version = "0.6.0"
+   version = "0.7.0"
    vcsUrl = "https://github.com/ihmcrobotics/ihmc-yovariables"
    openSource = true
    maintainer = "Georg Wiedebach (gwiedebach@ihmc.us)"
@@ -23,11 +23,11 @@ dependencies {
    api("jakarta.xml.bind:jakarta.xml.bind-api:2.3.2")
    api("org.glassfish.jaxb:jaxb-runtime:2.3.2")
 
-   api("us.ihmc:ihmc-commons:0.28.2")
-   api("us.ihmc:euclid-frame:0.14.0")
+   api("us.ihmc:ihmc-commons:0.29.0")
+   api("us.ihmc:euclid-frame:0.14.2")
 }
 
 testDependencies {
-   api("us.ihmc:ihmc-commons-testing:0.28.2")
-   api("us.ihmc:euclid-test:0.14.0")
+   api("us.ihmc:ihmc-commons-testing:0.29.0")
+   api("us.ihmc:euclid-test:0.14.2")
 }

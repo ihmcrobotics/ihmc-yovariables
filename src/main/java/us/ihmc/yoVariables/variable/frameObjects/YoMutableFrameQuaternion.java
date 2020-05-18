@@ -7,7 +7,7 @@ import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameQuaternionBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameQuaternionReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple4DReadOnly;
-import us.ihmc.euclid.tools.EuclidCoreIOTools;
+import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.tuple3D.interfaces.Vector3DReadOnly;
 import us.ihmc.euclid.tuple4D.interfaces.QuaternionReadOnly;
@@ -30,7 +30,8 @@ public class YoMutableFrameQuaternion extends YoMutableFrameObject implements Fr
       setToZero(referenceFrame);
    }
 
-   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, double x, double y, double z, double s)
+   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, double x, double y,
+                                   double z, double s)
    {
       this(namePrefix, nameSuffix, registry);
       setIncludingFrame(referenceFrame, x, y, z, s);
@@ -48,31 +49,36 @@ public class YoMutableFrameQuaternion extends YoMutableFrameObject implements Fr
       setIncludingFrame(referenceFrame, matrix);
    }
 
-   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, QuaternionReadOnly quaternionReadOnly)
+   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame,
+                                   QuaternionReadOnly quaternionReadOnly)
    {
       this(namePrefix, nameSuffix, registry);
       setIncludingFrame(referenceFrame, quaternionReadOnly);
    }
 
-   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, Tuple4DReadOnly tuple4DReadOnly)
+   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame,
+                                   Tuple4DReadOnly tuple4DReadOnly)
    {
       this(namePrefix, nameSuffix, registry);
       setIncludingFrame(referenceFrame, tuple4DReadOnly);
    }
 
-   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, Orientation3DReadOnly orientation3DReadOnly)
+   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame,
+                                   Orientation3DReadOnly orientation3DReadOnly)
    {
       this(namePrefix, nameSuffix, registry);
       setIncludingFrame(referenceFrame, orientation3DReadOnly);
    }
 
-   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, Vector3DReadOnly rotationVector)
+   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame,
+                                   Vector3DReadOnly rotationVector)
    {
       this(namePrefix, nameSuffix, registry);
       setRotationVectorIncludingFrame(referenceFrame, rotationVector);
    }
 
-   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, double yaw, double pitch, double roll)
+   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, double yaw, double pitch,
+                                   double roll)
    {
       this(namePrefix, nameSuffix, registry);
       setYawPitchRollIncludingFrame(referenceFrame, yaw, pitch, roll);
@@ -166,12 +172,7 @@ public class YoMutableFrameQuaternion extends YoMutableFrameObject implements Fr
    @Override
    public int hashCode()
    {
-      long bits = 1L;
-      bits = EuclidHashCodeTools.addToHashCode(bits, getX());
-      bits = EuclidHashCodeTools.addToHashCode(bits, getY());
-      bits = EuclidHashCodeTools.addToHashCode(bits, getZ());
-      bits = EuclidHashCodeTools.addToHashCode(bits, getS());
-      return EuclidHashCodeTools.toIntHashCode(bits);
+      return EuclidHashCodeTools.toIntHashCode(EuclidHashCodeTools.toIntHashCode(getX(), getY(), getZ(), getS()), getReferenceFrame());
    }
 
    @Override
@@ -186,6 +187,6 @@ public class YoMutableFrameQuaternion extends YoMutableFrameObject implements Fr
    @Override
    public String toString()
    {
-      return EuclidCoreIOTools.getTuple4DString(this) + "-" + getReferenceFrame();
+      return EuclidFrameIOTools.getFrameTuple4DString(this);
    }
 }

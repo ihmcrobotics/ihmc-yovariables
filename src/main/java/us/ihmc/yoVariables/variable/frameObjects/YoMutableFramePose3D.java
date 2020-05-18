@@ -5,6 +5,9 @@ import us.ihmc.euclid.referenceFrame.exceptions.ReferenceFrameMismatchException;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFramePoint3DBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameQuaternionBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FramePose3DBasics;
+import us.ihmc.euclid.referenceFrame.interfaces.FramePose3DReadOnly;
+import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
+import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
 import us.ihmc.yoVariables.variable.YoDouble;
@@ -95,5 +98,26 @@ public class YoMutableFramePose3D extends YoMutableFrameObject implements FrameP
    private void checkFrameConsistency()
    {
       position.checkReferenceFrameMatch(orientation);
+   }
+
+   @Override
+   public String toString()
+   {
+      return EuclidFrameIOTools.getFramePose3DString(this);
+   }
+
+   @Override
+   public boolean equals(Object object)
+   {
+      if (object instanceof FramePose3DReadOnly)
+         return equals((FramePose3DReadOnly) object);
+      else
+         return false;
+   }
+
+   @Override
+   public int hashCode()
+   {
+      return EuclidHashCodeTools.toIntHashCode(getPosition(), getOrientation());
    }
 }

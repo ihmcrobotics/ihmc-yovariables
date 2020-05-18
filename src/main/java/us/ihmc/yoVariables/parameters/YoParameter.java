@@ -25,21 +25,17 @@ import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 /**
- * Base class for parameters.
- *
- * Parameters cannot be changed from code and are only changed by the
- * user/operator.
- *
- * Available implementations
- * - BooleanParameter
- * - DoubleParameter
- * - EnumParameter
- * - IntegerParameter
- * - LongParameter
- *
+ * Base class for parameters. Parameters cannot be changed from code and are only changed by the
+ * user/operator. Available implementations
+ * <ul>
+ * <li>BooleanParameter
+ * <li>DoubleParameter
+ * <li>EnumParameter
+ * <li>IntegerParameter
+ * <li>LongParameter
+ * </ul>
  *
  * @author Jesper Smith
- *
  * @param <T>
  */
 public abstract class YoParameter<T extends YoParameter<T>>
@@ -58,9 +54,8 @@ public abstract class YoParameter<T extends YoParameter<T>>
    }
 
    /**
-    * User readable description that describes the purpose of this parameter
-    *
-    * The description is only used as a guideline to the user.
+    * User readable description that describes the purpose of this parameter The description is only
+    * used as a guideline to the user.
     *
     * @return
     */
@@ -70,7 +65,6 @@ public abstract class YoParameter<T extends YoParameter<T>>
    }
 
    /**
-    *
     * @return the namespace of this parameter
     */
    public NameSpace getNameSpace()
@@ -78,11 +72,12 @@ public abstract class YoParameter<T extends YoParameter<T>>
       return getVariable().getNameSpace();
    }
 
-
    /**
-    * Attaches an object implementing {@link ParameterChangedListener} to this parameter's list of listeners.
-    *
-    *<p>Instantiates a new list of listeners if it is currently empty.</p>
+    * Attaches an object implementing {@link ParameterChangedListener} to this parameter's list of
+    * listeners.
+    * <p>
+    * Instantiates a new list of listeners if it is currently empty.
+    * </p>
     *
     * @param ParameterChangedListener ParameterChangedListener to attach
     */
@@ -99,8 +94,9 @@ public abstract class YoParameter<T extends YoParameter<T>>
 
    /**
     * Clears this parameter's list of {@link ParameterChangedListener}s.
-    *
-    * <p>If the list is null, does nothing.</p>
+    * <p>
+    * If the list is null, does nothing.
+    * </p>
     */
    public void removeAllParameterChangedListeners()
    {
@@ -117,7 +113,7 @@ public abstract class YoParameter<T extends YoParameter<T>>
     */
    public List<ParameterChangedListener> getParameterChangedListeners()
    {
-      if(this.parameterChangedListenersHolder == null)
+      if (this.parameterChangedListenersHolder == null)
       {
          return null;
       }
@@ -145,17 +141,13 @@ public abstract class YoParameter<T extends YoParameter<T>>
          throw new NoSuchElementException("Listener not found");
    }
 
-
    /**
-    * Get the value of this parameter as a string.
-    *
-    * The value depends on the type, numeric types will return a numeric representation
-    * while enum's will return the enum value string.
+    * Get the value of this parameter as a string. The value depends on the type, numeric types will
+    * return a numeric representation while enum's will return the enum value string.
     *
     * @return the value as string
     */
    public abstract String getValueAsString();
-
 
    YoParameter(String name, String description)
    {
@@ -215,8 +207,8 @@ public abstract class YoParameter<T extends YoParameter<T>>
    }
 
    /**
-    * Get the load status of this parameter. It will indicate whether the parameter
-    * was load from file, is using its default value, or is still unloaded.
+    * Get the load status of this parameter. It will indicate whether the parameter was load from file,
+    * is using its default value, or is still unloaded.
     *
     * @return the current {@link ParameterLoadStatus} of this parameter.
     */
@@ -239,40 +231,34 @@ public abstract class YoParameter<T extends YoParameter<T>>
     * Helper class to delegate VariableChangedListeners to ParameterChangedListeners
     *
     * @author Jesper Smith
-    *
     */
    private class YoParameterChangedListenerHolder implements VariableChangedListener
    {
       private final ArrayList<ParameterChangedListener> parameterChangedListeners = new ArrayList<>();
 
-
       @Override
       public void notifyOfVariableChange(YoVariable<?> v)
       {
-         for(int i = 0; i < parameterChangedListeners.size(); i++)
+         for (int i = 0; i < parameterChangedListeners.size(); i++)
          {
             parameterChangedListeners.get(i).notifyOfParameterChange(v.getParameter());
          }
       }
-
 
       public boolean remove(ParameterChangedListener parameterChangedListener)
       {
          return parameterChangedListeners.remove(parameterChangedListener);
       }
 
-
       public List<ParameterChangedListener> getParameterChangedListeners()
       {
          return parameterChangedListeners;
       }
 
-
       public void clear()
       {
          parameterChangedListeners.clear();
       }
-
 
       public void add(ParameterChangedListener parameterChangedListener)
       {
@@ -280,6 +266,5 @@ public abstract class YoParameter<T extends YoParameter<T>>
       }
 
    }
-
 
 }

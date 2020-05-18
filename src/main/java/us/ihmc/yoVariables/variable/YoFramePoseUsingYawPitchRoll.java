@@ -2,7 +2,6 @@ package us.ihmc.yoVariables.variable;
 
 import us.ihmc.euclid.geometry.interfaces.Pose2DReadOnly;
 import us.ihmc.euclid.geometry.interfaces.Pose3DReadOnly;
-import us.ihmc.euclid.geometry.tools.EuclidGeometryIOTools;
 import us.ihmc.euclid.interfaces.Clearable;
 import us.ihmc.euclid.interfaces.Transformable;
 import us.ihmc.euclid.orientation.interfaces.Orientation2DReadOnly;
@@ -20,6 +19,7 @@ import us.ihmc.euclid.referenceFrame.interfaces.FramePose3DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameQuaternionReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple2DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple3DReadOnly;
+import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.tools.RotationMatrixTools;
 import us.ihmc.euclid.tools.YawPitchRollTools;
@@ -32,8 +32,9 @@ import us.ihmc.yoVariables.listener.VariableChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 /**
- * Defines a 3D pose in a fixed-frame as {@code YoFramePose3D} but use the Euler angles to represent the orientation part.
- * 
+ * Defines a 3D pose in a fixed-frame as {@code YoFramePose3D} but use the Euler angles to represent
+ * the orientation part.
+ *
  * @see YoFramePose3D
  * @see YoFrameYawPitchRoll
  */
@@ -48,7 +49,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
    {
       position.checkReferenceFrameMatch(orientation);
       this.position = position;
-      this.yawPitchRoll = orientation;
+      yawPitchRoll = orientation;
    }
 
    public YoFramePoseUsingYawPitchRoll(String prefix, ReferenceFrame frame, YoVariableRegistry registry)
@@ -119,7 +120,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     * Sets the position from the given tuple 2D and z coordinate.
     *
     * @param position2D the tuple with the new x and y coordinates. Not modified.
-    * @param z the new z value for this pose's position z-coordinate.
+    * @param z          the new z value for this pose's position z-coordinate.
     */
    public void setPosition(Tuple2DReadOnly position2D, double z)
    {
@@ -133,12 +134,12 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     * sometimes undefined.
     * </p>
     *
-    * @param x the x-coordinate of the position.
-    * @param y the y-coordinate of the position.
-    * @param z the z-coordinate of the position.
-    * @param yaw the angle to rotate about the z-axis.
+    * @param x     the x-coordinate of the position.
+    * @param y     the y-coordinate of the position.
+    * @param z     the z-coordinate of the position.
+    * @param yaw   the angle to rotate about the z-axis.
     * @param pitch the angle to rotate about the y-axis.
-    * @param roll the angle to rotate about the x-axis.
+    * @param roll  the angle to rotate about the x-axis.
     */
    public void set(double x, double y, double z, double yaw, double pitch, double roll)
    {
@@ -195,9 +196,9 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     * sometimes undefined.
     * </p>
     *
-    * @param yaw the angle to rotate about the z-axis.
+    * @param yaw   the angle to rotate about the z-axis.
     * @param pitch the angle to rotate about the y-axis.
-    * @param roll the angle to rotate about the x-axis.
+    * @param roll  the angle to rotate about the x-axis.
     */
    public void setOrientationYawPitchRoll(double yaw, double pitch, double roll)
    {
@@ -218,7 +219,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
    /**
     * Sets both position and orientation.
     *
-    * @param position the tuple with the new position coordinates. Not modified.
+    * @param position    the tuple with the new position coordinates. Not modified.
     * @param orientation the new orientation. Not modified.
     */
    public void set(Tuple3DReadOnly position, Orientation3DReadOnly orientation)
@@ -262,8 +263,8 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     *
     * @param other the other pose 3D used for the interpolation. Not modified.
     * @param alpha the percentage used for the interpolation. A value of 0 will result in not modifying
-    *           {@code this}, while a value of 1 is equivalent to setting {@code this} to
-    *           {@code other}.
+    *              {@code this}, while a value of 1 is equivalent to setting {@code this} to
+    *              {@code other}.
     */
    public void interpolate(Pose3DReadOnly other, double alpha)
    {
@@ -284,8 +285,8 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     * @param pose1 the first pose 3D used in the interpolation. Not modified.
     * @param pose2 the second pose 3D used in the interpolation. Not modified.
     * @param alpha the percentage to use for the interpolation. A value of 0 will result in setting
-    *           {@code this} to {@code pose1}, while a value of 1 is equivalent to setting {@code this}
-    *           to {@code pose2}.
+    *              {@code this} to {@code pose1}, while a value of 1 is equivalent to setting
+    *              {@code this} to {@code pose2}.
     */
    public void interpolate(Pose3DReadOnly pose1, Pose3DReadOnly pose2, double alpha)
    {
@@ -554,7 +555,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     *
     * @param position the tuple with the new position coordinates. Not modified.
     * @throws ReferenceFrameMismatchException if {@code this} and {@code position} are not expressed in
-    *            the same reference frame.
+    *                                         the same reference frame.
     */
    public void setPosition(FrameTuple2DReadOnly position)
    {
@@ -566,9 +567,9 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     * Sets the position from the given frame tuple 2D and the given {@code z} coordinate.
     *
     * @param position the tuple with the x and y position coordinates. Not modified.
-    * @param z the new z-coordinate.
+    * @param z        the new z-coordinate.
     * @throws ReferenceFrameMismatchException if {@code this} and {@code position} are not expressed in
-    *            the same reference frame.
+    *                                         the same reference frame.
     */
    public void setPosition(FrameTuple2DReadOnly position, double z)
    {
@@ -581,7 +582,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     *
     * @param position the tuple with the new position coordinates. Not modified.
     * @throws ReferenceFrameMismatchException if {@code this} and {@code position} are not expressed in
-    *            the same reference frame.
+    *                                         the same reference frame.
     */
    public void setPosition(FrameTuple3DReadOnly position)
    {
@@ -594,7 +595,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     *
     * @param orientation the orientation with the new angle value for this. Not modified.
     * @throws ReferenceFrameMismatchException if {@code this} and {@code orientation} are not expressed
-    *            in the same reference frame.
+    *                                         in the same reference frame.
     */
    public void setOrientation(FrameOrientation2DReadOnly orientation)
    {
@@ -607,7 +608,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     *
     * @param orientation the orientation to set the orientation part of this frame pose. Not modified.
     * @throws ReferenceFrameMismatchException if {@code this} and {@code orientation} are not expressed
-    *            in the same reference frame.
+    *                                         in the same reference frame.
     */
    public void setOrientation(FrameOrientation3DReadOnly orientation)
    {
@@ -620,7 +621,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     * the given {@code referenceFrame}.
     *
     * @param referenceFrame the reference frame in which the given {@code pose2DReadOnly} is expressed
-    *           in.
+    *                       in.
     * @param pose2DReadOnly the pose 2D used to set the pose of this frame pose 3D. Not modified.
     * @throws ReferenceFrameMismatchException if {@code this.getReferenceFrame() != referenceFrame}.
     */
@@ -635,7 +636,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     * {@code referenceFrame}.
     *
     * @param referenceFrame the reference frame in which the given {@code pose3DReadOnly} is expressed
-    *           in.
+    *                       in.
     * @param pose3DReadOnly the pose 3D used to set the pose of this frame pose 3D. Not modified.
     * @throws ReferenceFrameMismatchException if {@code this.getReferenceFrame() != referenceFrame}.
     */
@@ -650,7 +651,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     *
     * @param framePose2DReadOnly the other frame pose 2D. Not modified.
     * @throws ReferenceFrameMismatchException if {@code this} and {@code framePose2DReadOnly} are not
-    *            expressed in the same reference frame.
+    *                                         expressed in the same reference frame.
     */
    public void set(FramePose2DReadOnly framePose2DReadOnly)
    {
@@ -663,7 +664,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     *
     * @param other the other frame pose 3D. Not modified.
     * @throws ReferenceFrameMismatchException if {@code this} and {@code other} are not expressed in
-    *            the same reference frame.
+    *                                         the same reference frame.
     */
    public void set(FramePose3DReadOnly other)
    {
@@ -693,38 +694,39 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
    /**
     * Sets both position and orientation.
     *
-    * @param position the tuple with the new position coordinates. Not modified.
+    * @param position    the tuple with the new position coordinates. Not modified.
     * @param orientation the new orientation. Not modified.
     * @throws ReferenceFrameMismatchException if {@code this} and {@code position} are not expressed in
-    *            the same reference frame.
+    *                                         the same reference frame.
     */
    public void set(FrameTuple3DReadOnly position, Orientation3DReadOnly orientation)
    {
       checkReferenceFrameMatch(position);
-      set((Tuple3DReadOnly) position, (Orientation3DReadOnly) orientation);
+      set((Tuple3DReadOnly) position, orientation);
    }
 
    /**
     * Sets both position and orientation.
     *
-    * @param position the tuple with the new position coordinates. Not modified.
+    * @param position    the tuple with the new position coordinates. Not modified.
     * @param orientation the new orientation. Not modified.
     * @throws ReferenceFrameMismatchException if {@code this} and {@code orientation} are not expressed
-    *            in the same reference frame.
+    *                                         in the same reference frame.
     */
    public void set(Tuple3DReadOnly position, FrameOrientation3DReadOnly orientation)
    {
       checkReferenceFrameMatch(orientation);
-      set((Tuple3DReadOnly) position, (Orientation3DReadOnly) orientation);
+      set(position, (Orientation3DReadOnly) orientation);
    }
 
    /**
     * Sets both position and orientation.
     *
-    * @param position the tuple with the new position coordinates. Not modified.
+    * @param position    the tuple with the new position coordinates. Not modified.
     * @param orientation the new orientation. Not modified.
     * @throws ReferenceFrameMismatchException if {@code this}, {@code position}, and
-    *            {@code orientation} are not expressed in the same reference frame.
+    *                                         {@code orientation} are not expressed in the same
+    *                                         reference frame.
     */
    public void set(FrameTuple3DReadOnly position, FrameOrientation3DReadOnly orientation)
    {
@@ -743,7 +745,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     *
     * @param translation tuple containing the translation to apply to this pose 3D. Not modified.
     * @throws ReferenceFrameMismatchException if {@code this} and {@code translation} are not expressed
-    *            in the same reference frame.
+    *                                         in the same reference frame.
     */
    public void prependTranslation(FrameTuple3DReadOnly translation)
    {
@@ -757,7 +759,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     *
     * @param rotation the rotation to prepend to this pose 3D. Not modified.
     * @throws ReferenceFrameMismatchException if {@code this} and {@code rotation} are not expressed in
-    *            the same reference frame.
+    *                                         the same reference frame.
     * @see Orientation3DBasics#prepend(Orientation3DReadOnly)
     */
    public void prependRotation(FrameOrientation3DReadOnly rotation)
@@ -775,7 +777,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     *
     * @param translation tuple containing the translation to apply to this pose 3D. Not modified.
     * @throws ReferenceFrameMismatchException if {@code this} and {@code translation} are not expressed
-    *            in the same reference frame.
+    *                                         in the same reference frame.
     */
    public void appendTranslation(FrameTuple3DReadOnly translation)
    {
@@ -793,7 +795,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     *
     * @param rotation the rotation to append to this pose 3D. Not modified.
     * @throws ReferenceFrameMismatchException if {@code this} and {@code rotation} are not expressed in
-    *            the same reference frame.
+    *                                         the same reference frame.
     * @see Orientation3DBasics#append(Orientation3DReadOnly)
     */
    public void appendRotation(FrameOrientation3DReadOnly rotation)
@@ -812,10 +814,10 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     *
     * @param other the other pose 3D used for the interpolation. Not modified.
     * @param alpha the percentage used for the interpolation. A value of 0 will result in not modifying
-    *           {@code this}, while a value of 1 is equivalent to setting {@code this} to
-    *           {@code other}.
+    *              {@code this}, while a value of 1 is equivalent to setting {@code this} to
+    *              {@code other}.
     * @throws ReferenceFrameMismatchException if {@code this} and {@code other} are not expressed in
-    *            the same reference frame.
+    *                                         the same reference frame.
     */
    public void interpolate(FramePose3DReadOnly other, double alpha)
    {
@@ -834,15 +836,15 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     * @param pose1 the first pose 3D used in the interpolation. Not modified.
     * @param pose2 the second pose 3D used in the interpolation. Not modified.
     * @param alpha the percentage to use for the interpolation. A value of 0 will result in setting
-    *           {@code this} to {@code pose1}, while a value of 1 is equivalent to setting {@code this}
-    *           to {@code pose2}.
+    *              {@code this} to {@code pose1}, while a value of 1 is equivalent to setting
+    *              {@code this} to {@code pose2}.
     * @throws ReferenceFrameMismatchException if {@code this} and {@code pose1} are not expressed in
-    *            the same reference frame.
+    *                                         the same reference frame.
     */
    public void interpolate(FramePose3DReadOnly pose1, Pose3DReadOnly pose2, double alpha)
    {
       checkReferenceFrameMatch(pose1);
-      interpolate((Pose3DReadOnly) pose1, (Pose3DReadOnly) pose2, alpha);
+      interpolate((Pose3DReadOnly) pose1, pose2, alpha);
    }
 
    /**
@@ -856,15 +858,15 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     * @param pose1 the first pose 3D used in the interpolation. Not modified.
     * @param pose2 the second pose 3D used in the interpolation. Not modified.
     * @param alpha the percentage to use for the interpolation. A value of 0 will result in setting
-    *           {@code this} to {@code pose1}, while a value of 1 is equivalent to setting {@code this}
-    *           to {@code pose2}.
+    *              {@code this} to {@code pose1}, while a value of 1 is equivalent to setting
+    *              {@code this} to {@code pose2}.
     * @throws ReferenceFrameMismatchException if {@code this} and {@code pose2} are not expressed in
-    *            the same reference frame.
+    *                                         the same reference frame.
     */
    public void interpolate(Pose3DReadOnly pose1, FramePose3DReadOnly pose2, double alpha)
    {
       checkReferenceFrameMatch(pose2);
-      interpolate((Pose3DReadOnly) pose1, (Pose3DReadOnly) pose2, alpha);
+      interpolate(pose1, (Pose3DReadOnly) pose2, alpha);
    }
 
    /**
@@ -878,10 +880,10 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     * @param pose1 the first pose 3D used in the interpolation. Not modified.
     * @param pose2 the second pose 3D used in the interpolation. Not modified.
     * @param alpha the percentage to use for the interpolation. A value of 0 will result in setting
-    *           {@code this} to {@code pose1}, while a value of 1 is equivalent to setting {@code this}
-    *           to {@code pose2}.
+    *              {@code this} to {@code pose1}, while a value of 1 is equivalent to setting
+    *              {@code this} to {@code pose2}.
     * @throws ReferenceFrameMismatchException if {@code this}, {@code pose1}, and {@code pose2} are not
-    *            expressed in the same reference frame.
+    *                                         expressed in the same reference frame.
     */
    public void interpolate(FramePose3DReadOnly pose1, FramePose3DReadOnly pose2, double alpha)
    {
@@ -1105,8 +1107,8 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
     * {@link YoVariableRegistry}.
     * <p>
-    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate
-    * of the registry that was used to create {@code this}, this method searches for the duplicated
+    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate of
+    * the registry that was used to create {@code this}, this method searches for the duplicated
     * {@code YoVariable}s and use them to duplicate {@code this}.
     * </p>
     *
@@ -1120,39 +1122,34 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
 
    public boolean equals(YoFramePoseUsingYawPitchRoll other)
    {
-      return position.equals(other.position) && yawPitchRoll.equals(other.yawPitchRoll);
+      if (other == null)
+         return false;
+      else if (other == this)
+         return true;
+      else
+         return position.equals(other.position) && yawPitchRoll.equals(other.yawPitchRoll);
    }
 
    @Override
    public boolean equals(Object object)
    {
-      if (object == this)
-      {
-         return true;
-      }
-      else if (object instanceof YoFramePoseUsingYawPitchRoll)
-      {
+      if (object instanceof YoFramePoseUsingYawPitchRoll)
          return equals((YoFramePoseUsingYawPitchRoll) object);
-      }
       else if (object instanceof FramePose3DReadOnly)
-      {
          return FramePose3DReadOnly.super.equals((FramePose3DReadOnly) object);
-      }
       else
-      {
          return false;
-      }
-   }
-
-   @Override
-   public int hashCode()
-   {
-      return EuclidHashCodeTools.toIntHashCode(EuclidHashCodeTools.combineHashCode(position.hashCode(), getOrientation().hashCode()));
    }
 
    @Override
    public String toString()
    {
-      return EuclidGeometryIOTools.getPose3DString(this) + "-" + getReferenceFrame();
+      return EuclidFrameIOTools.getFramePose3DString(this);
+   }
+
+   @Override
+   public int hashCode()
+   {
+      return EuclidHashCodeTools.toIntHashCode(getPosition(), getOrientation());
    }
 }

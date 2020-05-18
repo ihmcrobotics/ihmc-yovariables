@@ -1,26 +1,26 @@
 /*
  * Copyright 2017 Florida Institute for Human and Machine Cognition (IHMC)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package us.ihmc.yoVariables.parameters;
 
-import static us.ihmc.robotics.Assert.*;
+import static us.ihmc.robotics.Assert.assertEquals;
+import static us.ihmc.robotics.Assert.assertFalse;
+import static us.ihmc.robotics.Assert.assertTrue;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import us.ihmc.yoVariables.listener.ParameterChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
@@ -46,7 +46,7 @@ public class BooleanParameterTest
       return param;
    }
 
-   @Test// timeout = 1000
+   @Test // timeout = 1000
    public void testGetNamespace()
    {
 
@@ -57,35 +57,35 @@ public class BooleanParameterTest
 
    }
 
-   @Test// expected = RuntimeException.class, timeout = 1000
+   @Test // expected = RuntimeException.class, timeout = 1000
    public void testGetBeforeLoad()
    {
-      Assertions.assertThrows(RuntimeException.class, () -> 
+      Assertions.assertThrows(RuntimeException.class, () ->
       {
-      BooleanParameter param = createParameterWithNamespace();
-      param.getValue();
+         BooleanParameter param = createParameterWithNamespace();
+         param.getValue();
       });
    }
-   
-   @Test// timeout = 1000
+
+   @Test // timeout = 1000
    public void testLoadFromString()
    {
 
-      String options[] = { "false", "true", "FALSE", "TRUE", "False", "True" };
-      
-      for(int i = 0; i < options.length; i++)
-      { 
-         
+      String options[] = {"false", "true", "FALSE", "TRUE", "False", "True"};
+
+      for (int i = 0; i < options.length; i++)
+      {
+
          YoVariableRegistry dummy = new YoVariableRegistry("dummy");
          BooleanParameter param = new BooleanParameter("test", dummy);
          param.load(options[i]);
-         
+
          assertEquals(i % 2 == 1, param.getValue());
          assertEquals(options[i].toLowerCase(), param.getValueAsString());
       }
    }
 
-   @Test// timeout = 1000
+   @Test // timeout = 1000
    public void testDefault()
    {
       BooleanParameter param = createParameterWithNamespace();
@@ -93,50 +93,46 @@ public class BooleanParameterTest
       assertEquals(initialValue, param.getValue());
    }
 
-   @Test// timeout = 1000
+   @Test // timeout = 1000
    public void testDuplicate()
    {
       BooleanParameter param = createParameterWithNamespace();
       YoBoolean var = (YoBoolean) param.getVariable();
       param.loadDefault();
-      
+
       var.set(true);
-      
+
       YoVariableRegistry newRegistry = new YoVariableRegistry("newRegistry");
       YoBoolean newVar = var.duplicate(newRegistry);
       BooleanParameter newParam = (BooleanParameter) newVar.getParameter();
-      
+
       assertEquals(param.getName(), newParam.getName());
       assertEquals(param.getDescription(), newParam.getDescription());
       assertEquals(param.getValue(), newParam.getValue());
-      
-      
+
    }
-   
-   @Test// timeout = 1000
+
+   @Test // timeout = 1000
    public void testListener()
    {
       BooleanParameter param = createParameterWithNamespace();
       CallbackTest callback = new CallbackTest();
       param.addParameterChangedListener(callback);
-      
+
       assertFalse(callback.set);
-      
+
       param.loadDefault();
-      
+
       callback.set = false;
-      
+
       // No change
       param.getVariable().setValueFromDouble(param.getVariable().getValueAsDouble());
       assertFalse(callback.set);
-      
-      
+
       param.getVariable().setValueFromDouble(0.0);
-      
+
       assertTrue(callback.set);
-      
-      
-      
+
    }
 
    private class CallbackTest implements ParameterChangedListener

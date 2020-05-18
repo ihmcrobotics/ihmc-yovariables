@@ -5,8 +5,8 @@ import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 /**
  * Long implementation of the YoVariable class.
- *
- * <p>All abstract functions of YoVariable will be implemented using long type for interpretation.
+ * <p>
+ * All abstract functions of YoVariable will be implemented using long type for interpretation.
  * Values will be interpreted, compared, and returned as longs rather than other native types.
  */
 public class YoLong extends YoVariable<YoLong> implements LongProvider
@@ -17,10 +17,10 @@ public class YoLong extends YoVariable<YoLong> implements LongProvider
    private long val;
 
    /**
-    * Create a new YoLong. This will call {@link #YoLong(String, String, YoVariableRegistry)} with the given name and
-    * registry and an empty description.
+    * Create a new YoLong. This will call {@link #YoLong(String, String, YoVariableRegistry)} with the
+    * given name and registry and an empty description.
     *
-    * @param name String that uniquely identifies this YoLong
+    * @param name     String that uniquely identifies this YoLong
     * @param registry YoVariableRegistry for this YoLong to register itself to after initialization
     */
    public YoLong(String name, YoVariableRegistry registry)
@@ -29,26 +29,27 @@ public class YoLong extends YoVariable<YoLong> implements LongProvider
    }
 
    /**
-    * Create a new YoLong. This will call {@link #YoLong(String, String, YoVariableRegistry)} with the given values as
-    * well as set {@link #manualMinScaling} and {@link #manualMaxScaling} to the given values.
+    * Create a new YoLong. This will call {@link #YoLong(String, String, YoVariableRegistry)} with the
+    * given values as well as set {@link #manualMinScaling} and {@link #manualMaxScaling} to the given
+    * values.
     *
-    * @param name String that uniquely identifies this YoLong
+    * @param name        String that uniquely identifies this YoLong
     * @param description String that describes this YoLong's purpose
-    * @param registry YoVariableRegistry for this YoLong to register itself to after initialization
-    * @param minScaling double to set manualMinScaling to
-    * @param maxScaling double to set manualMaxScaling to
+    * @param registry    YoVariableRegistry for this YoLong to register itself to after initialization
+    * @param minScaling  double to set manualMinScaling to
+    * @param maxScaling  double to set manualMaxScaling to
     */
    public YoLong(String name, String description, YoVariableRegistry registry, double minScaling, double maxScaling)
    {
       this(name, description, registry);
 
-      this.manualMinScaling = minScaling;
-      this.manualMaxScaling = maxScaling;
+      manualMinScaling = minScaling;
+      manualMaxScaling = maxScaling;
    }
 
    /**
-    * Create a new YoLong. This will call {@link YoVariable(YoVariableType, String, String, YoVariableRegistry)}
-    * with {@link YoVariableType#LONG} and the given values.
+    * Create a new YoLong. This will call {@link YoVariable(YoVariableType, String, String,
+    * YoVariableRegistry)} with {@link YoVariableType#LONG} and the given values.
     *
     * @param name
     * @param description
@@ -74,8 +75,9 @@ public class YoLong extends YoVariable<YoLong> implements LongProvider
    /**
     * Sets this YoLong to the given value.
     *
-    * @param value long to set this YoLong's internal long state to
-    * @param notifyListeners boolean determining whether or not to call {@link #notifyVariableChangedListeners()}
+    * @param value           long to set this YoLong's internal long state to
+    * @param notifyListeners boolean determining whether or not to call
+    *                        {@link #notifyVariableChangedListeners()}
     * @return boolean if the given value differed from the current value of this YoLong
     */
    public boolean set(long value, boolean notifyListeners)
@@ -97,7 +99,7 @@ public class YoLong extends YoVariable<YoLong> implements LongProvider
     */
    public void increment()
    {
-      this.set(this.getLongValue() + 1);
+      this.set(getLongValue() + 1);
    }
 
    /**
@@ -105,7 +107,7 @@ public class YoLong extends YoVariable<YoLong> implements LongProvider
     */
    public void decrement()
    {
-      this.set(this.getLongValue() - 1);
+      this.set(getLongValue() - 1);
    }
 
    /**
@@ -115,7 +117,7 @@ public class YoLong extends YoVariable<YoLong> implements LongProvider
     */
    public void add(long value)
    {
-      this.set(this.getLongValue() + value);
+      this.set(getLongValue() + value);
    }
 
    /**
@@ -125,7 +127,7 @@ public class YoLong extends YoVariable<YoLong> implements LongProvider
     */
    public void subtract(long value)
    {
-      this.set(this.getLongValue() - value);
+      this.set(getLongValue() - value);
    }
 
    /**
@@ -150,12 +152,15 @@ public class YoLong extends YoVariable<YoLong> implements LongProvider
    }
 
    /**
-    * Set the value of this YoLong using the given double, passed through {@link #convertFromDoubleToLong(double)}.
+    * Set the value of this YoLong using the given double, passed through
+    * {@link #convertFromDoubleToLong(double)}.
     *
-    * @param doubleValue double to convert and set this YoLong to
-    * @param notifyListeners boolean determining whether or not to call {@link #notifyVariableChangedListeners()}
+    * @param doubleValue     double to convert and set this YoLong to
+    * @param notifyListeners boolean determining whether or not to call
+    *                        {@link #notifyVariableChangedListeners()}
     */
-   @Override public void setValueFromDouble(double doubleValue, boolean notifyListeners)
+   @Override
+   public void setValueFromDouble(double doubleValue, boolean notifyListeners)
    {
       set(convertFromDoubleToLong(doubleValue), notifyListeners);
    }
@@ -170,7 +175,8 @@ public class YoLong extends YoVariable<YoLong> implements LongProvider
     *
     * @return return-casted double value of this YoInteger's internal long value
     */
-   @Override public double getValueAsDouble()
+   @Override
+   public double getValueAsDouble()
    {
       return val;
    }
@@ -180,7 +186,8 @@ public class YoLong extends YoVariable<YoLong> implements LongProvider
     *
     * @return a String representing this YoLong and its current value as a long
     */
-   @Override public String toString()
+   @Override
+   public String toString()
    {
       return String.format("%s: %d", getName(), getLongValue());
    }
@@ -190,7 +197,8 @@ public class YoLong extends YoVariable<YoLong> implements LongProvider
     *
     * @param stringBuffer StringBuffer to which the value will be appended
     */
-   @Override public void getValueString(StringBuffer stringBuffer)
+   @Override
+   public void getValueString(StringBuffer stringBuffer)
    {
       stringBuffer.append(val);
    }
@@ -199,45 +207,51 @@ public class YoLong extends YoVariable<YoLong> implements LongProvider
     * Appends the YoLong representation of the given double value to the given StringBuffer.
     *
     * @param stringBuffer StringBuffer to append to
-    * @param doubleValue double value to convert to YoLong representation
+    * @param doubleValue  double value to convert to YoLong representation
     */
-   @Override public void getValueStringFromDouble(StringBuffer stringBuffer, double doubleValue)
+   @Override
+   public void getValueStringFromDouble(StringBuffer stringBuffer, double doubleValue)
    {
       stringBuffer.append(convertFromDoubleToLong(doubleValue));
    }
 
    /**
     * Retrieves this YoLong's value as a long.
-    *
-    * <p>Effectively equivalent to {@link #getLongValue()}.
+    * <p>
+    * Effectively equivalent to {@link #getLongValue()}.
     *
     * @return internal long value of this YoInteger
     */
-   @Override public long getValueAsLongBits()
+   @Override
+   public long getValueAsLongBits()
    {
       return val;
    }
 
    /**
     * Sets the internal long value of this YoLong using the passed long value.
+    * <p>
+    * Effectively equivalent to {@link #set(long, boolean)}.
     *
-    * <p>Effectively equivalent to {@link #set(long, boolean)}.
-    *
-    * @param value long to set this variable's value to
-    * @param notifyListeners boolean determining whether or not to call {@link #notifyVariableChangedListeners()}
+    * @param value           long to set this variable's value to
+    * @param notifyListeners boolean determining whether or not to call
+    *                        {@link #notifyVariableChangedListeners()}
     */
-   @Override public void setValueFromLongBits(long value, boolean notifyListeners)
+   @Override
+   public void setValueFromLongBits(long value, boolean notifyListeners)
    {
       set(value, notifyListeners);
    }
 
    /**
-    * Creates a new YoLong with the same parameters as this one, and registers it to the passed {@link YoVariableRegistry}.
+    * Creates a new YoLong with the same parameters as this one, and registers it to the passed
+    * {@link YoVariableRegistry}.
     *
     * @param newRegistry YoVariableRegistry to duplicate this YoLong to
     * @return the newly created and registered YoLong
     */
-   @Override public YoLong duplicate(YoVariableRegistry newRegistry)
+   @Override
+   public YoLong duplicate(YoVariableRegistry newRegistry)
    {
       YoLong retVar = new YoLong(getName(), getDescription(), newRegistry, getManualScalingMin(), getManualScalingMax());
       retVar.set(getLongValue());
@@ -247,11 +261,13 @@ public class YoLong extends YoVariable<YoLong> implements LongProvider
    /**
     * Sets the internal value of this YoLong to the current value of the passed YoLong.
     *
-    * @param value YoLong value to set this variable's value to
-    * @param notifyListeners boolean determining whether or not to call {@link #notifyVariableChangedListeners()}
+    * @param value           YoLong value to set this variable's value to
+    * @param notifyListeners boolean determining whether or not to call
+    *                        {@link #notifyVariableChangedListeners()}
     * @return boolean whether or not internal state differed from the passed value
     */
-   @Override public boolean setValue(YoLong value, boolean notifyListeners)
+   @Override
+   public boolean setValue(YoLong value, boolean notifyListeners)
    {
       return set(value.getLongValue(), notifyListeners);
    }
@@ -261,7 +277,8 @@ public class YoLong extends YoVariable<YoLong> implements LongProvider
     *
     * @return boolean if this YoLong's internal long value is equal to long 0
     */
-   @Override public boolean isZero()
+   @Override
+   public boolean isZero()
    {
       return getLongValue() == 0;
    }

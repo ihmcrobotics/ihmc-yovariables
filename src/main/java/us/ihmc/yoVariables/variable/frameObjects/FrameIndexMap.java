@@ -18,7 +18,6 @@ import us.ihmc.euclid.referenceFrame.tools.ReferenceFrameTools;
  * Several default implementations are provided in this interface.
  *
  * @author Georg Wiedebach
- *
  */
 public interface FrameIndexMap
 {

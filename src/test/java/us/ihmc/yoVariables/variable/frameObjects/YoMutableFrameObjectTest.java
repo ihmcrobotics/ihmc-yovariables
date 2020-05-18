@@ -66,7 +66,8 @@ public class YoMutableFrameObjectTest
       FrameIndexMap mapper = new FrameIndexMap.FrameIndexHashMap();
       mapper.putAll(frames);
 
-      frames.forEach(frame -> {
+      frames.forEach(frame ->
+      {
          if (frame == null)
          {
             Assert.assertEquals(FrameIndexMap.NO_ENTRY_KEY, mapper.getFrameIndex(frame));
@@ -96,7 +97,8 @@ public class YoMutableFrameObjectTest
       frames.addAll(Arrays.asList(EuclidFrameRandomTools.nextReferenceFrameTree(random)));
       frames.add(null);
 
-      frames.forEach(frame -> {
+      frames.forEach(frame ->
+      {
          if (frame == null)
          {
             Assert.assertEquals(FrameIndexMap.NO_ENTRY_KEY, mapper.getFrameIndex(frame));

@@ -1,9 +1,9 @@
 package us.ihmc.yoVariables.dataBuffer;
 
-import us.ihmc.yoVariables.variable.YoVariable;
-
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import us.ihmc.yoVariables.variable.YoVariable;
 
 public class DataBufferEntry implements DataEntry
 {
@@ -11,7 +11,7 @@ public class DataBufferEntry implements DataEntry
    private double[] data;
 
    private boolean inverted = false;
-   
+
    private double min, max;
    private boolean minMaxChanged = true;
 
@@ -26,8 +26,8 @@ public class DataBufferEntry implements DataEntry
    {
       this.variable = variable;
 
-      this.min = 0.0;
-      this.max = 0.0;
+      min = 0.0;
+      max = 0.0;
 
       double[] emptyData = new double[nPoints];
       this.setData(emptyData, nPoints);
@@ -39,25 +39,30 @@ public class DataBufferEntry implements DataEntry
    {
       this.inverted = inverted;
    }
-   
+
    @Override
    public boolean getInverted()
    {
       return inverted;
    }
 
-   @Override public void attachDataEntryChangeListener(DataEntryChangeListener listener)
+   @Override
+   public void attachDataEntryChangeListener(DataEntryChangeListener listener)
    {
       changeListeners.add(listener);
    }
 
-   @Override public void detachDataEntryChangeListener(DataEntryChangeListener listener) {
+   @Override
+   public void detachDataEntryChangeListener(DataEntryChangeListener listener)
+   {
       changeListeners.remove(listener);
    }
 
-   @Override public void notifyDataEntryChangeListeners(int index)
+   @Override
+   public void notifyDataEntryChangeListeners(int index)
    {
-      for (DataEntryChangeListener listener : this.changeListeners) {
+      for (DataEntryChangeListener listener : changeListeners)
+      {
          listener.notifyOfDataChange(this, index);
       }
    }
@@ -68,14 +73,15 @@ public class DataBufferEntry implements DataEntry
    }
 
    @Override
-   public double[] getData() {
-      return this.getData(0, this.data.length);
+   public double[] getData()
+   {
+      return this.getData(0, data.length);
    }
 
    @Override
    public double[] getData(int startIndex, int endIndex)
    {
-      return Arrays.copyOfRange(this.data, startIndex, endIndex);
+      return Arrays.copyOfRange(data, startIndex, endIndex);
    }
 
    @Override
@@ -87,7 +93,7 @@ public class DataBufferEntry implements DataEntry
    @Override
    public void setManualScaling(double minScaling, double maxScaling)
    {
-      this.variable.setManualScalingMinMax(minScaling, maxScaling);
+      variable.setManualScalingMinMax(minScaling, maxScaling);
 
       // this.manualMinScaling = minScaling;
       // this.manualMaxScaling = maxScaling;
@@ -96,7 +102,7 @@ public class DataBufferEntry implements DataEntry
    @Override
    public boolean isAutoScaleEnabled()
    {
-      return this.autoScale;
+      return autoScale;
    }
 
    @Override
@@ -114,9 +120,9 @@ public class DataBufferEntry implements DataEntry
    @Override
    public YoVariable<?> getVariable()
    {
-      return this.variable;
+      return variable;
    }
-   
+
    @Override
    public String getVariableName()
    {
@@ -126,7 +132,7 @@ public class DataBufferEntry implements DataEntry
    @Override
    public String getFullVariableNameWithNameSpace()
    {
-     return variable.getFullNameWithNameSpace();
+      return variable.getFullNameWithNameSpace();
    }
 
    protected void copyValueThrough()
@@ -136,7 +142,7 @@ public class DataBufferEntry implements DataEntry
          data[i] = variable.getValueAsDouble();
       }
 
-      this.reCalcMinMax();
+      reCalcMinMax();
    }
 
    protected void enlargeBufferSize(int newSize)
@@ -160,18 +166,19 @@ public class DataBufferEntry implements DataEntry
    }
 
    /**
-    * Crop the data stored for this variable using the two specified endpoints.  Cropping must reduce or maintain the size of the data set, it cannot be increased.
+    * Crop the data stored for this variable using the two specified endpoints. Cropping must reduce or
+    * maintain the size of the data set, it cannot be increased.
     *
     * @param start Index of the new start point in the current data
-    * @param end Index of the new end point in the current data
+    * @param end   Index of the new end point in the current data
     * @return Overall length of the new data set.
     */
    protected int cropData(int start, int end)
    {
       // If the endpoints are unreasonable indicate failure
-      if ((start < 0) || (end > data.length))
+      if (start < 0 || end > data.length)
          return -1;
-      
+
       // Create a temporary variable to hold the old data
       double[] oldData = data;
       int oldNPoints = oldData.length;
@@ -196,16 +203,16 @@ public class DataBufferEntry implements DataEntry
       // Indicate the data length
       return data.length;
    }
-   
-   
+
    public int cutData(int start, int end)
    {
-      if (start > end) return -1;
-      
-      // If the endpoints are unreasonable indicate failure
-      if ((start < 0) || (end > data.length))
+      if (start > end)
          return -1;
-      
+
+      // If the endpoints are unreasonable indicate failure
+      if (start < 0 || end > data.length)
+         return -1;
+
       // Create a temporary variable to hold the old data
       double[] oldData = data;
       int oldNPoints = oldData.length;
@@ -224,10 +231,10 @@ public class DataBufferEntry implements DataEntry
       {
          data[i] = oldData[i];
       }
-      
+
       for (int i = end + 1; i < oldData.length; i++)
       {
-         data[i-difference] = oldData[i];
+         data[i - difference] = oldData[i];
       }
 
       // Calculate the Min and Max values for the new set
@@ -236,46 +243,46 @@ public class DataBufferEntry implements DataEntry
       // Indicate the data length
       return data.length;
    }
-   
 
    public int thinData(int keepEveryNthPoint)
    {
       double[] oldData = data;
       int oldNPoints = oldData.length;
-      
+
       int newNumberOfPoints = oldNPoints / keepEveryNthPoint;
       data = new double[newNumberOfPoints];
-      
+
       int oldDataIndex = 0;
-      for (int index = 0; index<newNumberOfPoints; index++)
+      for (int index = 0; index < newNumberOfPoints; index++)
       {
          data[index] = oldData[oldDataIndex];
-         
+
          oldDataIndex = oldDataIndex + keepEveryNthPoint;
       }
-      
+
       return newNumberOfPoints;
    }
 
    protected static int computeBufferSizeAfterCrop(int start, int end, int previousBufferSize)
    {
-      return ((end - start + 1 + previousBufferSize) % previousBufferSize); 
+      return (end - start + 1 + previousBufferSize) % previousBufferSize;
    }
-   
+
    protected static int computeBufferSizeAfterCut(int start, int end, int previousBufferSize)
    {
-      return (previousBufferSize - (end - start + 1)); 
+      return previousBufferSize - (end - start + 1);
    }
-   
+
    /**
-    * Packs the data based on a new start point.  Data is shifted in the array such that the index start is the beginning.  Once the data is shifted the min and max values are relocated.
+    * Packs the data based on a new start point. Data is shifted in the array such that the index start
+    * is the beginning. Once the data is shifted the min and max values are relocated.
     *
     * @param start Index of the data point to become the beginning.
     */
    protected void packData(int start)
    {
       // If the start point is outside of the data set abort
-      if ((start <= 0) || (start >= data.length))
+      if (start <= 0 || start >= data.length)
          return;
 
       // Create a temporary array to carry out the shift
@@ -302,30 +309,31 @@ public class DataBufferEntry implements DataEntry
    {
       double newVal = variable.getValueAsDouble();
 
-      if (data[index] != newVal) {
+      if (data[index] != newVal)
+      {
          double oldVal = data[index];
 
          data[index] = newVal;
 
-         if (newVal < this.min)
+         if (newVal < min)
          {
-            this.min = newVal;
+            min = newVal;
             setMinMaxChanged();
          }
 
-         if (newVal > this.max)
+         if (newVal > max)
          {
-            this.max = newVal;
+            max = newVal;
             setMinMaxChanged();
          }
 
-         if (oldVal >= this.max)
+         if (oldVal >= max)
          {
             setMinMaxChanged();
             minMaxStale = true;
          } // reCalcMinMax();
 
-         if (oldVal <= this.min)
+         if (oldVal <= min)
          {
             setMinMaxChanged();
             minMaxStale = true;
@@ -384,14 +392,14 @@ public class DataBufferEntry implements DataEntry
          if (!Double.isNaN(data[i]) && data[i] > newMax)
             newMax = data[i];
       }
-      
+
       if (newMin > newMax)
       {
          newMin = 0.0;
          newMax = 0.0;
       }
 
-      if ((min != newMin) || (max != newMax))
+      if (min != newMin || max != newMax)
          ret = true;
 
       min = newMin;
@@ -408,7 +416,7 @@ public class DataBufferEntry implements DataEntry
       if (minMaxStale)
          reCalcMinMax();
 
-      return this.max;
+      return max;
    }
 
    @Override
@@ -417,7 +425,7 @@ public class DataBufferEntry implements DataEntry
       if (minMaxStale)
          reCalcMinMax();
 
-      return this.min;
+      return min;
    }
 
    public void setData(double[] data, int nPoints)
@@ -445,18 +453,18 @@ public class DataBufferEntry implements DataEntry
          setMinMaxChanged();
       }
    }
-   
+
    public double computeAverage()
    {
       double total = 0.0;
 
       int length = data.length;
-      for (int i=0; i<length; i++)
+      for (int i = 0; i < length; i++)
       {
          total = total + data[i];
       }
 
-      return total / ((double) length);
+      return total / length;
    }
 
    public double[] getWindowedData(int in, /* int out, */int bufferLength)
@@ -480,7 +488,7 @@ public class DataBufferEntry implements DataEntry
    {
       reCalcMinMaxforSetPoint(leftIndex, rightIndex, leftPlotIndex, rightPlotIndex);
 
-      return this.max;
+      return max;
    }
 
    @Override
@@ -488,7 +496,7 @@ public class DataBufferEntry implements DataEntry
    {
       reCalcMinMaxforSetPoint(leftIndex, rightIndex, leftPlotIndex, rightPlotIndex);
 
-      return this.min;
+      return min;
    }
 
    private synchronized boolean reCalcMinMaxforSetPoint(int leftIndex, int rightIndex, int leftPlotIndex, int rightPlotIndex)
@@ -516,7 +524,8 @@ public class DataBufferEntry implements DataEntry
             if (!Double.isNaN(data[i]) && data[i] > newMax)
                newMax = data[i];
          }
-      } else
+      }
+      else
       {
          for (int i = leftIndex; i < rightPlotIndex; i++)
          {
@@ -541,7 +550,7 @@ public class DataBufferEntry implements DataEntry
          newMax = 0.0;
       }
 
-      if ((min != newMin) || (max != newMax))
+      if (min != newMin || max != newMax)
       {
          ret = true;
       }
@@ -556,11 +565,11 @@ public class DataBufferEntry implements DataEntry
    {
       //      System.out.println(this.variable.getName() + ": InPoint = " + inPoint + ", outPoint = " + outPoint);
 
-      if (inPoint >= this.data.length)
+      if (inPoint >= data.length)
          return false;
       if (inPoint >= entry2.data.length)
          return false;
-      if (outPoint >= this.data.length)
+      if (outPoint >= data.length)
          return false;
       if (outPoint >= entry2.data.length)
          return false;
@@ -571,7 +580,7 @@ public class DataBufferEntry implements DataEntry
       boolean ret = true;
       for (int i = inPoint; i < outPoint; i++)
       {
-         double dataOne = this.data[i];
+         double dataOne = data[i];
          double dataTwo = entry2.data[i];
 
          //         System.out.println(this.variable.getName() + ": dataOne = " + dataOne + ", dataTwo = " + dataTwo);
@@ -597,5 +606,4 @@ public class DataBufferEntry implements DataEntry
       variable.getNameAndValueStringFromDouble(stringBuffer, data[index]);
    }
 
-   
 }

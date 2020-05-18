@@ -1,17 +1,17 @@
 /*
  * Copyright 2017 Florida Institute for Human and Machine Cognition (IHMC)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package us.ihmc.yoVariables.parameters;
 
@@ -22,19 +22,18 @@ import us.ihmc.yoVariables.variable.YoVariable;
 
 /**
  * Boolean parameter
- * 
- * @author Jesper Smith
  *
+ * @author Jesper Smith
  */
 public class BooleanParameter extends YoParameter<BooleanParameter> implements BooleanProvider
 {
    private final YoBoolean value;
    private final boolean initialValue;
-   
+
    /**
     * Create a new Boolean parameter, registered to the namespace of the registry.
-    * 
-    * @param name Desired name. Must be unique in the registry
+    *
+    * @param name     Desired name. Must be unique in the registry
     * @param registry YoVariableRegistry to store under
     */
    public BooleanParameter(String name, YoVariableRegistry registry)
@@ -44,10 +43,10 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
 
    /**
     * Create a new Boolean parameter, registered to the namespace of the registry.
-    * 
-    * @param name Desired name. Must be unique in the registry
-    * @param description User readable description that describes the purpose of this parameter 
-    * @param registry YoVariableRegistry to store under
+    *
+    * @param name        Desired name. Must be unique in the registry
+    * @param description User readable description that describes the purpose of this parameter
+    * @param registry    YoVariableRegistry to store under
     */
    public BooleanParameter(String name, String description, YoVariableRegistry registry)
    {
@@ -56,38 +55,39 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
 
    /**
     * Create a new Boolean parameter, registered to the namespace of the registry.
-    * 
-    * @param name Desired name. Must be unique in the registry
-    * @param registry YoVariableRegistry to store under
-    * @param initialValue Value to set to when no value can be found in the user provided parameterLoader
+    *
+    * @param name         Desired name. Must be unique in the registry
+    * @param registry     YoVariableRegistry to store under
+    * @param initialValue Value to set to when no value can be found in the user provided
+    *                     parameterLoader
     */
    public BooleanParameter(String name, YoVariableRegistry registry, boolean initialValue)
    {
       this(name, "", registry, initialValue);
    }
 
-    /**
+   /**
     * Create a new Boolean parameter, registered to the namespace of the registry.
-    * 
-    * @param name Desired name. Must be unique in the registry
-    * @param description User readable description that describes the purpose of this parameter
-    * @param registry YoVariableRegistry to store under
-    * @param initialValue Value to set to when no value can be found in the user provided parameterLoader
+    *
+    * @param name         Desired name. Must be unique in the registry
+    * @param description  User readable description that describes the purpose of this parameter
+    * @param registry     YoVariableRegistry to store under
+    * @param initialValue Value to set to when no value can be found in the user provided
+    *                     parameterLoader
     */
    public BooleanParameter(String name, String description, YoVariableRegistry registry, boolean initialValue)
    {
       super(name, description);
 
-      this.value = new YoBooleanParameter(name, description, registry);      
+      value = new YoBooleanParameter(name, description, registry);
       this.initialValue = initialValue;
-      
+
       setSuggestedRange(0, 1);
    }
 
    /**
     * Get the current value.
-    * 
-    * 
+    *
     * @return value for this parameter
     * @throws RuntimeException if the parameter is not loaded yet.
     */
@@ -95,9 +95,8 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
    public boolean getValue()
    {
       checkLoaded();
-      return this.value.getBooleanValue();
+      return value.getBooleanValue();
    }
-
 
    @Override
    public String getValueAsString()
@@ -105,30 +104,28 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
       return String.valueOf(getValue());
    }
 
-   
    @Override
    YoVariable<?> getVariable()
    {
-      return this.value;
+      return value;
    }
 
    @Override
    void setToString(String valueString)
    {
-      this.value.set(Boolean.parseBoolean(valueString));
+      value.set(Boolean.parseBoolean(valueString));
    }
 
    @Override
    void setToDefault()
    {
-      this.value.set(initialValue);
+      value.set(initialValue);
    }
-   
+
    /**
-    * Internal class to set parameter settings for YoBoolean 
-    * 
-    * @author Jesper Smith
+    * Internal class to set parameter settings for YoBoolean
     *
+    * @author Jesper Smith
     */
    private class YoBooleanParameter extends YoBoolean
    {
@@ -137,19 +134,19 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
       {
          super(name, description, registry);
       }
-      
+
       @Override
       public boolean isParameter()
       {
          return true;
       }
-      
+
       @Override
       public YoParameter<?> getParameter()
       {
          return BooleanParameter.this;
       }
-      
+
       @Override
       public YoBoolean duplicate(YoVariableRegistry newRegistry)
       {
@@ -160,5 +157,4 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
       }
    }
 
-   
 }

@@ -24,18 +24,18 @@ public class YoVariableRegistry implements YoVariableHolder
 {
 
    // User defined control variables will be placed in this ArrayList when they are registered:
-   private ArrayList<YoVariable<?>> controlVars = new ArrayList<YoVariable<?>>();
-   private LinkedHashMap<String, YoVariable<?>> controlVarsHashMap = new LinkedHashMap<String, YoVariable<?>>(); // From name to the variable with that name.
-   private ArrayList<YoParameter<?>> parameters = new ArrayList<>();
+   private List<YoVariable<?>> controlVars = new ArrayList<>();
+   private LinkedHashMap<String, YoVariable<?>> controlVarsHashMap = new LinkedHashMap<>(); // From name to the variable with that name.
+   private List<YoParameter<?>> parameters = new ArrayList<>();
    private LinkedHashMap<String, YoParameter<?>> parametersHashMap = new LinkedHashMap<>();
-   
+
    private final String name;
    private NameSpace nameSpace;
-   private ArrayList<YoVariableRegistry> children = new ArrayList<YoVariableRegistry>();
+   private List<YoVariableRegistry> children = new ArrayList<>();
    private YoVariableRegistry parent;
 
-   private ArrayList<RewoundListener> simulationRewoundListeners;
-   private ArrayList<YoVariableRegistryChangedListener> yoVariableRegistryChangedListeners;
+   private List<RewoundListener> simulationRewoundListeners;
+   private List<YoVariableRegistryChangedListener> yoVariableRegistryChangedListeners;
 
    private boolean disallowSending;
    private boolean isLogged;
@@ -66,7 +66,7 @@ public class YoVariableRegistry implements YoVariableHolder
 
       this.name = name;
 
-      if ((name != null) && (name.length() > 0))
+      if (name != null && name.length() > 0)
       {
          nameSpace = new NameSpace(name);
       }
@@ -89,34 +89,34 @@ public class YoVariableRegistry implements YoVariableHolder
    {
       if (yoVariableRegistryChangedListeners == null)
       {
-         yoVariableRegistryChangedListeners = new ArrayList<YoVariableRegistryChangedListener>();
+         yoVariableRegistryChangedListeners = new ArrayList<>();
       }
 
       yoVariableRegistryChangedListeners.add(listener);
 
-      this.verifyDoNotHaveBothParentAndYoVariableRegistryChangedListeners();
+      verifyDoNotHaveBothParentAndYoVariableRegistryChangedListeners();
    }
 
    public void registerSimulationRewoundListener(RewoundListener simulationRewoundListener)
    {
       if (simulationRewoundListeners == null)
       {
-         simulationRewoundListeners = new ArrayList<RewoundListener>();
+         simulationRewoundListeners = new ArrayList<>();
       }
 
       simulationRewoundListeners.add(simulationRewoundListener);
    }
 
-   public ArrayList<RewoundListener> getAllSimulationRewoundListeners()
+   public List<RewoundListener> getAllSimulationRewoundListeners()
    {
-      ArrayList<RewoundListener> ret = new ArrayList<RewoundListener>();
+      List<RewoundListener> ret = new ArrayList<>();
 
       getAllSimulationRewoundListenersRecursively(ret);
 
       return ret;
    }
 
-   private void getAllSimulationRewoundListenersRecursively(ArrayList<RewoundListener> simulationRewoundListenersToPack)
+   private void getAllSimulationRewoundListenersRecursively(List<RewoundListener> simulationRewoundListenersToPack)
    {
       // Add ours:
       if (simulationRewoundListeners != null)
@@ -144,8 +144,8 @@ public class YoVariableRegistry implements YoVariableHolder
 
       controlVarsHashMap.put(variableName, variable);
       controlVars.add(variable);
-      
-      if(variable.isParameter())
+
+      if (variable.isParameter())
       {
          YoParameter<?> parameter = variable.getParameter();
          parameters.add(parameter);
@@ -155,23 +155,23 @@ public class YoVariableRegistry implements YoVariableHolder
       notifyListenersYoVariableWasRegistered(variable);
    }
 
-   public ArrayList<YoVariable<?>> getAllVariablesInThisListOnly()
+   public List<YoVariable<?>> getAllVariablesInThisListOnly()
    {
-      ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>();
+      List<YoVariable<?>> ret = new ArrayList<>();
       ret.addAll(controlVars);
 
       return ret;
    }
 
-   public ArrayList<YoVariable<?>> getAllVariablesIncludingDescendants()
+   public List<YoVariable<?>> getAllVariablesIncludingDescendants()
    {
-      ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>();
+      List<YoVariable<?>> ret = new ArrayList<>();
       getAllVariablesIncludingDescendantsRecursively(ret);
 
       return ret;
    }
 
-   private void getAllVariablesIncludingDescendantsRecursively(ArrayList<YoVariable<?>> variables)
+   private void getAllVariablesIncludingDescendantsRecursively(List<YoVariable<?>> variables)
    {
       // Add ours:
       variables.addAll(controlVars);
@@ -183,9 +183,10 @@ public class YoVariableRegistry implements YoVariableHolder
       }
    }
 
+   @Override
    public YoVariable<?>[] getAllVariablesArray()
    {
-      ArrayList<YoVariable<?>> variables = getAllVariablesIncludingDescendants();
+      List<YoVariable<?>> variables = getAllVariablesIncludingDescendants();
 
       YoVariable<?>[] ret = new YoVariable[variables.size()];
       variables.toArray(ret);
@@ -195,7 +196,7 @@ public class YoVariableRegistry implements YoVariableHolder
 
    public YoVariableList createVarList()
    {
-      YoVariableList ret = new YoVariableList(this.nameSpace.getName());
+      YoVariableList ret = new YoVariableList(nameSpace.getName());
 
       ret.addVariables(controlVars);
 
@@ -203,10 +204,11 @@ public class YoVariableRegistry implements YoVariableHolder
    }
 
    /*
-    * Returns the first discovered instance of a variable matching the given
-    * name. It will first check this registry, then it's children in the order
-    * in which they were added. Returns null if no variable is found.
+    * Returns the first discovered instance of a variable matching the given name. It will first check
+    * this registry, then it's children in the order in which they were added. Returns null if no
+    * variable is found.
     */
+   @Override
    public YoVariable<?> getVariable(String nameSpace, String name)
    {
       if (name.contains("."))
@@ -216,10 +218,11 @@ public class YoVariableRegistry implements YoVariableHolder
    }
 
    /*
-    * Returns the first discovered instance of a variable matching the given
-    * name. It will first check this registry, then it's children in the order
-    * in which they were added. Returns null if no variable is found.
+    * Returns the first discovered instance of a variable matching the given name. It will first check
+    * this registry, then it's children in the order in which they were added. Returns null if no
+    * variable is found.
     */
+   @Override
    public YoVariable<?> getVariable(String name)
    {
       String matchedName = matchNameSpace(name);
@@ -244,10 +247,11 @@ public class YoVariableRegistry implements YoVariableHolder
    }
 
    /*
-    * Returns all of the variables matching the given name, searching in this
-    * YoVariableRegistry and all of its children.
+    * Returns all of the variables matching the given name, searching in this YoVariableRegistry and
+    * all of its children.
     */
-   public ArrayList<YoVariable<?>> getVariables(String nameSpace, String name)
+   @Override
+   public List<YoVariable<?>> getVariables(String nameSpace, String name)
    {
       if (name.contains("."))
          throw new RuntimeException(name + " contains a dot. It must not when calling hasVariable(String nameSpace, String name)");
@@ -256,12 +260,13 @@ public class YoVariableRegistry implements YoVariableHolder
    }
 
    /*
-    * Returns all of the variables matching the given name, searching in this
-    * YoVariableRegistry and all of its children.
+    * Returns all of the variables matching the given name, searching in this YoVariableRegistry and
+    * all of its children.
     */
-   public ArrayList<YoVariable<?>> getVariables(String name)
+   @Override
+   public List<YoVariable<?>> getVariables(String name)
    {
-      ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>();
+      List<YoVariable<?>> ret = new ArrayList<>();
 
       getVariables(ret, name);
 
@@ -269,10 +274,10 @@ public class YoVariableRegistry implements YoVariableHolder
    }
 
    /*
-    * Adds to listToPack all of the variables matching the given name, searching
-    * in this YoVariableRegistry and all of its children.
+    * Adds to listToPack all of the variables matching the given name, searching in this
+    * YoVariableRegistry and all of its children.
     */
-   public void getVariables(ArrayList<YoVariable<?>> listToPack, String name)
+   public void getVariables(List<YoVariable<?>> listToPack, String name)
    {
       String matchedName = matchNameSpace(name);
 
@@ -292,11 +297,11 @@ public class YoVariableRegistry implements YoVariableHolder
    }
 
    /*
-    * Returns true if this YoVariableRegistry, or any of its children, hold a
-    * variable matching this name, and no more than one of them. To match the
-    * given name, the variable's nameSpace must end with the given nameSpace and
-    * the variables name must be the given name.
+    * Returns true if this YoVariableRegistry, or any of its children, hold a variable matching this
+    * name, and no more than one of them. To match the given name, the variable's nameSpace must end
+    * with the given nameSpace and the variables name must be the given name.
     */
+   @Override
    public boolean hasUniqueVariable(String nameSpace, String name)
    {
       if (name.contains("."))
@@ -306,18 +311,16 @@ public class YoVariableRegistry implements YoVariableHolder
    }
 
    /*
-    * Returns true if this YoVariableRegistry, or any of its children, hold a
-    * variable of this name, and no more than one of them. To match the given
-    * name, the variable's nameSpace must end with the given nameSpace,
-    * specified by the last part of the given name, and the variables name must
-    * be the end part of the given name. For example
-    * hasUniqueVariable(b.c.variableName) will be true if this registry is a,
-    * and it has a child b, with a child c, which has a variable named
-    * variableName.
+    * Returns true if this YoVariableRegistry, or any of its children, hold a variable of this name,
+    * and no more than one of them. To match the given name, the variable's nameSpace must end with the
+    * given nameSpace, specified by the last part of the given name, and the variables name must be the
+    * end part of the given name. For example hasUniqueVariable(b.c.variableName) will be true if this
+    * registry is a, and it has a child b, with a child c, which has a variable named variableName.
     */
+   @Override
    public boolean hasUniqueVariable(String name)
    {
-      int numberOfInstances = this.getNumberOfInstancesRecursively(name);
+      int numberOfInstances = getNumberOfInstancesRecursively(name);
       if (numberOfInstances == 1)
          return true;
 
@@ -353,7 +356,7 @@ public class YoVariableRegistry implements YoVariableHolder
       if (dotIndex != -1)
       {
          String nameSpaceString = name.substring(0, dotIndex);
-         if (!this.nameSpace.endsWith(nameSpaceString))
+         if (!nameSpace.endsWith(nameSpaceString))
             return null;
          name = name.substring(dotIndex + 1);
       }
@@ -382,11 +385,11 @@ public class YoVariableRegistry implements YoVariableHolder
          if (childToCheckShortName.equals(childShortName))
          {
             throw new RuntimeException("Adding a child to a YoVariableRegistry that has the same name as a previous one: "
-                  + childToCheck.getNameSpace().getName() + ". Parent name space = " + this.getNameSpace().getName());
+                  + childToCheck.getNameSpace().getName() + ". Parent name space = " + getNameSpace().getName());
          }
       }
 
-      NameSpace parentNameSpace = this.getNameSpace();
+      NameSpace parentNameSpace = getNameSpace();
 
       child.prependNameSpace(parentNameSpace);
 
@@ -395,18 +398,19 @@ public class YoVariableRegistry implements YoVariableHolder
       child.setParent(this);
       children.add(child);
 
-      if (notifyListeners) notifyListenersYoVariableRegistryWasAdded(child);
+      if (notifyListeners)
+         notifyListenersYoVariableRegistryWasAdded(child);
    }
 
    private void prependNameSpace(NameSpace parentNameSpace)
    {
-      if (this.nameSpace == null)
+      if (nameSpace == null)
          throw new RuntimeException("Cannot prepend a NameSpace. This NameSpace is null. Only root can have a null NameSpace");
       if (parentNameSpace == null)
          return;
 
       // Fix my name
-      this.nameSpace = new NameSpace(parentNameSpace.getName() + "." + this.nameSpace.getName());
+      nameSpace = new NameSpace(parentNameSpace.getName() + "." + nameSpace.getName());
 
       // Fix my children
       for (YoVariableRegistry child : children)
@@ -417,13 +421,13 @@ public class YoVariableRegistry implements YoVariableHolder
 
    public void recursivelyChangeNameSpaces(NameSpaceRenamer nameSpaceRenamer)
    {
-      NameSpace nameSpace = this.getNameSpace();
+      NameSpace nameSpace = getNameSpace();
       String nameSpaceString = nameSpace.getName();
 
       nameSpaceString = nameSpaceRenamer.changeNamespaceString(nameSpaceString);
-      this.changeNameSpace(nameSpaceString);
+      changeNameSpace(nameSpaceString);
 
-      ArrayList<YoVariableRegistry> children = this.getChildren();
+      List<YoVariableRegistry> children = getChildren();
 
       for (YoVariableRegistry child : children)
       {
@@ -433,11 +437,11 @@ public class YoVariableRegistry implements YoVariableHolder
 
    public void changeNameSpace(String newNamespace)
    {
-      System.err.println("Warning: Changing nameSpace from " + this.nameSpace + " to " + newNamespace);
-      this.nameSpace = new NameSpace(newNamespace);
+      System.err.println("Warning: Changing nameSpace from " + nameSpace + " to " + newNamespace);
+      nameSpace = new NameSpace(newNamespace);
    }
 
-   public ArrayList<YoVariableRegistry> getChildren()
+   public List<YoVariableRegistry> getChildren()
    {
       return children;
    }
@@ -454,15 +458,15 @@ public class YoVariableRegistry implements YoVariableHolder
 
       this.parent = parent;
 
-      this.verifyDoNotHaveBothParentAndYoVariableRegistryChangedListeners();
+      verifyDoNotHaveBothParentAndYoVariableRegistryChangedListeners();
    }
 
-   public ArrayList<YoVariableList> createVarListsIncludingChildren()
+   public List<YoVariableList> createVarListsIncludingChildren()
    {
-      LinkedHashMap<String, YoVariableList> hashMap = new LinkedHashMap<String, YoVariableList>();
+      LinkedHashMap<String, YoVariableList> hashMap = new LinkedHashMap<>();
       createVarListsIncludingChildren(hashMap);
 
-      ArrayList<YoVariableList> ret = new ArrayList<YoVariableList>(hashMap.values());
+      List<YoVariableList> ret = new ArrayList<>(hashMap.values());
       Collections.sort(ret);
 
       return ret;
@@ -471,7 +475,7 @@ public class YoVariableRegistry implements YoVariableHolder
    private void createVarListsIncludingChildren(HashMap<String, YoVariableList> allVarLists)
    {
       // Add mine:
-      YoVariableList myVarList = this.createVarList();
+      YoVariableList myVarList = createVarList();
       if (allVarLists.containsKey(myVarList.getName()))
       {
          YoVariableList varList = allVarLists.get(myVarList.getName());
@@ -489,15 +493,15 @@ public class YoVariableRegistry implements YoVariableHolder
       }
    }
 
-   public ArrayList<YoVariableRegistry> getAllRegistriesIncludingChildren()
+   public List<YoVariableRegistry> getAllRegistriesIncludingChildren()
    {
-      ArrayList<YoVariableRegistry> ret = new ArrayList<YoVariableRegistry>();
+      List<YoVariableRegistry> ret = new ArrayList<>();
       getAllRegistrysIncludingDescendants(ret);
 
       return ret;
    }
 
-   private void getAllRegistrysIncludingDescendants(ArrayList<YoVariableRegistry> yoVariableRegistriesToPack)
+   private void getAllRegistrysIncludingDescendants(List<YoVariableRegistry> yoVariableRegistriesToPack)
    {
       // Add mine:
       yoVariableRegistriesToPack.add(this);
@@ -518,6 +522,7 @@ public class YoVariableRegistry implements YoVariableHolder
       notifyListenersYoVariableRegistryWasCleared(this);
    }
 
+   @Override
    public String toString()
    {
       //    StringBuffer buf = new StringBuffer();
@@ -535,17 +540,17 @@ public class YoVariableRegistry implements YoVariableHolder
 
    public YoVariableRegistry getOrCreateAndAddRegistry(NameSpace fullNameSpace)
    {
-      if ((this.nameSpace == null) && (fullNameSpace == null))
+      if (nameSpace == null && fullNameSpace == null)
       {
          return this;
       }
 
-      if ((this.nameSpace != null) && this.nameSpace.equals(fullNameSpace))
+      if (nameSpace != null && nameSpace.equals(fullNameSpace))
       {
          return this;
       }
 
-      if ((this.nameSpace == null) || (fullNameSpace.startsWith(this.nameSpace.getName())))
+      if (nameSpace == null || fullNameSpace.startsWith(nameSpace.getName()))
       {
          for (YoVariableRegistry child : children)
          {
@@ -556,7 +561,7 @@ public class YoVariableRegistry implements YoVariableHolder
 
          // If, after going through all the children, none of them match, then
          // create it here and return it.
-         NameSpace nameSpaceToContinueWith = fullNameSpace.stripOffFromBeginning(this.nameSpace);
+         NameSpace nameSpaceToContinueWith = fullNameSpace.stripOffFromBeginning(nameSpace);
          YoVariableRegistry registry = createChainOfRegistries(nameSpaceToContinueWith);
          this.addChild(registry);
 
@@ -568,17 +573,17 @@ public class YoVariableRegistry implements YoVariableHolder
 
    public YoVariableRegistry getRegistry(NameSpace fullNameSpace)
    {
-      if ((this.nameSpace == null) && (fullNameSpace == null))
+      if (nameSpace == null && fullNameSpace == null)
       {
          return this;
       }
 
-      if ((this.nameSpace != null) && this.nameSpace.equals(fullNameSpace))
+      if (nameSpace != null && nameSpace.equals(fullNameSpace))
       {
          return this;
       }
 
-      if ((this.nameSpace == null) || (fullNameSpace.startsWith(this.nameSpace.getName())))
+      if (nameSpace == null || fullNameSpace.startsWith(nameSpace.getName()))
       {
          for (YoVariableRegistry child : children)
          {
@@ -595,7 +600,7 @@ public class YoVariableRegistry implements YoVariableHolder
 
    public void setLogging(boolean log)
    {
-      this.isLogged = log;
+      isLogged = log;
    }
 
    public void setLoggingIncludingDescendants(boolean log)
@@ -615,21 +620,21 @@ public class YoVariableRegistry implements YoVariableHolder
 
    public void setDisallowSending()
    {
-      this.disallowSending = true;
-      this.isSent = false;
+      disallowSending = true;
+      isSent = false;
    }
 
    public void setSending(boolean send)
    {
       if (disallowSending && send)
       {
-         String errorMessage = "Trying to set sending in registry " + this.getName() + " even though disallowSending is true.";
+         String errorMessage = "Trying to set sending in registry " + getName() + " even though disallowSending is true.";
          //         throw new RuntimeException(errorMessage);
          System.err.println(errorMessage);
       }
       else
       {
-         this.isSent = send;
+         isSent = send;
       }
    }
 
@@ -682,7 +687,7 @@ public class YoVariableRegistry implements YoVariableHolder
 
    private static YoVariableRegistry getToBottomRegistry(YoVariableRegistry root)
    {
-      if ((root.children == null) || (root.children.size() == 0))
+      if (root.children == null || root.children.size() == 0)
          return root;
       if (root.children.size() > 1)
          throw new RuntimeException("This should only be called with a new chain!!");
@@ -703,16 +708,18 @@ public class YoVariableRegistry implements YoVariableHolder
       }
    }
 
-   public ArrayList<YoVariable<?>> getAllVariables()
+   @Override
+   public List<YoVariable<?>> getAllVariables()
    {
-      return this.getAllVariablesIncludingDescendants();
+      return getAllVariablesIncludingDescendants();
    }
 
-   public ArrayList<YoVariable<?>> getVariables(NameSpace nameSpace)
+   @Override
+   public List<YoVariable<?>> getVariables(NameSpace nameSpace)
    {
-      ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>();
+      List<YoVariable<?>> ret = new ArrayList<>();
 
-      ArrayList<YoVariable<?>> allVariables = getAllVariables();
+      List<YoVariable<?>> allVariables = getAllVariables();
 
       for (YoVariable<?> variable : allVariables)
       {
@@ -725,9 +732,9 @@ public class YoVariableRegistry implements YoVariableHolder
       return ret;
    }
 
-   public synchronized ArrayList<YoVariable<?>> getMatchingVariables(String[] names, String[] regularExpressions)
+   public synchronized List<YoVariable<?>> getMatchingVariables(String[] names, String[] regularExpressions)
    {
-      ArrayList<YoVariable<?>> ret = new ArrayList<YoVariable<?>>();
+      List<YoVariable<?>> ret = new ArrayList<>();
 
       if (names != null)
       {
@@ -751,7 +758,7 @@ public class YoVariableRegistry implements YoVariableHolder
       return ret;
    }
 
-   private void recursivelyGetMatchingVariables(ArrayList<YoVariable<?>> ret, String[] regularExpressions)
+   private void recursivelyGetMatchingVariables(List<YoVariable<?>> ret, String[] regularExpressions)
    {
       if (regularExpressions != null)
       {
@@ -783,14 +790,14 @@ public class YoVariableRegistry implements YoVariableHolder
       if (registry == null)
          return false;
 
-      if (!this.getNameSpace().equals(registry.getNameSpace()))
+      if (!getNameSpace().equals(registry.getNameSpace()))
          return false;
 
-      if (this.isLogged != registry.isLogged)
+      if (isLogged != registry.isLogged)
          return false;
-      if (this.isSent != registry.isSent)
+      if (isSent != registry.isSent)
          return false;
-      if (this.disallowSending != registry.disallowSending)
+      if (disallowSending != registry.disallowSending)
          return false;
 
       for (YoVariable<?> variable : controlVars)
@@ -801,10 +808,10 @@ public class YoVariableRegistry implements YoVariableHolder
          }
       }
 
-      if (this.children.size() != registry.children.size())
+      if (children.size() != registry.children.size())
          return false;
 
-      for (YoVariableRegistry child : this.children)
+      for (YoVariableRegistry child : children)
       {
          YoVariableRegistry matchingChild = getRegistryWithSameNameSpace(registry.children, child);
          if (!child.areEqual(matchingChild))
@@ -816,7 +823,7 @@ public class YoVariableRegistry implements YoVariableHolder
       return true;
    }
 
-   private static YoVariable<?> getVariableWithSameName(ArrayList<YoVariable<?>> variables, YoVariable<?> variableToMatch)
+   private static YoVariable<?> getVariableWithSameName(List<YoVariable<?>> variables, YoVariable<?> variableToMatch)
    {
       for (YoVariable<?> variable : variables)
       {
@@ -827,7 +834,7 @@ public class YoVariableRegistry implements YoVariableHolder
       return null;
    }
 
-   private static YoVariableRegistry getRegistryWithSameNameSpace(ArrayList<YoVariableRegistry> registries, YoVariableRegistry registryToMatch)
+   private static YoVariableRegistry getRegistryWithSameNameSpace(List<YoVariableRegistry> registries, YoVariableRegistry registryToMatch)
    {
       for (YoVariableRegistry registry : registries)
       {
@@ -842,7 +849,7 @@ public class YoVariableRegistry implements YoVariableHolder
 
    private void verifyDoNotHaveBothParentAndYoVariableRegistryChangedListeners()
    {
-      if ((parent != null) && (yoVariableRegistryChangedListeners != null))
+      if (parent != null && yoVariableRegistryChangedListeners != null)
       {
          throw new RuntimeException("Only root YoVariableRegistries should have listeners. This registry does! YoVariableRegistry = " + this);
       }
@@ -903,8 +910,8 @@ public class YoVariableRegistry implements YoVariableHolder
          }
       }
    }
-   
-   private void getAllParametersIncludingDescendantsRecursively(ArrayList<YoParameter<?>> parameters)
+
+   private void getAllParametersIncludingDescendantsRecursively(List<YoParameter<?>> parameters)
    {
       // Add ours:
       parameters.addAll(this.parameters);
@@ -916,50 +923,49 @@ public class YoVariableRegistry implements YoVariableHolder
       }
    }
 
-   
    /**
     * Recursively get all parameters in this and underlying registries
-    * 
+    *
     * @return list of all parameters in this registry and decendants
     */
    public List<YoParameter<?>> getAllParameters()
    {
-      ArrayList<YoParameter<?>> parameters = new ArrayList<>();
+      List<YoParameter<?>> parameters = new ArrayList<>();
       getAllParametersIncludingDescendantsRecursively(parameters);
-      
+
       return parameters;
    }
-   
+
    /**
     * Get all parameters in this registry
-    * 
+    *
     * @return unmodifiable list of all parameters in this registry
     */
    public List<YoParameter<?>> getParametersInThisRegistry()
    {
-      return Collections.unmodifiableList(this.parameters);
+      return Collections.unmodifiableList(parameters);
    }
-   
-   /** 
+
+   /**
     * Checks if this registry or its children have parameters registered
-    * 
+    *
     * @return true if this registry or its children have parameters registered
     */
    public boolean getIfRegistryOrChildrenHaveParameters()
    {
-      if(!this.parameters.isEmpty())
+      if (!parameters.isEmpty())
       {
          return true;
       }
-      
-      for(int i = 0; i < this.children.size(); i++)
+
+      for (int i = 0; i < children.size(); i++)
       {
-         if(this.children.get(i).getIfRegistryOrChildrenHaveParameters())
+         if (children.get(i).getIfRegistryOrChildrenHaveParameters())
          {
             return true;
          }
       }
-      
+
       return false;
    }
 
@@ -982,13 +988,13 @@ public class YoVariableRegistry implements YoVariableHolder
          parameters.clear();
          parameters = null;
       }
-      
+
       if (parametersHashMap != null)
       {
          parametersHashMap.clear();
          parametersHashMap = null;
       }
-      
+
       if (children != null)
       {
          for (YoVariableRegistry child : children)
@@ -1015,7 +1021,7 @@ public class YoVariableRegistry implements YoVariableHolder
 
    public static void printSizeRecursively(int minVariablesToPrint, int minChildrenToPrint, YoVariableRegistry root)
    {
-      ArrayList<YoVariableRegistry> registriesOfInterest = new ArrayList<>();
+      List<YoVariableRegistry> registriesOfInterest = new ArrayList<>();
       int totalVariables = collectRegistries(minVariablesToPrint, minChildrenToPrint, root, registriesOfInterest);
       Collections.sort(registriesOfInterest, new Comparator<YoVariableRegistry>()
       {
@@ -1041,7 +1047,7 @@ public class YoVariableRegistry implements YoVariableHolder
    }
 
    private static int collectRegistries(int minVariablesToPrint, int minChildrenToPrint, YoVariableRegistry registry,
-         ArrayList<YoVariableRegistry> registriesOfInterest)
+                                        List<YoVariableRegistry> registriesOfInterest)
    {
       int variables = registry.getNumberOfYoVariables();
       int children = registry.getChildren().size();
@@ -1053,8 +1059,7 @@ public class YoVariableRegistry implements YoVariableHolder
       for (int childIdx = 0; childIdx < children; childIdx++)
       {
          YoVariableRegistry childRegistry = registry.getChildren().get(childIdx);
-         totalNumberOfVariables += YoVariableRegistry.collectRegistries(minVariablesToPrint, minChildrenToPrint, childRegistry,
-               registriesOfInterest);
+         totalNumberOfVariables += YoVariableRegistry.collectRegistries(minVariablesToPrint, minChildrenToPrint, childRegistry, registriesOfInterest);
       }
 
       return totalNumberOfVariables;

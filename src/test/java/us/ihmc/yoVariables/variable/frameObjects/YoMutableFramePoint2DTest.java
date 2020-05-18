@@ -1,6 +1,9 @@
 package us.ihmc.yoVariables.variable.frameObjects;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static us.ihmc.euclid.EuclidTestConstants.ITERATIONS;
 
 import java.lang.reflect.Method;
@@ -11,6 +14,7 @@ import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
+import us.ihmc.euclid.referenceFrame.FramePoint2D;
 import us.ihmc.euclid.referenceFrame.FramePoint3D;
 import us.ihmc.euclid.referenceFrame.FrameTuple2DBasicsTest;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
@@ -257,7 +261,7 @@ public class YoMutableFramePoint2DTest extends FrameTuple2DBasicsTest<YoMutableF
 
       for (int i = 0; i < ITERATIONS; i++)
       {
-         Point2D expected = EuclidCoreRandomTools.nextPoint2D(random, -1.0e15, 1.0e15);
+         FramePoint2D expected = EuclidFrameRandomTools.nextFramePoint2D(random, worldFrame, -1.0e15, 1.0e15);
          YoMutableFramePoint2D actual = new YoMutableFramePoint2D("", "", null, worldFrame, expected);
 
          assertEquals(expected.hashCode(), actual.hashCode());
