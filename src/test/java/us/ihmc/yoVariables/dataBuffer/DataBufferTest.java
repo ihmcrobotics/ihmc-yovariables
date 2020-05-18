@@ -5,6 +5,7 @@ import static us.ihmc.robotics.Assert.assertFalse;
 import static us.ihmc.robotics.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import org.junit.jupiter.api.AfterEach;
@@ -276,7 +277,7 @@ public class DataBufferTest
       expectedArrayOfVariables.add(yoInteger);
       expectedArrayOfVariables.add(yoEnum);
 
-      ArrayList<YoVariable<?>> actualArrayOfVariables = dataBuffer.getAllVariables();
+      List<YoVariable<?>> actualArrayOfVariables = dataBuffer.getAllVariables();
 
       for (int i = 0; i < actualArrayOfVariables.size(); i++)
       {
@@ -462,7 +463,7 @@ public class DataBufferTest
    @Test // timeout = 300000
    public void testGetVariablesTwo() //Luke Morris
    {
-      ArrayList<YoVariable<?>> variables = dataBuffer.getVariables();
+      List<YoVariable<?>> variables = dataBuffer.getVariables();
       //    return dataBuffer.toString();
       //    return variables.toString();
    }
@@ -486,37 +487,37 @@ public class DataBufferTest
       String[] allRegularExpressions = {".*"};
       String[] cRegularExpressions = {"c.*"};
 
-      ArrayList<YoVariable<?>> both = dataBuffer.getVars(varNames, allRegularExpressions);
+      List<YoVariable<?>> both = dataBuffer.getVars(varNames, allRegularExpressions);
 
       assertTrue(both.contains(a));
       assertTrue(both.contains(b));
       assertTrue(both.contains(c));
 
-      ArrayList<YoVariable<?>> justNames = dataBuffer.getVars(varNames, null);
+      List<YoVariable<?>> justNames = dataBuffer.getVars(varNames, null);
 
       assertTrue(justNames.contains(a));
       assertTrue(justNames.contains(b));
       assertTrue(justNames.contains(c));
 
-      ArrayList<YoVariable<?>> justA = dataBuffer.getVars(aNames, null);
+      List<YoVariable<?>> justA = dataBuffer.getVars(aNames, null);
 
       assertTrue(justA.contains(a));
       assertFalse(justA.contains(b));
       assertFalse(justA.contains(c));
 
-      ArrayList<YoVariable<?>> justRegExp = dataBuffer.getVars(null, allRegularExpressions);
+      List<YoVariable<?>> justRegExp = dataBuffer.getVars(null, allRegularExpressions);
 
       assertTrue(justRegExp.contains(a));
       assertTrue(justRegExp.contains(b));
       assertTrue(justRegExp.contains(c));
 
-      ArrayList<YoVariable<?>> cRegExp = dataBuffer.getVars(null, cRegularExpressions);
+      List<YoVariable<?>> cRegExp = dataBuffer.getVars(null, cRegularExpressions);
 
       assertFalse(cRegExp.contains(a));
       assertFalse(cRegExp.contains(b));
       assertTrue(cRegExp.contains(c));
 
-      ArrayList<YoVariable<?>> neither = dataBuffer.getVars(null, null);
+      List<YoVariable<?>> neither = dataBuffer.getVars(null, null);
 
       assertFalse(neither.contains(a));
       assertFalse(neither.contains(b));
@@ -553,14 +554,14 @@ public class DataBufferTest
       dataBuffer.addEntry(bBuffer);
       dataBuffer.addEntry(cBuffer);
 
-      ArrayList<YoVariable<?>> withVariables = dataBuffer.getVariables();
+      List<YoVariable<?>> withVariables = dataBuffer.getVariables();
 
       //      System.out.println(withVariables.size());
       assertTrue(withVariables.size() > 0);
 
       dataBuffer.resetDataBuffer();
 
-      ArrayList<YoVariable<?>> resetVariables = dataBuffer.getVariables();
+      List<YoVariable<?>> resetVariables = dataBuffer.getVariables();
 
       //      System.out.println(resetVariables.size());
       //      assertTrue(resetVariables.size() == 0);
@@ -584,7 +585,7 @@ public class DataBufferTest
       Random random = new Random(574893);
       fillDataBufferWithRandomData(random);
 
-      ArrayList<DataBufferEntry> entries = dataBuffer.getEntries();
+      List<DataBufferEntry> entries = dataBuffer.getEntries();
 
       // check that each point for each entry is filled with random data
       for (int i = 0; i < entries.size(); i++)
@@ -656,8 +657,8 @@ public class DataBufferTest
          int newStartLocation = random.nextInt(testBufferSize);
          dataBuffer.packData(newStartLocation);
 
-         ArrayList<DataBufferEntry> entries = dataBuffer.getEntries();
-         ArrayList<DataBufferEntry> entriesClone = dataBufferClone.getEntries();
+         List<DataBufferEntry> entries = dataBuffer.getEntries();
+         List<DataBufferEntry> entriesClone = dataBufferClone.getEntries();
          for (int j = 0; j < dataBuffer.getEntries().size(); j++)
          {
             DataBufferEntry entry = entries.get(j);
@@ -1005,7 +1006,7 @@ public class DataBufferTest
          @Override
          public YoDouble[] getVariablesOfInterest(YoVariableHolder yoVariableHolder)
          {
-            ArrayList<YoVariable<?>> variables = yoVariableHolder.getVariables(registryOfInterestNameSpace);
+            List<YoVariable<?>> variables = yoVariableHolder.getVariables(registryOfInterestNameSpace);
             YoDouble[] ret = new YoDouble[variables.size()];
             for (int i = 0; i < ret.length; i++)
             {

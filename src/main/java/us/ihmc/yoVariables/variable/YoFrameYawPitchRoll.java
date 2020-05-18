@@ -6,7 +6,7 @@ import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameYawPitchRollBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameOrientation3DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameYawPitchRollReadOnly;
-import us.ihmc.euclid.tools.EuclidCoreIOTools;
+import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.yoVariables.listener.VariableChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
@@ -210,32 +210,22 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
    @Override
    public boolean equals(Object object)
    {
-      if (object == this)
-      {
-         return true;
-      }
-      else if (object instanceof FrameYawPitchRollReadOnly)
-      {
+      if (object instanceof FrameYawPitchRollReadOnly)
          return FixedFrameYawPitchRollBasics.super.equals((FrameYawPitchRollReadOnly) object);
-      }
       else
-      {
          return false;
-      }
    }
 
    @Override
    public int hashCode()
    {
-      long bits = EuclidHashCodeTools.addToHashCode(1L, getYaw());
-      bits = EuclidHashCodeTools.addToHashCode(bits, getPitch());
-      bits = EuclidHashCodeTools.addToHashCode(bits, getRoll());
+      long bits = EuclidHashCodeTools.addToHashCode(EuclidHashCodeTools.toLongHashCode(getYaw(), getPitch(), getRoll()), referenceFrame);
       return EuclidHashCodeTools.toIntHashCode(bits);
    }
 
    @Override
    public String toString()
    {
-      return EuclidCoreIOTools.getYawPitchRollString(this) + "-" + getReferenceFrame().getName();
+      return EuclidFrameIOTools.getFrameYawPitchRollString(this);
    }
 }

@@ -1,6 +1,5 @@
 package us.ihmc.yoVariables.variable;
 
-import us.ihmc.euclid.geometry.tools.EuclidGeometryIOTools;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.exceptions.ReferenceFrameMismatchException;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFramePose3DBasics;
@@ -8,6 +7,8 @@ import us.ihmc.euclid.referenceFrame.interfaces.FramePoint3DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FramePose3DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameQuaternionReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple3DReadOnly;
+import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
+import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.yoVariables.listener.VariableChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
@@ -241,6 +242,21 @@ public class YoFramePose3D implements FixedFramePose3DBasics
    @Override
    public String toString()
    {
-      return EuclidGeometryIOTools.getPose3DString(this) + "-" + getReferenceFrame();
+      return EuclidFrameIOTools.getFramePose3DString(this);
+   }
+
+   @Override
+   public boolean equals(Object object)
+   {
+      if (object instanceof FramePose3DReadOnly)
+         return equals((FramePose3DReadOnly) object);
+      else
+         return false;
+   }
+
+   @Override
+   public int hashCode()
+   {
+      return EuclidHashCodeTools.toIntHashCode(getPosition(), getOrientation());
    }
 }

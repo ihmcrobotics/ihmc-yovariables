@@ -7,7 +7,7 @@ import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameQuaternionBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameQuaternionReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple4DReadOnly;
-import us.ihmc.euclid.tools.EuclidCoreIOTools;
+import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.tuple3D.interfaces.Vector3DReadOnly;
 import us.ihmc.euclid.tuple4D.interfaces.QuaternionReadOnly;
@@ -172,12 +172,7 @@ public class YoMutableFrameQuaternion extends YoMutableFrameObject implements Fr
    @Override
    public int hashCode()
    {
-      long bits = 1L;
-      bits = EuclidHashCodeTools.addToHashCode(bits, getX());
-      bits = EuclidHashCodeTools.addToHashCode(bits, getY());
-      bits = EuclidHashCodeTools.addToHashCode(bits, getZ());
-      bits = EuclidHashCodeTools.addToHashCode(bits, getS());
-      return EuclidHashCodeTools.toIntHashCode(bits);
+      return EuclidHashCodeTools.toIntHashCode(EuclidHashCodeTools.toIntHashCode(getX(), getY(), getZ(), getS()), getReferenceFrame());
    }
 
    @Override
@@ -192,6 +187,6 @@ public class YoMutableFrameQuaternion extends YoMutableFrameObject implements Fr
    @Override
    public String toString()
    {
-      return EuclidCoreIOTools.getTuple4DString(this) + "-" + getReferenceFrame();
+      return EuclidFrameIOTools.getFrameTuple4DString(this);
    }
 }

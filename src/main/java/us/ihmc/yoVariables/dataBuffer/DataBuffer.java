@@ -3,6 +3,8 @@ package us.ihmc.yoVariables.dataBuffer;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import us.ihmc.yoVariables.listener.RewoundListener;
 import us.ihmc.yoVariables.variable.YoDouble;
@@ -22,18 +24,18 @@ public class DataBuffer extends YoVariableHolderImplementation
    private int index = 0;
    private int maxBufferSize = 16384;
    private int outPoint = 0;
-   private ArrayList<RewoundListener> simulationRewoundListeners = null;
+   private List<RewoundListener> simulationRewoundListeners = null;
    private YoDouble t = null;
-   private final LinkedHashSet<YoVariable<?>> yoVariableSet = new LinkedHashSet<>();
+   private final Set<YoVariable<?>> yoVariableSet = new LinkedHashSet<>();
    private boolean wrapBuffer = false; // Default to Expand, not Wrap!  true;
 
    public KeyPoints keyPoints = new KeyPoints();
-   private ArrayList<DataBufferListener> dataBufferListeners = new ArrayList<>();
+   private List<DataBufferListener> dataBufferListeners = new ArrayList<>();
    private int bufferSize;
    private ArrayList<DataBufferEntry> entries;
-   private ArrayList<IndexChangedListener> indexChangedListeners;
+   private List<IndexChangedListener> indexChangedListeners;
 
-   public ArrayList<ToggleKeyPointModeCommandListener> toggleKeyPointModeCommandListeners = new ArrayList<>();
+   public List<ToggleKeyPointModeCommandListener> toggleKeyPointModeCommandListeners = new ArrayList<>();
 
    private boolean clearing = false;
 
@@ -112,7 +114,7 @@ public class DataBuffer extends YoVariableHolderImplementation
       addVariable(newVariable, bufferSize);
    }
 
-   public void addVariables(ArrayList<YoVariable<?>> variables)
+   public void addVariables(List<YoVariable<?>> variables)
    {
       entries.ensureCapacity(entries.size() + variables.size()); // do this first so that 'entries' will only have to grow once.
 
@@ -131,7 +133,7 @@ public class DataBuffer extends YoVariableHolderImplementation
       dataBufferListeners.add(dataBufferListener);
    }
 
-   public ArrayList<YoVariable<?>> getVariablesThatContain(String searchString, boolean caseSensitive, ArrayList<YoVariable<?>> currentlyMatched)
+   public List<YoVariable<?>> getVariablesThatContain(String searchString, boolean caseSensitive, List<YoVariable<?>> currentlyMatched)
    {
       ArrayList<YoVariable<?>> ret = null;
 
@@ -161,7 +163,7 @@ public class DataBuffer extends YoVariableHolderImplementation
       return ret;
    }
 
-   public ArrayList<YoVariable<?>> getVariablesThatStartWith(String searchString)
+   public List<YoVariable<?>> getVariablesThatStartWith(String searchString)
    {
       ArrayList<YoVariable<?>> ret = null;
 
@@ -215,12 +217,12 @@ public class DataBuffer extends YoVariableHolderImplementation
       return null;
    }
 
-   public ArrayList<DataBufferEntry> getEntries()
+   public List<DataBufferEntry> getEntries()
    {
       return entries;
    }
 
-   public ArrayList<YoVariable<?>> getVariables()
+   public List<YoVariable<?>> getVariables()
    {
       ArrayList<YoVariable<?>> ret = new ArrayList<>(entries.size());
 
@@ -234,7 +236,7 @@ public class DataBuffer extends YoVariableHolderImplementation
       return ret;
    }
 
-   public ArrayList<YoVariable<?>> getVars(String[] varNames, String[] regularExpressions)
+   public List<YoVariable<?>> getVars(String[] varNames, String[] regularExpressions)
    {
       YoVariableList tempList = new YoVariableList("temp");
 
@@ -624,7 +626,7 @@ public class DataBuffer extends YoVariableHolderImplementation
     *
     * @return The current KeyPoints as an ArrayList of Integer
     */
-   public ArrayList<Integer> getKeyPoints()
+   public List<Integer> getKeyPoints()
    {
       // only return point in the cropped data
       return keyPoints.getPoints();
@@ -670,7 +672,7 @@ public class DataBuffer extends YoVariableHolderImplementation
       }
    }
 
-   public void attachSimulationRewoundListeners(ArrayList<RewoundListener> simulationRewoundListeners)
+   public void attachSimulationRewoundListeners(List<RewoundListener> simulationRewoundListeners)
    {
       for (RewoundListener simulationRewoundListener : simulationRewoundListeners)
       {
@@ -976,7 +978,7 @@ public class DataBuffer extends YoVariableHolderImplementation
       return keyPoints.getPreviousTime(index);
    }
 
-   public ArrayList<YoVariable<?>> getVariablesThatStartWith(String searchString, boolean caseSensitive)
+   public List<YoVariable<?>> getVariablesThatStartWith(String searchString, boolean caseSensitive)
    {
       ArrayList<YoVariable<?>> ret = null;
 

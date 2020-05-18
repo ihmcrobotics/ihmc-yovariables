@@ -4,7 +4,7 @@ import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple2DBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple2DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple3DReadOnly;
-import us.ihmc.euclid.tools.EuclidCoreIOTools;
+import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.transform.RigidBodyTransform;
 import us.ihmc.euclid.tuple2D.interfaces.Tuple2DReadOnly;
@@ -130,7 +130,7 @@ public abstract class YoMutableFrameTuple2D extends YoMutableFrameObject impleme
    @Override
    public String toString()
    {
-      return EuclidCoreIOTools.getTuple2DString(this) + "-" + getReferenceFrame();
+      return EuclidFrameIOTools.getFrameTuple2DString(this);
    }
 
    @Override
@@ -145,9 +145,6 @@ public abstract class YoMutableFrameTuple2D extends YoMutableFrameObject impleme
    @Override
    public int hashCode()
    {
-      long bits = 1L;
-      bits = EuclidHashCodeTools.addToHashCode(bits, getX());
-      bits = EuclidHashCodeTools.addToHashCode(bits, getY());
-      return EuclidHashCodeTools.toIntHashCode(bits);
+      return EuclidHashCodeTools.toIntHashCode(EuclidHashCodeTools.toIntHashCode(getX(), getY()), getReferenceFrame());
    }
 }

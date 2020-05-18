@@ -4,7 +4,7 @@ import static us.ihmc.robotics.Assert.assertEquals;
 import static us.ihmc.robotics.Assert.assertNull;
 import static us.ihmc.robotics.Assert.assertTrue;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -151,7 +151,7 @@ public class YoVariableHolderImplementationTest
    public void testGetVariables()
    {
       NameSpace nameSpace = new NameSpace("robot.registryA");
-      ArrayList<YoVariable<?>> variables = yoVariableHolderImplementation.getVariables(nameSpace);
+      List<YoVariable<?>> variables = yoVariableHolderImplementation.getVariables(nameSpace);
       assertEquals(3, variables.size());
 
       nameSpace = new NameSpace("robot.registryB");
@@ -179,7 +179,7 @@ public class YoVariableHolderImplementationTest
    @Test // timeout=300000
    public void testGetVariables1()
    {
-      ArrayList<YoVariable<?>> variables = yoVariableHolderImplementation.getVariables("variableOne");
+      List<YoVariable<?>> variables = yoVariableHolderImplementation.getVariables("variableOne");
       boolean aFound = false, bFound = false, cFound = false, c2Found = false;
 
       for (YoVariable<?> variable : variables)
@@ -210,7 +210,7 @@ public class YoVariableHolderImplementationTest
    @Test // timeout=300000
    public void testGetVariables2()
    {
-      ArrayList<YoVariable<?>> variables = yoVariableHolderImplementation.getVariables("robot.registryA", "variableOne");
+      List<YoVariable<?>> variables = yoVariableHolderImplementation.getVariables("robot.registryA", "variableOne");
       assertEquals(1, variables.size());
 
       variables = yoVariableHolderImplementation.getVariables("robot", "variableOne");

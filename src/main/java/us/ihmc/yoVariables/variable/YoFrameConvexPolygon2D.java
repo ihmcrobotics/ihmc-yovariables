@@ -6,13 +6,15 @@ import java.util.List;
 
 import us.ihmc.euclid.geometry.BoundingBox2D;
 import us.ihmc.euclid.geometry.interfaces.BoundingBox2DBasics;
-import us.ihmc.euclid.geometry.tools.EuclidGeometryIOTools;
 import us.ihmc.euclid.geometry.tools.EuclidGeometryPolygonTools;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameConvexPolygon2DBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFramePoint2DBasics;
+import us.ihmc.euclid.referenceFrame.interfaces.FrameConvexPolygon2DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FramePoint2DReadOnly;
+import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidCoreIOTools;
+import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.transform.RigidBodyTransform;
 import us.ihmc.euclid.tuple2D.interfaces.Point2DReadOnly;
 import us.ihmc.euclid.tuple3D.Point3D;
@@ -425,6 +427,23 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
    @Override
    public String toString()
    {
-      return EuclidGeometryIOTools.getConvexPolygon2DString(this) + "-" + referenceFrame;
+      return EuclidFrameIOTools.getFrameConvexPolygon2DString(this);
+   }
+
+   @Override
+   public boolean equals(Object object)
+   {
+      if (object instanceof FrameConvexPolygon2DReadOnly)
+         return equals((FrameConvexPolygon2DReadOnly) object);
+      else
+         return false;
+   }
+
+   @Override
+   public int hashCode()
+   {
+      long bits = EuclidHashCodeTools.addToHashCode(Boolean.hashCode(clockwiseOrdered), vertexBufferView);
+      bits = EuclidHashCodeTools.addToHashCode(bits, referenceFrame);
+      return EuclidHashCodeTools.toIntHashCode(bits);
    }
 }

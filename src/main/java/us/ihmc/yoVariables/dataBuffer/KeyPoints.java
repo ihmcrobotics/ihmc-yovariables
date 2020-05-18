@@ -1,13 +1,14 @@
 package us.ihmc.yoVariables.dataBuffer;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author jcarff
  */
 public class KeyPoints
 {
-   ArrayList<Integer> keyPoints = new ArrayList<>();
+   List<Integer> keyPoints = new ArrayList<>();
    boolean toggleKeyPoints = false;
    boolean DEBUG = false;
 
@@ -121,7 +122,7 @@ public class KeyPoints
       return toggleKeyPoints;
    }
 
-   public ArrayList<Integer> getPoints()
+   public List<Integer> getPoints()
    {
       return keyPoints;
    }

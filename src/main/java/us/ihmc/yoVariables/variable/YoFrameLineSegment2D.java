@@ -1,10 +1,12 @@
 package us.ihmc.yoVariables.variable;
 
-import us.ihmc.euclid.geometry.tools.EuclidGeometryIOTools;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.exceptions.ReferenceFrameMismatchException;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameLineSegment2DBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFramePoint2DBasics;
+import us.ihmc.euclid.referenceFrame.interfaces.FrameLineSegment2DReadOnly;
+import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
+import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 /**
@@ -164,6 +166,21 @@ public class YoFrameLineSegment2D implements FixedFrameLineSegment2DBasics
    @Override
    public String toString()
    {
-      return EuclidGeometryIOTools.getLineSegment2DString(this) + "-" + getReferenceFrame();
+      return EuclidFrameIOTools.getFrameLineSegment2DString(this);
+   }
+
+   @Override
+   public boolean equals(Object object)
+   {
+      if (object instanceof FrameLineSegment2DReadOnly)
+         return equals((FrameLineSegment2DReadOnly) object);
+      else
+         return false;
+   }
+
+   @Override
+   public int hashCode()
+   {
+      return EuclidHashCodeTools.toIntHashCode(getFirstEndpoint(), getSecondEndpoint());
    }
 }

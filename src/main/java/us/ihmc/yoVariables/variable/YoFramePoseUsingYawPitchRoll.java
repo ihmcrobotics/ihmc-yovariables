@@ -2,7 +2,6 @@ package us.ihmc.yoVariables.variable;
 
 import us.ihmc.euclid.geometry.interfaces.Pose2DReadOnly;
 import us.ihmc.euclid.geometry.interfaces.Pose3DReadOnly;
-import us.ihmc.euclid.geometry.tools.EuclidGeometryIOTools;
 import us.ihmc.euclid.interfaces.Clearable;
 import us.ihmc.euclid.interfaces.Transformable;
 import us.ihmc.euclid.orientation.interfaces.Orientation2DReadOnly;
@@ -20,6 +19,7 @@ import us.ihmc.euclid.referenceFrame.interfaces.FramePose3DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameQuaternionReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple2DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple3DReadOnly;
+import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.tools.RotationMatrixTools;
 import us.ihmc.euclid.tools.YawPitchRollTools;
@@ -1122,39 +1122,34 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
 
    public boolean equals(YoFramePoseUsingYawPitchRoll other)
    {
-      return position.equals(other.position) && yawPitchRoll.equals(other.yawPitchRoll);
+      if (other == null)
+         return false;
+      else if (other == this)
+         return true;
+      else
+         return position.equals(other.position) && yawPitchRoll.equals(other.yawPitchRoll);
    }
 
    @Override
    public boolean equals(Object object)
    {
-      if (object == this)
-      {
-         return true;
-      }
-      else if (object instanceof YoFramePoseUsingYawPitchRoll)
-      {
+      if (object instanceof YoFramePoseUsingYawPitchRoll)
          return equals((YoFramePoseUsingYawPitchRoll) object);
-      }
       else if (object instanceof FramePose3DReadOnly)
-      {
          return FramePose3DReadOnly.super.equals((FramePose3DReadOnly) object);
-      }
       else
-      {
          return false;
-      }
-   }
-
-   @Override
-   public int hashCode()
-   {
-      return EuclidHashCodeTools.toIntHashCode(EuclidHashCodeTools.combineHashCode(position.hashCode(), getOrientation().hashCode()));
    }
 
    @Override
    public String toString()
    {
-      return EuclidGeometryIOTools.getPose3DString(this) + "-" + getReferenceFrame();
+      return EuclidFrameIOTools.getFramePose3DString(this);
+   }
+
+   @Override
+   public int hashCode()
+   {
+      return EuclidHashCodeTools.toIntHashCode(getPosition(), getOrientation());
    }
 }

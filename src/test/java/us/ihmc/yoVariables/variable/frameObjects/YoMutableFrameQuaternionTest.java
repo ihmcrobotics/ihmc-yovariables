@@ -20,6 +20,7 @@ import us.ihmc.euclid.EuclidTestConstants;
 import us.ihmc.euclid.axisAngle.AxisAngle;
 import us.ihmc.euclid.axisAngle.interfaces.AxisAngleReadOnly;
 import us.ihmc.euclid.matrix.interfaces.RotationMatrixReadOnly;
+import us.ihmc.euclid.referenceFrame.FrameQuaternion;
 import us.ihmc.euclid.referenceFrame.FrameQuaternionReadOnlyTest;
 import us.ihmc.euclid.referenceFrame.FrameVector3D;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
@@ -576,7 +577,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
 
       for (int i = 0; i < ITERATIONS; i++)
       {
-         Quaternion expected = EuclidCoreRandomTools.nextQuaternion(random);
+         FrameQuaternion expected = EuclidFrameRandomTools.nextFrameQuaternion(random, worldFrame);
          YoMutableFrameQuaternion actual = new YoMutableFrameQuaternion("", "", null, worldFrame, expected);
 
          assertEquals(expected.hashCode(), actual.hashCode());

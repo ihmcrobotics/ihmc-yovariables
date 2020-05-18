@@ -2,7 +2,9 @@ package us.ihmc.yoVariables.variable;
 
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameQuaternionBasics;
-import us.ihmc.euclid.tools.EuclidCoreIOTools;
+import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple4DReadOnly;
+import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
+import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.yoVariables.listener.VariableChangedListener;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
 import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
@@ -221,6 +223,21 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
       return new YoFrameQuaternion(x, y, z, s, getReferenceFrame());
    }
 
+   @Override
+   public int hashCode()
+   {
+      return EuclidHashCodeTools.toIntHashCode(EuclidHashCodeTools.toIntHashCode(getX(), getY(), getZ(), getS()), getReferenceFrame());
+   }
+
+   @Override
+   public boolean equals(Object object)
+   {
+      if (object instanceof FrameTuple4DReadOnly)
+         return equals((FrameTuple4DReadOnly) object);
+      else
+         return false;
+   }
+
    /**
     * Provides a {@code String} representation of {@code this} as follows: (qx, qy, qz, qs)-worldFrame.
     *
@@ -229,6 +246,6 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
    @Override
    public String toString()
    {
-      return EuclidCoreIOTools.getTuple4DString(this) + "-" + getReferenceFrame();
+      return EuclidFrameIOTools.getFrameTuple4DString(this);
    }
 }

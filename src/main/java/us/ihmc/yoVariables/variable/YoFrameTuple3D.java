@@ -2,20 +2,16 @@ package us.ihmc.yoVariables.variable;
 
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameTuple3DBasics;
-import us.ihmc.euclid.tools.EuclidCoreIOTools;
-import us.ihmc.yoVariables.listener.VariableChangedListener;
+import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple3DReadOnly;
+import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
+import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
-import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
 
 /**
  * {@code FixedFrameTuple3DBasics} abstract implementation backed with {@code YoDouble}s.
  */
-public abstract class YoFrameTuple3D implements FixedFrameTuple3DBasics
+public abstract class YoFrameTuple3D extends YoTuple3D implements FixedFrameTuple3DBasics
 {
-   private final String namePrefix;
-   private final String nameSuffix;
-
-   private final YoDouble x, y, z;
    private final ReferenceFrame referenceFrame;
 
    /**
@@ -29,12 +25,7 @@ public abstract class YoFrameTuple3D implements FixedFrameTuple3DBasics
     */
    public YoFrameTuple3D(YoDouble xVariable, YoDouble yVariable, YoDouble zVariable, ReferenceFrame referenceFrame)
    {
-      namePrefix = YoFrameVariableNameTools.getCommonPrefix(xVariable.getName(), yVariable.getName(), zVariable.getName());
-      nameSuffix = YoFrameVariableNameTools.getCommonSuffix(xVariable.getName(), yVariable.getName(), zVariable.getName());
-
-      x = xVariable;
-      y = yVariable;
-      z = zVariable;
+      super(xVariable, yVariable, zVariable);
       this.referenceFrame = referenceFrame;
    }
 
@@ -47,7 +38,8 @@ public abstract class YoFrameTuple3D implements FixedFrameTuple3DBasics
     */
    public YoFrameTuple3D(String namePrefix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
    {
-      this(namePrefix, "", referenceFrame, registry);
+      super(namePrefix, registry);
+      this.referenceFrame = referenceFrame;
    }
 
    /**
@@ -60,34 +52,8 @@ public abstract class YoFrameTuple3D implements FixedFrameTuple3DBasics
     */
    public YoFrameTuple3D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
    {
-      this.namePrefix = namePrefix;
-      this.nameSuffix = nameSuffix;
-
-      x = new YoDouble(YoFrameVariableNameTools.createXName(namePrefix, nameSuffix), registry);
-      y = new YoDouble(YoFrameVariableNameTools.createYName(namePrefix, nameSuffix), registry);
-      z = new YoDouble(YoFrameVariableNameTools.createZName(namePrefix, nameSuffix), registry);
+      super(namePrefix, nameSuffix, registry);
       this.referenceFrame = referenceFrame;
-   }
-
-   /** {@inheritDoc} */
-   @Override
-   public void setX(double x)
-   {
-      this.x.set(x);
-   }
-
-   /** {@inheritDoc} */
-   @Override
-   public void setY(double y)
-   {
-      this.y.set(y);
-   }
-
-   /** {@inheritDoc} */
-   @Override
-   public void setZ(double z)
-   {
-      this.z.set(z);
    }
 
    /** {@inheritDoc} */
@@ -95,97 +61,6 @@ public abstract class YoFrameTuple3D implements FixedFrameTuple3DBasics
    public ReferenceFrame getReferenceFrame()
    {
       return referenceFrame;
-   }
-
-   /** {@inheritDoc} */
-   @Override
-   public double getX()
-   {
-      return x.getDoubleValue();
-   }
-
-   /** {@inheritDoc} */
-   @Override
-   public double getY()
-   {
-      return y.getDoubleValue();
-   }
-
-   /** {@inheritDoc} */
-   @Override
-   public double getZ()
-   {
-      return z.getDoubleValue();
-   }
-
-   /**
-    * Gets the internal reference to the x-component used for this tuple.
-    *
-    * @return the x-component as {@code YoVariable}.
-    */
-   public final YoDouble getYoX()
-   {
-      return x;
-   }
-
-   /**
-    * Gets the internal reference to the y-component used for this tuple.
-    *
-    * @return the y-component as {@code YoVariable}.
-    */
-   public final YoDouble getYoY()
-   {
-      return y;
-   }
-
-   /**
-    * Gets the internal reference to the z-component used for this tuple.
-    *
-    * @return the z-component as {@code YoVariable}.
-    */
-   public final YoDouble getYoZ()
-   {
-      return z;
-   }
-
-   /**
-    * Notifies the {@code VariableChangedListener}s attached to {@code this}.
-    */
-   public void notifyVariableChangedListeners()
-   {
-      x.notifyVariableChangedListeners(); // No need to do it for all
-   }
-
-   /**
-    * Attaches a listener to {@code this} that is to be triggered when this tuple components change.
-    *
-    * @param variableChangedListener the listener to be attached.
-    */
-   public final void attachVariableChangedListener(VariableChangedListener variableChangedListener)
-   {
-      x.addVariableChangedListener(variableChangedListener);
-      y.addVariableChangedListener(variableChangedListener);
-      z.addVariableChangedListener(variableChangedListener);
-   }
-
-   /**
-    * The name prefix used at creation of this {@code this}.
-    *
-    * @return the name prefix {@code String}.
-    */
-   public String getNamePrefix()
-   {
-      return namePrefix;
-   }
-
-   /**
-    * The name suffix used at creation of this {@code this}.
-    *
-    * @return the name suffix {@code String}.
-    */
-   public String getNameSuffix()
-   {
-      return nameSuffix;
    }
 
    /**
@@ -196,6 +71,21 @@ public abstract class YoFrameTuple3D implements FixedFrameTuple3DBasics
    @Override
    public String toString()
    {
-      return EuclidCoreIOTools.getTuple3DString(this) + "-" + referenceFrame;
+      return EuclidFrameIOTools.getFrameTuple3DString(this);
+   }
+
+   @Override
+   public boolean equals(Object object)
+   {
+      if (object instanceof FrameTuple3DReadOnly)
+         return equals((FrameTuple3DReadOnly) object);
+      else
+         return false;
+   }
+
+   @Override
+   public int hashCode()
+   {
+      return EuclidHashCodeTools.toIntHashCode(EuclidHashCodeTools.toIntHashCode(getX(), getY(), getZ()), getReferenceFrame());
    }
 }
