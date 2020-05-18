@@ -5,8 +5,16 @@ import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 import java.util.Random;
 
+import org.junit.jupiter.api.BeforeAll;
+
 public class YoPoint2DTest extends Point2DBasicsTest<YoPoint2D>
 {
+   @BeforeAll
+   public static void disableStackTrack()
+   {
+      YoVariable.SAVE_STACK_TRACE = false;
+   }
+
    @Override
    public YoPoint2D createEmptyTuple()
    {

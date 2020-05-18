@@ -5,8 +5,16 @@ import us.ihmc.yoVariables.registry.YoVariableRegistry;
 
 import java.util.Random;
 
+import org.junit.jupiter.api.BeforeAll;
+
 public class YoQuaternionTest extends QuaternionBasicsTest<YoQuaternion>
 {
+   @BeforeAll
+   public static void disableStackTrack()
+   {
+      YoVariable.SAVE_STACK_TRACE = false;
+   }
+
    @Override
    public YoQuaternion createEmptyTuple()
    {
