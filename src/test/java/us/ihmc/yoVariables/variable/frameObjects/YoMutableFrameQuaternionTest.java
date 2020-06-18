@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 
-import org.ejml.data.DenseMatrix64F;
+import org.ejml.data.DMatrixRMaj;
 import org.junit.jupiter.api.Test;
 
 import us.ihmc.euclid.EuclidTestConstants;
@@ -126,10 +126,10 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
       }
 
       for (int i = 0; i < ITERATIONS; i++)
-      { // Test YoMutableFrameQuaternion(ReferenceFrame referenceFrame, DenseMatrix64F matrix)
+      { // Test YoMutableFrameQuaternion(ReferenceFrame referenceFrame, DMatrixRMaj matrix)
          ReferenceFrame randomFrame = EuclidFrameRandomTools.nextReferenceFrame(random);
          Quaternion randomQuaternion = EuclidCoreRandomTools.nextQuaternion(random);
-         DenseMatrix64F denseMatrix = new DenseMatrix64F(4, 1);
+         DMatrixRMaj denseMatrix = new DMatrixRMaj(4, 1);
          randomQuaternion.get(denseMatrix);
          YoMutableFrameQuaternion YoMutableFrameQuaternion = new YoMutableFrameQuaternion("", "", null, randomFrame, denseMatrix);
          assertTrue(YoMutableFrameQuaternion.getReferenceFrame() == randomFrame);

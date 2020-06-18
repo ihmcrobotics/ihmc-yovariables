@@ -6,7 +6,7 @@ plugins {
 
 ihmc {
    group = "us.ihmc"
-   version = "0.7.0"
+   version = "0.8.0"
    vcsUrl = "https://github.com/ihmcrobotics/ihmc-yovariables"
    openSource = true
    maintainer = "Georg Wiedebach (gwiedebach@ihmc.us)"
@@ -18,16 +18,15 @@ ihmc {
 
 dependencies {
    api("org.apache.commons:commons-math3:3.3")
-   api("org.apache.commons:commons-lang3:3.9")
    api("net.sf.trove4j:trove4j:3.0.3")
    api("jakarta.xml.bind:jakarta.xml.bind-api:2.3.2")
    api("org.glassfish.jaxb:jaxb-runtime:2.3.2")
 
-   api("us.ihmc:ihmc-commons:0.29.0")
-   api("us.ihmc:euclid-frame:0.14.2")
+   api("us.ihmc:ihmc-commons:0.30.0")
+   api("us.ihmc:euclid-frame:0.15.0")
 }
 
 testDependencies {
-   api("us.ihmc:ihmc-commons-testing:0.29.0")
-   api("us.ihmc:euclid-test:0.14.2")
+   api("us.ihmc:ihmc-commons-testing:0.30.0")
+   api("us.ihmc:euclid-test:0.15.0")
 }
