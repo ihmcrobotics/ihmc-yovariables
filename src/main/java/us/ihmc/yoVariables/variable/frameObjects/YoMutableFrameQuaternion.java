@@ -1,6 +1,6 @@
 package us.ihmc.yoVariables.variable.frameObjects;
 
-import org.ejml.data.DenseMatrix64F;
+import org.ejml.data.DMatrix;
 
 import us.ihmc.euclid.orientation.interfaces.Orientation3DReadOnly;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
@@ -43,7 +43,7 @@ public class YoMutableFrameQuaternion extends YoMutableFrameObject implements Fr
       setIncludingFrame(referenceFrame, tupleArray);
    }
 
-   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, DenseMatrix64F matrix)
+   public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, DMatrix matrix)
    {
       this(namePrefix, nameSuffix, registry);
       setIncludingFrame(referenceFrame, matrix);
