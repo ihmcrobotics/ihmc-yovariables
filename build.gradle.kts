@@ -24,10 +24,10 @@ dependencies {
    api("org.glassfish.jaxb:jaxb-runtime:2.3.2")
 
    api("us.ihmc:ihmc-commons:0.29.0")
-   api("us.ihmc:euclid-frame:0.14.2-ejml-0.39-beta-1")
+   api("us.ihmc:euclid-frame:0.15.0")
 }
 
 testDependencies {
    api("us.ihmc:ihmc-commons-testing:0.29.0")
-   api("us.ihmc:euclid-test:0.14.2-ejml-0.39-beta-1")
+   api("us.ihmc:euclid-test:0.15.0")
 }
