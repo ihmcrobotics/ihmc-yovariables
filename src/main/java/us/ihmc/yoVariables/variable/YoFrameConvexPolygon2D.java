@@ -416,7 +416,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
     */
    public YoFrameConvexPolygon2D duplicate(YoVariableRegistry newRegistry)
    {
-      YoInteger yoNumberOfVertices = (YoInteger) newRegistry.getVariable(numberOfVertices.getFullNameWithNameSpace());
+      YoInteger yoNumberOfVertices = (YoInteger) newRegistry.getYoVariable(numberOfVertices.getFullNameWithNameSpace());
       List<YoFramePoint2D> yoVertexBuffer = new ArrayList<>();
       for (int i = 0; i < vertexBuffer.size(); i++)
          yoVertexBuffer.add(vertexBuffer.get(i).duplicate(newRegistry));

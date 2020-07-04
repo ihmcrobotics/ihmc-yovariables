@@ -277,7 +277,7 @@ public class DataBufferTest
       expectedArrayOfVariables.add(yoInteger);
       expectedArrayOfVariables.add(yoEnum);
 
-      List<YoVariable<?>> actualArrayOfVariables = dataBuffer.getAllVariables();
+      List<YoVariable<?>> actualArrayOfVariables = dataBuffer.getYoVariables();
 
       for (int i = 0; i < actualArrayOfVariables.size(); i++)
       {
@@ -461,14 +461,6 @@ public class DataBufferTest
    }
 
    @Test // timeout = 300000
-   public void testGetVariablesTwo() //Luke Morris
-   {
-      List<YoVariable<?>> variables = dataBuffer.getVariables();
-      //    return dataBuffer.toString();
-      //    return variables.toString();
-   }
-
-   @Test // timeout = 300000
    public void testGetVars() //Luke Morris
 
    {
@@ -560,11 +552,6 @@ public class DataBufferTest
       assertTrue(withVariables.size() > 0);
 
       dataBuffer.resetDataBuffer();
-
-      List<YoVariable<?>> resetVariables = dataBuffer.getVariables();
-
-      //      System.out.println(resetVariables.size());
-      //      assertTrue(resetVariables.size() == 0);
    }
 
    @Test // timeout = 30000

@@ -2,9 +2,7 @@ package us.ihmc.yoVariables.dataBuffer;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import us.ihmc.yoVariables.listener.RewoundListener;
 import us.ihmc.yoVariables.variable.YoDouble;
@@ -26,7 +24,6 @@ public class DataBuffer extends YoVariableHolderImplementation
    private int outPoint = 0;
    private List<RewoundListener> simulationRewoundListeners = null;
    private YoDouble t = null;
-   private final Set<YoVariable<?>> yoVariableSet = new LinkedHashSet<>();
    private boolean wrapBuffer = false; // Default to Expand, not Wrap!  true;
 
    public KeyPoints keyPoints = new KeyPoints();
@@ -96,7 +93,6 @@ public class DataBuffer extends YoVariableHolderImplementation
    public DataBufferEntry addVariable(YoVariable<?> newVariable, int nPoints)
    {
       addVariableToHolder(newVariable);
-      yoVariableSet.add(newVariable);
 
       DataBufferEntry entry = new DataBufferEntry(newVariable, nPoints);
       addEntry(entry);

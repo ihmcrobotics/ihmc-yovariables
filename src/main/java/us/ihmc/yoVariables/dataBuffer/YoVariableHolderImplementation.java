@@ -17,36 +17,26 @@ import us.ihmc.yoVariables.variable.YoVariable;
  */
 public class YoVariableHolderImplementation implements YoVariableHolder
 {
-   private final Map<String, ArrayList<YoVariable<?>>> yoVariableSet = new LinkedHashMap<>();
+   private final Map<String, List<YoVariable<?>>> yoVariableSet = new LinkedHashMap<>();
 
    public YoVariableHolderImplementation()
    {
    }
 
    @Override
-   public List<YoVariable<?>> getAllVariables()
+   public List<YoVariable<?>> getYoVariables()
    {
-      ArrayList<YoVariable<?>> ret = new ArrayList<>();
+      List<YoVariable<?>> ret = new ArrayList<>();
 
-      Collection<ArrayList<YoVariable<?>>> variableLists = yoVariableSet.values();
+      Collection<List<YoVariable<?>>> variableLists = yoVariableSet.values();
 
-      for (ArrayList<YoVariable<?>> list : variableLists)
+      for (List<YoVariable<?>> list : variableLists)
       {
          for (YoVariable<?> variable : list)
          {
             ret.add(variable);
          }
       }
-
-      return ret;
-   }
-
-   @Override
-   public YoVariable<?>[] getAllVariablesArray()
-   {
-      List<YoVariable<?>> variables = getAllVariables();
-      YoVariable<?>[] ret = new YoVariable[variables.size()];
-      variables.toArray(ret);
 
       return ret;
    }
@@ -76,7 +66,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
       String lowerCaseName = variable.getName();
       lowerCaseName = lowerCaseName.toLowerCase();
 
-      ArrayList<YoVariable<?>> variablesWithThisName = yoVariableSet.get(lowerCaseName);
+      List<YoVariable<?>> variablesWithThisName = yoVariableSet.get(lowerCaseName);
       if (variablesWithThisName == null)
       {
          variablesWithThisName = new ArrayList<>();
@@ -105,7 +95,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
 
    public YoVariable<?> getVariableUsingFullNamespace(String fullname)
    {
-      for (YoVariable<?> yoVariable : getAllVariables())
+      for (YoVariable<?> yoVariable : getYoVariables())
       {
          if (yoVariable.getFullNameWithNameSpace().equals(fullname))
             return yoVariable;
@@ -119,10 +109,10 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    }
 
    @Override
-   public YoVariable<?> getVariable(String fullname)
+   public YoVariable<?> getYoVariable(String fullname)
    {
       String name = NameSpace.stripOffNameSpaceToGetVariableName(fullname);
-      ArrayList<YoVariable<?>> variablesWithThisName = yoVariableSet.get(name.toLowerCase());
+      List<YoVariable<?>> variablesWithThisName = yoVariableSet.get(name.toLowerCase());
 
       if (variablesWithThisName == null)
       {
@@ -155,14 +145,14 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    }
 
    @Override
-   public YoVariable<?> getVariable(String nameSpaceEnding, String name)
+   public YoVariable<?> getYoVariable(String nameSpaceEnding, String name)
    {
       if (name.contains("."))
       {
          throw new RuntimeException(name + " contains a dot. It must not when calling getVariable(String nameSpace, String name)");
       }
 
-      ArrayList<YoVariable<?>> variablesWithThisName = yoVariableSet.get(name.toLowerCase());
+      List<YoVariable<?>> variablesWithThisName = yoVariableSet.get(name.toLowerCase());
       if (variablesWithThisName == null)
       {
          return null;
@@ -190,11 +180,11 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    }
 
    @Override
-   public boolean hasUniqueVariable(String fullname)
+   public boolean hasUniqueYoVariable(String fullname)
    {
       String name = NameSpace.stripOffNameSpaceToGetVariableName(fullname);
 
-      ArrayList<YoVariable<?>> variablesWithThisName = yoVariableSet.get(name.toLowerCase());
+      List<YoVariable<?>> variablesWithThisName = yoVariableSet.get(name.toLowerCase());
       if (variablesWithThisName == null)
       {
          return false;
@@ -221,14 +211,14 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    }
 
    @Override
-   public boolean hasUniqueVariable(String nameSpaceEnding, String name)
+   public boolean hasUniqueYoVariable(String nameSpaceEnding, String name)
    {
       if (name.contains("."))
       {
          throw new RuntimeException(name + " contains a dot. It must not when calling hasVariable(String nameSpace, String name)");
       }
 
-      ArrayList<YoVariable<?>> variablesWithThisName = yoVariableSet.get(name.toLowerCase());
+      List<YoVariable<?>> variablesWithThisName = yoVariableSet.get(name.toLowerCase());
       if (variablesWithThisName == null)
       {
          return false;
@@ -255,20 +245,20 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    }
 
    @Override
-   public List<YoVariable<?>> getVariables(String nameSpaceEnding, String name)
+   public List<YoVariable<?>> getYoVariables(String nameSpaceEnding, String name)
    {
       if (name.contains("."))
       {
          throw new RuntimeException(name + " contains a dot. It must not when calling getVariables(String nameSpace, String name)");
       }
 
-      ArrayList<YoVariable<?>> variablesWithThisName = yoVariableSet.get(name.toLowerCase());
+      List<YoVariable<?>> variablesWithThisName = yoVariableSet.get(name.toLowerCase());
       if (variablesWithThisName == null)
       {
          return new ArrayList<>(0);
       }
 
-      ArrayList<YoVariable<?>> ret = new ArrayList<>();
+      List<YoVariable<?>> ret = new ArrayList<>();
 
       for (int i = 0; i < variablesWithThisName.size(); i++)
       {
@@ -284,17 +274,17 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    }
 
    @Override
-   public List<YoVariable<?>> getVariables(String fullname)
+   public List<YoVariable<?>> getYoVariables(String fullname)
    {
       String name = NameSpace.stripOffNameSpaceToGetVariableName(fullname);
 
-      ArrayList<YoVariable<?>> variablesWithThisName = yoVariableSet.get(name.toLowerCase());
+      List<YoVariable<?>> variablesWithThisName = yoVariableSet.get(name.toLowerCase());
       if (variablesWithThisName == null)
       {
          return new ArrayList<>(0);
       }
 
-      ArrayList<YoVariable<?>> ret = new ArrayList<>();
+      List<YoVariable<?>> ret = new ArrayList<>();
 
       for (int i = 0; i < variablesWithThisName.size(); i++)
       {
@@ -312,11 +302,11 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    @Override
    public List<YoVariable<?>> getVariables(NameSpace nameSpace)
    {
-      ArrayList<YoVariable<?>> ret = new ArrayList<>();
+      List<YoVariable<?>> ret = new ArrayList<>();
 
-      Collection<ArrayList<YoVariable<?>>> variableLists = yoVariableSet.values();
+      Collection<List<YoVariable<?>>> variableLists = yoVariableSet.values();
 
-      for (ArrayList<YoVariable<?>> list : variableLists)
+      for (List<YoVariable<?>> list : variableLists)
       {
          for (YoVariable<?> variable : list)
          {

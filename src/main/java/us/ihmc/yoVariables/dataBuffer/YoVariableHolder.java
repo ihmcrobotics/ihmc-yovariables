@@ -12,14 +12,7 @@ public interface YoVariableHolder
     *
     * @return ArrayList
     */
-   public abstract List<YoVariable<?>> getAllVariables();
-
-   /**
-    * Returns all the YoVariables in this YoVariableHolder
-    *
-    * @return YoVariable[]
-    */
-   public abstract YoVariable<?>[] getAllVariablesArray();
+   public abstract List<YoVariable<?>> getYoVariables();
 
    /**
     * Gets a YoVariable with the given name if it is in this YoVariableHolder, otherwise returns null.
@@ -30,7 +23,7 @@ public interface YoVariableHolder
     *             ending must match that of name.
     * @return YoVariable matching the given name.
     */
-   public abstract YoVariable<?> getVariable(String name);
+   public abstract YoVariable<?> getYoVariable(String name);
 
    /**
     * Checks if this YoVariableHolder holds exactly one YoVariable with the given name. If so, returns
@@ -42,7 +35,7 @@ public interface YoVariableHolder
     * @return boolean Whether or not this YoVariableHolder holds exactly one Variable of the given
     *         name.
     */
-   public abstract boolean hasUniqueVariable(String name);
+   public abstract boolean hasUniqueYoVariable(String name);
 
    /**
     * Gets a YoVariable with the given nameSpace and name if it is in this YoVariableHolder, otherwise
@@ -55,7 +48,7 @@ public interface YoVariableHolder
     *                        RuntimeException.
     * @return YoVariable matching the given nameSpace and name.
     */
-   public abstract YoVariable<?> getVariable(String nameSpaceEnding, String name);
+   public abstract YoVariable<?> getYoVariable(String nameSpaceEnding, String name);
 
    /**
     * Checks if this YoVariableHolder holds exactly one YoVariable with the given nameSpace and name.
@@ -69,7 +62,7 @@ public interface YoVariableHolder
     * @return boolean Whether or not this YoVariableHolder holds exactly one Variable that matches the
     *         given nameSpace and name.
     */
-   public abstract boolean hasUniqueVariable(String nameSpaceEnding, String name);
+   public abstract boolean hasUniqueYoVariable(String nameSpaceEnding, String name);
 
    /**
     * Returns all the YoVariables with the given nameSpace and name that are in this YoVariableHolder,
@@ -81,7 +74,7 @@ public interface YoVariableHolder
     *                        RuntimeException.
     * @return ArrayList<YoVariable> matching the given nameSpace and name.
     */
-   public abstract List<YoVariable<?>> getVariables(String nameSpaceEnding, String name);
+   public abstract List<YoVariable<?>> getYoVariables(String nameSpaceEnding, String name);
 
    /**
     * Returns all the YoVariables with the given name that are in this YoVariableHolder, empty if there
@@ -91,7 +84,7 @@ public interface YoVariableHolder
     *             nameSpace ending must match that of name.
     * @return ArrayList<YoVariable> matching the given name.
     */
-   public abstract List<YoVariable<?>> getVariables(String name);
+   public abstract List<YoVariable<?>> getYoVariables(String name);
 
    /**
     * Returns all the YoVariables with the given nameSpace that are in this YoVariableHolder, empty if

@@ -35,7 +35,7 @@ public class YoMutableFrameObjectTest
       frames.add(null);
 
       YoMutableFrameObject mutableFrameObject = new YoMutableFrameObject("", "", registry);
-      YoVariable<?> frameIndex = registry.getVariable(YoFrameVariableNameTools.createName("", "frame", ""));
+      YoVariable<?> frameIndex = registry.getYoVariable(YoFrameVariableNameTools.createName("", "frame", ""));
       Assert.assertNotNull(frameIndex);
 
       for (int i = 0; i < 1000; i++)

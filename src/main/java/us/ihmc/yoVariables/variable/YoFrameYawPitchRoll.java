@@ -201,9 +201,9 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
     */
    public YoFrameYawPitchRoll duplicate(YoVariableRegistry newRegistry)
    {
-      YoDouble yaw = (YoDouble) newRegistry.getVariable(this.yaw.getFullNameWithNameSpace());
-      YoDouble pitch = (YoDouble) newRegistry.getVariable(this.pitch.getFullNameWithNameSpace());
-      YoDouble roll = (YoDouble) newRegistry.getVariable(this.roll.getFullNameWithNameSpace());
+      YoDouble yaw = (YoDouble) newRegistry.getYoVariable(this.yaw.getFullNameWithNameSpace());
+      YoDouble pitch = (YoDouble) newRegistry.getYoVariable(this.pitch.getFullNameWithNameSpace());
+      YoDouble roll = (YoDouble) newRegistry.getYoVariable(this.roll.getFullNameWithNameSpace());
       return new YoFrameYawPitchRoll(yaw, pitch, roll, getReferenceFrame());
    }
 

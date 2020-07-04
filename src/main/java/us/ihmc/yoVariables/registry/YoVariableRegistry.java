@@ -4,9 +4,9 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,55 +14,28 @@ import org.apache.commons.lang3.StringUtils;
 
 import us.ihmc.log.LogTools;
 import us.ihmc.yoVariables.dataBuffer.YoVariableHolder;
-import us.ihmc.yoVariables.listener.RewoundListener;
 import us.ihmc.yoVariables.listener.YoVariableRegistryChangedListener;
 import us.ihmc.yoVariables.parameters.YoParameter;
 import us.ihmc.yoVariables.variable.YoVariable;
-import us.ihmc.yoVariables.variable.YoVariableList;
 
 public class YoVariableRegistry implements YoVariableHolder
 {
-
-   // User defined control variables will be placed in this ArrayList when they are registered:
-   private List<YoVariable<?>> controlVars = new ArrayList<>();
-   private LinkedHashMap<String, YoVariable<?>> controlVarsHashMap = new LinkedHashMap<>(); // From name to the variable with that name.
-   private List<YoParameter<?>> parameters = new ArrayList<>();
-   private LinkedHashMap<String, YoParameter<?>> parametersHashMap = new LinkedHashMap<>();
-
    private final String name;
    private NameSpace nameSpace;
-   private List<YoVariableRegistry> children = new ArrayList<>();
+
+   private List<YoVariable<?>> variables = new ArrayList<>();
+   private Map<String, YoVariable<?>> nameToVariableMap = new LinkedHashMap<>(); // From name to the variable with that name.
+   private List<YoParameter<?>> parameters = new ArrayList<>();
+   private Map<String, YoParameter<?>> nameToParameterMap = new LinkedHashMap<>();
+
    private YoVariableRegistry parent;
+   private List<YoVariableRegistry> children = new ArrayList<>();
 
-   private List<RewoundListener> simulationRewoundListeners;
    private List<YoVariableRegistryChangedListener> yoVariableRegistryChangedListeners;
-
-   private boolean disallowSending;
-   private boolean isLogged;
-   private boolean isSent;
-
-   private static final Pattern illegalCharacters = Pattern.compile("[ .*?@#$%/^&()<>,:{}'\"\\\\]");
-
-   protected static void checkForIllegalCharacters(String name)
-   {
-      // String.matches() only matches the whole string ( as if you put ^$ around it ). Use .find() of the Matcher class instead!
-
-      if (illegalCharacters.matcher(name).find())
-      {
-         String message = name + " is an invalid name for a YoVariableRegistry. A YoVariableRegistry cannot have crazy characters in them, otherwise NameSpaces"
-               + " will not work.";
-         throw new RuntimeException(message);
-      }
-   }
 
    public YoVariableRegistry(String name)
    {
-      this(name, false, false);
-   }
-
-   public YoVariableRegistry(String name, boolean isLogged, boolean isSent)
-   {
-      checkForIllegalCharacters(name);
+      YoVariableTools.checkForIllegalCharacters(name);
 
       this.name = name;
 
@@ -70,9 +43,6 @@ public class YoVariableRegistry implements YoVariableHolder
       {
          nameSpace = new NameSpace(name);
       }
-
-      this.isLogged = isLogged;
-      this.isSent = isSent;
    }
 
    public String getName()
@@ -97,44 +67,12 @@ public class YoVariableRegistry implements YoVariableHolder
       verifyDoNotHaveBothParentAndYoVariableRegistryChangedListeners();
    }
 
-   public void registerSimulationRewoundListener(RewoundListener simulationRewoundListener)
-   {
-      if (simulationRewoundListeners == null)
-      {
-         simulationRewoundListeners = new ArrayList<>();
-      }
-
-      simulationRewoundListeners.add(simulationRewoundListener);
-   }
-
-   public List<RewoundListener> getAllSimulationRewoundListeners()
-   {
-      List<RewoundListener> ret = new ArrayList<>();
-
-      getAllSimulationRewoundListenersRecursively(ret);
-
-      return ret;
-   }
-
-   private void getAllSimulationRewoundListenersRecursively(List<RewoundListener> simulationRewoundListenersToPack)
-   {
-      // Add ours:
-      if (simulationRewoundListeners != null)
-         simulationRewoundListenersToPack.addAll(simulationRewoundListeners);
-
-      // Add children's recursively:
-      for (YoVariableRegistry registry : children)
-      {
-         registry.getAllSimulationRewoundListenersRecursively(simulationRewoundListenersToPack);
-      }
-   }
-
    public void registerVariable(YoVariable<?> variable)
    {
       String variableName = variable.getName();
       variableName = variableName.toLowerCase(); // Make everything case insensitive! Cannot have two YoVariables with same names except case.
 
-      if (controlVarsHashMap.containsKey(variableName))
+      if (nameToVariableMap.containsKey(variableName))
       {
          System.err.println("Error:  " + variable.getName() + " has already been registered in this registry! YoVariableRegistry NameSpace = " + nameSpace);
          // Sometimes RuntimeExceptions are not displayed, but the error out is still visible.
@@ -142,103 +80,219 @@ public class YoVariableRegistry implements YoVariableHolder
                + nameSpace);
       }
 
-      controlVarsHashMap.put(variableName, variable);
-      controlVars.add(variable);
+      nameToVariableMap.put(variableName, variable);
+      variables.add(variable);
 
       if (variable.isParameter())
       {
          YoParameter<?> parameter = variable.getParameter();
          parameters.add(parameter);
-         parametersHashMap.put(variableName, parameter);
+         nameToParameterMap.put(variableName, parameter);
       }
 
       notifyListenersYoVariableWasRegistered(variable);
    }
 
-   public List<YoVariable<?>> getAllVariablesInThisListOnly()
+   /**
+    * Returns the variables that have been registered to this registry.
+    *
+    * @return unmodifiable list of this registry's variables.
+    */
+   @Override
+   public List<YoVariable<?>> getYoVariables()
    {
-      List<YoVariable<?>> ret = new ArrayList<>();
-      ret.addAll(controlVars);
-
-      return ret;
+      return Collections.unmodifiableList(variables);
    }
 
-   public List<YoVariable<?>> getAllVariablesIncludingDescendants()
+   /**
+    * Returns the parameters that have been registered to this registry.
+    *
+    * @return unmodifiable list of this registry's parameters.
+    */
+   public List<YoParameter<?>> getYoParameters()
    {
-      List<YoVariable<?>> ret = new ArrayList<>();
-      getAllVariablesIncludingDescendantsRecursively(ret);
-
-      return ret;
+      return Collections.unmodifiableList(parameters);
    }
 
-   private void getAllVariablesIncludingDescendantsRecursively(List<YoVariable<?>> variables)
+   /**
+    * Returns the parent registry for this registry or {@code null} if {@code this} is the root
+    * registry.
+    *
+    * @return the parent or {@code null} if {@code this} is the root registry.
+    */
+   public YoVariableRegistry getParent()
+   {
+      return parent;
+   }
+
+   /**
+    * Returns the child registries contained in this registry.
+    *
+    * @return this registry direct children.
+    */
+   public List<YoVariableRegistry> getChildren()
+   {
+      return children;
+   }
+
+   /**
+    * Collects recursively and returns all the variables contained in this registry and in its
+    * descendants.
+    *
+    * @return list of all variables registered to this registry and its child registries.
+    */
+   public List<YoVariable<?>> getSubtreeYoVariables()
+   {
+      List<YoVariable<?>> yoVariables = new ArrayList<>();
+      getSubtreeYoVariables(yoVariables);
+      return yoVariables;
+   }
+
+   /**
+    * Collects recursively and packs all the variables contained in this registry and in its
+    * descendants into {@code variablesToPack}.
+    *
+    * @param variablesToPack list used to store all variables registered to this registry and its child
+    *                        registries.
+    */
+   private void getSubtreeYoVariables(List<YoVariable<?>> variablesToPack)
    {
       // Add ours:
-      variables.addAll(controlVars);
+      variablesToPack.addAll(variables);
 
       // Add children's recursively:
       for (YoVariableRegistry registry : children)
       {
-         registry.getAllVariablesIncludingDescendantsRecursively(variables);
+         registry.getSubtreeYoVariables(variablesToPack);
       }
    }
 
-   @Override
-   public YoVariable<?>[] getAllVariablesArray()
-   {
-      List<YoVariable<?>> variables = getAllVariablesIncludingDescendants();
-
-      YoVariable<?>[] ret = new YoVariable[variables.size()];
-      variables.toArray(ret);
-
-      return ret;
-   }
-
-   public YoVariableList createVarList()
-   {
-      YoVariableList ret = new YoVariableList(nameSpace.getName());
-
-      ret.addVariables(controlVars);
-
-      return ret;
-   }
-
-   /*
-    * Returns the first discovered instance of a variable matching the given name. It will first check
-    * this registry, then it's children in the order in which they were added. Returns null if no
-    * variable is found.
+   /**
+    * Collects recursively and returns all the parameters contained in this registry and in its
+    * descendants.
+    *
+    * @return list of all parameters registered to this registry and its child registries.
     */
-   @Override
-   public YoVariable<?> getVariable(String nameSpace, String name)
+   public List<YoParameter<?>> getSubtreeYoParameters()
    {
-      if (name.contains("."))
-         throw new RuntimeException(name + " contains a dot. It must not when calling getVariable(String nameSpace, String name)");
-
-      return getVariable(nameSpace + "." + name);
+      List<YoParameter<?>> yoParameters = new ArrayList<>();
+      getSubtreeYoParameters(yoParameters);
+      return yoParameters;
    }
 
-   /*
-    * Returns the first discovered instance of a variable matching the given name. It will first check
-    * this registry, then it's children in the order in which they were added. Returns null if no
-    * variable is found.
+   /**
+    * Collects recursively and packs all the parameters contained in this registry and in its
+    * descendants into {@code parametersToPack}.
+    *
+    * @param parametersToPack list used to store all parameters registered to this registry and its
+    *                         child registries.
     */
-   @Override
-   public YoVariable<?> getVariable(String name)
+   private void getSubtreeYoParameters(List<YoParameter<?>> parametersToPack)
    {
-      String matchedName = matchNameSpace(name);
+      // Add ours:
+      parametersToPack.addAll(parameters);
 
-      if (matchedName != null)
+      // Add children's recursively:
+      for (YoVariableRegistry registry : children)
       {
-         matchedName = matchedName.toLowerCase();
+         registry.getSubtreeYoParameters(parametersToPack);
+      }
+   }
 
-         YoVariable<?> variable = controlVarsHashMap.get(matchedName);
+   /**
+    * Collects recursively and returns the subtree of registries starting with this registry.
+    *
+    * @return list of all the registries composing the subtree starting at {@code this}.
+    */
+   public List<YoVariableRegistry> getSubtreeYoVariableRegistries()
+   {
+      List<YoVariableRegistry> yoVariableRegistries = new ArrayList<>();
+      getSubtreeYoVariableRegistries(yoVariableRegistries);
+
+      return yoVariableRegistries;
+   }
+
+   /**
+    * Collects recursively and packs the subtree of registries starting with this registry into
+    * {@code yoVariableRegistriesToPack}.
+    *
+    * @param yoVariableRegistriesToPack list used to store all the registries composing the subtree
+    *                                   starting at {@code this}.
+    */
+   public void getSubtreeYoVariableRegistries(List<YoVariableRegistry> yoVariableRegistriesToPack)
+   {
+      // Add mine:
+      yoVariableRegistriesToPack.add(this);
+
+      // Add all the children recursively:
+      for (YoVariableRegistry child : children)
+      {
+         child.getSubtreeYoVariableRegistries(yoVariableRegistriesToPack);
+      }
+   }
+
+   /**
+    * Returns the first discovered instance of a variable matching the given name.
+    * <p>
+    * The search is first conducted in this registry, then in its children in the order in which they
+    * were added.
+    * </p>
+    * <p>
+    * The given {@code name} can either be:
+    * <ul>
+    * <li>the variable name, for instance {@code "aVariable"},
+    * <li>the variable name and its namespace, for instance:
+    * {@code "aRegistry.anotherRegistry.aVariable"}.
+    * </ul>
+    * </p>
+    * 
+    * @param name the name of the variables to retrieve. Can contain the namespace of its parent to
+    *             narrow down the search.
+    */
+   @Override
+   public YoVariable<?> getYoVariable(String name)
+   {
+      int separatorIndex = name.lastIndexOf(YoVariableTools.NAMESPACE_SEPERATOR_STRING);
+
+      if (separatorIndex == -1)
+         return getYoVariable(null, name);
+      else
+         return getYoVariable(name.substring(0, separatorIndex + 1), name.substring(separatorIndex));
+   }
+
+   /**
+    * Returns the first discovered instance of a variable matching the given name.
+    * <p>
+    * The search is first conducted in this registry, then in its children in the order in which they
+    * were added.
+    * </p>
+    * 
+    * @param parentNameSpace (optional) the namespace of the registry in which the variable was
+    *                        registered. The namespace does not need to be complete, i.e. it does not
+    *                        need to contain the name of the registries closest to the root registry.
+    *                        If {@code null}, the search for the variable name only.
+    * @param name            the name of the variable to retrieve.
+    * @return the variable corresponding to the search criteria, or {@code null} if it could not be
+    *         found.
+    * @throws IllegalNameException if {@code name} contains
+    *                              "{@value YoVariableTools#NAMESPACE_SEPERATOR}".
+    */
+   @Override
+   public YoVariable<?> getYoVariable(String parentNameSpace, String name)
+   {
+      if (name.contains(YoVariableTools.NAMESPACE_SEPERATOR_STRING))
+         throw new IllegalNameException(name + " cannot contain '" + YoVariableTools.NAMESPACE_SEPERATOR_STRING + "'.");
+
+      if (parentNameSpace == null || nameSpace.endsWith(parentNameSpace))
+      {
+         YoVariable<?> variable = nameToVariableMap.get(name);
          if (variable != null)
             return variable;
       }
 
       for (YoVariableRegistry child : children)
       {
-         YoVariable<?> variable = child.getVariable(name);
+         YoVariable<?> variable = child.getYoVariable(parentNameSpace, name);
          if (variable != null)
             return variable;
       }
@@ -246,122 +300,189 @@ public class YoVariableRegistry implements YoVariableHolder
       return null;
    }
 
-   /*
-    * Returns all of the variables matching the given name, searching in this YoVariableRegistry and
-    * all of its children.
+   /**
+    * Returns the all of the variables matching the given name.
+    * <p>
+    * The search is first conducted in this registry, then in its children in the order in which they
+    * were added.
+    * </p>
+    * <p>
+    * The given {@code name} can either be:
+    * <ul>
+    * <li>the variable name, for instance {@code "aVariable"},
+    * <li>the variable name and its namespace, for instance:
+    * {@code "aRegistry.anotherRegistry.aVariable"}.
+    * </ul>
+    * </p>
+    * 
+    * @param name the name of the variables to retrieve. Can contain the namespace of its parent to
+    *             narrow down the search.
+    * @return list of all the variables corresponding to the search criteria.
     */
    @Override
-   public List<YoVariable<?>> getVariables(String nameSpace, String name)
+   public List<YoVariable<?>> getYoVariables(String name)
    {
-      if (name.contains("."))
-         throw new RuntimeException(name + " contains a dot. It must not when calling hasVariable(String nameSpace, String name)");
-
-      return getVariables(nameSpace + "." + name);
+      List<YoVariable<?>> matchedVariables = new ArrayList<>();
+      getYoVariables(name, matchedVariables);
+      return matchedVariables;
    }
 
-   /*
-    * Returns all of the variables matching the given name, searching in this YoVariableRegistry and
-    * all of its children.
+   /**
+    * Returns the all of the variables matching the given name and namespace.
+    * <p>
+    * The search is first conducted in this registry, then in its children in the order in which they
+    * were added.
+    * </p>
+    * 
+    * @param parentNameSpace (optional) the namespace of the registry in which the variable was
+    *                        registered. The namespace does not need to be complete, i.e. it does not
+    *                        need to contain the name of the registries closest to the root registry.
+    *                        If {@code null}, the search for the variable name only.
+    * @param name            the name of the variable to retrieve.
+    * @return list of all the variables corresponding to the search criteria.
+    * @throws IllegalNameException if {@code name} contains
+    *                              "{@value YoVariableTools#NAMESPACE_SEPERATOR}".
     */
    @Override
-   public List<YoVariable<?>> getVariables(String name)
+   public List<YoVariable<?>> getYoVariables(String parentNameSpace, String name)
    {
-      List<YoVariable<?>> ret = new ArrayList<>();
-
-      getVariables(ret, name);
-
-      return ret;
+      List<YoVariable<?>> matchedVariables = new ArrayList<>();
+      getYoVariables(parentNameSpace, name, matchedVariables);
+      return matchedVariables;
    }
 
-   /*
-    * Adds to listToPack all of the variables matching the given name, searching in this
-    * YoVariableRegistry and all of its children.
+   /**
+    * Collects and stores the all of the variables matching the given name into
+    * {@code matchedVariablesToPack}.
+    * <p>
+    * The search is first conducted in this registry, then in its children in the order in which they
+    * were added.
+    * </p>
+    * <p>
+    * The given {@code name} can either be:
+    * <ul>
+    * <li>the variable name, for instance {@code "aVariable"},
+    * <li>the variable name and its namespace, for instance:
+    * {@code "aRegistry.anotherRegistry.aVariable"}.
+    * </ul>
+    * </p>
+    * 
+    * @param name                   the name of the variables to retrieve. Can contain the namespace of
+    *                               its parent to narrow down the search.
+    * @param matchedVariablesToPack list used to store all the variables corresponding to the search
+    *                               criteria.
     */
-   public void getVariables(List<YoVariable<?>> listToPack, String name)
+   public void getYoVariables(String name, List<YoVariable<?>> matchedVariablesToPack)
    {
-      String matchedName = matchNameSpace(name);
+      int separatorIndex = name.lastIndexOf(YoVariableTools.NAMESPACE_SEPERATOR_STRING);
 
-      if (matchedName != null)
+      if (separatorIndex == -1)
+         getYoVariables(null, name, matchedVariablesToPack);
+      else
+         getYoVariables(name.substring(0, separatorIndex + 1), name.substring(separatorIndex), matchedVariablesToPack);
+   }
+
+   /**
+    * Collects and stores the all of the variables matching the given name and namespace into
+    * {@code matchedVariablesToPack}.
+    * <p>
+    * The search is first conducted in this registry, then in its children in the order in which they
+    * were added.
+    * </p>
+    * 
+    * @param parentNameSpace        (optional) the namespace of the registry in which the variable was
+    *                               registered. The namespace does not need to be complete, i.e. it
+    *                               does not need to contain the name of the registries closest to the
+    *                               root registry. If {@code null}, the search for the variable name
+    *                               only.
+    * @param name                   the name of the variables to retrieve. Can contain the namespace of
+    *                               its parent to narrow down the search.
+    * @param matchedVariablesToPack list used to store all the variables corresponding to the search
+    *                               criteria.
+    */
+   public void getYoVariables(String parentNameSpace, String name, List<YoVariable<?>> matchedVariablesToPack)
+   {
+      if (name.contains(YoVariableTools.NAMESPACE_SEPERATOR_STRING))
+         throw new IllegalNameException(name + " cannot contain '" + YoVariableTools.NAMESPACE_SEPERATOR_STRING + "'.");
+
+      if (parentNameSpace == null || nameSpace.endsWith(parentNameSpace))
       {
-         matchedName = matchedName.toLowerCase();
-
-         YoVariable<?> variable = controlVarsHashMap.get(matchedName);
+         YoVariable<?> variable = nameToVariableMap.get(name);
          if (variable != null)
-            listToPack.add(variable);
+            matchedVariablesToPack.add(variable);
       }
 
       for (YoVariableRegistry child : children)
       {
-         child.getVariables(listToPack, name);
+         child.getYoVariables(parentNameSpace, name, matchedVariablesToPack);
       }
    }
 
-   /*
-    * Returns true if this YoVariableRegistry, or any of its children, hold a variable matching this
-    * name, and no more than one of them. To match the given name, the variable's nameSpace must end
-    * with the given nameSpace and the variables name must be the given name.
+   /**
+    * Search in the subtree starting at this registry and tests if there is exactly one variable that
+    * matches the search criteria.
+    * 
+    * @param parentNameSpace (optional) the namespace of the registry in which the variable was
+    *                        registered. The namespace does not need to be complete, i.e. it does not
+    *                        need to contain the name of the registries closest to the root registry.
+    *                        If {@code null}, the search for the variable name only.
+    * @param name            the name of the variable to retrieve.
+    * @return {@code true} if there is exactly one variable that matches the search criteria,
+    *         {@code false} otherwise.
     */
    @Override
-   public boolean hasUniqueVariable(String nameSpace, String name)
+   public boolean hasUniqueYoVariable(String parentNameSpace, String name)
    {
-      if (name.contains("."))
-         throw new RuntimeException(name + " contains a dot. It must not when calling hasVariable(String nameSpace, String name)");
+      if (name.contains(YoVariableTools.NAMESPACE_SEPERATOR_STRING))
+         throw new IllegalNameException(name + " cannot contain '" + YoVariableTools.NAMESPACE_SEPERATOR_STRING + "'.");
 
-      return hasUniqueVariable(nameSpace + "." + name);
+      return countNumberOfYoVariables(parentNameSpace, name) == 1;
    }
 
-   /*
-    * Returns true if this YoVariableRegistry, or any of its children, hold a variable of this name,
-    * and no more than one of them. To match the given name, the variable's nameSpace must end with the
-    * given nameSpace, specified by the last part of the given name, and the variables name must be the
-    * end part of the given name. For example hasUniqueVariable(b.c.variableName) will be true if this
-    * registry is a, and it has a child b, with a child c, which has a variable named variableName.
+   /**
+    * Search in the subtree starting at this registry and tests if there is exactly one variable that
+    * matches the search criteria.
+    * <p>
+    * The given {@code name} can either be:
+    * <ul>
+    * <li>the variable name, for instance {@code "aVariable"},
+    * <li>the variable name and its namespace, for instance:
+    * {@code "aRegistry.anotherRegistry.aVariable"}.
+    * </ul>
+    * </p>
+    * 
+    * @param name the name of the variables to retrieve. Can contain the namespace of its parent to
+    *             narrow down the search.
+    * @return {@code true} if there is exactly one variable that matches the search criteria,
+    *         {@code false} otherwise.
     */
    @Override
-   public boolean hasUniqueVariable(String name)
+   public boolean hasUniqueYoVariable(String name)
    {
-      int numberOfInstances = getNumberOfInstancesRecursively(name);
-      if (numberOfInstances == 1)
-         return true;
+      int separatorIndex = name.lastIndexOf(YoVariableTools.NAMESPACE_SEPERATOR_STRING);
 
-      return false;
+      if (separatorIndex == -1)
+         return hasUniqueYoVariable(null, name);
+      else
+         return hasUniqueYoVariable(name.substring(0, separatorIndex + 1), name.substring(separatorIndex));
    }
 
-   private int getNumberOfInstancesRecursively(String name)
+   private int countNumberOfYoVariables(String parentNameSpace, String name)
    {
-      int ret = 0;
+      int count = 0;
 
-      String matchedName = matchNameSpace(name);
-      if (matchedName != null)
+      if (parentNameSpace == null || nameSpace.endsWith(parentNameSpace))
       {
-         matchedName = matchedName.toLowerCase();
-
-         YoVariable<?> variable = controlVarsHashMap.get(matchedName);
-         if (variable != null)
-            ret = ret + 1;
+         if (nameToVariableMap.containsKey(name))
+            count++;
       }
 
       for (YoVariableRegistry child : children)
       {
-         ret = ret + child.getNumberOfInstancesRecursively(name);
+         count += child.countNumberOfYoVariables(parentNameSpace, name);
       }
 
-      return ret;
-   }
-
-   private String matchNameSpace(String name)
-   {
-      int dotIndex = name.lastIndexOf(".");
-
-      if (dotIndex != -1)
-      {
-         String nameSpaceString = name.substring(0, dotIndex);
-         if (!nameSpace.endsWith(nameSpaceString))
-            return null;
-         name = name.substring(dotIndex + 1);
-      }
-
-      return name;
+      return count;
    }
 
    public void addChild(YoVariableRegistry child)
@@ -419,38 +540,6 @@ public class YoVariableRegistry implements YoVariableHolder
       }
    }
 
-   public void recursivelyChangeNameSpaces(NameSpaceRenamer nameSpaceRenamer)
-   {
-      NameSpace nameSpace = getNameSpace();
-      String nameSpaceString = nameSpace.getName();
-
-      nameSpaceString = nameSpaceRenamer.changeNamespaceString(nameSpaceString);
-      changeNameSpace(nameSpaceString);
-
-      List<YoVariableRegistry> children = getChildren();
-
-      for (YoVariableRegistry child : children)
-      {
-         child.recursivelyChangeNameSpaces(nameSpaceRenamer);
-      }
-   }
-
-   public void changeNameSpace(String newNamespace)
-   {
-      System.err.println("Warning: Changing nameSpace from " + nameSpace + " to " + newNamespace);
-      nameSpace = new NameSpace(newNamespace);
-   }
-
-   public List<YoVariableRegistry> getChildren()
-   {
-      return children;
-   }
-
-   public YoVariableRegistry getParent()
-   {
-      return parent;
-   }
-
    private void setParent(YoVariableRegistry parent)
    {
       if (this.parent != null)
@@ -461,62 +550,10 @@ public class YoVariableRegistry implements YoVariableHolder
       verifyDoNotHaveBothParentAndYoVariableRegistryChangedListeners();
    }
 
-   public List<YoVariableList> createVarListsIncludingChildren()
-   {
-      LinkedHashMap<String, YoVariableList> hashMap = new LinkedHashMap<>();
-      createVarListsIncludingChildren(hashMap);
-
-      List<YoVariableList> ret = new ArrayList<>(hashMap.values());
-      Collections.sort(ret);
-
-      return ret;
-   }
-
-   private void createVarListsIncludingChildren(HashMap<String, YoVariableList> allVarLists)
-   {
-      // Add mine:
-      YoVariableList myVarList = createVarList();
-      if (allVarLists.containsKey(myVarList.getName()))
-      {
-         YoVariableList varList = allVarLists.get(myVarList.getName());
-         varList.addVariables(myVarList);
-      }
-      else
-      {
-         allVarLists.put(myVarList.getName(), myVarList);
-      }
-
-      // Add all the children recursively:
-      for (YoVariableRegistry child : children)
-      {
-         child.createVarListsIncludingChildren(allVarLists);
-      }
-   }
-
-   public List<YoVariableRegistry> getAllRegistriesIncludingChildren()
-   {
-      List<YoVariableRegistry> ret = new ArrayList<>();
-      getAllRegistrysIncludingDescendants(ret);
-
-      return ret;
-   }
-
-   private void getAllRegistrysIncludingDescendants(List<YoVariableRegistry> yoVariableRegistriesToPack)
-   {
-      // Add mine:
-      yoVariableRegistriesToPack.add(this);
-
-      // Add all the children recursively:
-      for (YoVariableRegistry child : children)
-      {
-         child.getAllRegistrysIncludingDescendants(yoVariableRegistriesToPack);
-      }
-   }
-
    public void clear()
    {
-      controlVars.clear();
-      controlVarsHashMap.clear();
+      variables.clear();
+      nameToVariableMap.clear();
       children.clear();
 
       notifyListenersYoVariableRegistryWasCleared(this);
@@ -525,16 +562,6 @@ public class YoVariableRegistry implements YoVariableHolder
    @Override
    public String toString()
    {
-      //    StringBuffer buf = new StringBuffer();
-      //    buf.append("YoVariableRegistry " + nameSpace.getName());
-      //
-      //    for (AbstractYoVariable var : controlVars)
-      //    {
-      //       buf.append("\n");
-      //       buf.append(var.toString());
-      //    }
-      //
-      //    return buf.toString();
       return nameSpace.getName();
    }
 
@@ -598,74 +625,14 @@ public class YoVariableRegistry implements YoVariableHolder
       return null;
    }
 
-   public void setLogging(boolean log)
-   {
-      isLogged = log;
-   }
-
-   public void setLoggingIncludingDescendants(boolean log)
-   {
-      setLogging(log);
-
-      for (YoVariableRegistry registry : children)
-      {
-         registry.setLoggingIncludingDescendants(log);
-      }
-   }
-
-   public boolean isLogged()
-   {
-      return isLogged;
-   }
-
-   public void setDisallowSending()
-   {
-      disallowSending = true;
-      isSent = false;
-   }
-
-   public void setSending(boolean send)
-   {
-      if (disallowSending && send)
-      {
-         String errorMessage = "Trying to set sending in registry " + getName() + " even though disallowSending is true.";
-         //         throw new RuntimeException(errorMessage);
-         System.err.println(errorMessage);
-      }
-      else
-      {
-         isSent = send;
-      }
-   }
-
-   public void setSendingIncludingDescendants(boolean send)
-   {
-      setSending(send);
-
-      for (YoVariableRegistry registry : children)
-      {
-         registry.setSendingIncludingDescendants(send);
-      }
-   }
-
-   public boolean isDisallowSendingSet()
-   {
-      return disallowSending;
-   }
-
-   public boolean isSent()
-   {
-      return isSent;
-   }
-
    public int getNumberOfYoVariables()
    {
-      return controlVars.size();
+      return variables.size();
    }
 
    public YoVariable<?> getYoVariable(int index)
    {
-      return controlVars.get(index);
+      return variables.get(index);
    }
 
    private YoVariableRegistry createChainOfRegistries(NameSpace fullNameSpace)
@@ -697,7 +664,7 @@ public class YoVariableRegistry implements YoVariableHolder
 
    public void printAllVariablesIncludingDescendants(PrintStream out)
    {
-      for (YoVariable<?> var : controlVars)
+      for (YoVariable<?> var : variables)
       {
          out.print(var.getFullNameWithNameSpace() + "\n");
       }
@@ -709,17 +676,11 @@ public class YoVariableRegistry implements YoVariableHolder
    }
 
    @Override
-   public List<YoVariable<?>> getAllVariables()
-   {
-      return getAllVariablesIncludingDescendants();
-   }
-
-   @Override
    public List<YoVariable<?>> getVariables(NameSpace nameSpace)
    {
       List<YoVariable<?>> ret = new ArrayList<>();
 
-      List<YoVariable<?>> allVariables = getAllVariables();
+      List<YoVariable<?>> allVariables = getSubtreeYoVariables();
 
       for (YoVariable<?> variable : allVariables)
       {
@@ -743,7 +704,7 @@ public class YoVariableRegistry implements YoVariableHolder
             if (names[i] != null)
             {
                String name = names[i];
-               YoVariable<?> var = getVariable(name);
+               YoVariable<?> var = getYoVariable(name);
 
                if (var != null)
                {
@@ -766,9 +727,9 @@ public class YoVariableRegistry implements YoVariableHolder
          {
             Pattern pattern = Pattern.compile(regularExpressions[i]);
 
-            for (int j = 0; j < controlVars.size(); j++)
+            for (int j = 0; j < variables.size(); j++)
             {
-               YoVariable<?> var = controlVars.get(j);
+               YoVariable<?> var = variables.get(j);
                Matcher matcher = pattern.matcher(var.getName());
 
                if (matcher.matches())
@@ -793,16 +754,9 @@ public class YoVariableRegistry implements YoVariableHolder
       if (!getNameSpace().equals(registry.getNameSpace()))
          return false;
 
-      if (isLogged != registry.isLogged)
-         return false;
-      if (isSent != registry.isSent)
-         return false;
-      if (disallowSending != registry.disallowSending)
-         return false;
-
-      for (YoVariable<?> variable : controlVars)
+      for (YoVariable<?> variable : variables)
       {
-         if (getVariableWithSameName(registry.controlVars, variable) == null)
+         if (getVariableWithSameName(registry.variables, variable) == null)
          {
             return false;
          }
@@ -911,41 +865,6 @@ public class YoVariableRegistry implements YoVariableHolder
       }
    }
 
-   private void getAllParametersIncludingDescendantsRecursively(List<YoParameter<?>> parameters)
-   {
-      // Add ours:
-      parameters.addAll(this.parameters);
-
-      // Add children's recursively:
-      for (YoVariableRegistry registry : children)
-      {
-         registry.getAllParametersIncludingDescendantsRecursively(parameters);
-      }
-   }
-
-   /**
-    * Recursively get all parameters in this and underlying registries
-    *
-    * @return list of all parameters in this registry and decendants
-    */
-   public List<YoParameter<?>> getAllParameters()
-   {
-      List<YoParameter<?>> parameters = new ArrayList<>();
-      getAllParametersIncludingDescendantsRecursively(parameters);
-
-      return parameters;
-   }
-
-   /**
-    * Get all parameters in this registry
-    *
-    * @return unmodifiable list of all parameters in this registry
-    */
-   public List<YoParameter<?>> getParametersInThisRegistry()
-   {
-      return Collections.unmodifiableList(parameters);
-   }
-
    /**
     * Checks if this registry or its children have parameters registered
     *
@@ -971,16 +890,16 @@ public class YoVariableRegistry implements YoVariableHolder
 
    public void closeAndDispose()
    {
-      if (controlVars != null)
+      if (variables != null)
       {
-         controlVars.clear();
-         controlVars = null;
+         variables.clear();
+         variables = null;
       }
 
-      if (controlVarsHashMap != null)
+      if (nameToVariableMap != null)
       {
-         controlVarsHashMap.clear();
-         controlVarsHashMap = null;
+         nameToVariableMap.clear();
+         nameToVariableMap = null;
       }
 
       if (parameters != null)
@@ -989,10 +908,10 @@ public class YoVariableRegistry implements YoVariableHolder
          parameters = null;
       }
 
-      if (parametersHashMap != null)
+      if (nameToParameterMap != null)
       {
-         parametersHashMap.clear();
-         parametersHashMap = null;
+         nameToParameterMap.clear();
+         nameToParameterMap = null;
       }
 
       if (children != null)
@@ -1005,12 +924,6 @@ public class YoVariableRegistry implements YoVariableHolder
       }
 
       parent = null;
-
-      if (simulationRewoundListeners != null)
-      {
-         simulationRewoundListeners.clear();
-         simulationRewoundListeners = null;
-      }
 
       if (yoVariableRegistryChangedListeners != null)
       {

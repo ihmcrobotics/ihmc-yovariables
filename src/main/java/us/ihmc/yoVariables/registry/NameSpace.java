@@ -5,15 +5,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class NameSpace implements Serializable
 {
-   // TODO: make YoVariables use the same seperator character.
-   private static final char SEPERATOR = '.';
-   private static final String SEPERATOR_STRING = Character.toString(SEPERATOR);
-   private static final String SEPERATOR_REGEX = Pattern.quote(SEPERATOR_STRING);
-
    private static final long serialVersionUID = -2584260031738121095L;
 
    private final String name;
@@ -33,7 +27,7 @@ public class NameSpace implements Serializable
 
    /**
     * Creates a namespace from a full name of the namespace. The name is the concatenation of all sub
-    * names starting with the root name and separated by the {@link #SEPERATOR} character.
+    * names starting with the root name and separated by the {@link YoVariableTools#NAMESPACE_SEPERATOR} character.
     *
     * @param name of the namespace.
     */
@@ -110,7 +104,7 @@ public class NameSpace implements Serializable
       {
          return true;
       }
-      return name.charAt(name.length() - nameToMatch.length() - 1) == SEPERATOR;
+      return name.charAt(name.length() - nameToMatch.length() - 1) == YoVariableTools.NAMESPACE_SEPERATOR;
    }
 
    /**
@@ -134,7 +128,7 @@ public class NameSpace implements Serializable
       {
          return true;
       }
-      return name.charAt(nameToMatch.length()) == SEPERATOR;
+      return name.charAt(nameToMatch.length()) == YoVariableTools.NAMESPACE_SEPERATOR;
    }
 
    /**
@@ -162,13 +156,13 @@ public class NameSpace implements Serializable
       }
       if (startIndex == 0)
       {
-         return name.charAt(endIndex) == SEPERATOR;
+         return name.charAt(endIndex) == YoVariableTools.NAMESPACE_SEPERATOR;
       }
       if (endIndex == name.length())
       {
-         return name.charAt(startIndex - 1) == SEPERATOR;
+         return name.charAt(startIndex - 1) == YoVariableTools.NAMESPACE_SEPERATOR;
       }
-      return name.charAt(endIndex) == SEPERATOR && name.charAt(startIndex - 1) == SEPERATOR;
+      return name.charAt(endIndex) == YoVariableTools.NAMESPACE_SEPERATOR && name.charAt(startIndex - 1) == YoVariableTools.NAMESPACE_SEPERATOR;
    }
 
    /**
@@ -245,16 +239,16 @@ public class NameSpace implements Serializable
 
    private static List<String> splitName(String name)
    {
-      return Arrays.asList(name.split(SEPERATOR_REGEX, -1));
+      return Arrays.asList(name.split(YoVariableTools.NAMESPACE_SEPERATOR_REGEX, -1));
    }
 
    private static String joinNames(List<String> subNames)
    {
-      if (subNames.stream().anyMatch(subName -> subName.contains(SEPERATOR_REGEX)))
+      if (subNames.stream().anyMatch(subName -> subName.contains(YoVariableTools.NAMESPACE_SEPERATOR_REGEX)))
       {
-         throw new RuntimeException("A sub name can not contain the seperator string " + SEPERATOR + ".");
+         throw new RuntimeException("A sub name can not contain the seperator string " + YoVariableTools.NAMESPACE_SEPERATOR + ".");
       }
-      return String.join(SEPERATOR_STRING, subNames);
+      return String.join(YoVariableTools.NAMESPACE_SEPERATOR_STRING, subNames);
    }
 
    private static void doChecks(String name, List<String> subNames)

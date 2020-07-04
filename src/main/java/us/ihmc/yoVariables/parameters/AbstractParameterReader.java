@@ -58,7 +58,7 @@ public abstract class AbstractParameterReader
       defaultParametersToPack.clear();
       unmatchedParametersToPack.clear();
 
-      List<YoParameter<?>> parameters = registry.getAllParameters();
+      List<YoParameter<?>> parameters = registry.getSubtreeYoParameters();
       Map<String, ParameterData> localMap = new HashMap<>(getValues());
 
       for (int i = 0; i < parameters.size(); i++)

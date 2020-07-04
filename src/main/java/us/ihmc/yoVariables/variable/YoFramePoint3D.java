@@ -63,9 +63,9 @@ public class YoFramePoint3D extends YoFrameTuple3D implements FixedFramePoint3DB
     */
    public YoFramePoint3D duplicate(YoVariableRegistry newRegistry)
    {
-      YoDouble x = (YoDouble) newRegistry.getVariable(getYoX().getFullNameWithNameSpace());
-      YoDouble y = (YoDouble) newRegistry.getVariable(getYoY().getFullNameWithNameSpace());
-      YoDouble z = (YoDouble) newRegistry.getVariable(getYoZ().getFullNameWithNameSpace());
+      YoDouble x = (YoDouble) newRegistry.getYoVariable(getYoX().getFullNameWithNameSpace());
+      YoDouble y = (YoDouble) newRegistry.getYoVariable(getYoY().getFullNameWithNameSpace());
+      YoDouble z = (YoDouble) newRegistry.getYoVariable(getYoZ().getFullNameWithNameSpace());
       return new YoFramePoint3D(x, y, z, getReferenceFrame());
    }
 }

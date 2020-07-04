@@ -60,7 +60,7 @@ public class XMLParameterIOTest
       String data = "<parameters/>";
       StringReader reader = new StringReader(data);
 
-      XmlParameterReader parameterReader = new XmlParameterReader(new ReaderInputStream(reader));
+      XmlParameterReader parameterReader = new XmlParameterReader(new ReaderInputStream(reader, Charset.defaultCharset()));
       parameterReader.readParametersInRegistry(target);
    }
 
@@ -73,13 +73,13 @@ public class XMLParameterIOTest
       DefaultParameterReader defaultReader = new DefaultParameterReader();
       defaultReader.readParametersInRegistry(source);
 
-      source.getVariable("root.a.b.c.paramA").setValueFromDouble(1.0);
-      source.getVariable("root.a.b.c.paramB").setValueFromDouble(2.0);
-      source.getVariable("root.a.b.c.paramC").setValueFromDouble(3.0);
-      source.getVariable("root.a.b.c.paramD").setValueFromDouble(4.0);
-      source.getVariable("root.a.b.paramE").setValueFromDouble(5.0);
-      source.getVariable("root.a.paramF").setValueFromDouble(6.0);
-      source.getVariable("root.paramG").setValueFromDouble(7.0);
+      source.getYoVariable("root.a.b.c.paramA").setValueFromDouble(1.0);
+      source.getYoVariable("root.a.b.c.paramB").setValueFromDouble(2.0);
+      source.getYoVariable("root.a.b.c.paramC").setValueFromDouble(3.0);
+      source.getYoVariable("root.a.b.c.paramD").setValueFromDouble(4.0);
+      source.getYoVariable("root.a.b.paramE").setValueFromDouble(5.0);
+      source.getYoVariable("root.a.paramF").setValueFromDouble(6.0);
+      source.getYoVariable("root.paramG").setValueFromDouble(7.0);
 
       ByteArrayOutputStream os = new ByteArrayOutputStream();
 
@@ -90,13 +90,13 @@ public class XMLParameterIOTest
       XmlParameterReader reader = new XmlParameterReader(new ByteArrayInputStream(os.toByteArray()));
       reader.readParametersInRegistry(target);
 
-      assertEquals(source.getVariable("root.a.b.c.paramA").getValueAsDouble(), target.getVariable("root.a.b.c.paramA").getValueAsDouble(), 1e-9);
-      assertEquals(source.getVariable("root.a.b.c.paramB").getValueAsDouble(), target.getVariable("root.a.b.c.paramB").getValueAsDouble(), 1e-9);
-      assertEquals(source.getVariable("root.a.b.c.paramC").getValueAsDouble(), target.getVariable("root.a.b.c.paramC").getValueAsDouble(), 1e-9);
-      assertEquals(source.getVariable("root.a.b.c.paramD").getValueAsDouble(), target.getVariable("root.a.b.c.paramD").getValueAsDouble(), 1e-9);
-      assertEquals(source.getVariable("root.a.b.paramE").getValueAsDouble(), target.getVariable("root.a.b.paramE").getValueAsDouble(), 1e-9);
-      assertEquals(source.getVariable("root.a.paramF").getValueAsDouble(), target.getVariable("root.a.paramF").getValueAsDouble(), 1e-9);
-      assertEquals(source.getVariable("root.paramG").getValueAsDouble(), target.getVariable("root.paramG").getValueAsDouble(), 1e-9);
+      assertEquals(source.getYoVariable("root.a.b.c.paramA").getValueAsDouble(), target.getYoVariable("root.a.b.c.paramA").getValueAsDouble(), 1e-9);
+      assertEquals(source.getYoVariable("root.a.b.c.paramB").getValueAsDouble(), target.getYoVariable("root.a.b.c.paramB").getValueAsDouble(), 1e-9);
+      assertEquals(source.getYoVariable("root.a.b.c.paramC").getValueAsDouble(), target.getYoVariable("root.a.b.c.paramC").getValueAsDouble(), 1e-9);
+      assertEquals(source.getYoVariable("root.a.b.c.paramD").getValueAsDouble(), target.getYoVariable("root.a.b.c.paramD").getValueAsDouble(), 1e-9);
+      assertEquals(source.getYoVariable("root.a.b.paramE").getValueAsDouble(), target.getYoVariable("root.a.b.paramE").getValueAsDouble(), 1e-9);
+      assertEquals(source.getYoVariable("root.a.paramF").getValueAsDouble(), target.getYoVariable("root.a.paramF").getValueAsDouble(), 1e-9);
+      assertEquals(source.getYoVariable("root.paramG").getValueAsDouble(), target.getYoVariable("root.paramG").getValueAsDouble(), 1e-9);
    }
 
    @Test // timeout = 30000

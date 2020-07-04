@@ -178,7 +178,7 @@ public class YoBooleanTest
 
       yoBoolean.set(true);
       val = yoBoolean.duplicate(newRegistry);
-      testVal = (YoBoolean) newRegistry.getAllVariables().get(0);
+      testVal = (YoBoolean) newRegistry.getYoVariables().get(0);
       Assert.assertEquals(yoBoolean.getBooleanValue(), val.getBooleanValue());
       Assert.assertEquals(yoBoolean.getBooleanValue(), testVal.getBooleanValue());
       assertTrue(val.getYoVariableRegistry().areEqual(newRegistry));

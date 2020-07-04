@@ -62,8 +62,8 @@ public class YoFramePoint2D extends YoFrameTuple2D implements FixedFramePoint2DB
     */
    public YoFramePoint2D duplicate(YoVariableRegistry newRegistry)
    {
-      YoDouble x = (YoDouble) newRegistry.getVariable(getYoX().getFullNameWithNameSpace());
-      YoDouble y = (YoDouble) newRegistry.getVariable(getYoY().getFullNameWithNameSpace());
+      YoDouble x = (YoDouble) newRegistry.getYoVariable(getYoX().getFullNameWithNameSpace());
+      YoDouble y = (YoDouble) newRegistry.getYoVariable(getYoY().getFullNameWithNameSpace());
       return new YoFramePoint2D(x, y, getReferenceFrame());
    }
 }
