@@ -9,7 +9,7 @@ import us.ihmc.euclid.referenceFrame.interfaces.FrameYawPitchRollReadOnly;
 import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.yoVariables.listener.VariableChangedListener;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
 
 /**
@@ -24,12 +24,12 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
 
    private boolean enableNotifications = true;
 
-   public YoFrameYawPitchRoll(String namePrefix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
+   public YoFrameYawPitchRoll(String namePrefix, ReferenceFrame referenceFrame, YoRegistry registry)
    {
       this(namePrefix, "", referenceFrame, registry);
    }
 
-   public YoFrameYawPitchRoll(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
+   public YoFrameYawPitchRoll(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoRegistry registry)
    {
       yaw = new YoDouble(YoFrameVariableNameTools.createName(namePrefix, "yaw", nameSuffix), registry);
       pitch = new YoDouble(YoFrameVariableNameTools.createName(namePrefix, "pitch", nameSuffix), registry);
@@ -189,7 +189,7 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
 
    /**
     * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
-    * {@link YoVariableRegistry}.
+    * {@link YoRegistry}.
     * <p>
     * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate of
     * the registry that was used to create {@code this}, this method searches for the duplicated
@@ -199,7 +199,7 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
     * @param newRegistry YoVariableRegistry to duplicate {@code this} to.
     * @return the duplicate of {@code this}.
     */
-   public YoFrameYawPitchRoll duplicate(YoVariableRegistry newRegistry)
+   public YoFrameYawPitchRoll duplicate(YoRegistry newRegistry)
    {
       YoDouble yaw = (YoDouble) newRegistry.findVariable(this.yaw.getFullNameWithNameSpace());
       YoDouble pitch = (YoDouble) newRegistry.findVariable(this.pitch.getFullNameWithNameSpace());

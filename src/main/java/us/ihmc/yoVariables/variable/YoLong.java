@@ -1,7 +1,7 @@
 package us.ihmc.yoVariables.variable;
 
 import us.ihmc.yoVariables.providers.LongProvider;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
  * Long implementation of the YoVariable class.
@@ -17,19 +17,19 @@ public class YoLong extends YoVariable<YoLong> implements LongProvider
    private long val;
 
    /**
-    * Create a new YoLong. This will call {@link #YoLong(String, String, YoVariableRegistry)} with the
+    * Create a new YoLong. This will call {@link #YoLong(String, String, YoRegistry)} with the
     * given name and registry and an empty description.
     *
     * @param name     String that uniquely identifies this YoLong
     * @param registry YoVariableRegistry for this YoLong to register itself to after initialization
     */
-   public YoLong(String name, YoVariableRegistry registry)
+   public YoLong(String name, YoRegistry registry)
    {
       this(name, "", registry);
    }
 
    /**
-    * Create a new YoLong. This will call {@link #YoLong(String, String, YoVariableRegistry)} with the
+    * Create a new YoLong. This will call {@link #YoLong(String, String, YoRegistry)} with the
     * given values as well as set {@link #manualMinScaling} and {@link #manualMaxScaling} to the given
     * values.
     *
@@ -39,7 +39,7 @@ public class YoLong extends YoVariable<YoLong> implements LongProvider
     * @param minScaling  double to set manualMinScaling to
     * @param maxScaling  double to set manualMaxScaling to
     */
-   public YoLong(String name, String description, YoVariableRegistry registry, double minScaling, double maxScaling)
+   public YoLong(String name, String description, YoRegistry registry, double minScaling, double maxScaling)
    {
       this(name, description, registry);
 
@@ -55,7 +55,7 @@ public class YoLong extends YoVariable<YoLong> implements LongProvider
     * @param description
     * @param registry
     */
-   public YoLong(String name, String description, YoVariableRegistry registry)
+   public YoLong(String name, String description, YoRegistry registry)
    {
       super(YoVariableType.LONG, name, description, registry);
 
@@ -245,13 +245,13 @@ public class YoLong extends YoVariable<YoLong> implements LongProvider
 
    /**
     * Creates a new YoLong with the same parameters as this one, and registers it to the passed
-    * {@link YoVariableRegistry}.
+    * {@link YoRegistry}.
     *
     * @param newRegistry YoVariableRegistry to duplicate this YoLong to
     * @return the newly created and registered YoLong
     */
    @Override
-   public YoLong duplicate(YoVariableRegistry newRegistry)
+   public YoLong duplicate(YoRegistry newRegistry)
    {
       YoLong retVar = new YoLong(getName(), getDescription(), newRegistry, getManualScalingMin(), getManualScalingMax());
       retVar.set(getLongValue());

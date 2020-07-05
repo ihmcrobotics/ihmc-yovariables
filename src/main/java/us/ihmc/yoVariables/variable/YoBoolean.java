@@ -1,7 +1,7 @@
 package us.ihmc.yoVariables.variable;
 
 import us.ihmc.yoVariables.providers.BooleanProvider;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
  * Boolean implementation of the YoVariable class.
@@ -17,13 +17,13 @@ public class YoBoolean extends YoVariable<YoBoolean> implements BooleanProvider
    private boolean val;
 
    /**
-    * Create a new YoBoolean. This will call {@link #YoBoolean(String, String, YoVariableRegistry)}
+    * Create a new YoBoolean. This will call {@link #YoBoolean(String, String, YoRegistry)}
     * with the given name and registry and an empty description.
     *
     * @param name     String that uniquely identifies this YoBoolean
     * @param registry YoVariableRegistry for this YoBoolean to register itself to after initialization
     */
-   public YoBoolean(String name, YoVariableRegistry registry)
+   public YoBoolean(String name, YoRegistry registry)
    {
       this(name, "", registry);
    }
@@ -37,7 +37,7 @@ public class YoBoolean extends YoVariable<YoBoolean> implements BooleanProvider
     * @param registry    YoVariableRegistry for this YoBoolean to register itself to after
     *                    initialization
     */
-   public YoBoolean(String name, String description, YoVariableRegistry registry)
+   public YoBoolean(String name, String description, YoRegistry registry)
    {
       super(YoVariableType.BOOLEAN, name, description, registry);
 
@@ -206,13 +206,13 @@ public class YoBoolean extends YoVariable<YoBoolean> implements BooleanProvider
 
    /**
     * Creates a new YoBoolean with the same parameters as this one, and registers it to the passed
-    * {@link YoVariableRegistry}.
+    * {@link YoRegistry}.
     *
     * @param newRegistry YoVariableRegistry to duplicate this YoBoolean to
     * @return the newly created and registered YoBoolean
     */
    @Override
-   public YoBoolean duplicate(YoVariableRegistry newRegistry)
+   public YoBoolean duplicate(YoRegistry newRegistry)
    {
       YoBoolean newVar = new YoBoolean(getName(), getDescription(), newRegistry);
       newVar.set(getBooleanValue());

@@ -5,7 +5,7 @@ import us.ihmc.euclid.tools.EuclidCoreIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.tuple4D.interfaces.QuaternionBasics;
 import us.ihmc.euclid.tuple4D.interfaces.Tuple4DReadOnly;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
 
 public class YoQuaternion implements QuaternionBasics, GeometryObject<YoQuaternion>
@@ -38,7 +38,7 @@ public class YoQuaternion implements QuaternionBasics, GeometryObject<YoQuaterni
     * @param namePrefix a unique name string to use as the prefix for child variable names.
     * @param registry   the registry to register child variables to.
     */
-   public YoQuaternion(String namePrefix, YoVariableRegistry registry)
+   public YoQuaternion(String namePrefix, YoRegistry registry)
    {
       this(namePrefix, "", registry);
    }
@@ -51,7 +51,7 @@ public class YoQuaternion implements QuaternionBasics, GeometryObject<YoQuaterni
     * @param nameSuffix a string to use as the suffix for child variable names.
     * @param registry   the registry to register child variables to.
     */
-   public YoQuaternion(String namePrefix, String nameSuffix, YoVariableRegistry registry)
+   public YoQuaternion(String namePrefix, String nameSuffix, YoRegistry registry)
    {
       x = new YoDouble(YoFrameVariableNameTools.createQxName(namePrefix, nameSuffix), registry);
       y = new YoDouble(YoFrameVariableNameTools.createQyName(namePrefix, nameSuffix), registry);

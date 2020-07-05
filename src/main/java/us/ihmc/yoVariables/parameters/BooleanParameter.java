@@ -16,7 +16,7 @@
 package us.ihmc.yoVariables.parameters;
 
 import us.ihmc.yoVariables.providers.BooleanProvider;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoBoolean;
 import us.ihmc.yoVariables.variable.YoVariable;
 
@@ -36,7 +36,7 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
     * @param name     Desired name. Must be unique in the registry
     * @param registry YoVariableRegistry to store under
     */
-   public BooleanParameter(String name, YoVariableRegistry registry)
+   public BooleanParameter(String name, YoRegistry registry)
    {
       this(name, "", registry);
    }
@@ -48,7 +48,7 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
     * @param description User readable description that describes the purpose of this parameter
     * @param registry    YoVariableRegistry to store under
     */
-   public BooleanParameter(String name, String description, YoVariableRegistry registry)
+   public BooleanParameter(String name, String description, YoRegistry registry)
    {
       this(name, "", registry, false);
    }
@@ -61,7 +61,7 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
     * @param initialValue Value to set to when no value can be found in the user provided
     *                     parameterLoader
     */
-   public BooleanParameter(String name, YoVariableRegistry registry, boolean initialValue)
+   public BooleanParameter(String name, YoRegistry registry, boolean initialValue)
    {
       this(name, "", registry, initialValue);
    }
@@ -75,7 +75,7 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
     * @param initialValue Value to set to when no value can be found in the user provided
     *                     parameterLoader
     */
-   public BooleanParameter(String name, String description, YoVariableRegistry registry, boolean initialValue)
+   public BooleanParameter(String name, String description, YoRegistry registry, boolean initialValue)
    {
       super(name, description);
 
@@ -130,7 +130,7 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
    private class YoBooleanParameter extends YoBoolean
    {
 
-      public YoBooleanParameter(String name, String description, YoVariableRegistry registry)
+      public YoBooleanParameter(String name, String description, YoRegistry registry)
       {
          super(name, description, registry);
       }
@@ -148,7 +148,7 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
       }
 
       @Override
-      public YoBoolean duplicate(YoVariableRegistry newRegistry)
+      public YoBoolean duplicate(YoRegistry newRegistry)
       {
          BooleanParameter newParameter = new BooleanParameter(getName(), getDescription(), newRegistry, initialValue);
          newParameter.value.set(value.getValue());

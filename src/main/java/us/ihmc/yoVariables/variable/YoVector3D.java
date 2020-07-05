@@ -2,7 +2,7 @@ package us.ihmc.yoVariables.variable;
 
 import us.ihmc.euclid.interfaces.GeometryObject;
 import us.ihmc.euclid.tuple3D.interfaces.Vector3DBasics;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoVector3D extends YoTuple3D implements Vector3DBasics, GeometryObject<YoVector3D>
 {
@@ -25,7 +25,7 @@ public class YoVector3D extends YoTuple3D implements Vector3DBasics, GeometryObj
     * @param namePrefix a unique name string to use as the prefix for child variable names.
     * @param registry   the registry to register child variables to.
     */
-   public YoVector3D(String namePrefix, YoVariableRegistry registry)
+   public YoVector3D(String namePrefix, YoRegistry registry)
    {
       super(namePrefix, registry);
    }
@@ -38,7 +38,7 @@ public class YoVector3D extends YoTuple3D implements Vector3DBasics, GeometryObj
     * @param nameSuffix a string to use as the suffix for child variable names.
     * @param registry   the registry to register child variables to.
     */
-   public YoVector3D(String namePrefix, String nameSuffix, YoVariableRegistry registry)
+   public YoVector3D(String namePrefix, String nameSuffix, YoRegistry registry)
    {
       super(namePrefix, nameSuffix, registry);
    }

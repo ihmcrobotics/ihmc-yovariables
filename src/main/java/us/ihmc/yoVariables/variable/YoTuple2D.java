@@ -5,7 +5,7 @@ import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.tuple2D.interfaces.Tuple2DBasics;
 import us.ihmc.euclid.tuple2D.interfaces.Tuple2DReadOnly;
 import us.ihmc.yoVariables.listener.VariableChangedListener;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
 
 /**
@@ -39,7 +39,7 @@ public abstract class YoTuple2D implements Tuple2DBasics
     * @param namePrefix a unique name string to use as the prefix for child variable names.
     * @param registry   the registry to register child variables to.
     */
-   public YoTuple2D(String namePrefix, YoVariableRegistry registry)
+   public YoTuple2D(String namePrefix, YoRegistry registry)
    {
       this(namePrefix, "", registry);
    }
@@ -51,7 +51,7 @@ public abstract class YoTuple2D implements Tuple2DBasics
     * @param nameSuffix a string to use as the suffix for child variable names.
     * @param registry   the registry to register child variables to.
     */
-   public YoTuple2D(String namePrefix, String nameSuffix, YoVariableRegistry registry)
+   public YoTuple2D(String namePrefix, String nameSuffix, YoRegistry registry)
    {
       this.namePrefix = namePrefix;
       this.nameSuffix = nameSuffix;

@@ -6,7 +6,7 @@ import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple4DReadOnly;
 import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.yoVariables.listener.VariableChangedListener;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
 
 /**
@@ -29,7 +29,7 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
     * @param namePrefix     a unique name string to use as the prefix for child variable names.
     * @param registry       the registry to register child variables to.
     */
-   public YoFrameQuaternion(String namePrefix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
+   public YoFrameQuaternion(String namePrefix, ReferenceFrame referenceFrame, YoRegistry registry)
    {
       this(namePrefix, "", referenceFrame, registry);
    }
@@ -43,7 +43,7 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
     * @param referenceFrame the reference frame for this {@code YoFrameQuaternion}.
     * @param registry       the registry to register child variables to.
     */
-   public YoFrameQuaternion(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
+   public YoFrameQuaternion(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoRegistry registry)
    {
       this.namePrefix = namePrefix;
       this.nameSuffix = nameSuffix;
@@ -204,7 +204,7 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
 
    /**
     * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
-    * {@link YoVariableRegistry}.
+    * {@link YoRegistry}.
     * <p>
     * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate of
     * the registry that was used to create {@code this}, this method searches for the duplicated
@@ -214,7 +214,7 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
     * @param newRegistry YoVariableRegistry to duplicate {@code this} to.
     * @return the duplicate of {@code this}.
     */
-   public YoFrameQuaternion duplicate(YoVariableRegistry newRegistry)
+   public YoFrameQuaternion duplicate(YoRegistry newRegistry)
    {
       YoDouble x = (YoDouble) newRegistry.findVariable(getYoQx().getFullNameWithNameSpace());
       YoDouble y = (YoDouble) newRegistry.findVariable(getYoQy().getFullNameWithNameSpace());

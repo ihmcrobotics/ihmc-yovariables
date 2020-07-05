@@ -1,7 +1,7 @@
 package us.ihmc.yoVariables.variable;
 
 import us.ihmc.yoVariables.providers.IntegerProvider;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
  * Integer implementation of the YoVariable class.
@@ -17,19 +17,19 @@ public class YoInteger extends YoVariable<YoInteger> implements IntegerProvider
    private int val;
 
    /**
-    * Create a new YoInteger. This will call {@link #YoInteger(String, String, YoVariableRegistry)}
+    * Create a new YoInteger. This will call {@link #YoInteger(String, String, YoRegistry)}
     * with the given name and registry and an empty description.
     *
     * @param name     String that uniquely identifies this YoInteger
     * @param registry YoVariableRegistry for this YoInteger to register itself to after initialization
     */
-   public YoInteger(String name, YoVariableRegistry registry)
+   public YoInteger(String name, YoRegistry registry)
    {
       this(name, "", registry);
    }
 
    /**
-    * Create a new YoInteger. This will call {@link #YoInteger(String, String, YoVariableRegistry)}
+    * Create a new YoInteger. This will call {@link #YoInteger(String, String, YoRegistry)}
     * with the given values as well as set {@link #manualMaxScaling} and {@link #manualMaxScaling} to
     * the given values.
     *
@@ -40,7 +40,7 @@ public class YoInteger extends YoVariable<YoInteger> implements IntegerProvider
     * @param minScaling  double to set manualMinScaling to
     * @param maxScaling  double to set manualMaxScaling to
     */
-   public YoInteger(String name, String description, YoVariableRegistry registry, double minScaling, double maxScaling)
+   public YoInteger(String name, String description, YoRegistry registry, double minScaling, double maxScaling)
    {
       this(name, description, registry);
 
@@ -57,7 +57,7 @@ public class YoInteger extends YoVariable<YoInteger> implements IntegerProvider
     * @param registry    YoVariableRegistry for this YoInteger to register itself to after
     *                    initialization
     */
-   public YoInteger(String name, String description, YoVariableRegistry registry)
+   public YoInteger(String name, String description, YoRegistry registry)
    {
       super(YoVariableType.INTEGER, name, description, registry);
 
@@ -251,13 +251,13 @@ public class YoInteger extends YoVariable<YoInteger> implements IntegerProvider
 
    /**
     * Creates a new YoInteger with the same parameters as this one, and registers it to the passed
-    * {@link YoVariableRegistry}.
+    * {@link YoRegistry}.
     *
     * @param newRegistry YoVariableRegistry to duplicate this YoInteger to
     * @return the newly created and registered YoInteger
     */
    @Override
-   public YoInteger duplicate(YoVariableRegistry newRegistry)
+   public YoInteger duplicate(YoRegistry newRegistry)
    {
       YoInteger retVar = new YoInteger(getName(), getDescription(), newRegistry, getManualScalingMin(), getManualScalingMax());
       retVar.set(getIntegerValue());

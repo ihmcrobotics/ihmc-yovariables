@@ -2,7 +2,7 @@ package us.ihmc.yoVariables.variable.frameObjects;
 
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.interfaces.ReferenceFrameHolder;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
 import us.ihmc.yoVariables.variable.YoLong;
 
@@ -11,7 +11,7 @@ public class YoMutableFrameObject implements ReferenceFrameHolder
    private final YoLong frameId;
    private final FrameIndexMap frameIndexMap;
 
-   public YoMutableFrameObject(String namePrefix, String nameSuffix, YoVariableRegistry registry)
+   public YoMutableFrameObject(String namePrefix, String nameSuffix, YoRegistry registry)
    {
       frameId = new YoLong(YoFrameVariableNameTools.createName(namePrefix, "frame", nameSuffix), registry);
       frameIndexMap = new FrameIndexMap.FrameIndexHashMap();

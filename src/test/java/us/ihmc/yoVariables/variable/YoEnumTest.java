@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import us.ihmc.robotics.Assert;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoEnumTest
 {
@@ -22,13 +22,13 @@ public class YoEnumTest
 
    private EnumYoVariableTestEnums enumValue;
 
-   private YoVariableRegistry registry = null;
+   private YoRegistry registry = null;
    private static final double EPSILON = 1e-10;
 
    @BeforeEach
    public void setUp()
    {
-      registry = new YoVariableRegistry("testRegistry");
+      registry = new YoRegistry("testRegistry");
    }
 
    @AfterEach
@@ -305,7 +305,7 @@ public class YoEnumTest
    @Test // timeout=300000
    public void testDuplicate()
    {
-      YoVariableRegistry newRegistry = new YoVariableRegistry("newRegistry");
+      YoRegistry newRegistry = new YoRegistry("newRegistry");
       YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class);
       YoEnum<EnumYoVariableTestEnums> yoEnum2 = yoEnum.duplicate(newRegistry);
 
@@ -318,7 +318,7 @@ public class YoEnumTest
    @Test // timeout=300000
    public void testSetValue()
    {
-      YoVariableRegistry newRegistry = new YoVariableRegistry("newRegistry2");
+      YoRegistry newRegistry = new YoRegistry("newRegistry2");
       boolean notifyListeners = true;
       YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class);
       YoEnum<EnumYoVariableTestEnums> yoEnum2 = new YoEnum<>("yoEnum", newRegistry, EnumYoVariableTestEnums.class);
@@ -354,7 +354,7 @@ public class YoEnumTest
       {
          String[] constants = {"A", "B", "C", null, "E", "F", "G", "H"};
 
-         YoVariableRegistry registry = new YoVariableRegistry("test");
+         YoRegistry registry = new YoRegistry("test");
 
          new YoEnum<>("constantDefault", "", registry, false, constants);
       });
@@ -365,7 +365,7 @@ public class YoEnumTest
    public void testEmptyConstantList()
    {
       String[] constants = {};
-      YoVariableRegistry registry = new YoVariableRegistry("test");
+      YoRegistry registry = new YoRegistry("test");
 
       YoEnum<?> stringConstructor = new YoEnum<>("stringConstructor", "", registry, true, constants);
       YoEnum<?> enumConstructor = new YoEnum<>("enumConsturctor", "", registry, EmptyEnum.class, true);
@@ -379,7 +379,7 @@ public class YoEnumTest
    {
       Assertions.assertThrows(RuntimeException.class, () ->
       {
-         YoVariableRegistry registry = new YoVariableRegistry("test");
+         YoRegistry registry = new YoRegistry("test");
 
          new YoEnum<>("enumConsturctor", "", registry, EmptyEnum.class, false);
       });
@@ -390,7 +390,7 @@ public class YoEnumTest
    {
       Assertions.assertThrows(RuntimeException.class, () ->
       {
-         YoVariableRegistry registry = new YoVariableRegistry("test");
+         YoRegistry registry = new YoRegistry("test");
          String[] constants = {};
          new YoEnum<>("stringConstructor", "", registry, false, constants);
       });

@@ -8,7 +8,7 @@ import us.ihmc.euclid.referenceFrame.interfaces.FramePose3DBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FramePose3DReadOnly;
 import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
 import us.ihmc.yoVariables.variable.YoDouble;
 
@@ -42,7 +42,7 @@ public class YoMutableFramePose3D extends YoMutableFrameObject implements FrameP
     * @param nameSuffix the suffix given to all YoVariables
     * @param registry   is where the Yovariables backing this object are created.
     */
-   public YoMutableFramePose3D(String namePrefix, String nameSuffix, YoVariableRegistry registry)
+   public YoMutableFramePose3D(String namePrefix, String nameSuffix, YoRegistry registry)
    {
       super(namePrefix, nameSuffix, registry);
 

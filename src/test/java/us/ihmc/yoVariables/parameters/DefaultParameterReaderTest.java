@@ -19,7 +19,7 @@ import static us.ihmc.robotics.Assert.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class DefaultParameterReaderTest
 {
@@ -29,8 +29,8 @@ public class DefaultParameterReaderTest
    @Test // timeout = 1000
    public void testReadDefault()
    {
-      YoVariableRegistry root = new YoVariableRegistry("root");
-      YoVariableRegistry a = new YoVariableRegistry("a");
+      YoRegistry root = new YoRegistry("root");
+      YoRegistry a = new YoRegistry("a");
 
       root.addChild(a);
       DoubleParameter param = new DoubleParameter("param", a, initialValue);

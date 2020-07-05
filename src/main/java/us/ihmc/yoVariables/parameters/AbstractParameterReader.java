@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 import us.ihmc.yoVariables.registry.NameSpace;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
  * Base class for parameter readers
@@ -31,7 +31,7 @@ public abstract class AbstractParameterReader
     *
     * @param registry with parameters that need to be loaded.
     */
-   public void readParametersInRegistry(YoVariableRegistry registry)
+   public void readParametersInRegistry(YoRegistry registry)
    {
       readParametersInRegistry(registry, new HashSet<>(), new HashSet<>());
    }
@@ -47,7 +47,7 @@ public abstract class AbstractParameterReader
     *                                  that exist in the loader but have no matching parameter in the
     *                                  registry.
     */
-   public void readParametersInRegistry(YoVariableRegistry registry, Set<String> defaultParametersToPack, Set<String> unmatchedParametersToPack)
+   public void readParametersInRegistry(YoRegistry registry, Set<String> defaultParametersToPack, Set<String> unmatchedParametersToPack)
    {
       defaultParametersToPack.clear();
       unmatchedParametersToPack.clear();
@@ -79,7 +79,7 @@ public abstract class AbstractParameterReader
 
    protected abstract Map<String, ParameterData> getValues();
 
-   static NameSpace getRelativeNamespace(NameSpace parameterNamespace, YoVariableRegistry registry)
+   static NameSpace getRelativeNamespace(NameSpace parameterNamespace, YoRegistry registry)
    {
       NameSpace registryNamespace = registry.getNameSpace();
       if (registryNamespace.isRoot())

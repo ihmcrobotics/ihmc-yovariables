@@ -1,7 +1,7 @@
 package us.ihmc.yoVariables.variable;
 
 import us.ihmc.euclid.tuple3D.Vector3DBasicsTest;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 import java.util.Random;
 
@@ -18,7 +18,7 @@ public class YoVector3DTest extends Vector3DBasicsTest<YoVector3D>
    @Override
    public YoVector3D createEmptyTuple()
    {
-      YoVariableRegistry registry = new YoVariableRegistry("testYoVariableRegistry");
+      YoRegistry registry = new YoRegistry("testYoVariableRegistry");
 
       return new YoVector3D("testYoVector3D", registry);
    }
@@ -26,7 +26,7 @@ public class YoVector3DTest extends Vector3DBasicsTest<YoVector3D>
    @Override
    public YoVector3D createTuple(double x, double y, double z)
    {
-      YoVariableRegistry registry = new YoVariableRegistry("testYoVariableRegistry");
+      YoRegistry registry = new YoRegistry("testYoVariableRegistry");
 
       YoVector3D vector = new YoVector3D("testYoVector3D", registry);
 
@@ -38,7 +38,7 @@ public class YoVector3DTest extends Vector3DBasicsTest<YoVector3D>
    @Override
    public YoVector3D createRandomTuple(Random random)
    {
-      YoVariableRegistry registry = new YoVariableRegistry("testYoVariableRegistry");
+      YoRegistry registry = new YoRegistry("testYoVariableRegistry");
 
       YoVector3D vector = new YoVector3D("testYoVector3D", registry);
 

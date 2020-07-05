@@ -14,7 +14,7 @@ import us.ihmc.yoVariables.parameters.YoParameter;
 import us.ihmc.yoVariables.registry.YoTools.SearchQuery;
 import us.ihmc.yoVariables.variable.YoVariable;
 
-public class YoVariableRegistry implements YoVariableHolder
+public class YoRegistry implements YoVariableHolder
 {
    private final String name;
    private NameSpace nameSpace;
@@ -23,13 +23,13 @@ public class YoVariableRegistry implements YoVariableHolder
    private final Map<String, YoVariable<?>> nameToVariableMap = new LinkedHashMap<>(); // From name to the variable with that name.
    private final List<YoParameter<?>> parameters = new ArrayList<>();
 
-   private YoVariableRegistry parent;
-   private final List<YoVariableRegistry> children = new ArrayList<>();
-   private final Map<String, YoVariableRegistry> nameToChildMap = new LinkedHashMap<>();
+   private YoRegistry parent;
+   private final List<YoRegistry> children = new ArrayList<>();
+   private final Map<String, YoRegistry> nameToChildMap = new LinkedHashMap<>();
 
    private List<YoVariableRegistryChangedListener> yoVariableRegistryChangedListeners;
 
-   public YoVariableRegistry(String name)
+   public YoRegistry(String name)
    {
       YoTools.checkForIllegalCharacters(name);
 
@@ -89,7 +89,7 @@ public class YoVariableRegistry implements YoVariableHolder
     * @param child the new registry to add.
     * @throws NameCollisionException if adding the new registry would cause a name collision.
     */
-   public void addChild(YoVariableRegistry child)
+   public void addChild(YoRegistry child)
    {
       addChild(child, true);
    }
@@ -106,7 +106,7 @@ public class YoVariableRegistry implements YoVariableHolder
     *                        Default value is {@code true}.
     * @throws NameCollisionException if adding the new registry would cause a name collision.
     */
-   public void addChild(YoVariableRegistry child, boolean notifyListeners)
+   public void addChild(YoRegistry child, boolean notifyListeners)
    {
       if (child == null)
          return;
@@ -173,7 +173,7 @@ public class YoVariableRegistry implements YoVariableHolder
     * 
     * @return the root registry or {@code this} if it is the root.
     */
-   public YoVariableRegistry getRoot()
+   public YoRegistry getRoot()
    {
       if (isRoot())
          return this;
@@ -187,7 +187,7 @@ public class YoVariableRegistry implements YoVariableHolder
     *
     * @return the parent or {@code null} if {@code this} is the root registry.
     */
-   public YoVariableRegistry getParent()
+   public YoRegistry getParent()
    {
       return parent;
    }
@@ -197,7 +197,7 @@ public class YoVariableRegistry implements YoVariableHolder
     *
     * @return this registry direct children.
     */
-   public List<YoVariableRegistry> getChildren()
+   public List<YoRegistry> getChildren()
    {
       return children;
    }
@@ -276,7 +276,7 @@ public class YoVariableRegistry implements YoVariableHolder
       variablesToPack.addAll(variables);
 
       // Add children's recursively:
-      for (YoVariableRegistry registry : children)
+      for (YoRegistry registry : children)
       {
          registry.getSubtreeVariables(variablesToPack);
       }
@@ -308,7 +308,7 @@ public class YoVariableRegistry implements YoVariableHolder
       parametersToPack.addAll(parameters);
 
       // Add children's recursively:
-      for (YoVariableRegistry registry : children)
+      for (YoRegistry registry : children)
       {
          registry.getSubtreeParameters(parametersToPack);
       }
@@ -319,9 +319,9 @@ public class YoVariableRegistry implements YoVariableHolder
     *
     * @return list of all the registries composing the subtree starting at {@code this}.
     */
-   public List<YoVariableRegistry> getSubtreeRegistries()
+   public List<YoRegistry> getSubtreeRegistries()
    {
-      List<YoVariableRegistry> yoVariableRegistries = new ArrayList<>();
+      List<YoRegistry> yoVariableRegistries = new ArrayList<>();
       getSubtreeRegistries(yoVariableRegistries);
       return yoVariableRegistries;
    }
@@ -333,13 +333,13 @@ public class YoVariableRegistry implements YoVariableHolder
     * @param yoVariableRegistriesToPack list used to store all the registries composing the subtree
     *                                   starting at {@code this}.
     */
-   public void getSubtreeRegistries(List<YoVariableRegistry> yoVariableRegistriesToPack)
+   public void getSubtreeRegistries(List<YoRegistry> yoVariableRegistriesToPack)
    {
       // Add mine:
       yoVariableRegistriesToPack.add(this);
 
       // Add all the children recursively:
-      for (YoVariableRegistry child : children)
+      for (YoRegistry child : children)
       {
          child.getSubtreeRegistries(yoVariableRegistriesToPack);
       }
@@ -483,7 +483,7 @@ public class YoVariableRegistry implements YoVariableHolder
             count++;
       }
 
-      for (YoVariableRegistry child : children)
+      for (YoRegistry child : children)
       {
          count += child.countNumberOfVariables(parentNameSpace, name);
       }
@@ -497,13 +497,13 @@ public class YoVariableRegistry implements YoVariableHolder
       nameSpace = new NameSpace(parentNameSpace.getName() + "." + nameSpace.getName());
 
       // Fix my children
-      for (YoVariableRegistry child : children)
+      for (YoRegistry child : children)
       {
          child.prependNameSpace(parentNameSpace);
       }
    }
 
-   private void setParent(YoVariableRegistry parent)
+   private void setParent(YoRegistry parent)
    {
       if (this.parent != null)
          throw new RuntimeException("Parent was already set!! It was " + this.parent + ". this = " + this);
@@ -528,7 +528,7 @@ public class YoVariableRegistry implements YoVariableHolder
       return nameSpace.getName();
    }
 
-   public YoVariableRegistry getRegistry(NameSpace fullNameSpace)
+   public YoRegistry getRegistry(NameSpace fullNameSpace)
    {
       if (nameSpace == null && fullNameSpace == null)
       {
@@ -542,9 +542,9 @@ public class YoVariableRegistry implements YoVariableHolder
 
       if (nameSpace == null || fullNameSpace.startsWith(nameSpace.getName()))
       {
-         for (YoVariableRegistry child : children)
+         for (YoRegistry child : children)
          {
-            YoVariableRegistry registry = child.getRegistry(fullNameSpace);
+            YoRegistry registry = child.getRegistry(fullNameSpace);
             if (registry != null)
                return registry;
          }
@@ -630,7 +630,7 @@ public class YoVariableRegistry implements YoVariableHolder
          }
       }
 
-      for (YoVariableRegistry child : children)
+      for (YoRegistry child : children)
       {
          child.recursivelyGetMatchingVariables(ret, regularExpressions);
       }
@@ -639,13 +639,13 @@ public class YoVariableRegistry implements YoVariableHolder
    @Override
    public boolean equals(Object object)
    {
-      if (object instanceof YoVariableRegistry)
-         return equals((YoVariableRegistry) object);
+      if (object instanceof YoRegistry)
+         return equals((YoRegistry) object);
       else
          return false;
    }
 
-   public boolean equals(YoVariableRegistry other)
+   public boolean equals(YoRegistry other)
    {
       if (other == this)
          return true;
@@ -667,7 +667,7 @@ public class YoVariableRegistry implements YoVariableHolder
       if (children.size() != other.children.size())
          return false;
 
-      for (YoVariableRegistry child : children)
+      for (YoRegistry child : children)
       {
          if (!other.nameToChildMap.containsKey(child.getName()))
             return false;
@@ -696,7 +696,7 @@ public class YoVariableRegistry implements YoVariableHolder
       }
    }
 
-   private void notifyListenersYoVariableRegistryWasAdded(YoVariableRegistry child)
+   private void notifyListenersYoVariableRegistryWasAdded(YoRegistry child)
    {
       // Push it up the chain. Only the root will notify it's listeners. Non-roots shouldn't have listeners.
       verifyDoNotHaveBothParentAndYoVariableRegistryChangedListeners();
@@ -714,7 +714,7 @@ public class YoVariableRegistry implements YoVariableHolder
       }
    }
 
-   private void notifyListenersYoVariableRegistryWasCleared(YoVariableRegistry registry)
+   private void notifyListenersYoVariableRegistryWasCleared(YoRegistry registry)
    {
       // Push it up the chain. Only the root will notify it's listeners. Non-roots shouldn't have listeners.
       verifyDoNotHaveBothParentAndYoVariableRegistryChangedListeners();

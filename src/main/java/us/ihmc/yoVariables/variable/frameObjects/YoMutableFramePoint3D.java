@@ -6,50 +6,50 @@ import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple2DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple3DReadOnly;
 import us.ihmc.euclid.tuple2D.interfaces.Tuple2DReadOnly;
 import us.ihmc.euclid.tuple3D.interfaces.Tuple3DReadOnly;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoLong;
 
 public class YoMutableFramePoint3D extends YoMutableFrameTuple3D implements FramePoint3DBasics
 {
-   public YoMutableFramePoint3D(String namePrefix, String nameSuffix, YoVariableRegistry registry)
+   public YoMutableFramePoint3D(String namePrefix, String nameSuffix, YoRegistry registry)
    {
       super(namePrefix, nameSuffix, registry);
    }
 
-   public YoMutableFramePoint3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame,
+   public YoMutableFramePoint3D(String namePrefix, String nameSuffix, YoRegistry registry, ReferenceFrame referenceFrame,
                                 Tuple3DReadOnly tuple3DReadOnly)
    {
       super(namePrefix, nameSuffix, registry, referenceFrame, tuple3DReadOnly);
    }
 
-   public YoMutableFramePoint3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame,
+   public YoMutableFramePoint3D(String namePrefix, String nameSuffix, YoRegistry registry, ReferenceFrame referenceFrame,
                                 Tuple2DReadOnly tuple2DReadOnly)
    {
       super(namePrefix, nameSuffix, registry, referenceFrame, tuple2DReadOnly);
    }
 
-   public YoMutableFramePoint3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, double x, double y, double z)
+   public YoMutableFramePoint3D(String namePrefix, String nameSuffix, YoRegistry registry, ReferenceFrame referenceFrame, double x, double y, double z)
    {
       super(namePrefix, nameSuffix, registry, referenceFrame, x, y, z);
    }
 
-   public YoMutableFramePoint3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, double[] tupleArray)
+   public YoMutableFramePoint3D(String namePrefix, String nameSuffix, YoRegistry registry, ReferenceFrame referenceFrame, double[] tupleArray)
    {
       super(namePrefix, nameSuffix, registry, referenceFrame, tupleArray);
    }
 
-   public YoMutableFramePoint3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame)
+   public YoMutableFramePoint3D(String namePrefix, String nameSuffix, YoRegistry registry, ReferenceFrame referenceFrame)
    {
       super(namePrefix, nameSuffix, registry, referenceFrame);
    }
 
-   public YoMutableFramePoint3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, FrameTuple2DReadOnly frameTuple2DReadOnly)
+   public YoMutableFramePoint3D(String namePrefix, String nameSuffix, YoRegistry registry, FrameTuple2DReadOnly frameTuple2DReadOnly)
    {
       super(namePrefix, nameSuffix, registry, frameTuple2DReadOnly);
    }
 
-   public YoMutableFramePoint3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, FrameTuple3DReadOnly frameTuple3DReadOnly)
+   public YoMutableFramePoint3D(String namePrefix, String nameSuffix, YoRegistry registry, FrameTuple3DReadOnly frameTuple3DReadOnly)
    {
       super(namePrefix, nameSuffix, registry, frameTuple3DReadOnly);
    }

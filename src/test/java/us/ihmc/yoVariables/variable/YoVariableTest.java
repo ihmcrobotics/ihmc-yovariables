@@ -19,12 +19,12 @@ import org.junit.jupiter.api.Test;
 
 import us.ihmc.robotics.Assert;
 import us.ihmc.yoVariables.listener.VariableChangedListener;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoVariableTest
 {
    private YoVariable<?> yoVariable = null;
-   private YoVariableRegistry registry = null;
+   private YoRegistry registry = null;
    private ArrayList<TestVariableChangedListener> variableChangedListeners = null;
 
    public YoVariableTest()
@@ -34,9 +34,9 @@ public class YoVariableTest
    @BeforeEach
    public void setUp()
    {
-      YoVariableRegistry robotRegistry = new YoVariableRegistry("robot");
+      YoRegistry robotRegistry = new YoRegistry("robot");
 
-      registry = new YoVariableRegistry("testRegistry");
+      registry = new YoRegistry("testRegistry");
       robotRegistry.addChild(registry);
 
       yoVariable = new YoDouble("variableOne", registry);
@@ -251,7 +251,7 @@ public class YoVariableTest
    @Test // timeout=300000
    public void testGetYoVariableRegistry()
    {
-      YoVariableRegistry registry = yoVariable.getYoVariableRegistry();
+      YoRegistry registry = yoVariable.getYoVariableRegistry();
       assertNotNull(registry);
       Assert.assertEquals(registry, this.registry);
       Assert.assertEquals(registry.findVariable(yoVariable.getName()), yoVariable);
@@ -478,11 +478,11 @@ public class YoVariableTest
    @Test // timeout=300000
    public void testRecursiveCompareYoVariables() throws IllegalArgumentException, IllegalAccessException, SecurityException, NoSuchFieldException
    {
-      YoVariableRegistry root0 = new YoVariableRegistry("root");
+      YoRegistry root0 = new YoRegistry("root");
       YoDouble variable01 = new YoDouble("variableOne", root0);
       YoDouble variable02 = new YoDouble("variableTwo", root0);
 
-      YoVariableRegistry root1 = new YoVariableRegistry("root");
+      YoRegistry root1 = new YoRegistry("root");
       YoDouble variable11 = new YoDouble("variableOne", root1);
       YoDouble variable12 = new YoDouble("variableTwo", root1);
 
@@ -583,7 +583,7 @@ public class YoVariableTest
 
       }
 
-      public boolean compare(YoVariableRegistry root0, YoVariableRegistry root1)
+      public boolean compare(YoRegistry root0, YoRegistry root1)
       {
          return ReflectionToStringBuilder.toString(root0, ToStringStyle.NO_CLASS_NAME_STYLE)
                                          .equals(ReflectionToStringBuilder.toString(root1, ToStringStyle.NO_CLASS_NAME_STYLE));

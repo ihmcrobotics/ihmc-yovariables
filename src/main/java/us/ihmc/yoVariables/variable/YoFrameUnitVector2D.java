@@ -4,7 +4,7 @@ import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameUnitVector2DBasics;
 import us.ihmc.euclid.tools.EuclidCoreTools;
 import us.ihmc.euclid.tuple2D.interfaces.UnitVector2DReadOnly;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
  * {@code FixedFrameUnitVector2DBasics} implementation which components {@code x}, {@code y} are
@@ -41,7 +41,7 @@ public class YoFrameUnitVector2D extends YoFrameTuple2D implements FixedFrameUni
     * @param referenceFrame the reference frame for this vector.
     * @param registry       the registry to register child variables to.
     */
-   public YoFrameUnitVector2D(String namePrefix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
+   public YoFrameUnitVector2D(String namePrefix, ReferenceFrame referenceFrame, YoRegistry registry)
    {
       super(namePrefix, "", referenceFrame, registry);
       setToZero();
@@ -55,7 +55,7 @@ public class YoFrameUnitVector2D extends YoFrameTuple2D implements FixedFrameUni
     * @param referenceFrame the reference frame for this vector.
     * @param registry       the registry to register child variables to.
     */
-   public YoFrameUnitVector2D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
+   public YoFrameUnitVector2D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoRegistry registry)
    {
       super(namePrefix, nameSuffix, referenceFrame, registry);
       setToZero();
@@ -63,7 +63,7 @@ public class YoFrameUnitVector2D extends YoFrameTuple2D implements FixedFrameUni
 
    /**
     * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
-    * {@link YoVariableRegistry}.
+    * {@link YoRegistry}.
     * <p>
     * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate of
     * the registry that was used to create {@code this}, this method searches for the duplicated
@@ -73,7 +73,7 @@ public class YoFrameUnitVector2D extends YoFrameTuple2D implements FixedFrameUni
     * @param newRegistry YoVariableRegistry to duplicate {@code this} to.
     * @return the duplicate of {@code this}.
     */
-   public YoFrameUnitVector2D duplicate(YoVariableRegistry newRegistry)
+   public YoFrameUnitVector2D duplicate(YoRegistry newRegistry)
    {
       YoDouble x = (YoDouble) newRegistry.findVariable(getYoX().getFullNameWithNameSpace());
       YoDouble y = (YoDouble) newRegistry.findVariable(getYoY().getFullNameWithNameSpace());

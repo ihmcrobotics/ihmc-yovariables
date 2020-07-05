@@ -10,7 +10,7 @@ import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple3DReadOnly;
 import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.yoVariables.listener.VariableChangedListener;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
  * {@code FixedFramePose3DBasics} implementation which position and orientation backed with
@@ -44,7 +44,7 @@ public class YoFramePose3D implements FixedFramePose3DBasics
     * @param referenceFrame the reference frame for this pose.
     * @param registry       the registry to register child variables to.
     */
-   public YoFramePose3D(String namePrefix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
+   public YoFramePose3D(String namePrefix, ReferenceFrame referenceFrame, YoRegistry registry)
    {
       this(namePrefix, "", referenceFrame, registry);
    }
@@ -57,7 +57,7 @@ public class YoFramePose3D implements FixedFramePose3DBasics
     * @param referenceFrame the reference frame for this pose.
     * @param registry       the registry to register child variables to.
     */
-   public YoFramePose3D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
+   public YoFramePose3D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoRegistry registry)
    {
       position = new YoFramePoint3D(namePrefix, nameSuffix, referenceFrame, registry);
       orientation = new YoFrameQuaternion(namePrefix, nameSuffix, referenceFrame, registry);
@@ -218,7 +218,7 @@ public class YoFramePose3D implements FixedFramePose3DBasics
 
    /**
     * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
-    * {@link YoVariableRegistry}.
+    * {@link YoRegistry}.
     * <p>
     * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate of
     * the registry that was used to create {@code this}, this method searches for the duplicated
@@ -228,7 +228,7 @@ public class YoFramePose3D implements FixedFramePose3DBasics
     * @param newRegistry YoVariableRegistry to duplicate {@code this} to.
     * @return the duplicate of {@code this}.
     */
-   public YoFramePose3D duplicate(YoVariableRegistry newRegistry)
+   public YoFramePose3D duplicate(YoRegistry newRegistry)
    {
       return new YoFramePose3D(position.duplicate(newRegistry), orientation.duplicate(newRegistry));
    }

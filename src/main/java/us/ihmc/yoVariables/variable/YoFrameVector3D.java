@@ -2,7 +2,7 @@ package us.ihmc.yoVariables.variable;
 
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameVector3DBasics;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
  * {@code FixedFrameVector3DBasics} implementation which components {@code x}, {@code y}, {@code z}
@@ -31,7 +31,7 @@ public class YoFrameVector3D extends YoFrameTuple3D implements FixedFrameVector3
     * @param referenceFrame the reference frame for this vector.
     * @param registry       the registry to register child variables to.
     */
-   public YoFrameVector3D(String namePrefix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
+   public YoFrameVector3D(String namePrefix, ReferenceFrame referenceFrame, YoRegistry registry)
    {
       super(namePrefix, "", referenceFrame, registry);
    }
@@ -44,14 +44,14 @@ public class YoFrameVector3D extends YoFrameTuple3D implements FixedFrameVector3
     * @param referenceFrame the reference frame for this vector.
     * @param registry       the registry to register child variables to.
     */
-   public YoFrameVector3D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
+   public YoFrameVector3D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoRegistry registry)
    {
       super(namePrefix, nameSuffix, referenceFrame, registry);
    }
 
    /**
     * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
-    * {@link YoVariableRegistry}.
+    * {@link YoRegistry}.
     * <p>
     * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate of
     * the registry that was used to create {@code this}, this method searches for the duplicated
@@ -61,7 +61,7 @@ public class YoFrameVector3D extends YoFrameTuple3D implements FixedFrameVector3
     * @param newRegistry YoVariableRegistry to duplicate {@code this} to.
     * @return the duplicate of {@code this}.
     */
-   public YoFrameVector3D duplicate(YoVariableRegistry newRegistry)
+   public YoFrameVector3D duplicate(YoRegistry newRegistry)
    {
       YoDouble x = (YoDouble) newRegistry.findVariable(getYoX().getFullNameWithNameSpace());
       YoDouble y = (YoDouble) newRegistry.findVariable(getYoY().getFullNameWithNameSpace());

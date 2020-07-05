@@ -8,7 +8,7 @@ import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.tuple2D.interfaces.Tuple2DReadOnly;
 import us.ihmc.euclid.tuple3D.interfaces.Tuple3DReadOnly;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoLong;
@@ -19,51 +19,51 @@ public abstract class YoMutableFrameTuple3D extends YoMutableFrameObject impleme
    private final YoDouble y;
    private final YoDouble z;
 
-   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame,
+   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoRegistry registry, ReferenceFrame referenceFrame,
                                 Tuple3DReadOnly tuple3DReadOnly)
    {
       this(namePrefix, nameSuffix, registry);
       setIncludingFrame(referenceFrame, tuple3DReadOnly);
    }
 
-   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame,
+   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoRegistry registry, ReferenceFrame referenceFrame,
                                 Tuple2DReadOnly tuple2DReadOnly)
    {
       this(namePrefix, nameSuffix, registry);
       setIncludingFrame(referenceFrame, tuple2DReadOnly, 0.0);
    }
 
-   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, double x, double y, double z)
+   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoRegistry registry, ReferenceFrame referenceFrame, double x, double y, double z)
    {
       this(namePrefix, nameSuffix, registry);
       setIncludingFrame(referenceFrame, x, y, z);
    }
 
-   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame, double[] tupleArray)
+   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoRegistry registry, ReferenceFrame referenceFrame, double[] tupleArray)
    {
       this(namePrefix, nameSuffix, registry);
       setIncludingFrame(referenceFrame, tupleArray);
    }
 
-   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, ReferenceFrame referenceFrame)
+   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoRegistry registry, ReferenceFrame referenceFrame)
    {
       this(namePrefix, nameSuffix, registry);
       setToZero(referenceFrame);
    }
 
-   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, FrameTuple2DReadOnly frameTuple2DReadOnly)
+   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoRegistry registry, FrameTuple2DReadOnly frameTuple2DReadOnly)
    {
       this(namePrefix, nameSuffix, registry);
       setIncludingFrame(frameTuple2DReadOnly, 0.0);
    }
 
-   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoVariableRegistry registry, FrameTuple3DReadOnly frameTuple3DReadOnly)
+   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoRegistry registry, FrameTuple3DReadOnly frameTuple3DReadOnly)
    {
       this(namePrefix, nameSuffix, registry);
       setIncludingFrame(frameTuple3DReadOnly);
    }
 
-   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoVariableRegistry registry)
+   public YoMutableFrameTuple3D(String namePrefix, String nameSuffix, YoRegistry registry)
    {
       super(namePrefix, nameSuffix, registry);
       x = new YoDouble(YoFrameVariableNameTools.createXName(namePrefix, nameSuffix), registry);

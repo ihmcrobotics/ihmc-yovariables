@@ -13,7 +13,7 @@ import javax.swing.event.ChangeListener;
 import org.junit.jupiter.api.Test;
 
 import us.ihmc.robotics.Assert;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoVariableListTest
 {
@@ -22,8 +22,8 @@ public class YoVariableListTest
    public void testCommonUsage()
    {
       YoVariableList varList = new YoVariableList("listOne");
-      YoVariableRegistry registryOne = new YoVariableRegistry("registryOne");
-      YoVariableRegistry registryTwo = new YoVariableRegistry("registryTwo");
+      YoRegistry registryOne = new YoRegistry("registryOne");
+      YoRegistry registryTwo = new YoRegistry("registryTwo");
 
       YoBoolean booleanOne = new YoBoolean("booleanOne", registryOne);
       YoDouble doubleOne = new YoDouble("doubleOne", registryOne);
@@ -109,10 +109,10 @@ public class YoVariableListTest
       // Have tested manually by using numberOfVariables = 20000 and it takes
       // less than 5 seconds.
 
-      YoVariableRegistry rootRegistry = new YoVariableRegistry("rootRegistry");
-      YoVariableRegistry registryOne = new YoVariableRegistry("registryOne");
-      YoVariableRegistry registryTwo = new YoVariableRegistry("registryTwo");
-      YoVariableRegistry registryThree = new YoVariableRegistry("registryThree");
+      YoRegistry rootRegistry = new YoRegistry("rootRegistry");
+      YoRegistry registryOne = new YoRegistry("registryOne");
+      YoRegistry registryTwo = new YoRegistry("registryTwo");
+      YoRegistry registryThree = new YoRegistry("registryThree");
 
       rootRegistry.addChild(registryOne);
       registryOne.addChild(registryTwo);
@@ -154,7 +154,7 @@ public class YoVariableListTest
    @Test // timeout=300000
    public void testToString()
    {
-      YoVariableRegistry registry = new YoVariableRegistry("registry");
+      YoRegistry registry = new YoRegistry("registry");
       YoVariableList list = new YoVariableList("list");
 
       YoDouble a = new YoDouble("a", registry);
@@ -172,7 +172,7 @@ public class YoVariableListTest
    @Test // timeout=300000
    public void testAddVariables()
    {
-      YoVariableRegistry registry = new YoVariableRegistry("registry");
+      YoRegistry registry = new YoRegistry("registry");
       YoVariableList list = new YoVariableList("list");
       YoVariableList listTwo = new YoVariableList("listTwo");
       YoVariableList listThree = new YoVariableList("listThree");
@@ -224,7 +224,7 @@ public class YoVariableListTest
    @Test // timeout=300000
    public void testCommonUsageTwo()
    {
-      YoVariableRegistry registry = new YoVariableRegistry("registry");
+      YoRegistry registry = new YoRegistry("registry");
       YoVariableList list = new YoVariableList("list");
       YoVariableList listTwo = new YoVariableList("listTwo");
       YoVariableList listThree = new YoVariableList("listThree");
@@ -277,7 +277,7 @@ public class YoVariableListTest
    @Test // timeout=300000
    public void testGetMatchingVariables()
    {
-      YoVariableRegistry registry = new YoVariableRegistry("registry");
+      YoRegistry registry = new YoRegistry("registry");
       YoVariableList list = new YoVariableList("list");
 
       assertTrue(list.isEmpty());
@@ -337,7 +337,7 @@ public class YoVariableListTest
    @Test // timeout=300000
    public void testAddChangeListener()
    {
-      YoVariableRegistry registry = new YoVariableRegistry("registry");
+      YoRegistry registry = new YoRegistry("registry");
       YoVariableList list = new YoVariableList("list");
 
       ChangeListenerForTest listener = new ChangeListenerForTest();

@@ -14,7 +14,7 @@ import us.ihmc.euclid.referenceFrame.tools.EuclidFrameTestTools;
 import us.ihmc.euclid.tools.EuclidCoreTestTools;
 import us.ihmc.euclid.tuple2D.Point2D;
 import us.ihmc.euclid.tuple2D.interfaces.Point2DReadOnly;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoFrameConvexPolygon2DTest
 {
@@ -29,7 +29,7 @@ public class YoFrameConvexPolygon2DTest
    @Test
    public void testBugIssue6()
    {
-      YoFrameConvexPolygon2D polygon = new YoFrameConvexPolygon2D("Test", ReferenceFrame.getWorldFrame(), 20, new YoVariableRegistry("test"));
+      YoFrameConvexPolygon2D polygon = new YoFrameConvexPolygon2D("Test", ReferenceFrame.getWorldFrame(), 20, new YoRegistry("test"));
 
       Point2DReadOnly point1 = new Point2D(0.111, 0.222);
       Point2DReadOnly point2 = new Point2D(0.222, 0.333);
@@ -52,7 +52,7 @@ public class YoFrameConvexPolygon2DTest
       for (int i = 0; i < ITERATIONS; i++)
       {
          FrameConvexPolygon2D referencePolygon = EuclidFrameRandomTools.nextFrameConvexPolygon2D(random, ReferenceFrame.getWorldFrame(), 1.0, 60);
-         YoFrameConvexPolygon2D testedPolygon = new YoFrameConvexPolygon2D("Test", ReferenceFrame.getWorldFrame(), 20, new YoVariableRegistry("test"));
+         YoFrameConvexPolygon2D testedPolygon = new YoFrameConvexPolygon2D("Test", ReferenceFrame.getWorldFrame(), 20, new YoRegistry("test"));
          testedPolygon.set(referencePolygon);
 
          int numberOfVerticesToRemove = random.nextInt(referencePolygon.getNumberOfVertices());

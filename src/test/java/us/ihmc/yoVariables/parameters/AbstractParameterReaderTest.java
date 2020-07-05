@@ -25,7 +25,7 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 import us.ihmc.robotics.Assert;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class AbstractParameterReaderTest
 {
@@ -36,7 +36,7 @@ public class AbstractParameterReaderTest
    {
       for (int i = 0; i < 4; i++)
       {
-         YoVariableRegistry[] regs = {new YoVariableRegistry("root"), new YoVariableRegistry("a"), new YoVariableRegistry("b"), new YoVariableRegistry("c")};
+         YoRegistry[] regs = {new YoRegistry("root"), new YoRegistry("a"), new YoRegistry("b"), new YoRegistry("c")};
 
          String[] expectedNamespaces = {"root.a.b.c", "a.b.c", "b.c", "c"};
 
@@ -75,8 +75,8 @@ public class AbstractParameterReaderTest
    @Test // timeout = 1000
    public void testDoubleRead()
    {
-      YoVariableRegistry root = new YoVariableRegistry("root");
-      YoVariableRegistry a = new YoVariableRegistry("a");
+      YoRegistry root = new YoRegistry("root");
+      YoRegistry a = new YoRegistry("a");
 
       root.addChild(a);
       DoubleParameter parameter = new DoubleParameter("param", a, random.nextDouble());
@@ -87,7 +87,7 @@ public class AbstractParameterReaderTest
       values.put("root.a.param", new ParameterData(Double.toString(loadedValue)));
       TestParameterReader reader = new TestParameterReader(values);
 
-      reader.readParametersInRegistry(new YoVariableRegistry("RandomRegistry"));
+      reader.readParametersInRegistry(new YoRegistry("RandomRegistry"));
       reader.readParametersInRegistry(root);
       Assert.assertEquals(loadedValue, parameter.getValue(), Double.MIN_VALUE);
    }

@@ -6,7 +6,7 @@ import java.text.NumberFormat;
 import org.apache.commons.math3.util.Precision;
 
 import us.ihmc.yoVariables.providers.DoubleProvider;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
  * Double implementation of the YoVariable class.
@@ -22,19 +22,19 @@ public class YoDouble extends YoVariable<YoDouble> implements DoubleProvider
    private double val;
 
    /**
-    * Create a new YoDouble. This will call {@link #YoDouble(String, String, YoVariableRegistry)} with
+    * Create a new YoDouble. This will call {@link #YoDouble(String, String, YoRegistry)} with
     * the given name and registry and an empty description.
     *
     * @param name     String uniquely identifying this YoDouble
     * @param registry YoVariableRegistry for this YoDouble to register itself to after initialization
     */
-   public YoDouble(String name, YoVariableRegistry registry)
+   public YoDouble(String name, YoRegistry registry)
    {
       this(name, "", registry);
    }
 
    /**
-    * Create a new YoDouble. This will call {@link #YoDouble(String, String, YoVariableRegistry)} with
+    * Create a new YoDouble. This will call {@link #YoDouble(String, String, YoRegistry)} with
     * the given values as well as set {@link #manualMinScaling} and {@link #manualMaxScaling} to the
     * given values.
     *
@@ -45,7 +45,7 @@ public class YoDouble extends YoVariable<YoDouble> implements DoubleProvider
     * @param minScaling  double to set manualMinScaling to
     * @param maxScaling  double to set manualMaxScaling to
     */
-   public YoDouble(String name, String description, YoVariableRegistry registry, double minScaling, double maxScaling)
+   public YoDouble(String name, String description, YoRegistry registry, double minScaling, double maxScaling)
    {
       this(name, description, registry);
 
@@ -61,7 +61,7 @@ public class YoDouble extends YoVariable<YoDouble> implements DoubleProvider
     * @param description A short description of this variable
     * @param registry    YoVariableRegistry with which this variable is to be registered
     */
-   public YoDouble(String name, String description, YoVariableRegistry registry)
+   public YoDouble(String name, String description, YoRegistry registry)
    {
       super(YoVariableType.DOUBLE, name, description, registry);
 
@@ -282,13 +282,13 @@ public class YoDouble extends YoVariable<YoDouble> implements DoubleProvider
 
    /**
     * Creates a new YoDouble with the same parameters as this one, and registers it to the passed
-    * {@link YoVariableRegistry}.
+    * {@link YoRegistry}.
     *
     * @param newRegistry YoVariableRegistry to duplicate this YoDouble to
     * @return the newly created and registered YoDouble
     */
    @Override
-   public YoDouble duplicate(YoVariableRegistry newRegistry)
+   public YoDouble duplicate(YoRegistry newRegistry)
    {
       YoDouble retVar = new YoDouble(getName(), getDescription(), newRegistry, getManualScalingMin(), getManualScalingMax());
       retVar.set(val);

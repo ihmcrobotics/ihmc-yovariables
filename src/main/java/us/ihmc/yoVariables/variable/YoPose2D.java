@@ -7,7 +7,7 @@ import us.ihmc.euclid.interfaces.GeometryObject;
 import us.ihmc.euclid.orientation.interfaces.Orientation2DBasics;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.tuple2D.interfaces.Point2DBasics;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
  * {@code Pose2DBasics} implementation which position and orientation baked with
@@ -26,7 +26,7 @@ public class YoPose2D implements Pose2DBasics, GeometryObject<YoPose2D>
     * @param namePrefix a unique name string to use as the prefix for child variable names.
     * @param registry   the registry to register child variables to.
     */
-   public YoPose2D(String namePrefix, YoVariableRegistry registry)
+   public YoPose2D(String namePrefix, YoRegistry registry)
    {
       this(namePrefix, "", registry);
    }
@@ -38,7 +38,7 @@ public class YoPose2D implements Pose2DBasics, GeometryObject<YoPose2D>
     * @param nameSuffix a string to use as the suffix for child variable names.
     * @param registry   the registry to register child variables to.
     */
-   public YoPose2D(String namePrefix, String nameSuffix, YoVariableRegistry registry)
+   public YoPose2D(String namePrefix, String nameSuffix, YoRegistry registry)
    {
       position = new YoPoint2D(namePrefix, nameSuffix, registry);
       orientation = new YoOrientation2D(namePrefix, nameSuffix, registry);

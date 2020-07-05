@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeAll;
 
 import us.ihmc.euclid.geometry.Pose2DBasicsTest;
 import us.ihmc.euclid.geometry.tools.EuclidGeometryRandomTools;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoPose2DTest extends Pose2DBasicsTest<YoPose2D>
 {
@@ -19,7 +19,7 @@ public class YoPose2DTest extends Pose2DBasicsTest<YoPose2D>
    @Override
    public YoPose2D createEmptyPose2D()
    {
-      return new YoPose2D("blop", new YoVariableRegistry("dummy"));
+      return new YoPose2D("blop", new YoRegistry("dummy"));
    }
 
    @Override

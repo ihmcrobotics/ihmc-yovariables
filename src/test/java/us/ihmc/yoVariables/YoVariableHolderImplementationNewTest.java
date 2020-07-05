@@ -12,7 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import us.ihmc.yoVariables.dataBuffer.YoVariableHolderImplementation;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoBoolean;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoEnum;
@@ -111,8 +111,8 @@ public class YoVariableHolderImplementationNewTest
    @Test // timeout=300000
    public void testGetVariableWithNameSpace()
    {
-      YoVariableRegistry testRegistry;
-      testRegistry = new YoVariableRegistry("testRegistry");
+      YoRegistry testRegistry;
+      testRegistry = new YoRegistry("testRegistry");
       YoDouble yoDoubleWithNameSpace = new YoDouble("yoDoubleWithNameSpace", testRegistry);
       yoVariableHolderImplementation.addVariableToHolder(yoDoubleWithNameSpace);
       assertEquals(yoDoubleWithNameSpace, yoVariableHolderImplementation.findVariable("testRegistry", "yoDoubleWithNameSpace"));
@@ -121,8 +121,8 @@ public class YoVariableHolderImplementationNewTest
    @Test // timeout=300000
    public void testGetVariableWithNameSpaceCaseInsensitiveExceptNameSpace()
    {
-      YoVariableRegistry testRegistry;
-      testRegistry = new YoVariableRegistry("testRegistry");
+      YoRegistry testRegistry;
+      testRegistry = new YoRegistry("testRegistry");
       YoDouble yoDoubleWithNameSpace = new YoDouble("yoDoubleWithNameSpace", testRegistry);
       yoVariableHolderImplementation.addVariableToHolder(yoDoubleWithNameSpace);
       assertEquals(yoDoubleWithNameSpace, yoVariableHolderImplementation.findVariable("testRegistry", "yoDOUBLEWithNameSpace"));
@@ -143,10 +143,10 @@ public class YoVariableHolderImplementationNewTest
    @Test // timeout=300000
    public void testHasUniqueVariableWithNameSpace()
    {
-      YoVariableRegistry testRegistry1;
-      YoVariableRegistry testRegistry2;
-      testRegistry1 = new YoVariableRegistry("testRegistry1");
-      testRegistry2 = new YoVariableRegistry("testRegistry2");
+      YoRegistry testRegistry1;
+      YoRegistry testRegistry2;
+      testRegistry1 = new YoRegistry("testRegistry1");
+      testRegistry2 = new YoRegistry("testRegistry2");
       YoDouble yoDoubleWithNameSpace1 = new YoDouble("yoDoubleWithNameSpace1", testRegistry1);
       YoDouble yoDoubleWithNameSpace2 = new YoDouble("yoDoubleWithNameSpace2", testRegistry2);
       yoVariableHolderImplementation.addVariableToHolder(yoDoubleWithNameSpace1);
@@ -169,10 +169,10 @@ public class YoVariableHolderImplementationNewTest
    @Test // timeout=300000
    public void testGetVariablesInNameSpace()
    {
-      YoVariableRegistry testRegistry1;
-      YoVariableRegistry testRegistry2;
-      testRegistry1 = new YoVariableRegistry("testRegistry1");
-      testRegistry2 = new YoVariableRegistry("testRegistry2");
+      YoRegistry testRegistry1;
+      YoRegistry testRegistry2;
+      testRegistry1 = new YoRegistry("testRegistry1");
+      testRegistry2 = new YoRegistry("testRegistry2");
       YoDouble yoDoubleWithNameSpace1 = new YoDouble("yoDoubleWithNameSpace1", testRegistry1);
       YoDouble yoDoubleWithNameSpace2 = new YoDouble("yoDoubleWithNameSpace2", testRegistry2);
       YoBoolean yoBooleanWithNameSpace1 = new YoBoolean("yoBooleanWithNameSpace1", testRegistry1);

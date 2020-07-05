@@ -11,18 +11,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import us.ihmc.robotics.Assert;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoBooleanTest
 {
    private YoBoolean yoBoolean;
-   private YoVariableRegistry registry;
+   private YoRegistry registry;
    private static final double EPSILON = 1e-10;
 
    @BeforeEach
    public void setUp()
    {
-      registry = new YoVariableRegistry("testRegistry");
+      registry = new YoRegistry("testRegistry");
       yoBoolean = new YoBoolean("booleanVariable", registry);
    }
 
@@ -173,7 +173,7 @@ public class YoBooleanTest
    @Test // timeout=300000
    public void testDuplicate()
    {
-      YoVariableRegistry newRegistry = new YoVariableRegistry("newTestRegistry");
+      YoRegistry newRegistry = new YoRegistry("newTestRegistry");
       YoBoolean val, testVal;
 
       yoBoolean.set(true);
@@ -190,7 +190,7 @@ public class YoBooleanTest
    public void testSetValue()
    {
       boolean valSet = false;
-      YoVariableRegistry newRegistry = new YoVariableRegistry("newTestRegistry");
+      YoRegistry newRegistry = new YoRegistry("newTestRegistry");
       YoBoolean testBoolean = new YoBoolean("testBooleanVariable", newRegistry);
       testBoolean.set(true);
       valSet = yoBoolean.setValue(testBoolean, false);

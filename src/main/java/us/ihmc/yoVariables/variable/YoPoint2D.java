@@ -2,7 +2,7 @@ package us.ihmc.yoVariables.variable;
 
 import us.ihmc.euclid.interfaces.GeometryObject;
 import us.ihmc.euclid.tuple2D.interfaces.Point2DBasics;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoPoint2D extends YoTuple2D implements Point2DBasics, GeometryObject<YoPoint2D>
 {
@@ -24,7 +24,7 @@ public class YoPoint2D extends YoTuple2D implements Point2DBasics, GeometryObjec
     * @param namePrefix a unique name string to use as the prefix for child variable names.
     * @param registry   the registry to register child variables to.
     */
-   public YoPoint2D(String namePrefix, YoVariableRegistry registry)
+   public YoPoint2D(String namePrefix, YoRegistry registry)
    {
       super(namePrefix, registry);
    }
@@ -37,7 +37,7 @@ public class YoPoint2D extends YoTuple2D implements Point2DBasics, GeometryObjec
     * @param nameSuffix a string to use as the suffix for child variable names.
     * @param registry   the registry to register child variables to.
     */
-   public YoPoint2D(String namePrefix, String nameSuffix, YoVariableRegistry registry)
+   public YoPoint2D(String namePrefix, String nameSuffix, YoRegistry registry)
    {
       super(namePrefix, nameSuffix, registry);
    }

@@ -18,11 +18,11 @@ package us.ihmc.yoVariables.parameters;
 import java.util.List;
 
 import us.ihmc.yoVariables.registry.NameSpace;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 public abstract class AbstractParameterWriter
 {
-   public void writeParametersInRegistry(YoVariableRegistry registry)
+   public void writeParametersInRegistry(YoRegistry registry)
    {
       List<YoParameter<?>> parameters = registry.getSubtreeParameters();
 

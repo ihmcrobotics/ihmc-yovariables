@@ -16,7 +16,7 @@
 package us.ihmc.yoVariables.parameters;
 
 import us.ihmc.yoVariables.providers.IntegerProvider;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoInteger;
 import us.ihmc.yoVariables.variable.YoVariable;
 
@@ -39,7 +39,7 @@ public class IntegerParameter extends YoParameter<IntegerParameter> implements I
     * @param name     Desired name. Must be unique in the registry
     * @param registry YoVariableRegistry to store under
     */
-   public IntegerParameter(String name, YoVariableRegistry registry)
+   public IntegerParameter(String name, YoRegistry registry)
    {
       this(name, "", registry);
    }
@@ -52,7 +52,7 @@ public class IntegerParameter extends YoParameter<IntegerParameter> implements I
     * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
     * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
     */
-   public IntegerParameter(String name, YoVariableRegistry registry, int suggestedMinimum, int suggestedMaximum)
+   public IntegerParameter(String name, YoRegistry registry, int suggestedMinimum, int suggestedMaximum)
    {
       this(name, "", registry, suggestedMinimum, suggestedMaximum);
    }
@@ -64,7 +64,7 @@ public class IntegerParameter extends YoParameter<IntegerParameter> implements I
     * @param description User readable description that describes the purpose of this parameter
     * @param registry    YoVariableRegistry to store under
     */
-   public IntegerParameter(String name, String description, YoVariableRegistry registry)
+   public IntegerParameter(String name, String description, YoRegistry registry)
    {
       this(name, "", registry, 0);
    }
@@ -78,7 +78,7 @@ public class IntegerParameter extends YoParameter<IntegerParameter> implements I
     * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
     * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
     */
-   public IntegerParameter(String name, String description, YoVariableRegistry registry, int suggestedMinimum, int suggestedMaximum)
+   public IntegerParameter(String name, String description, YoRegistry registry, int suggestedMinimum, int suggestedMaximum)
    {
       this(name, "", registry, 0, suggestedMinimum, suggestedMaximum);
    }
@@ -91,7 +91,7 @@ public class IntegerParameter extends YoParameter<IntegerParameter> implements I
     * @param initialValue Value to set to when no value can be found in the user provided
     *                     parameterLoader
     */
-   public IntegerParameter(String name, YoVariableRegistry registry, int initialValue)
+   public IntegerParameter(String name, YoRegistry registry, int initialValue)
    {
       this(name, "", registry, initialValue);
    }
@@ -106,7 +106,7 @@ public class IntegerParameter extends YoParameter<IntegerParameter> implements I
     * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
     * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
     */
-   public IntegerParameter(String name, YoVariableRegistry registry, int initialValue, int suggestedMinimum, int suggestedMaximum)
+   public IntegerParameter(String name, YoRegistry registry, int initialValue, int suggestedMinimum, int suggestedMaximum)
    {
       this(name, "", registry, initialValue, suggestedMinimum, suggestedMaximum);
    }
@@ -120,7 +120,7 @@ public class IntegerParameter extends YoParameter<IntegerParameter> implements I
     * @param initialValue Value to set to when no value can be found in the user provided
     *                     parameterLoader
     */
-   public IntegerParameter(String name, String description, YoVariableRegistry registry, int initialValue)
+   public IntegerParameter(String name, String description, YoRegistry registry, int initialValue)
    {
       this(name, description, registry, initialValue, DefaultSuggestedMinimum, DefaultSuggestedMaximum);
    }
@@ -136,7 +136,7 @@ public class IntegerParameter extends YoParameter<IntegerParameter> implements I
     * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
     * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
     */
-   public IntegerParameter(String name, String description, YoVariableRegistry registry, int initialValue, int suggestedMinimum, int suggestedMaximum)
+   public IntegerParameter(String name, String description, YoRegistry registry, int initialValue, int suggestedMinimum, int suggestedMaximum)
    {
       super(name, description);
 
@@ -203,7 +203,7 @@ public class IntegerParameter extends YoParameter<IntegerParameter> implements I
    private class YoIntegerParameter extends YoInteger
    {
 
-      public YoIntegerParameter(String name, String description, YoVariableRegistry registry)
+      public YoIntegerParameter(String name, String description, YoRegistry registry)
       {
          super(name, description, registry);
       }
@@ -221,7 +221,7 @@ public class IntegerParameter extends YoParameter<IntegerParameter> implements I
       }
 
       @Override
-      public YoInteger duplicate(YoVariableRegistry newRegistry)
+      public YoInteger duplicate(YoRegistry newRegistry)
       {
          IntegerParameter newParameter = new IntegerParameter(getName(),
                                                               getDescription(),

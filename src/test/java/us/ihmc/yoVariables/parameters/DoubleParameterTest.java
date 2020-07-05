@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import us.ihmc.yoVariables.listener.ParameterChangedListener;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
 
 public class DoubleParameterTest
@@ -32,10 +32,10 @@ public class DoubleParameterTest
 
    public DoubleParameter createParameterWithNamespace()
    {
-      YoVariableRegistry root = new YoVariableRegistry("root");
-      YoVariableRegistry a = new YoVariableRegistry("a");
-      YoVariableRegistry b = new YoVariableRegistry("b");
-      YoVariableRegistry c = new YoVariableRegistry("c");
+      YoRegistry root = new YoRegistry("root");
+      YoRegistry a = new YoRegistry("a");
+      YoRegistry b = new YoRegistry("b");
+      YoRegistry c = new YoRegistry("c");
 
       root.addChild(a);
       a.addChild(b);
@@ -49,7 +49,7 @@ public class DoubleParameterTest
    @Test // timeout = 1000
    public void testConstructDefaultValue()
    {
-      YoVariableRegistry dummy = new YoVariableRegistry("dummy");
+      YoRegistry dummy = new YoRegistry("dummy");
       DoubleParameter test = new DoubleParameter("test", dummy);
       test.loadDefault();
 
@@ -66,7 +66,7 @@ public class DoubleParameterTest
 
       var.set(632.0);
 
-      YoVariableRegistry newRegistry = new YoVariableRegistry("newRegistry");
+      YoRegistry newRegistry = new YoRegistry("newRegistry");
       YoDouble newVar = var.duplicate(newRegistry);
       DoubleParameter newParam = (DoubleParameter) newVar.getParameter();
 
@@ -95,7 +95,7 @@ public class DoubleParameterTest
 
       for (double s = 0; s < 100.0; s += 1.153165)
       {
-         YoVariableRegistry dummy = new YoVariableRegistry("dummy");
+         YoRegistry dummy = new YoRegistry("dummy");
          DoubleParameter param = new DoubleParameter("test", dummy);
          param.load(String.valueOf(s));
 

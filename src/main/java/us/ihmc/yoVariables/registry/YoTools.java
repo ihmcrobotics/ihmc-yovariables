@@ -46,39 +46,39 @@ public class YoTools
       }
    }
 
-   public static DoubleParameter findDoubleParameter(SearchQuery query, YoVariableRegistry registry)
+   public static DoubleParameter findDoubleParameter(SearchQuery query, YoRegistry registry)
    {
       return (DoubleParameter) findYoParameter(query, DoubleParameter.class::isInstance, registry);
    }
 
-   public static BooleanParameter findBooleanParameter(SearchQuery query, YoVariableRegistry registry)
+   public static BooleanParameter findBooleanParameter(SearchQuery query, YoRegistry registry)
    {
       return (BooleanParameter) findYoParameter(query, BooleanParameter.class::isInstance, registry);
    }
 
-   public static IntegerParameter findIntegerParameter(SearchQuery query, YoVariableRegistry registry)
+   public static IntegerParameter findIntegerParameter(SearchQuery query, YoRegistry registry)
    {
       return (IntegerParameter) findYoParameter(query, IntegerParameter.class::isInstance, registry);
    }
 
-   public static LongParameter findLongParameter(SearchQuery query, YoVariableRegistry registry)
+   public static LongParameter findLongParameter(SearchQuery query, YoRegistry registry)
    {
       return (LongParameter) findYoParameter(query, LongParameter.class::isInstance, registry);
    }
 
-   public static EnumParameter<?> findEnumParameter(SearchQuery query, YoVariableRegistry registry)
+   public static EnumParameter<?> findEnumParameter(SearchQuery query, YoRegistry registry)
    {
       return (EnumParameter<?>) findYoParameter(query, EnumParameter.class::isInstance, registry);
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public static <E extends Enum<E>> EnumParameter<E> findEnumParameter(SearchQuery query, Class<E> enumType, YoVariableRegistry registry)
+   public static <E extends Enum<E>> EnumParameter<E> findEnumParameter(SearchQuery query, Class<E> enumType, YoRegistry registry)
    {
       Predicate<YoParameter<?>> predicate = parameter -> parameter instanceof EnumParameter && ((EnumParameter) parameter).getEnumType() == enumType;
       return (EnumParameter<E>) findYoParameter(query, predicate, registry);
    }
 
-   public static YoParameter<?> findYoParameter(SearchQuery query, Predicate<YoParameter<?>> predicate, YoVariableRegistry registry)
+   public static YoParameter<?> findYoParameter(SearchQuery query, Predicate<YoParameter<?>> predicate, YoRegistry registry)
    {
       Predicate<YoVariable<?>> yoVariablePredicate = YoVariable::isParameter;
       if (predicate != null)
@@ -91,39 +91,39 @@ public class YoTools
          return result.getParameter();
    }
 
-   public static YoDouble findYoDouble(SearchQuery query, YoVariableRegistry registry)
+   public static YoDouble findYoDouble(SearchQuery query, YoRegistry registry)
    {
       return (YoDouble) findYoVariable(query, YoDouble.class::isInstance, registry);
    }
 
-   public static YoBoolean findYoBoolean(SearchQuery query, YoVariableRegistry registry)
+   public static YoBoolean findYoBoolean(SearchQuery query, YoRegistry registry)
    {
       return (YoBoolean) findYoVariable(query, YoBoolean.class::isInstance, registry);
    }
 
-   public static YoInteger findYoInteger(SearchQuery query, YoVariableRegistry registry)
+   public static YoInteger findYoInteger(SearchQuery query, YoRegistry registry)
    {
       return (YoInteger) findYoVariable(query, YoInteger.class::isInstance, registry);
    }
 
-   public static YoLong findYoLong(SearchQuery query, YoVariableRegistry registry)
+   public static YoLong findYoLong(SearchQuery query, YoRegistry registry)
    {
       return (YoLong) findYoVariable(query, YoLong.class::isInstance, registry);
    }
 
-   public static YoEnum<?> findYoEnum(SearchQuery query, YoVariableRegistry registry)
+   public static YoEnum<?> findYoEnum(SearchQuery query, YoRegistry registry)
    {
       return (YoEnum<?>) findYoVariable(query, YoEnum.class::isInstance, registry);
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public static <E extends Enum<E>> YoEnum<E> findYoEnum(SearchQuery query, Class<E> enumType, YoVariableRegistry registry)
+   public static <E extends Enum<E>> YoEnum<E> findYoEnum(SearchQuery query, Class<E> enumType, YoRegistry registry)
    {
       Predicate<YoVariable<?>> predicate = variable -> variable instanceof YoEnum && ((YoEnum) variable).getEnumType() == enumType;
       return (YoEnum<E>) findYoVariable(query, predicate, registry);
    }
 
-   public static YoVariable<?> findYoVariable(SearchQuery query, Predicate<YoVariable<?>> predicate, YoVariableRegistry registry)
+   public static YoVariable<?> findYoVariable(SearchQuery query, Predicate<YoVariable<?>> predicate, YoRegistry registry)
    {
       if (query.parentNameSpace == null || registry.getNameSpace().endsWith(query.parentNameSpace))
       {
@@ -135,7 +135,7 @@ public class YoTools
          }
       }
 
-      for (YoVariableRegistry child : registry.getChildren())
+      for (YoRegistry child : registry.getChildren())
       {
          YoVariable<?> variable = findYoVariable(query, predicate, child);
          if (variable != null)
@@ -145,7 +145,7 @@ public class YoTools
       return null;
    }
 
-   public static List<YoVariable<?>> findYoVariables(SearchQuery query, Predicate<YoVariable<?>> predicate, YoVariableRegistry registry,
+   public static List<YoVariable<?>> findYoVariables(SearchQuery query, Predicate<YoVariable<?>> predicate, YoRegistry registry,
                                                      List<YoVariable<?>> matchedVariablesToPack)
    {
       if (matchedVariablesToPack == null)
@@ -160,7 +160,7 @@ public class YoTools
          }
       }
 
-      for (YoVariableRegistry child : registry.getChildren())
+      for (YoRegistry child : registry.getChildren())
       {
          findYoVariables(query, predicate, child, matchedVariablesToPack);
       }
@@ -197,27 +197,27 @@ public class YoTools
       }
    }
 
-   public static void printAllVariablesIncludingDescendants(YoVariableRegistry registry, PrintStream out)
+   public static void printAllVariablesIncludingDescendants(YoRegistry registry, PrintStream out)
    {
       for (YoVariable<?> var : registry.getVariables())
       {
          out.print(var.getFullNameWithNameSpace() + "\n");
       }
 
-      for (YoVariableRegistry child : registry.getChildren())
+      for (YoRegistry child : registry.getChildren())
       {
          printAllVariablesIncludingDescendants(child, out);
       }
    }
 
-   public static void printSizeRecursively(int minVariablesToPrint, int minChildrenToPrint, YoVariableRegistry root)
+   public static void printSizeRecursively(int minVariablesToPrint, int minChildrenToPrint, YoRegistry root)
    {
-      List<YoVariableRegistry> registriesOfInterest = new ArrayList<>();
+      List<YoRegistry> registriesOfInterest = new ArrayList<>();
       int totalVariables = collectRegistries(minVariablesToPrint, minChildrenToPrint, root, registriesOfInterest);
-      Collections.sort(registriesOfInterest, new Comparator<YoVariableRegistry>()
+      Collections.sort(registriesOfInterest, new Comparator<YoRegistry>()
       {
          @Override
-         public int compare(YoVariableRegistry o1, YoVariableRegistry o2)
+         public int compare(YoRegistry o1, YoRegistry o2)
          {
             if (o1.getNumberOfYoVariables() == o2.getNumberOfYoVariables())
                return 0;
@@ -237,8 +237,8 @@ public class YoTools
       System.out.println("");
    }
 
-   private static int collectRegistries(int minVariablesToPrint, int minChildrenToPrint, YoVariableRegistry registry,
-                                        List<YoVariableRegistry> registriesOfInterest)
+   private static int collectRegistries(int minVariablesToPrint, int minChildrenToPrint, YoRegistry registry,
+                                        List<YoRegistry> registriesOfInterest)
    {
       int variables = registry.getNumberOfYoVariables();
       int children = registry.getChildren().size();
@@ -249,14 +249,14 @@ public class YoTools
       int totalNumberOfVariables = variables;
       for (int childIdx = 0; childIdx < children; childIdx++)
       {
-         YoVariableRegistry childRegistry = registry.getChildren().get(childIdx);
+         YoRegistry childRegistry = registry.getChildren().get(childIdx);
          totalNumberOfVariables += collectRegistries(minVariablesToPrint, minChildrenToPrint, childRegistry, registriesOfInterest);
       }
 
       return totalNumberOfVariables;
    }
 
-   private static void printInfo(YoVariableRegistry registry)
+   private static void printInfo(YoRegistry registry)
    {
       int variables = registry.getNumberOfYoVariables();
       int children = registry.getChildren().size();

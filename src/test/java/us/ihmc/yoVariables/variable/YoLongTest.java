@@ -10,11 +10,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import us.ihmc.robotics.Assert;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoLongTest
 {
-   private YoVariableRegistry registry;
+   private YoRegistry registry;
    private Random random;
    private YoLong yoLong;
    private static final double EPSILON = 1e-10;
@@ -22,7 +22,7 @@ public class YoLongTest
    @BeforeEach
    public void setUp()
    {
-      registry = new YoVariableRegistry("testRegistry");
+      registry = new YoRegistry("testRegistry");
       random = new Random(1776L);
       yoLong = new YoLong("test", registry);
    }
@@ -168,7 +168,7 @@ public class YoLongTest
    public void testDuplicate()
    {
       YoLong yoLong2 = new YoLong("var2", "descriptionTest", registry);
-      YoVariableRegistry newRegistry = new YoVariableRegistry("newRegistry");
+      YoRegistry newRegistry = new YoRegistry("newRegistry");
       YoLong duplicate = yoLong2.duplicate(newRegistry);
       Assert.assertEquals(yoLong2.getName(), duplicate.getName());
       Assert.assertEquals(yoLong2.getDescription(), duplicate.getDescription());

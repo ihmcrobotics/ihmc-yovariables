@@ -3,7 +3,7 @@ package us.ihmc.yoVariables.variable;
 import java.util.Arrays;
 
 import us.ihmc.yoVariables.providers.EnumProvider;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
  * Enum implementation of the YoVariable class.
@@ -33,7 +33,7 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
     * @param enumType       the class representing the type of the enum
     * @param allowNullValue boolean determining if null enum values are permitted
     */
-   public YoEnum(String name, String description, YoVariableRegistry registry, Class<T> enumType, boolean allowNullValue)
+   public YoEnum(String name, String description, YoRegistry registry, Class<T> enumType, boolean allowNullValue)
    {
       super(YoVariableType.ENUM, name, description, registry);
 
@@ -73,7 +73,7 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
     * @param registry YoVariableRegistry for this YoEnum to register itself to after initialization
     * @param enumType the class representing the type of the enum
     */
-   public static <T extends Enum<T>> YoEnum<T> create(String name, Class<T> enumType, YoVariableRegistry registry)
+   public static <T extends Enum<T>> YoEnum<T> create(String name, Class<T> enumType, YoRegistry registry)
    {
       return new YoEnum<>(name, registry, enumType);
    }
@@ -89,7 +89,7 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
     * @param enumType       the class representing the type of the enum
     * @param allowNullValue boolean determining if null enum values are permitted
     */
-   public static <T extends Enum<T>> YoEnum<T> create(String name, String description, Class<T> enumType, YoVariableRegistry registry, boolean allowNullValue)
+   public static <T extends Enum<T>> YoEnum<T> create(String name, String description, Class<T> enumType, YoRegistry registry, boolean allowNullValue)
    {
       return new YoEnum<>(name, description, registry, enumType, allowNullValue);
    }
@@ -109,7 +109,7 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
     * @param registry    YoVariableRegistry for this YoEnum to register itself to after initialization
     * @param constants   String array of constants for this enum
     */
-   public YoEnum(String name, String description, YoVariableRegistry registry, boolean allowNullValues, String... constants)
+   public YoEnum(String name, String description, YoRegistry registry, boolean allowNullValues, String... constants)
    {
       super(YoVariableType.ENUM, name, description, registry);
 
@@ -145,21 +145,21 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
 
    /**
     * Create a new YoEnum. This will call
-    * {@link #YoEnum(String, String, YoVariableRegistry, Class, boolean)} with the given values, an
+    * {@link #YoEnum(String, String, YoRegistry, Class, boolean)} with the given values, an
     * empty description and false for allowNullValue.
     *
     * @param name     String uniquely identifying this YoEnum
     * @param registry YoVariableRegistry for this YoEnum to register itself to after initialization
     * @param enumType the class representing the type of the enum
     */
-   public YoEnum(String name, YoVariableRegistry registry, Class<T> enumType)
+   public YoEnum(String name, YoRegistry registry, Class<T> enumType)
    {
       this(name, "", registry, enumType, false);
    }
 
    /**
     * Create a new YoEnum. This will call
-    * {@link #YoEnum(String, String, YoVariableRegistry, Class, boolean)} with the given values and an
+    * {@link #YoEnum(String, String, YoRegistry, Class, boolean)} with the given values and an
     * empty description.
     *
     * @param name           String uniquely identifying this YoEnum
@@ -168,7 +168,7 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
     * @param enumType       the class representing the type of the enum
     * @param allowNullValue boolean determining if null enum values are permitted
     */
-   public YoEnum(String name, YoVariableRegistry registry, Class<T> enumType, boolean allowNullValue)
+   public YoEnum(String name, YoRegistry registry, Class<T> enumType, boolean allowNullValue)
    {
       this(name, "", registry, enumType, allowNullValue);
    }
@@ -497,13 +497,13 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
 
    /**
     * Creates a new YoEnum with the same parameters as this one, and registers it to the passed
-    * {@link YoVariableRegistry}.
+    * {@link YoRegistry}.
     *
     * @param newRegistry YoVariableRegistry to duplicate this YoEnum to
     * @return the newly created and registered YoEnum
     */
    @Override
-   public YoEnum<T> duplicate(YoVariableRegistry newRegistry)
+   public YoEnum<T> duplicate(YoRegistry newRegistry)
    {
       YoEnum<T> retVar = new YoEnum<>(getName(), getDescription(), newRegistry, getEnumType(), getAllowNullValue());
       retVar.set(getEnumValue());

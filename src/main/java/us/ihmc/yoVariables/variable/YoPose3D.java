@@ -7,7 +7,7 @@ import us.ihmc.euclid.interfaces.GeometryObject;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.tuple3D.interfaces.Point3DBasics;
 import us.ihmc.euclid.tuple4D.interfaces.QuaternionBasics;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
  * {@code Pose3DBasics} implementation which position and orientation baked with
@@ -26,7 +26,7 @@ public class YoPose3D implements Pose3DBasics, GeometryObject<YoPose3D>
     * @param namePrefix a unique name string to use as the prefix for child variable names.
     * @param registry   the registry to register child variables to.
     */
-   public YoPose3D(String namePrefix, YoVariableRegistry registry)
+   public YoPose3D(String namePrefix, YoRegistry registry)
    {
       this(namePrefix, "", registry);
    }
@@ -38,7 +38,7 @@ public class YoPose3D implements Pose3DBasics, GeometryObject<YoPose3D>
     * @param nameSuffix a string to use as the suffix for child variable names.
     * @param registry   the registry to register child variables to.
     */
-   public YoPose3D(String namePrefix, String nameSuffix, YoVariableRegistry registry)
+   public YoPose3D(String namePrefix, String nameSuffix, YoRegistry registry)
    {
       position = new YoPoint3D(namePrefix, nameSuffix, registry);
       orientation = new YoQuaternion(namePrefix, nameSuffix, registry);

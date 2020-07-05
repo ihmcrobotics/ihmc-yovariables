@@ -15,7 +15,7 @@ public class YoToolsTest
    @Test // timeout = 30000
    public void testPrintSizeRecursively()
    {
-      YoVariableRegistry rootRegistry = new YoVariableRegistry("rootRegistry");
+      YoRegistry rootRegistry = new YoRegistry("rootRegistry");
 
       int numberOfFirstLevelChildRegistries = 2;
       int numberOfFirstLevelYoVariables = 1;
@@ -29,19 +29,19 @@ public class YoToolsTest
 
       for (int i = 0; i < numberOfFirstLevelChildRegistries; i++)
       {
-         YoVariableRegistry firstLevelChild = new YoVariableRegistry("firstLevelChild_" + i);
+         YoRegistry firstLevelChild = new YoRegistry("firstLevelChild_" + i);
          registerYoDoubles(firstLevelChild, numberOfFirstLevelYoVariables);
          rootRegistry.addChild(firstLevelChild);
 
          for (int j = 0; j < numberOfSecondLevelChildRegistries; j++)
          {
-            YoVariableRegistry secondLevelChild = new YoVariableRegistry("secondLevelChild_" + j);
+            YoRegistry secondLevelChild = new YoRegistry("secondLevelChild_" + j);
             registerYoDoubles(secondLevelChild, numberOfSecondLevelYoVariables);
             firstLevelChild.addChild(secondLevelChild);
 
             for (int k = 0; k < numberOfThirdLevelChildRegistries; k++)
             {
-               YoVariableRegistry thirdLevelChild = new YoVariableRegistry("thirdLevelChild_" + k);
+               YoRegistry thirdLevelChild = new YoRegistry("thirdLevelChild_" + k);
                registerYoDoubles(thirdLevelChild, numberOfThirdLevelYoVariables);
                secondLevelChild.addChild(thirdLevelChild);
             }
@@ -78,9 +78,9 @@ public class YoToolsTest
    {
       Interceptor interceptor = new Interceptor(System.out);
 
-      YoVariableRegistry robotRegistry = new YoVariableRegistry("robot");
-      YoVariableRegistry controllerRegistry = new YoVariableRegistry("controller");
-      YoVariableRegistry testRegistry = new YoVariableRegistry("testRegistry");
+      YoRegistry robotRegistry = new YoRegistry("robot");
+      YoRegistry controllerRegistry = new YoRegistry("controller");
+      YoRegistry testRegistry = new YoRegistry("testRegistry");
 
       robotRegistry.addChild(controllerRegistry);
       controllerRegistry.addChild(testRegistry);
@@ -104,7 +104,7 @@ public class YoToolsTest
       assertTrue(buffer[5].equals("robot.controller.testRegistry.variableFour"));
    }
 
-   private void registerYoDoubles(YoVariableRegistry registry, int numberOfYoDoublesToRegister)
+   private void registerYoDoubles(YoRegistry registry, int numberOfYoDoublesToRegister)
    {
       for (int i = 0; i < numberOfYoDoublesToRegister; i++)
       {

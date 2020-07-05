@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * Representation of a namespace that is composed of sub-names where typically each sub-name is the
- * name of a {@link YoVariableRegistry} with the parent to child relationship between one sub-name
+ * name of a {@link YoRegistry} with the parent to child relationship between one sub-name
  * and the following one.
  */
 public class NameSpace implements Serializable

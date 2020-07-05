@@ -13,16 +13,16 @@ public class YoFactoriesTest
    @Test // timeout=300000
    public void testGetOrCreateAndAddRegistry()
    {
-      YoVariableRegistry root = new YoVariableRegistry("root");
+      YoRegistry root = new YoRegistry("root");
 
-      YoVariableRegistry registry000 = YoFactories.getOrCreateAndAddRegistry(root, new NameSpace("root.registry0.registry00.registry000"));
+      YoRegistry registry000 = YoFactories.getOrCreateAndAddRegistry(root, new NameSpace("root.registry0.registry00.registry000"));
       NameSpace nameSpaceCheck = registry000.getNameSpace();
       assertEquals(new NameSpace("root.registry0.registry00.registry000"), nameSpaceCheck);
 
       YoDouble foo = new YoDouble("foo", registry000);
       assertEquals("root.registry0.registry00.registry000.foo", foo.getFullNameWithNameSpace());
 
-      YoVariableRegistry registry010 = YoFactories.getOrCreateAndAddRegistry(root, new NameSpace("root.registry0.registry01.registry010"));
+      YoRegistry registry010 = YoFactories.getOrCreateAndAddRegistry(root, new NameSpace("root.registry0.registry01.registry010"));
       YoDouble bar = new YoDouble("bar", registry010);
       assertEquals("root.registry0.registry01.registry010.bar", bar.getFullNameWithNameSpace());
 
@@ -36,10 +36,10 @@ public class YoFactoriesTest
    @Test // timeout=300000
    public void testNullNameSpace()
    {
-      YoVariableRegistry root = new YoVariableRegistry("");
+      YoRegistry root = new YoRegistry("");
       assertEquals(null, root.getNameSpace());
 
-      YoVariableRegistry registry000 = YoFactories.getOrCreateAndAddRegistry(root, new NameSpace("root.registry0.registry00.registry000"));
+      YoRegistry registry000 = YoFactories.getOrCreateAndAddRegistry(root, new NameSpace("root.registry0.registry00.registry000"));
       NameSpace nameSpaceCheck = registry000.getNameSpace();
       assertEquals(new NameSpace("root.registry0.registry00.registry000"), nameSpaceCheck);
    }

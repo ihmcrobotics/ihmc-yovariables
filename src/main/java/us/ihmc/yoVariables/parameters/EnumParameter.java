@@ -10,7 +10,7 @@
 package us.ihmc.yoVariables.parameters;
 
 import us.ihmc.yoVariables.providers.EnumProvider;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoEnum;
 import us.ihmc.yoVariables.variable.YoVariable;
 
@@ -32,7 +32,7 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
     * @param enumType        The class representing the type of the enum
     * @param allowNullValues Boolean determining if null enum values are permitted
     */
-   public EnumParameter(String name, YoVariableRegistry registry, Class<T> enumType, boolean allowNullValues)
+   public EnumParameter(String name, YoRegistry registry, Class<T> enumType, boolean allowNullValues)
    {
       this(name, "", registry, enumType, allowNullValues);
    }
@@ -46,7 +46,7 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
     * @param enumType        The class representing the type of the enum
     * @param allowNullValues Boolean determining if null enum values are permitted
     */
-   public EnumParameter(String name, String description, YoVariableRegistry registry, Class<T> enumType, boolean allowNullValues)
+   public EnumParameter(String name, String description, YoRegistry registry, Class<T> enumType, boolean allowNullValues)
    {
       this(name, description, registry, enumType, allowNullValues, allowNullValues ? null : enumType.getEnumConstants()[0]);
    }
@@ -61,7 +61,7 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
     * @param initialValue    Value to set to when no value can be found in the user provided
     *                        parameterLoader
     */
-   public EnumParameter(String name, YoVariableRegistry registry, Class<T> enumType, boolean allowNullValues, T initialValue)
+   public EnumParameter(String name, YoRegistry registry, Class<T> enumType, boolean allowNullValues, T initialValue)
    {
       this(name, "", registry, enumType, allowNullValues, initialValue);
    }
@@ -77,7 +77,7 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
     * @param initialValue    Value to set to when no value can be found in the user provided
     *                        parameterLoader
     */
-   public EnumParameter(String name, String description, YoVariableRegistry registry, Class<T> enumType, boolean allowNullValues, T initialValue)
+   public EnumParameter(String name, String description, YoRegistry registry, Class<T> enumType, boolean allowNullValues, T initialValue)
    {
       super(name, description);
 
@@ -119,7 +119,7 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
     * @param allowNullValues Boolean determining if null enum values are permitted
     * @param constants       Array of enum constants
     */
-   public EnumParameter(String name, String description, YoVariableRegistry registry, boolean allowNullValues, String... constants)
+   public EnumParameter(String name, String description, YoRegistry registry, boolean allowNullValues, String... constants)
    {
       super(name, description);
       for (String constant : constants)
@@ -224,12 +224,12 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
    private class YoEnumParameter extends YoEnum<T>
    {
 
-      public YoEnumParameter(String name, String description, YoVariableRegistry registry, Class<T> enumType, boolean allowNullValues)
+      public YoEnumParameter(String name, String description, YoRegistry registry, Class<T> enumType, boolean allowNullValues)
       {
          super(name, description, registry, enumType, allowNullValues);
       }
 
-      public YoEnumParameter(String name, String description, YoVariableRegistry registry, boolean allowNullValues, String... values)
+      public YoEnumParameter(String name, String description, YoRegistry registry, boolean allowNullValues, String... values)
       {
          super(name, description, registry, allowNullValues, values);
       }
@@ -247,7 +247,7 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
       }
 
       @Override
-      public YoEnum<T> duplicate(YoVariableRegistry newRegistry)
+      public YoEnum<T> duplicate(YoRegistry newRegistry)
       {
          EnumParameter<T> newParameter;
          if (isBackedByEnum())

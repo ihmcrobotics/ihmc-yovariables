@@ -7,7 +7,7 @@ import us.ihmc.euclid.orientation.interfaces.Orientation2DReadOnly;
 import us.ihmc.euclid.tools.EuclidCoreIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.transform.interfaces.Transform;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
 
 /**
@@ -28,7 +28,7 @@ public class YoOrientation2D implements Orientation2DBasics, GeometryObject<YoOr
     * @param namePrefix a unique name string to use as the prefix for child variable names.
     * @param registry   the registry to register child variables to.
     */
-   public YoOrientation2D(String namePrefix, YoVariableRegistry registry)
+   public YoOrientation2D(String namePrefix, YoRegistry registry)
    {
       this(namePrefix, "", registry);
    }
@@ -40,7 +40,7 @@ public class YoOrientation2D implements Orientation2DBasics, GeometryObject<YoOr
     * @param nameSuffix a string to use as the suffix for child variable names.
     * @param registry   the registry to register child variables to.
     */
-   public YoOrientation2D(String namePrefix, String nameSuffix, YoVariableRegistry registry)
+   public YoOrientation2D(String namePrefix, String nameSuffix, YoRegistry registry)
    {
       yaw = new YoDouble(YoFrameVariableNameTools.createName(namePrefix, "yaw", nameSuffix), registry);
    }

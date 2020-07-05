@@ -14,12 +14,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import us.ihmc.robotics.Assert;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoDoubleTest
 {
 
-   private YoVariableRegistry registry;
+   private YoRegistry registry;
    private YoDouble yoDouble1;
    private YoDouble yoDouble2;
    private static final double EPSILON = 1e-10;
@@ -28,7 +28,7 @@ public class YoDoubleTest
    @BeforeEach
    public void setUp()
    {
-      registry = new YoVariableRegistry("testRegistry");
+      registry = new YoRegistry("testRegistry");
       yoDouble1 = new YoDouble("yoDouble1", registry);
       yoDouble2 = new YoDouble("yoDouble2", "description2", registry, 0.0, 10.0);
    }
@@ -236,7 +236,7 @@ public class YoDoubleTest
       String newName = "registry2000";
       double value = random.nextDouble();
       yoDouble2.set(value);
-      YoVariableRegistry newRegistry = new YoVariableRegistry(newName);
+      YoRegistry newRegistry = new YoRegistry(newName);
       YoDouble duplicate = yoDouble2.duplicate(newRegistry);
       Assert.assertEquals(yoDouble2.getDoubleValue(), duplicate.getDoubleValue(), EPSILON);
    }

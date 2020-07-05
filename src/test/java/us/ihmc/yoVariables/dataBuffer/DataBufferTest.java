@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import us.ihmc.yoVariables.listener.RewoundListener;
 import us.ihmc.yoVariables.registry.NameSpace;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoBoolean;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoEnum;
@@ -34,7 +34,7 @@ public class DataBufferTest
    private YoDouble yoDouble;
    private YoBoolean yoBoolean;
    private YoInteger yoInteger;
-   private YoVariableRegistry registry;
+   private YoRegistry registry;
    private DataBuffer dataBuffer = new DataBuffer(testBufferSize);
 
    private YoDouble a, b, c;
@@ -43,7 +43,7 @@ public class DataBufferTest
    @BeforeEach
    public void setUp()
    {
-      registry = new YoVariableRegistry("testRegistry");
+      registry = new YoRegistry("testRegistry");
       yoDouble = new YoDouble("yoDouble", registry);
       yoBoolean = new YoBoolean("yoBoolean", registry);
       yoInteger = new YoInteger("yoInteger", registry);
@@ -699,14 +699,14 @@ public class DataBufferTest
 
       assertTrue(dataBuffer.checkIfDataIsEqual(otherDataBuffer, 1e-6));
 
-      YoVariableRegistry dataBufferRegistry = new YoVariableRegistry("dataBufferRegistry");
+      YoRegistry dataBufferRegistry = new YoRegistry("dataBufferRegistry");
       YoDouble dataBufferYoDouble = new YoDouble("dataBufferYoDouble", dataBufferRegistry);
       DataBufferEntry dataBufferEntry = new DataBufferEntry(dataBufferYoDouble, 0);
       dataBuffer.addEntry(dataBufferEntry);
 
       assertFalse(dataBuffer.checkIfDataIsEqual(otherDataBuffer, 1));
 
-      YoVariableRegistry otherDataBufferRegistry = new YoVariableRegistry("otherDataBufferRegistry");
+      YoRegistry otherDataBufferRegistry = new YoRegistry("otherDataBufferRegistry");
       YoDouble otherDataBufferYoDouble = new YoDouble("otherDataBufferYoDouble", otherDataBufferRegistry);
       DataBufferEntry otherDataBufferEntry = new DataBufferEntry(otherDataBufferYoDouble, 0);
       otherDataBuffer.addEntry(otherDataBufferEntry);
@@ -975,7 +975,7 @@ public class DataBufferTest
    @Test // timeout = 30000
    public void testNotifyDataBufferListeners()
    {
-      YoVariableRegistry registryOfInterest = new YoVariableRegistry("registryOfInterest");
+      YoRegistry registryOfInterest = new YoRegistry("registryOfInterest");
       NameSpace registryOfInterestNameSpace = registryOfInterest.getNameSpace();
 
       int NUMBER_OF_VARIABLES_TO_ADD = 30;

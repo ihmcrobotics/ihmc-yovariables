@@ -25,7 +25,7 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import us.ihmc.yoVariables.listener.ParameterChangedListener;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoInteger;
 
 @Execution(ExecutionMode.SAME_THREAD)
@@ -35,10 +35,10 @@ public class IntegerParameterTest
 
    public IntegerParameter createParameterWithNamespace()
    {
-      YoVariableRegistry root = new YoVariableRegistry("root");
-      YoVariableRegistry a = new YoVariableRegistry("a");
-      YoVariableRegistry b = new YoVariableRegistry("b");
-      YoVariableRegistry c = new YoVariableRegistry("c");
+      YoRegistry root = new YoRegistry("root");
+      YoRegistry a = new YoRegistry("a");
+      YoRegistry b = new YoRegistry("b");
+      YoRegistry c = new YoRegistry("c");
 
       root.addChild(a);
       a.addChild(b);
@@ -52,7 +52,7 @@ public class IntegerParameterTest
    @Test // timeout = 1000
    public void testConstructDefaultValue()
    {
-      YoVariableRegistry dummy = new YoVariableRegistry("dummy");
+      YoRegistry dummy = new YoRegistry("dummy");
       IntegerParameter test = new IntegerParameter("test", dummy);
       test.loadDefault();
 
@@ -69,7 +69,7 @@ public class IntegerParameterTest
 
       var.set(632);
 
-      YoVariableRegistry newRegistry = new YoVariableRegistry("newRegistry");
+      YoRegistry newRegistry = new YoRegistry("newRegistry");
       YoInteger newVar = var.duplicate(newRegistry);
       IntegerParameter newParam = (IntegerParameter) newVar.getParameter();
 
@@ -98,7 +98,7 @@ public class IntegerParameterTest
 
       for (int s = -100; s < 100.0; s++)
       {
-         YoVariableRegistry dummy = new YoVariableRegistry("dummy");
+         YoRegistry dummy = new YoRegistry("dummy");
          IntegerParameter param = new IntegerParameter("test", dummy);
          param.load(String.valueOf(s));
 

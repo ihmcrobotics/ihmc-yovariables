@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import us.ihmc.yoVariables.dataBuffer.YoVariableHolderImplementation;
 import us.ihmc.yoVariables.registry.NameSpace;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoVariable;
 
@@ -29,17 +29,17 @@ public class YoVariableHolderImplementationTest
    {
       yoVariableHolderImplementation = new YoVariableHolderImplementation();
 
-      YoVariableRegistry robotRegistry = new YoVariableRegistry("robot");
-      YoVariableRegistry robot2Registry = new YoVariableRegistry("robot2");
+      YoRegistry robotRegistry = new YoRegistry("robot");
+      YoRegistry robot2Registry = new YoRegistry("robot2");
 
-      YoVariableRegistry registryA = new YoVariableRegistry("registryA");
-      YoVariableRegistry registryB = new YoVariableRegistry("registryB");
-      YoVariableRegistry registryC = new YoVariableRegistry("registryC");
+      YoRegistry registryA = new YoRegistry("registryA");
+      YoRegistry registryB = new YoRegistry("registryB");
+      YoRegistry registryC = new YoRegistry("registryC");
       robotRegistry.addChild(registryA);
       robotRegistry.addChild(registryB);
       robotRegistry.addChild(registryC);
 
-      YoVariableRegistry registryC2 = new YoVariableRegistry("registryC");
+      YoRegistry registryC2 = new YoRegistry("registryC");
       robot2Registry.addChild(registryC2);
 
       YoDouble variableOneA = new YoDouble("variableOne", registryA);

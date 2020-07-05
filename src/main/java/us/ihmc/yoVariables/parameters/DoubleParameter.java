@@ -16,7 +16,7 @@
 package us.ihmc.yoVariables.parameters;
 
 import us.ihmc.yoVariables.providers.DoubleProvider;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoVariable;
 
@@ -39,7 +39,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
     * @param name     Desired name. Must be unique in the registry
     * @param registry YoVariableRegistry to store under
     */
-   public DoubleParameter(String name, YoVariableRegistry registry)
+   public DoubleParameter(String name, YoRegistry registry)
    {
       this(name, "", registry);
    }
@@ -52,7 +52,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
     * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
     * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
     */
-   public DoubleParameter(String name, YoVariableRegistry registry, double suggestedMinimum, double suggestedMaximum)
+   public DoubleParameter(String name, YoRegistry registry, double suggestedMinimum, double suggestedMaximum)
    {
       this(name, "", registry, suggestedMinimum, suggestedMaximum);
    }
@@ -64,7 +64,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
     * @param description User readable description that describes the purpose of this parameter
     * @param registry    YoVariableRegistry to store under
     */
-   public DoubleParameter(String name, String description, YoVariableRegistry registry)
+   public DoubleParameter(String name, String description, YoRegistry registry)
    {
       this(name, "", registry, Double.NaN);
    }
@@ -78,7 +78,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
     * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
     * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
     */
-   public DoubleParameter(String name, String description, YoVariableRegistry registry, double suggestedMinimum, double suggestedMaximum)
+   public DoubleParameter(String name, String description, YoRegistry registry, double suggestedMinimum, double suggestedMaximum)
    {
       this(name, "", registry, Double.NaN, suggestedMinimum, suggestedMaximum);
    }
@@ -91,7 +91,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
     * @param initialValue Value to set to when no value can be found in the user provided
     *                     parameterLoader
     */
-   public DoubleParameter(String name, YoVariableRegistry registry, double initialValue)
+   public DoubleParameter(String name, YoRegistry registry, double initialValue)
    {
       this(name, "", registry, initialValue);
    }
@@ -106,7 +106,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
     * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
     * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
     */
-   public DoubleParameter(String name, YoVariableRegistry registry, double initialValue, double suggestedMinimum, double suggestedMaximum)
+   public DoubleParameter(String name, YoRegistry registry, double initialValue, double suggestedMinimum, double suggestedMaximum)
    {
       this(name, "", registry, initialValue, suggestedMinimum, suggestedMaximum);
    }
@@ -120,7 +120,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
     * @param initialValue Value to set to when no value can be found in the user provided
     *                     parameterLoader
     */
-   public DoubleParameter(String name, String description, YoVariableRegistry registry, double initialValue)
+   public DoubleParameter(String name, String description, YoRegistry registry, double initialValue)
    {
       this(name, description, registry, initialValue, defaultSuggestedMinimum, defaultSuggestedMaximum);
    }
@@ -136,7 +136,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
     * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
     * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
     */
-   public DoubleParameter(String name, String description, YoVariableRegistry registry, double initialValue, double suggestedMinimum, double suggestedMaximum)
+   public DoubleParameter(String name, String description, YoRegistry registry, double initialValue, double suggestedMinimum, double suggestedMaximum)
    {
       super(name, description);
 
@@ -204,7 +204,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
    private class YoDoubleParameter extends YoDouble
    {
 
-      public YoDoubleParameter(String name, String description, YoVariableRegistry registry)
+      public YoDoubleParameter(String name, String description, YoRegistry registry)
       {
          super(name, description, registry);
       }
@@ -222,7 +222,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
       }
 
       @Override
-      public YoDouble duplicate(YoVariableRegistry newRegistry)
+      public YoDouble duplicate(YoRegistry newRegistry)
       {
          DoubleParameter newParameter = new DoubleParameter(getName(),
                                                             getDescription(),

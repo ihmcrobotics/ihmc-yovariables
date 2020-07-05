@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import us.ihmc.yoVariables.listener.VariableChangedListener;
 import us.ihmc.yoVariables.parameters.YoParameter;
 import us.ihmc.yoVariables.registry.NameSpace;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.registry.YoTools;
 
 /**
@@ -41,11 +41,11 @@ public abstract class YoVariable<T extends YoVariable<T>>
    private String shortName;
    private String description;
    private YoVariableType type;
-   private YoVariableRegistry registry;
+   private YoRegistry registry;
 
    /**
     * Create a new YoVariable. This is called by extensions of YoVariable, and require a
-    * {@link YoVariableType}, name, description, and {@link YoVariableRegistry} to register itself to.
+    * {@link YoVariableType}, name, description, and {@link YoRegistry} to register itself to.
     *
     * @param type        YoVariableType for this YoVariable to implement
     * @param name        String that uniquely identifies this YoVariable
@@ -53,7 +53,7 @@ public abstract class YoVariable<T extends YoVariable<T>>
     * @param registry    YoVariableRegistry for this YoVariable to register itself to after
     *                    initialization
     */
-   public YoVariable(YoVariableType type, String name, String description, YoVariableRegistry registry)
+   public YoVariable(YoVariableType type, String name, String description, YoRegistry registry)
    {
       checkForIllegalCharacters(name);
 
@@ -119,7 +119,7 @@ public abstract class YoVariable<T extends YoVariable<T>>
    }
 
    /**
-    * Static function to register a YoVariable to a given {@link YoVariableRegistry}.
+    * Static function to register a YoVariable to a given {@link YoRegistry}.
     * <p>
     * Will print to stderr if the given registry is null and {@link YoVariable#warnAboutNullRegistries}
     * is true.
@@ -128,7 +128,7 @@ public abstract class YoVariable<T extends YoVariable<T>>
     * @param registry YoVariableRegistry to register the given variable to
     * @param variable YoVariable to register
     */
-   private static void registerVariable(YoVariableRegistry registry, YoVariable<?> variable)
+   private static void registerVariable(YoRegistry registry, YoVariable<?> variable)
    {
       if (registry != null)
       {
@@ -141,11 +141,11 @@ public abstract class YoVariable<T extends YoVariable<T>>
    }
 
    /**
-    * Retrieves the {@link YoVariableRegistry} this variable belongs to.
+    * Retrieves the {@link YoRegistry} this variable belongs to.
     *
     * @return YoVariableRegistry this variable is registered in
     */
-   public YoVariableRegistry getYoVariableRegistry()
+   public YoRegistry getYoVariableRegistry()
    {
       return registry;
    }
@@ -539,7 +539,7 @@ public abstract class YoVariable<T extends YoVariable<T>>
    public abstract void setValueFromLongBits(long value, boolean notifyListeners);
 
    /**
-    * Creates a copy of this variable in the given {@link YoVariableRegistry}
+    * Creates a copy of this variable in the given {@link YoRegistry}
     * <p>
     * Abstract; implemented by each extension of YoVariable to perform action with proper typing.
     * </p>
@@ -547,7 +547,7 @@ public abstract class YoVariable<T extends YoVariable<T>>
     * @param newRegistry YoVariableRegistry to duplicate this variable to
     * @return the newly created variable from the given newRegistry
     */
-   public abstract T duplicate(YoVariableRegistry newRegistry);
+   public abstract T duplicate(YoRegistry newRegistry);
 
    /**
     * Sets this variable's value to the given value.

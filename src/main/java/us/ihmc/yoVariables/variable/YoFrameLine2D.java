@@ -6,7 +6,7 @@ import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameLine2DBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameLine2DReadOnly;
 import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
  * {@code FixedFrameLine2DBasics} implementation which point and line are backed with
@@ -24,7 +24,7 @@ public class YoFrameLine2D implements FixedFrameLine2DBasics
     * @param referenceFrame the reference frame for this line.
     * @param registry       the registry to register child variables to.
     */
-   public YoFrameLine2D(String namePrefix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
+   public YoFrameLine2D(String namePrefix, ReferenceFrame referenceFrame, YoRegistry registry)
    {
       this(namePrefix, "", referenceFrame, registry);
    }
@@ -37,7 +37,7 @@ public class YoFrameLine2D implements FixedFrameLine2DBasics
     * @param referenceFrame the reference frame for this line.
     * @param registry       the registry to register child variables to.
     */
-   public YoFrameLine2D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
+   public YoFrameLine2D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoRegistry registry)
    {
       point = new YoFramePoint2D(namePrefix + "Point", nameSuffix, referenceFrame, registry);
       direction = new YoFrameUnitVector2D(namePrefix + "Direction", nameSuffix, referenceFrame, registry);
@@ -152,7 +152,7 @@ public class YoFrameLine2D implements FixedFrameLine2DBasics
 
    /**
     * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
-    * {@link YoVariableRegistry}.
+    * {@link YoRegistry}.
     * <p>
     * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate of
     * the registry that was used to create {@code this}, this method searches for the duplicated
@@ -162,7 +162,7 @@ public class YoFrameLine2D implements FixedFrameLine2DBasics
     * @param newRegistry YoVariableRegistry to duplicate {@code this} to.
     * @return the duplicate of {@code this}.
     */
-   public YoFrameLine2D duplicate(YoVariableRegistry newRegistry)
+   public YoFrameLine2D duplicate(YoRegistry newRegistry)
    {
       return new YoFrameLine2D(point.duplicate(newRegistry), direction.duplicate(newRegistry));
    }

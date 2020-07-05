@@ -2,7 +2,7 @@ package us.ihmc.yoVariables.variable;
 
 import us.ihmc.euclid.interfaces.GeometryObject;
 import us.ihmc.euclid.tuple3D.interfaces.Point3DBasics;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoPoint3D extends YoTuple3D implements Point3DBasics, GeometryObject<YoPoint3D>
 {
@@ -25,7 +25,7 @@ public class YoPoint3D extends YoTuple3D implements Point3DBasics, GeometryObjec
     * @param namePrefix a unique name string to use as the prefix for child variable names.
     * @param registry   the registry to register child variables to.
     */
-   public YoPoint3D(String namePrefix, YoVariableRegistry registry)
+   public YoPoint3D(String namePrefix, YoRegistry registry)
    {
       super(namePrefix, registry);
    }
@@ -38,7 +38,7 @@ public class YoPoint3D extends YoTuple3D implements Point3DBasics, GeometryObjec
     * @param nameSuffix a string to use as the suffix for child variable names.
     * @param registry   the registry to register child variables to.
     */
-   public YoPoint3D(String namePrefix, String nameSuffix, YoVariableRegistry registry)
+   public YoPoint3D(String namePrefix, String nameSuffix, YoRegistry registry)
    {
       super(namePrefix, nameSuffix, registry);
    }

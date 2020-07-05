@@ -3,7 +3,7 @@ package us.ihmc.yoVariables.registry;
 public class YoFactories
 {
 
-   public static YoVariableRegistry getOrCreateAndAddRegistry(YoVariableRegistry startRegistry, NameSpace fullNameSpace)
+   public static YoRegistry getOrCreateAndAddRegistry(YoRegistry startRegistry, NameSpace fullNameSpace)
    {
       NameSpace nameSpace = startRegistry.getNameSpace();
 
@@ -19,9 +19,9 @@ public class YoFactories
 
       if (nameSpace == null || fullNameSpace.startsWith(nameSpace.getName()))
       {
-         for (YoVariableRegistry child : startRegistry.getChildren())
+         for (YoRegistry child : startRegistry.getChildren())
          {
-            YoVariableRegistry registry = getOrCreateAndAddRegistry(child, fullNameSpace);
+            YoRegistry registry = getOrCreateAndAddRegistry(child, fullNameSpace);
             if (registry != null)
                return registry;
          }
@@ -29,7 +29,7 @@ public class YoFactories
          // If, after going through all the children, none of them match, then
          // create it here and return it.
          NameSpace nameSpaceToContinueWith = fullNameSpace.removeStart(nameSpace);
-         YoVariableRegistry registry = createChainOfRegistries(nameSpaceToContinueWith);
+         YoRegistry registry = createChainOfRegistries(nameSpaceToContinueWith);
          startRegistry.addChild(registry);
 
          return getToBottomRegistry(registry);
@@ -38,14 +38,14 @@ public class YoFactories
       return null;
    }
 
-   private static YoVariableRegistry createChainOfRegistries(NameSpace fullNameSpace)
+   private static YoRegistry createChainOfRegistries(NameSpace fullNameSpace)
    {
-      YoVariableRegistry rootRegistry = new YoVariableRegistry(fullNameSpace.getRootName());
-      YoVariableRegistry current = rootRegistry;
+      YoRegistry rootRegistry = new YoRegistry(fullNameSpace.getRootName());
+      YoRegistry current = rootRegistry;
 
       for (int i = 1; i < fullNameSpace.size(); i++)
       {
-         YoVariableRegistry child = new YoVariableRegistry(fullNameSpace.getSubName(i));
+         YoRegistry child = new YoRegistry(fullNameSpace.getSubName(i));
          current.addChild(child);
          current = child;
       }
@@ -53,7 +53,7 @@ public class YoFactories
       return rootRegistry;
    }
 
-   private static YoVariableRegistry getToBottomRegistry(YoVariableRegistry root)
+   private static YoRegistry getToBottomRegistry(YoRegistry root)
    {
       if (root.getChildren().size() == 0)
          return root;

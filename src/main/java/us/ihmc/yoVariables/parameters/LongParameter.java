@@ -16,7 +16,7 @@
 package us.ihmc.yoVariables.parameters;
 
 import us.ihmc.yoVariables.providers.LongProvider;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoLong;
 import us.ihmc.yoVariables.variable.YoVariable;
 
@@ -39,7 +39,7 @@ public class LongParameter extends YoParameter<LongParameter> implements LongPro
     * @param name     Desired name. Must be unique in the registry
     * @param registry YoVariableRegistry to store under
     */
-   public LongParameter(String name, YoVariableRegistry registry)
+   public LongParameter(String name, YoRegistry registry)
    {
       this(name, "", registry);
    }
@@ -52,7 +52,7 @@ public class LongParameter extends YoParameter<LongParameter> implements LongPro
     * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
     * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
     */
-   public LongParameter(String name, YoVariableRegistry registry, long suggestedMinimum, long suggestedMaximum)
+   public LongParameter(String name, YoRegistry registry, long suggestedMinimum, long suggestedMaximum)
    {
       this(name, "", registry, suggestedMinimum, suggestedMaximum);
    }
@@ -64,7 +64,7 @@ public class LongParameter extends YoParameter<LongParameter> implements LongPro
     * @param description User readable description that describes the purpose of this parameter
     * @param registry    YoVariableRegistry to store under
     */
-   public LongParameter(String name, String description, YoVariableRegistry registry)
+   public LongParameter(String name, String description, YoRegistry registry)
    {
       this(name, "", registry, 0L);
    }
@@ -78,7 +78,7 @@ public class LongParameter extends YoParameter<LongParameter> implements LongPro
     * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
     * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
     */
-   public LongParameter(String name, String description, YoVariableRegistry registry, long suggestedMinimum, long suggestedMaximum)
+   public LongParameter(String name, String description, YoRegistry registry, long suggestedMinimum, long suggestedMaximum)
    {
       this(name, "", registry, 0L, suggestedMinimum, suggestedMaximum);
    }
@@ -91,7 +91,7 @@ public class LongParameter extends YoParameter<LongParameter> implements LongPro
     * @param initialValue Value to set to when no value can be found in the user provided
     *                     parameterLoader
     */
-   public LongParameter(String name, YoVariableRegistry registry, long initialValue)
+   public LongParameter(String name, YoRegistry registry, long initialValue)
    {
       this(name, "", registry, initialValue);
    }
@@ -106,7 +106,7 @@ public class LongParameter extends YoParameter<LongParameter> implements LongPro
     * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
     * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
     */
-   public LongParameter(String name, YoVariableRegistry registry, long initialValue, long suggestedMinimum, long suggestedMaximum)
+   public LongParameter(String name, YoRegistry registry, long initialValue, long suggestedMinimum, long suggestedMaximum)
    {
       this(name, "", registry, initialValue, suggestedMinimum, suggestedMaximum);
    }
@@ -120,7 +120,7 @@ public class LongParameter extends YoParameter<LongParameter> implements LongPro
     * @param initialValue Value to set to when no value can be found in the user provided
     *                     parameterLoader
     */
-   public LongParameter(String name, String description, YoVariableRegistry registry, long initialValue)
+   public LongParameter(String name, String description, YoRegistry registry, long initialValue)
    {
       this(name, description, registry, initialValue, DefaultSuggestedMinimum, DefaultSuggestedMaximum);
    }
@@ -136,7 +136,7 @@ public class LongParameter extends YoParameter<LongParameter> implements LongPro
     * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
     * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
     */
-   public LongParameter(String name, String description, YoVariableRegistry registry, long initialValue, long suggestedMinimum, long suggestedMaximum)
+   public LongParameter(String name, String description, YoRegistry registry, long initialValue, long suggestedMinimum, long suggestedMaximum)
    {
       super(name, description);
 
@@ -203,7 +203,7 @@ public class LongParameter extends YoParameter<LongParameter> implements LongPro
    private class YoLongParameter extends YoLong
    {
 
-      public YoLongParameter(String name, String description, YoVariableRegistry registry)
+      public YoLongParameter(String name, String description, YoRegistry registry)
       {
          super(name, description, registry);
       }
@@ -221,7 +221,7 @@ public class LongParameter extends YoParameter<LongParameter> implements LongPro
       }
 
       @Override
-      public YoLong duplicate(YoVariableRegistry newRegistry)
+      public YoLong duplicate(YoRegistry newRegistry)
       {
          LongParameter newParameter = new LongParameter(getName(),
                                                         getDescription(),

@@ -5,7 +5,7 @@ import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameTuple3DBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple3DReadOnly;
 import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
  * {@code FixedFrameTuple3DBasics} abstract implementation backed with {@code YoDouble}s.
@@ -36,7 +36,7 @@ public abstract class YoFrameTuple3D extends YoTuple3D implements FixedFrameTupl
     * @param referenceFrame the reference frame for this tuple.
     * @param registry       the registry to register child variables to.
     */
-   public YoFrameTuple3D(String namePrefix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
+   public YoFrameTuple3D(String namePrefix, ReferenceFrame referenceFrame, YoRegistry registry)
    {
       super(namePrefix, registry);
       this.referenceFrame = referenceFrame;
@@ -50,7 +50,7 @@ public abstract class YoFrameTuple3D extends YoTuple3D implements FixedFrameTupl
     * @param referenceFrame the reference frame for this tuple.
     * @param registry       the registry to register child variables to.
     */
-   public YoFrameTuple3D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
+   public YoFrameTuple3D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoRegistry registry)
    {
       super(namePrefix, nameSuffix, registry);
       this.referenceFrame = referenceFrame;

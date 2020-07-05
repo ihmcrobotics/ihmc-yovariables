@@ -7,7 +7,7 @@ import us.ihmc.euclid.referenceFrame.interfaces.FixedFramePoint2DBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameLineSegment2DReadOnly;
 import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
  * {@code FixedFrameLineSegment2DBasics} implementation which endpoints backed with
@@ -25,7 +25,7 @@ public class YoFrameLineSegment2D implements FixedFrameLineSegment2DBasics
     * @param referenceFrame the reference frame for this line segment.
     * @param registry       the registry to register child variables to.
     */
-   public YoFrameLineSegment2D(String namePrefix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
+   public YoFrameLineSegment2D(String namePrefix, ReferenceFrame referenceFrame, YoRegistry registry)
    {
       this(namePrefix, "", referenceFrame, registry);
    }
@@ -38,7 +38,7 @@ public class YoFrameLineSegment2D implements FixedFrameLineSegment2DBasics
     * @param referenceFrame the reference frame for this line segment.
     * @param registry       the registry to register child variables to.
     */
-   public YoFrameLineSegment2D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoVariableRegistry registry)
+   public YoFrameLineSegment2D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoRegistry registry)
    {
       firstEndpoint = new YoFramePoint2D(namePrefix + "FirstEndpoint", nameSuffix, referenceFrame, registry);
       secondEndpoint = new YoFramePoint2D(namePrefix + "SecondEndpoint", nameSuffix, referenceFrame, registry);
@@ -141,7 +141,7 @@ public class YoFrameLineSegment2D implements FixedFrameLineSegment2DBasics
 
    /**
     * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
-    * {@link YoVariableRegistry}.
+    * {@link YoRegistry}.
     * <p>
     * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate of
     * the registry that was used to create {@code this}, this method searches for the duplicated
@@ -151,7 +151,7 @@ public class YoFrameLineSegment2D implements FixedFrameLineSegment2DBasics
     * @param newRegistry YoVariableRegistry to duplicate {@code this} to.
     * @return the duplicate of {@code this}.
     */
-   public YoFrameLineSegment2D duplicate(YoVariableRegistry newRegistry)
+   public YoFrameLineSegment2D duplicate(YoRegistry newRegistry)
    {
       return new YoFrameLineSegment2D(firstEndpoint.duplicate(newRegistry), secondEndpoint.duplicate(newRegistry));
    }

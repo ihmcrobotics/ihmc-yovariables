@@ -29,7 +29,7 @@ import us.ihmc.euclid.transform.interfaces.Transform;
 import us.ihmc.euclid.tuple2D.interfaces.Tuple2DReadOnly;
 import us.ihmc.euclid.tuple3D.interfaces.Tuple3DReadOnly;
 import us.ihmc.yoVariables.listener.VariableChangedListener;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
  * Defines a 3D pose in a fixed-frame as {@code YoFramePose3D} but use the Euler angles to represent
@@ -52,12 +52,12 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
       yawPitchRoll = orientation;
    }
 
-   public YoFramePoseUsingYawPitchRoll(String prefix, ReferenceFrame frame, YoVariableRegistry registry)
+   public YoFramePoseUsingYawPitchRoll(String prefix, ReferenceFrame frame, YoRegistry registry)
    {
       this(prefix, "", frame, registry);
    }
 
-   public YoFramePoseUsingYawPitchRoll(String prefix, String suffix, ReferenceFrame frame, YoVariableRegistry registry)
+   public YoFramePoseUsingYawPitchRoll(String prefix, String suffix, ReferenceFrame frame, YoRegistry registry)
    {
       position = new YoFramePoint3D(prefix, suffix, frame, registry);
       yawPitchRoll = new YoFrameYawPitchRoll(prefix, suffix, frame, registry);
@@ -1105,7 +1105,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
 
    /**
     * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
-    * {@link YoVariableRegistry}.
+    * {@link YoRegistry}.
     * <p>
     * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate of
     * the registry that was used to create {@code this}, this method searches for the duplicated
@@ -1115,7 +1115,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
     * @param newRegistry YoVariableRegistry to duplicate {@code this} to.
     * @return the duplicate of {@code this}.
     */
-   public YoFramePoseUsingYawPitchRoll duplicate(YoVariableRegistry newRegistry)
+   public YoFramePoseUsingYawPitchRoll duplicate(YoRegistry newRegistry)
    {
       return new YoFramePoseUsingYawPitchRoll(position.duplicate(newRegistry), yawPitchRoll.duplicate(newRegistry));
    }

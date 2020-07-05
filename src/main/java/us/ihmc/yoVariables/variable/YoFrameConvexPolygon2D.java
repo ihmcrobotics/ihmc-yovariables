@@ -19,7 +19,7 @@ import us.ihmc.euclid.transform.RigidBodyTransform;
 import us.ihmc.euclid.tuple2D.interfaces.Point2DReadOnly;
 import us.ihmc.euclid.tuple3D.Point3D;
 import us.ihmc.euclid.tuple3D.interfaces.Point3DReadOnly;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
  * {@code FixedFrameConvexPolygon2DBasics} implementation which components vertices are backed with
@@ -128,7 +128,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
     *                            polygon cannot grow bigger than this number.
     * @param registry            the registry to register child variables to.
     */
-   public YoFrameConvexPolygon2D(String namePrefix, ReferenceFrame referenceFrame, int maxNumberOfVertices, YoVariableRegistry registry)
+   public YoFrameConvexPolygon2D(String namePrefix, ReferenceFrame referenceFrame, int maxNumberOfVertices, YoRegistry registry)
    {
       this(namePrefix, "", referenceFrame, maxNumberOfVertices, registry);
    }
@@ -144,7 +144,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
     *                            polygon cannot grow bigger than this number.
     * @param registry            the registry to register child variables to.
     */
-   public YoFrameConvexPolygon2D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, int maxNumberOfVertices, YoVariableRegistry registry)
+   public YoFrameConvexPolygon2D(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, int maxNumberOfVertices, YoRegistry registry)
    {
       numberOfVertices = new YoInteger(namePrefix + "NumVertices" + nameSuffix, registry);
 
@@ -404,7 +404,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
 
    /**
     * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
-    * {@link YoVariableRegistry}.
+    * {@link YoRegistry}.
     * <p>
     * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate of
     * the registry that was used to create {@code this}, this method searches for the duplicated
@@ -414,7 +414,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
     * @param newRegistry YoVariableRegistry to duplicate {@code this} to.
     * @return the duplicate of {@code this}.
     */
-   public YoFrameConvexPolygon2D duplicate(YoVariableRegistry newRegistry)
+   public YoFrameConvexPolygon2D duplicate(YoRegistry newRegistry)
    {
       YoInteger yoNumberOfVertices = (YoInteger) newRegistry.findVariable(numberOfVertices.getFullNameWithNameSpace());
       List<YoFramePoint2D> yoVertexBuffer = new ArrayList<>();

@@ -29,15 +29,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 @Execution(ExecutionMode.SAME_THREAD)
 public class XMLParameterIOTest
 {
 
-   public static YoVariableRegistry createRegistries()
+   public static YoRegistry createRegistries()
    {
-      YoVariableRegistry[] regs = {new YoVariableRegistry("root"), new YoVariableRegistry("a"), new YoVariableRegistry("b"), new YoVariableRegistry("c")};
+      YoRegistry[] regs = {new YoRegistry("root"), new YoRegistry("a"), new YoRegistry("b"), new YoRegistry("c")};
 
       regs[0].addChild(regs[1]);
       regs[1].addChild(regs[2]);
@@ -56,7 +56,7 @@ public class XMLParameterIOTest
    @Test // timeout = 30000
    public void testEmptyFile() throws IOException
    {
-      YoVariableRegistry target = createRegistries();
+      YoRegistry target = createRegistries();
       String data = "<parameters/>";
       StringReader reader = new StringReader(data);
 
@@ -67,8 +67,8 @@ public class XMLParameterIOTest
    @Test // timeout = 30000
    public void testWritingAndReading() throws IOException
    {
-      YoVariableRegistry source = createRegistries();
-      YoVariableRegistry target = createRegistries();
+      YoRegistry source = createRegistries();
+      YoRegistry target = createRegistries();
 
       DefaultParameterReader defaultReader = new DefaultParameterReader();
       defaultReader.readParametersInRegistry(source);
@@ -102,7 +102,7 @@ public class XMLParameterIOTest
    @Test // timeout = 30000
    public void testOverwritingDuringContruction() throws IOException
    {
-      YoVariableRegistry target = new YoVariableRegistry("TestRegistry");
+      YoRegistry target = new YoRegistry("TestRegistry");
       DoubleParameter parameter1 = new DoubleParameter("TestParameter1", target);
       DoubleParameter parameter2 = new DoubleParameter("TestParameter2", target);
 
@@ -127,7 +127,7 @@ public class XMLParameterIOTest
    @Test // timeout = 30000
    public void testOverwriting() throws IOException
    {
-      YoVariableRegistry target = new YoVariableRegistry("TestRegistry");
+      YoRegistry target = new YoRegistry("TestRegistry");
       DoubleParameter parameter1 = new DoubleParameter("TestParameter1", target);
       DoubleParameter parameter2 = new DoubleParameter("TestParameter2", target);
 
@@ -155,7 +155,7 @@ public class XMLParameterIOTest
    {
       Assertions.assertThrows(RuntimeException.class, () ->
       {
-         YoVariableRegistry target = new YoVariableRegistry("TestRegistry");
+         YoRegistry target = new YoRegistry("TestRegistry");
          DoubleParameter parameter1 = new DoubleParameter("TestParameter1", target);
          DoubleParameter parameter2 = new DoubleParameter("TestParameter2", target);
 
@@ -181,7 +181,7 @@ public class XMLParameterIOTest
    @Test // timeout = 30000
    public void testRootNamespaceDoesNotMatch() throws IOException
    {
-      YoVariableRegistry target = new YoVariableRegistry("Root");
+      YoRegistry target = new YoRegistry("Root");
       DoubleParameter parameter = new DoubleParameter("TestParameter", target);
 
       String data1 = "<parameters>" + "<registry name=\"" + target.getName() + "\">" + "<parameter name=\"" + parameter.getName()
@@ -197,7 +197,7 @@ public class XMLParameterIOTest
    @Test // timeout = 30000
    public void testRootNamespaceMatches() throws IOException
    {
-      YoVariableRegistry target = new YoVariableRegistry("Root");
+      YoRegistry target = new YoRegistry("Root");
       DoubleParameter parameter = new DoubleParameter("TestParameter", target);
 
       String data1 = "<parameters>" + "<registry name=\"" + target.getName() + "\">" + "<parameter name=\"" + parameter.getName()
@@ -213,7 +213,7 @@ public class XMLParameterIOTest
    @Test // timeout = 30000
    public void testReadingWithMinMax() throws IOException
    {
-      YoVariableRegistry target = new YoVariableRegistry("Root");
+      YoRegistry target = new YoRegistry("Root");
       DoubleParameter parameter = new DoubleParameter("TestParameter", target);
 
       double min = -0.4536;
@@ -234,7 +234,7 @@ public class XMLParameterIOTest
    @Test // timeout = 30000
    public void testReadingWithoutMinMax() throws IOException
    {
-      YoVariableRegistry target = new YoVariableRegistry("Root");
+      YoRegistry target = new YoRegistry("Root");
       DoubleParameter parameter = new DoubleParameter("TestParameter", target);
 
       String data1 = "<parameters>" + "<registry name=\"" + target.getName() + "\">" + "<parameter name=\"" + parameter.getName()
