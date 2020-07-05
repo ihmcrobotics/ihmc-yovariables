@@ -216,10 +216,10 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
     */
    public YoFrameQuaternion duplicate(YoVariableRegistry newRegistry)
    {
-      YoDouble x = (YoDouble) newRegistry.getYoVariable(getYoQx().getFullNameWithNameSpace());
-      YoDouble y = (YoDouble) newRegistry.getYoVariable(getYoQy().getFullNameWithNameSpace());
-      YoDouble z = (YoDouble) newRegistry.getYoVariable(getYoQz().getFullNameWithNameSpace());
-      YoDouble s = (YoDouble) newRegistry.getYoVariable(getYoQs().getFullNameWithNameSpace());
+      YoDouble x = (YoDouble) newRegistry.findVariable(getYoQx().getFullNameWithNameSpace());
+      YoDouble y = (YoDouble) newRegistry.findVariable(getYoQy().getFullNameWithNameSpace());
+      YoDouble z = (YoDouble) newRegistry.findVariable(getYoQz().getFullNameWithNameSpace());
+      YoDouble s = (YoDouble) newRegistry.findVariable(getYoQs().getFullNameWithNameSpace());
       return new YoFrameQuaternion(x, y, z, s, getReferenceFrame());
    }
 

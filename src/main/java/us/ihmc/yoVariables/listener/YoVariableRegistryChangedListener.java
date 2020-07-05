@@ -9,7 +9,7 @@ import us.ihmc.yoVariables.variable.YoVariable;
 public interface YoVariableRegistryChangedListener
 {
    /**
-    * Called when registrying a YoVariable with {@link YoVariableRegistry#registerVariable(YoVariable)}
+    * Called when registrying a YoVariable with {@link YoVariableRegistry#addYoVariable(YoVariable)}
     *
     * @param registry             YoVariableRegistry the listener is attached to
     * @param registeredYoVariable YoVariable being added to {@code registry}

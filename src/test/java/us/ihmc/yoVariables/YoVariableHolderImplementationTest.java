@@ -82,19 +82,19 @@ public class YoVariableHolderImplementationTest
    @Test // timeout=300000
    public void testGetVariable()
    {
-      YoVariable<?> variable = yoVariableHolderImplementation.getYoVariable("robot.registryA.variableOne");
+      YoVariable<?> variable = yoVariableHolderImplementation.findVariable("robot.registryA.variableOne");
       assertEquals(variable.getName(), "variableOne");
 
-      variable = yoVariableHolderImplementation.getYoVariable("registryA.variableOne");
+      variable = yoVariableHolderImplementation.findVariable("registryA.variableOne");
       assertEquals(variable.getName(), "variableOne");
 
-      variable = yoVariableHolderImplementation.getYoVariable("robot.registryA.variableOne");
+      variable = yoVariableHolderImplementation.findVariable("robot.registryA.variableOne");
       assertEquals(variable.getName(), "variableOne");
 
-      variable = yoVariableHolderImplementation.getYoVariable("istryA.variableOne");
+      variable = yoVariableHolderImplementation.findVariable("istryA.variableOne");
       assertNull(variable);
 
-      variable = yoVariableHolderImplementation.getYoVariable("robot.registryA.variableTwo");
+      variable = yoVariableHolderImplementation.findVariable("robot.registryA.variableTwo");
       assertEquals(variable.getName(), "variableTwo");
 
    }
@@ -102,23 +102,23 @@ public class YoVariableHolderImplementationTest
    @Test // timeout=300000
    public void testGetVariable1()
    {
-      YoVariable<?> variable = yoVariableHolderImplementation.getYoVariable("robot.registryA", "variableOne");
+      YoVariable<?> variable = yoVariableHolderImplementation.findVariable("robot.registryA", "variableOne");
       assertEquals(variable.getName(), "variableOne");
       assertEquals(variable.getFullNameWithNameSpace(), "robot.registryA.variableOne");
 
-      variable = yoVariableHolderImplementation.getYoVariable("robot.registryB", "variableOne");
+      variable = yoVariableHolderImplementation.findVariable("robot.registryB", "variableOne");
       assertEquals(variable.getName(), "variableOne");
       assertEquals(variable.getFullNameWithNameSpace(), "robot.registryB.variableOne");
 
-      variable = yoVariableHolderImplementation.getYoVariable("robot.registryC", "variableOne");
+      variable = yoVariableHolderImplementation.findVariable("robot.registryC", "variableOne");
       assertEquals(variable.getName(), "variableOne");
       assertEquals(variable.getFullNameWithNameSpace(), "robot.registryC.variableOne");
 
-      variable = yoVariableHolderImplementation.getYoVariable("registryA", "variableOne");
+      variable = yoVariableHolderImplementation.findVariable("registryA", "variableOne");
       assertEquals(variable.getName(), "variableOne");
       assertEquals(variable.getFullNameWithNameSpace(), "robot.registryA.variableOne");
 
-      variable = yoVariableHolderImplementation.getYoVariable("registryB", "variableTwo");
+      variable = yoVariableHolderImplementation.findVariable("registryB", "variableTwo");
       assertEquals(variable.getName(), "variableTwo");
       assertEquals(variable.getFullNameWithNameSpace(), "robot.registryB.variableTwo");
 
@@ -126,7 +126,7 @@ public class YoVariableHolderImplementationTest
 
       try
       {
-         variable = yoVariableHolderImplementation.getYoVariable("registryC", "variableOne");
+         variable = yoVariableHolderImplementation.findVariable("registryC", "variableOne");
          testPassed = false;
       }
       catch (Exception e)
@@ -137,7 +137,7 @@ public class YoVariableHolderImplementationTest
 
       try
       {
-         variable = yoVariableHolderImplementation.getYoVariable("registryC", "variableTwo");
+         variable = yoVariableHolderImplementation.findVariable("registryC", "variableTwo");
          testPassed = false;
       }
       catch (Exception e)
@@ -179,7 +179,7 @@ public class YoVariableHolderImplementationTest
    @Test // timeout=300000
    public void testGetVariables1()
    {
-      List<YoVariable<?>> variables = yoVariableHolderImplementation.getYoVariables("variableOne");
+      List<YoVariable<?>> variables = yoVariableHolderImplementation.findVariables("variableOne");
       boolean aFound = false, bFound = false, cFound = false, c2Found = false;
 
       for (YoVariable<?> variable : variables)
@@ -197,26 +197,26 @@ public class YoVariableHolderImplementationTest
       assert aFound && bFound && cFound && c2Found;
       assertEquals(4, variables.size());
 
-      variables = yoVariableHolderImplementation.getYoVariables("variableTwo");
+      variables = yoVariableHolderImplementation.findVariables("variableTwo");
       assertEquals(4, variables.size());
 
-      variables = yoVariableHolderImplementation.getYoVariables("variableThree");
+      variables = yoVariableHolderImplementation.findVariables("variableThree");
       assertEquals(4, variables.size());
 
-      variables = yoVariableHolderImplementation.getYoVariables("var");
+      variables = yoVariableHolderImplementation.findVariables("var");
       assertEquals(0, variables.size());
    }
 
    @Test // timeout=300000
    public void testGetVariables2()
    {
-      List<YoVariable<?>> variables = yoVariableHolderImplementation.getYoVariables("robot.registryA", "variableOne");
+      List<YoVariable<?>> variables = yoVariableHolderImplementation.findVariables("robot.registryA", "variableOne");
       assertEquals(1, variables.size());
 
-      variables = yoVariableHolderImplementation.getYoVariables("robot", "variableOne");
+      variables = yoVariableHolderImplementation.findVariables("robot", "variableOne");
       assertEquals(0, variables.size());
 
-      variables = yoVariableHolderImplementation.getYoVariables("registryC", "variableOne");
+      variables = yoVariableHolderImplementation.findVariables("registryC", "variableOne");
       assertEquals(2, variables.size());
       boolean cFound = false, c2Found = false, testPassed = true;
 
@@ -232,7 +232,7 @@ public class YoVariableHolderImplementationTest
 
       try
       {
-         variables = yoVariableHolderImplementation.getYoVariables("robot", "registryC.variableOne");
+         variables = yoVariableHolderImplementation.findVariables("robot", "registryC.variableOne");
          testPassed = false;
       }
       catch (Exception e)
@@ -247,40 +247,40 @@ public class YoVariableHolderImplementationTest
    public void testHasUniqueVariable()
    {
 
-      assertTrue(!yoVariableHolderImplementation.hasUniqueYoVariable("variableOne"));
+      assertTrue(!yoVariableHolderImplementation.hasUniqueVariable("variableOne"));
 
-      assertTrue(yoVariableHolderImplementation.hasUniqueYoVariable("robot.registryA.variableOne"));
+      assertTrue(yoVariableHolderImplementation.hasUniqueVariable("robot.registryA.variableOne"));
 
-      assertTrue(yoVariableHolderImplementation.hasUniqueYoVariable("registryA.variableOne"));
+      assertTrue(yoVariableHolderImplementation.hasUniqueVariable("registryA.variableOne"));
 
-      assertTrue(yoVariableHolderImplementation.hasUniqueYoVariable("robot.registryA.variableOne"));
+      assertTrue(yoVariableHolderImplementation.hasUniqueVariable("robot.registryA.variableOne"));
 
-      assertTrue(!yoVariableHolderImplementation.hasUniqueYoVariable("istryA.variableOne"));
+      assertTrue(!yoVariableHolderImplementation.hasUniqueVariable("istryA.variableOne"));
 
-      assertTrue(yoVariableHolderImplementation.hasUniqueYoVariable("robot.registryA.variableTwo"));
+      assertTrue(yoVariableHolderImplementation.hasUniqueVariable("robot.registryA.variableTwo"));
 
-      assertTrue(!yoVariableHolderImplementation.hasUniqueYoVariable("registryC.variableTwo"));
+      assertTrue(!yoVariableHolderImplementation.hasUniqueVariable("registryC.variableTwo"));
    }
 
    @Test // timeout=300000
    public void testHasUniqueVariable1()
    {
-      assert yoVariableHolderImplementation.hasUniqueYoVariable("robot.registryA", "variableOne");
+      assert yoVariableHolderImplementation.hasUniqueVariable("robot.registryA", "variableOne");
 
-      assert yoVariableHolderImplementation.hasUniqueYoVariable("registryA", "variableOne");
+      assert yoVariableHolderImplementation.hasUniqueVariable("registryA", "variableOne");
 
-      assert !yoVariableHolderImplementation.hasUniqueYoVariable("registryC", "variableTwo");
+      assert !yoVariableHolderImplementation.hasUniqueVariable("registryC", "variableTwo");
 
-      assert !yoVariableHolderImplementation.hasUniqueYoVariable("istryA", "variableOne");
+      assert !yoVariableHolderImplementation.hasUniqueVariable("istryA", "variableOne");
 
-      assert yoVariableHolderImplementation.hasUniqueYoVariable("robot.registryA", "variableTwo");
+      assert yoVariableHolderImplementation.hasUniqueVariable("robot.registryA", "variableTwo");
 
-      assert !yoVariableHolderImplementation.hasUniqueYoVariable("robot", "variableOne");
+      assert !yoVariableHolderImplementation.hasUniqueVariable("robot", "variableOne");
 
       boolean testPassed = true;
       try
       {
-         yoVariableHolderImplementation.hasUniqueYoVariable("robot", "registryC.variableOne");
+         yoVariableHolderImplementation.hasUniqueVariable("robot", "registryC.variableOne");
          testPassed = false;
       }
       catch (Exception e)

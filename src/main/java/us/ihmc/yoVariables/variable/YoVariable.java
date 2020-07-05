@@ -10,6 +10,7 @@ import us.ihmc.yoVariables.listener.VariableChangedListener;
 import us.ihmc.yoVariables.parameters.YoParameter;
 import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoTools;
 
 /**
  * Title: Simulation Construction Set
@@ -26,7 +27,7 @@ import us.ihmc.yoVariables.registry.YoVariableRegistry;
 public abstract class YoVariable<T extends YoVariable<T>>
 {
    public static boolean SAVE_STACK_TRACE = true;
-   public static final Pattern ILLEGAL_CHARACTERS = Pattern.compile("[ .*?@#$%/^&()<>,:{}'\"\\\\]");
+   public static final Pattern ILLEGAL_CHARACTERS = YoTools.ILLEGAL_CHARACTERS_PATTERN;
    private static final String SPACE_STRING = "  ";
 
    public static final int MAX_LENGTH_SHORT_NAME = 20;
@@ -131,7 +132,7 @@ public abstract class YoVariable<T extends YoVariable<T>>
    {
       if (registry != null)
       {
-         registry.registerVariable(variable);
+         registry.addYoVariable(variable);
       }
       else if (warnAboutNullRegistries)
       {

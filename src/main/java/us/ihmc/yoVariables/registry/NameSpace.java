@@ -1,11 +1,14 @@
 package us.ihmc.yoVariables.registry;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
+/**
+ * Representation of a namespace that is composed of sub-names where typically each sub-name is the
+ * name of a {@link YoVariableRegistry} with the parent to child relationship between one sub-name
+ * and the following one.
+ */
 public class NameSpace implements Serializable
 {
    private static final long serialVersionUID = -2584260031738121095L;
@@ -20,71 +23,270 @@ public class NameSpace implements Serializable
     */
    public NameSpace(List<String> subNames)
    {
-      name = joinNames(subNames);
+      name = YoTools.joinNames(subNames);
       this.subNames = subNames;
-      doChecks(name, subNames);
    }
 
    /**
-    * Creates a namespace from a full name of the namespace. The name is the concatenation of all sub
-    * names starting with the root name and separated by the {@link YoVariableTools#NAMESPACE_SEPERATOR} character.
+    * Creates a namespace from a full name of the namespace.
+    * <p>
+    * The name is the concatenation of all sub names starting with the root name and separated by the
+    * {@link YoTools#NAMESPACE_SEPERATOR} character.
+    * </p>
     *
     * @param name of the namespace.
     */
    public NameSpace(String name)
    {
       this.name = name;
-      subNames = splitName(name);
-      doChecks(name, subNames);
+      subNames = YoTools.splitName(name);
    }
 
+   /**
+    * Performs a series of sanity checks for this namespace, such as: verify that there is no redundant
+    * or empty sub-names, that the sub-names do not contain illegal characters.
+    * 
+    * @throws IllegalNameException if the sanity check fails.
+    */
+   public void checkSanity()
+   {
+      YoTools.checkNameSpaceSanity(this);
+   }
+
+   /**
+    * Returns this namespace full name, i.e. the combination of all its sub-names jointed by
+    * {@value YoTools#NAMESPACE_SEPERATOR_STRING}.
+    *
+    * @return this namespace's name.
+    */
    public String getName()
    {
       return name;
    }
 
-   public List<String> getSubNames()
+   /**
+    * Returns whether this namespace references to the root element, i.e. this namespace is composed of
+    * a single sub-name.
+    * 
+    * @return {@code true} if this namespace references to the root element, {@code false} otherwise.
+    */
+   public boolean isRoot()
    {
-      return Collections.unmodifiableList(subNames);
+      return subNames.size() == 1;
    }
 
-   public String getShortName()
-   {
-      return subNames.get(subNames.size() - 1);
-   }
-
+   /**
+    * Returns the first sub-name of this namespace.
+    * 
+    * @return the name of the root element.
+    */
    public String getRootName()
    {
       return subNames.get(0);
    }
 
-   public boolean isRootNameSpace()
+   /**
+    * Returns the last sub-name of this namespace.
+    *
+    * @return the short name.
+    */
+   public String getShortName()
    {
-      return subNames.size() == 1;
-   }
-
-   public NameSpace getParent()
-   {
-      if (isRootNameSpace())
-      {
-         return null;
-      }
-
-      return new NameSpace(subNames.subList(0, subNames.size() - 1));
-   }
-
-   public String getNameWithRootStripped()
-   {
-      if (isRootNameSpace())
-      {
-         return null;
-      }
-
-      return joinNames(subNames.subList(1, subNames.size()));
+      return subNames.get(size() - 1);
    }
 
    /**
-    * Checks if this nameSpace ends with the provided name.
+    * Returns the list of this namespace's sub-names.
+    *
+    * @return the sub-names for this namespace.
+    */
+   public List<String> getSubNames()
+   {
+      return Collections.unmodifiableList(subNames);
+   }
+
+   /**
+    * Returns the number of sub-names this namespace has.
+    * 
+    * @return the size of this namespace.
+    */
+   public int size()
+   {
+      return subNames.size();
+   }
+
+   /**
+    * Returns the sub-name at the given position.
+    * 
+    * @param index the position of the sub-name to return, {@code index} should be in
+    *              <tt>[0, this.size()[</tt>
+    * @return the sub-name.
+    */
+   public String getSubName(int index)
+   {
+      return subNames.get(index);
+   }
+
+   /**
+    * Returns a new namespace that references the parent element of this namespace, i.e. the parent
+    * namespace is equal to this namespace minus the last sub-name.
+    * 
+    * @return the parent namespace.
+    */
+   public NameSpace getParent()
+   {
+      return removeEnd(1);
+   }
+
+   /**
+    * Returns a new namespace containing the sub-names located at and after the given index.
+    * 
+    * @param fromIndex the index of the first sub-name in the sub-namespace to create.
+    * @return the sub-namespace.
+    */
+   public NameSpace subNameSpace(int fromIndex)
+   {
+      return subNameSpace(fromIndex, size());
+   }
+
+   /**
+    * Returns a new namespace containing the sub-names located at and after the given index.
+    * 
+    * @param fromIndex the index of the first sub-name in the sub-namespace to create.
+    * @param toIndex   the end index (exclusive).
+    * @return the sub-namespace.
+    */
+   public NameSpace subNameSpace(int fromIndex, int toIndex)
+   {
+      if (fromIndex == 0 && toIndex == size())
+         return this;
+      if (fromIndex == toIndex)
+         return null;
+      return new NameSpace(subNames.subList(fromIndex, toIndex));
+   }
+
+   /**
+    * Returns a new namespace that is the sub-namespace of {@code this} minus the given number of
+    * sub-names starting this namespace.
+    * 
+    * @param length the number of sub-names to remove for the start.
+    * @return the new sub-namespace.
+    */
+   public NameSpace removeStart(int length)
+   {
+      if (length < 0 || length > size())
+         throw new IndexOutOfBoundsException("Invalid length: " + length);
+      return subNameSpace(length);
+   }
+
+   /**
+    * Will create a new namespace that is the sub-namespace of {@code this} with the provided
+    * {@code nameSpaceToRemove} removed from the start.
+    * <p>
+    * If {@code this} does not start with the provided namespace or the provided namespace equals
+    * {@code this} the method will return {@code null}.
+    * </p>
+    * <p>
+    * If {@code nameSpaceToRemove} is {@code null} the method will return {@code this}.
+    * </p>
+    *
+    * @param nameSpaceToRemove is the namespace to remove from the start of {@code this}.
+    * @return whether this namespace contains with {@code nameToMatch}.
+    */
+   public NameSpace removeStart(NameSpace nameSpaceToRemove)
+   {
+      if (nameSpaceToRemove == null)
+         return this;
+      if (equals(nameSpaceToRemove) || !startsWith(nameSpaceToRemove))
+         return null;
+      return removeStart(nameSpaceToRemove.size());
+   }
+
+   /**
+    * Returns a new namespace that is the sub-namespace of {@code this} minus the given number of
+    * sub-names ending this namespace.
+    * 
+    * @param length the number of sub-names to remove for the end.
+    * @return the new sub-namespace.
+    */
+   public NameSpace removeEnd(int length)
+   {
+      if (length < 0 || length > size())
+         throw new IndexOutOfBoundsException("Invalid length: " + length);
+      return subNameSpace(0, size() - length);
+   }
+
+   /**
+    * Will create a new namespace that is the sub-namespace of {@code this} with the provided
+    * {@code nameSpaceToRemove} removed from the end.
+    * <p>
+    * If {@code this} does not end with the provided namespace or the provided namespace equals
+    * {@code this} the method will return {@code null}.
+    * </p>
+    * <p>
+    * If {@code nameSpaceToRemove} is {@code null} the method will return {@code this}.
+    * </p>
+    *
+    * @param nameSpaceToRemove is the namespace to remove from the end of {@code this}.
+    * @return whether this namespace contains with {@code nameToMatch}.
+    */
+   public NameSpace removeEnd(NameSpace nameSpaceToRemove)
+   {
+      if (nameSpaceToRemove == null)
+         return this;
+
+      if (equals(nameSpaceToRemove) || !endsWith(nameSpaceToRemove))
+         return null;
+
+      return removeEnd(nameSpaceToRemove.size());
+   }
+
+   /**
+    * Returns a new namespace that is the concatenation of the {@code other} namespace followed with
+    * {@code this} namespace.
+    * 
+    * @param other the other namespace to prepend to this.
+    * @return the new namespace [{@code other}, {@code this}].
+    */
+   public NameSpace prepend(NameSpace other)
+   {
+      return YoTools.concatenate(other, this);
+   }
+
+   /**
+    * Returns a new namespace that is the concatenation of {@code this} namespace followed with the
+    * {@code other} namespace.
+    * 
+    * @param other the other namespace to append to this.
+    * @return the new namespace [{@code this}, {@code other}].
+    */
+   public NameSpace append(NameSpace other)
+   {
+      return YoTools.concatenate(this, other);
+   }
+
+   /**
+    * Tests if this namespace ends with the provided namespace.
+    * 
+    * @param query the namespace to test for.
+    * @return {@code true} if this namespace ends with {@code query}, {@code false} otherwise.
+    */
+   public boolean endsWith(NameSpace query)
+   {
+      if (query.size() > size())
+         return false;
+
+      for (int i = 1; i <= query.size(); i++)
+      {
+         if (!query.subNames.get(query.size() - i).equals(subNames.get(size() - i)))
+            return false;
+      }
+
+      return true;
+   }
+
+   /**
+    * Tests if this namespace ends with the provided name.
     * <p>
     * For example, a namespace with name {@code robot.controller.module} ends with {@code module},
     * {@code controller.module}, and {@code robot.controller.module} but no other string. This means
@@ -92,23 +294,44 @@ public class NameSpace implements Serializable
     * </p>
     *
     * @param nameToMatch is the name to check for.
-    * @return whether this NameSpace ends with {@code nameToMatch}.
+    * @return whether this namespace ends with {@code nameToMatch}.
     */
    public boolean endsWith(String nameToMatch)
    {
-      if (!name.endsWith(nameToMatch))
-      {
+      if (nameToMatch.length() > name.length())
          return false;
-      }
+
+      if (!name.endsWith(nameToMatch))
+         return false;
+
       if (name.length() == nameToMatch.length())
-      {
          return true;
-      }
-      return name.charAt(name.length() - nameToMatch.length() - 1) == YoVariableTools.NAMESPACE_SEPERATOR;
+
+      return name.charAt(name.length() - nameToMatch.length() - 1) == YoTools.NAMESPACE_SEPERATOR;
    }
 
    /**
-    * Checks if this nameSpace starts with the provided name.
+    * Tests if this namespace starts with the provided namespace.
+    * 
+    * @param query the namespace to test for.
+    * @return {@code true} if this namespace starts with {@code query}, {@code false} otherwise.
+    */
+   public boolean startsWith(NameSpace query)
+   {
+      if (query.size() > size())
+         return false;
+
+      for (int i = 1; i <= query.size(); i++)
+      {
+         if (!query.subNames.get(i).equals(subNames.get(i)))
+            return false;
+      }
+
+      return true;
+   }
+
+   /**
+    * Tests if this namespace starts with the provided name.
     * <p>
     * For example, a namespace with name {@code robot.controller.module} starts with {@code robot},
     * {@code robot.controller}, and {@code robot.controller.module} but no other string. This means
@@ -116,7 +339,7 @@ public class NameSpace implements Serializable
     * </p>
     *
     * @param nameToMatch is the name to check for.
-    * @return whether this NameSpace starts with {@code nameToMatch}.
+    * @return whether this namespace starts with {@code nameToMatch}.
     */
    public boolean startsWith(String nameToMatch)
    {
@@ -128,11 +351,36 @@ public class NameSpace implements Serializable
       {
          return true;
       }
-      return name.charAt(nameToMatch.length()) == YoVariableTools.NAMESPACE_SEPERATOR;
+      return name.charAt(nameToMatch.length()) == YoTools.NAMESPACE_SEPERATOR;
    }
 
    /**
-    * Checks if this nameSpace contains the provided name.
+    * Tests if this namespace contains the provided namespace.
+    * 
+    * @param query the namespace to test for.
+    * @return {@code true} if this namespace contains {@code query}, {@code false} otherwise.
+    */
+   public boolean contains(NameSpace query)
+   {
+      if (query.size() > size())
+         return false;
+
+      int startIndex = subNames.indexOf(query.subNames.get(0));
+
+      if (startIndex == -1)
+         return false;
+
+      for (int i = 0; i < query.size(); i++)
+      {
+         if (!query.subNames.get(i).equals(subNames.get(startIndex + i)))
+            return false;
+      }
+
+      return true;
+   }
+
+   /**
+    * Tests if this namespace contains the provided name.
     * <p>
     * For example, a namespace with name {@code robot.controller} contains {@code robot},
     * {@code robot.controller}, and {@code controller} but no other string. This means this method will
@@ -140,61 +388,24 @@ public class NameSpace implements Serializable
     * </p>
     *
     * @param nameToMatch is the name to check for.
-    * @return whether this NameSpace contains with {@code nameToMatch}.
+    * @return whether this namespace contains with {@code nameToMatch}.
     */
    public boolean contains(String nameToMatch)
    {
       int startIndex = name.indexOf(nameToMatch);
-      int endIndex = startIndex + nameToMatch.length();
+
       if (startIndex == -1)
-      {
          return false;
-      }
-      if (name.length() == nameToMatch.length())
-      {
-         return true;
-      }
-      if (startIndex == 0)
-      {
-         return name.charAt(endIndex) == YoVariableTools.NAMESPACE_SEPERATOR;
-      }
-      if (endIndex == name.length())
-      {
-         return name.charAt(startIndex - 1) == YoVariableTools.NAMESPACE_SEPERATOR;
-      }
-      return name.charAt(endIndex) == YoVariableTools.NAMESPACE_SEPERATOR && name.charAt(startIndex - 1) == YoVariableTools.NAMESPACE_SEPERATOR;
-   }
 
-   /**
-    * Will create a new namespace that is the sub-namespace of {@code this} with the provided
-    * {@code nameSpaceToRemove} removed from the start.
-    * <p>
-    * If {@code this} does not start with the provided namespace or the provided namesace equals
-    * {@code this} the method will return {@code null}.
-    * </p>
-    * <p>
-    * If {@code nameSpaceToRemove} is {@code null} the method will return a copy of {@code this}.
-    * </p>
-    *
-    * @param nameSpaceToRemove is the namespace to remove from the start of {@code this}.
-    * @return whether this NameSpace contains with {@code nameToMatch}.
-    */
-   public NameSpace stripOffFromBeginning(NameSpace nameSpaceToRemove)
-   {
-      if (nameSpaceToRemove == null)
-      {
-         return new NameSpace(name);
-      }
-      if (equals(nameSpaceToRemove))
-      {
-         return null;
-      }
-      if (!startsWith(nameSpaceToRemove.name))
-      {
-         return null;
-      }
+      int endIndex = startIndex + nameToMatch.length();
 
-      return new NameSpace(subNames.subList(nameSpaceToRemove.subNames.size(), subNames.size()));
+      if (startIndex > 0 && name.charAt(startIndex - 1) != YoTools.NAMESPACE_SEPERATOR)
+         return false;
+
+      if (endIndex < name.length() && name.charAt(endIndex) != YoTools.NAMESPACE_SEPERATOR)
+         return false;
+
+      return true;
    }
 
    @Override
@@ -207,15 +418,11 @@ public class NameSpace implements Serializable
    public boolean equals(Object nameSpace)
    {
       if (nameSpace == this)
-      {
          return true;
-      }
-      if (!(nameSpace instanceof NameSpace))
-      {
+      else if (nameSpace instanceof NameSpace)
+         return ((NameSpace) nameSpace).name.equals(name);
+      else
          return false;
-      }
-
-      return ((NameSpace) nameSpace).name.equals(name);
    }
 
    @Override
@@ -223,50 +430,4 @@ public class NameSpace implements Serializable
    {
       return name;
    }
-
-   public static NameSpace createNameSpaceFromAFullVariableName(String fullVariableName)
-   {
-      NameSpace parent = new NameSpace(fullVariableName).getParent();
-      // TODO: this is silly we should return null here.
-      return parent != null ? parent : new NameSpace("NoNameSpaceRegistry");
-   }
-
-   public static String stripOffNameSpaceToGetVariableName(String variableName)
-   {
-      List<String> subNames = splitName(variableName);
-      return subNames.get(subNames.size() - 1);
-   }
-
-   private static List<String> splitName(String name)
-   {
-      return Arrays.asList(name.split(YoVariableTools.NAMESPACE_SEPERATOR_REGEX, -1));
-   }
-
-   private static String joinNames(List<String> subNames)
-   {
-      if (subNames.stream().anyMatch(subName -> subName.contains(YoVariableTools.NAMESPACE_SEPERATOR_REGEX)))
-      {
-         throw new RuntimeException("A sub name can not contain the seperator string " + YoVariableTools.NAMESPACE_SEPERATOR + ".");
-      }
-      return String.join(YoVariableTools.NAMESPACE_SEPERATOR_STRING, subNames);
-   }
-
-   private static void doChecks(String name, List<String> subNames)
-   {
-      if (subNames.stream().anyMatch(subName -> subName.isEmpty()))
-      {
-         throw new RuntimeException("Can not construct a namespace with an empty subname.\nNamespace: " + name);
-      }
-
-      if (!joinNames(subNames).equals(name))
-      {
-         throw new RuntimeException("Can not construct a namespace with inconsistent sub names.\nNamespace: " + name + "\nSub Names: " + joinNames(subNames));
-      }
-
-      if (new HashSet<>(subNames).size() != subNames.size())
-      {
-         throw new RuntimeException("Can not construct a namespace with duplicate sub names.\nNamespace: " + name);
-      }
-   }
-
 }

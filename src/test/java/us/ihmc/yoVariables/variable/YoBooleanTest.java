@@ -178,11 +178,11 @@ public class YoBooleanTest
 
       yoBoolean.set(true);
       val = yoBoolean.duplicate(newRegistry);
-      testVal = (YoBoolean) newRegistry.getYoVariables().get(0);
+      testVal = (YoBoolean) newRegistry.getVariables().get(0);
       Assert.assertEquals(yoBoolean.getBooleanValue(), val.getBooleanValue());
       Assert.assertEquals(yoBoolean.getBooleanValue(), testVal.getBooleanValue());
-      assertTrue(val.getYoVariableRegistry().areEqual(newRegistry));
-      assertTrue(val.getYoVariableRegistry().areEqual(testVal.getYoVariableRegistry()));
+      assertTrue(val.getYoVariableRegistry().equals(newRegistry));
+      assertTrue(val.getYoVariableRegistry().equals(testVal.getYoVariableRegistry()));
       newRegistry = null;
    }
 
@@ -196,7 +196,7 @@ public class YoBooleanTest
       valSet = yoBoolean.setValue(testBoolean, false);
       assertTrue(valSet);
       Assert.assertEquals(yoBoolean.getBooleanValue(), testBoolean.getBooleanValue());
-      assertTrue(yoBoolean.getYoVariableRegistry().areEqual(registry));
+      assertTrue(yoBoolean.getYoVariableRegistry().equals(registry));
    }
 
    @Test // timeout=300000

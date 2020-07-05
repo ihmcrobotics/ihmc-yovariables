@@ -8,6 +8,7 @@ import java.util.Map;
 
 import us.ihmc.log.LogTools;
 import us.ihmc.yoVariables.registry.NameSpace;
+import us.ihmc.yoVariables.registry.YoTools;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 /**
@@ -24,7 +25,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    }
 
    @Override
-   public List<YoVariable<?>> getYoVariables()
+   public List<YoVariable<?>> getVariables()
    {
       List<YoVariable<?>> ret = new ArrayList<>();
 
@@ -95,7 +96,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
 
    public YoVariable<?> getVariableUsingFullNamespace(String fullname)
    {
-      for (YoVariable<?> yoVariable : getYoVariables())
+      for (YoVariable<?> yoVariable : getVariables())
       {
          if (yoVariable.getFullNameWithNameSpace().equals(fullname))
             return yoVariable;
@@ -109,9 +110,9 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    }
 
    @Override
-   public YoVariable<?> getYoVariable(String fullname)
+   public YoVariable<?> findVariable(String fullname)
    {
-      String name = NameSpace.stripOffNameSpaceToGetVariableName(fullname);
+      String name = YoTools.toShortName(fullname);
       List<YoVariable<?>> variablesWithThisName = yoVariableSet.get(name.toLowerCase());
 
       if (variablesWithThisName == null)
@@ -145,7 +146,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    }
 
    @Override
-   public YoVariable<?> getYoVariable(String nameSpaceEnding, String name)
+   public YoVariable<?> findVariable(String nameSpaceEnding, String name)
    {
       if (name.contains("."))
       {
@@ -180,9 +181,9 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    }
 
    @Override
-   public boolean hasUniqueYoVariable(String fullname)
+   public boolean hasUniqueVariable(String fullname)
    {
-      String name = NameSpace.stripOffNameSpaceToGetVariableName(fullname);
+      String name = YoTools.toShortName(fullname);
 
       List<YoVariable<?>> variablesWithThisName = yoVariableSet.get(name.toLowerCase());
       if (variablesWithThisName == null)
@@ -211,7 +212,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    }
 
    @Override
-   public boolean hasUniqueYoVariable(String nameSpaceEnding, String name)
+   public boolean hasUniqueVariable(String nameSpaceEnding, String name)
    {
       if (name.contains("."))
       {
@@ -245,7 +246,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    }
 
    @Override
-   public List<YoVariable<?>> getYoVariables(String nameSpaceEnding, String name)
+   public List<YoVariable<?>> findVariables(String nameSpaceEnding, String name)
    {
       if (name.contains("."))
       {
@@ -274,9 +275,9 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    }
 
    @Override
-   public List<YoVariable<?>> getYoVariables(String fullname)
+   public List<YoVariable<?>> findVariables(String fullname)
    {
-      String name = NameSpace.stripOffNameSpaceToGetVariableName(fullname);
+      String name = YoTools.toShortName(fullname);
 
       List<YoVariable<?>> variablesWithThisName = yoVariableSet.get(name.toLowerCase());
       if (variablesWithThisName == null)

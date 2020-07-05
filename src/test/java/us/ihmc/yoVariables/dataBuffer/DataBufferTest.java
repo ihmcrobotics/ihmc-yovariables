@@ -277,7 +277,7 @@ public class DataBufferTest
       expectedArrayOfVariables.add(yoInteger);
       expectedArrayOfVariables.add(yoEnum);
 
-      List<YoVariable<?>> actualArrayOfVariables = dataBuffer.getYoVariables();
+      List<YoVariable<?>> actualArrayOfVariables = dataBuffer.getVariables();
 
       for (int i = 0; i < actualArrayOfVariables.size(); i++)
       {

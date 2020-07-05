@@ -1,21 +1,17 @@
 package us.ihmc.yoVariables.registry;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
-
-import us.ihmc.log.LogTools;
 import us.ihmc.yoVariables.dataBuffer.YoVariableHolder;
 import us.ihmc.yoVariables.listener.YoVariableRegistryChangedListener;
 import us.ihmc.yoVariables.parameters.YoParameter;
+import us.ihmc.yoVariables.registry.YoTools.SearchQuery;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 public class YoVariableRegistry implements YoVariableHolder
@@ -23,26 +19,22 @@ public class YoVariableRegistry implements YoVariableHolder
    private final String name;
    private NameSpace nameSpace;
 
-   private List<YoVariable<?>> variables = new ArrayList<>();
-   private Map<String, YoVariable<?>> nameToVariableMap = new LinkedHashMap<>(); // From name to the variable with that name.
-   private List<YoParameter<?>> parameters = new ArrayList<>();
-   private Map<String, YoParameter<?>> nameToParameterMap = new LinkedHashMap<>();
+   private final List<YoVariable<?>> variables = new ArrayList<>();
+   private final Map<String, YoVariable<?>> nameToVariableMap = new LinkedHashMap<>(); // From name to the variable with that name.
+   private final List<YoParameter<?>> parameters = new ArrayList<>();
 
    private YoVariableRegistry parent;
-   private List<YoVariableRegistry> children = new ArrayList<>();
+   private final List<YoVariableRegistry> children = new ArrayList<>();
+   private final Map<String, YoVariableRegistry> nameToChildMap = new LinkedHashMap<>();
 
    private List<YoVariableRegistryChangedListener> yoVariableRegistryChangedListeners;
 
    public YoVariableRegistry(String name)
    {
-      YoVariableTools.checkForIllegalCharacters(name);
+      YoTools.checkForIllegalCharacters(name);
 
       this.name = name;
-
-      if (name != null && name.length() > 0)
-      {
-         nameSpace = new NameSpace(name);
-      }
+      nameSpace = new NameSpace(name);
    }
 
    public String getName()
@@ -55,63 +47,138 @@ public class YoVariableRegistry implements YoVariableHolder
       return nameSpace;
    }
 
-   public void attachYoVariableRegistryChangedListener(YoVariableRegistryChangedListener listener)
+   /**
+    * Registers a new {@code YoVariable} in this registry.
+    * <p>
+    * The variable will become available for search queries from this registry and any of its parent
+    * registries.
+    * </p>
+    *
+    * @param variable the new variable to register.
+    * @throws NameCollisionException if the new variable's name collide with another variable
+    *                                previously registered.
+    */
+   public void addYoVariable(YoVariable<?> variable)
    {
-      if (yoVariableRegistryChangedListeners == null)
-      {
-         yoVariableRegistryChangedListeners = new ArrayList<>();
-      }
-
-      yoVariableRegistryChangedListeners.add(listener);
-
-      verifyDoNotHaveBothParentAndYoVariableRegistryChangedListeners();
-   }
-
-   public void registerVariable(YoVariable<?> variable)
-   {
-      String variableName = variable.getName();
-      variableName = variableName.toLowerCase(); // Make everything case insensitive! Cannot have two YoVariables with same names except case.
+      // Make everything case insensitive! Cannot have two YoVariables with same names except case.
+      String variableName = variable.getName().toLowerCase();
 
       if (nameToVariableMap.containsKey(variableName))
       {
-         System.err.println("Error:  " + variable.getName() + " has already been registered in this registry! YoVariableRegistry NameSpace = " + nameSpace);
-         // Sometimes RuntimeExceptions are not displayed, but the error out is still visible.
-         throw new RuntimeException("Error:  " + variable.getName() + " has already been registered in this registry! YoVariableRegistry NameSpace = "
-               + nameSpace);
+         throw new NameCollisionException("Name collision for new variable: " + variableName + ". Parent name space = " + getNameSpace());
       }
 
-      nameToVariableMap.put(variableName, variable);
       variables.add(variable);
+      nameToVariableMap.put(variableName, variable);
 
       if (variable.isParameter())
       {
-         YoParameter<?> parameter = variable.getParameter();
-         parameters.add(parameter);
-         nameToParameterMap.put(variableName, parameter);
+         parameters.add(variable.getParameter());
       }
 
       notifyListenersYoVariableWasRegistered(variable);
    }
 
    /**
-    * Returns the variables that have been registered to this registry.
+    * Adds child registry to this registry.
+    * <p>
+    * The registry and all its subtree will become available for search queries from this registry and
+    * any of its parent registries.
+    * </p>
     *
-    * @return unmodifiable list of this registry's variables.
+    * @param child the new registry to add.
+    * @throws NameCollisionException if adding the new registry would cause a name collision.
     */
-   @Override
-   public List<YoVariable<?>> getYoVariables()
+   public void addChild(YoVariableRegistry child)
    {
-      return Collections.unmodifiableList(variables);
+      addChild(child, true);
    }
 
    /**
-    * Returns the parameters that have been registered to this registry.
+    * Adds child registry to this registry.
+    * <p>
+    * The registry and all its subtree will become available for search queries from this registry and
+    * any of its parent registries.
+    * </p>
     *
-    * @return unmodifiable list of this registry's parameters.
+    * @param child           the new registry to add.
+    * @param notifyListeners indicates whether this operation should trigger the change listeners.
+    *                        Default value is {@code true}.
+    * @throws NameCollisionException if adding the new registry would cause a name collision.
     */
-   public List<YoParameter<?>> getYoParameters()
+   public void addChild(YoVariableRegistry child, boolean notifyListeners)
    {
-      return Collections.unmodifiableList(parameters);
+      if (child == null)
+         return;
+
+      String childName = child.getName().toLowerCase();
+
+      // Make sure no children with this name already:
+      if (nameToChildMap.containsKey(childName))
+         throw new NameCollisionException("Name collision for new child: " + childName + ". Parent name space = " + getNameSpace());
+
+      child.setParent(this);
+      child.prependNameSpace(nameSpace);
+      children.add(child);
+      nameToChildMap.put(childName, child);
+
+      if (notifyListeners)
+         notifyListenersYoVariableRegistryWasAdded(child);
+   }
+
+   /**
+    * Tests for the presence of at least one parameter in this registry.
+    *
+    * @return {@code true} if this registry has at least one parameter, {@code false} otherwise.
+    */
+   public boolean hasParameters()
+   {
+      return !parameters.isEmpty();
+   }
+
+   /**
+    * Tests for the presence of at least one parameter in the subtree starting at this registry.
+    *
+    * @return {@code true} if at least one parameter was found in either this registry or any of its
+    *         descendants, {@code false} otherwise.
+    */
+   public boolean hasParametersDeep()
+   {
+      if (hasParameters())
+         return true;
+
+      for (int i = 0; i < children.size(); i++)
+      {
+         if (children.get(i).hasParametersDeep())
+         {
+            return true;
+         }
+      }
+
+      return false;
+   }
+
+   /**
+    * Returns whether this registry is the root registry, i.e. it has no parent.
+    * 
+    * @return {@code true} if this registry is the root, {@code false} otherwise.
+    */
+   public boolean isRoot()
+   {
+      return parent == null;
+   }
+
+   /**
+    * Retrieves and returns the root registry.
+    * 
+    * @return the root registry or {@code this} if it is the root.
+    */
+   public YoVariableRegistry getRoot()
+   {
+      if (isRoot())
+         return this;
+      else
+         return parent.getRoot();
    }
 
    /**
@@ -136,26 +203,74 @@ public class YoVariableRegistry implements YoVariableHolder
    }
 
    /**
-    * Collects recursively and returns all the variables contained in this registry and in its
-    * descendants.
+    * Returns a variable previously registered in this registry.
+    *
+    * @param name the name of the variable to get.
+    * @return the variable corresponding to the given {@code name}, or {@code null} if such variable
+    *         has not been registered.
+    */
+   public YoVariable<?> getVariable(String name)
+   {
+      return nameToVariableMap.get(name);
+   }
+
+   /**
+    * Returns the variables that have been registered to this registry.
+    *
+    * @return unmodifiable list of this registry's variables.
+    */
+   @Override
+   public List<YoVariable<?>> getVariables()
+   {
+      return Collections.unmodifiableList(variables);
+   }
+
+   /**
+    * Returns a parameter previously registered in this registry.
+    *
+    * @param name the name of the parameter to get.
+    * @return the parameter corresponding to the given {@code name}, or {@code null} if such parameter
+    *         has not been registered.
+    */
+   public YoParameter<?> getParameter(String name)
+   {
+      YoVariable<?> yoVariable = getVariable(name);
+      if (yoVariable != null && yoVariable.isParameter())
+         return yoVariable.getParameter();
+      else
+         return null;
+   }
+
+   /**
+    * Returns the parameters that have been registered to this registry.
+    *
+    * @return unmodifiable list of this registry's parameters.
+    */
+   public List<YoParameter<?>> getParameters()
+   {
+      return Collections.unmodifiableList(parameters);
+   }
+
+   /**
+    * Collects and returns all the variables contained in this registry and in its descendants.
     *
     * @return list of all variables registered to this registry and its child registries.
     */
-   public List<YoVariable<?>> getSubtreeYoVariables()
+   public List<YoVariable<?>> getSubtreeVariables()
    {
       List<YoVariable<?>> yoVariables = new ArrayList<>();
-      getSubtreeYoVariables(yoVariables);
+      getSubtreeVariables(yoVariables);
       return yoVariables;
    }
 
    /**
-    * Collects recursively and packs all the variables contained in this registry and in its
-    * descendants into {@code variablesToPack}.
+    * Collects and packs all the variables contained in this registry and in its descendants into
+    * {@code variablesToPack}.
     *
     * @param variablesToPack list used to store all variables registered to this registry and its child
     *                        registries.
     */
-   private void getSubtreeYoVariables(List<YoVariable<?>> variablesToPack)
+   private void getSubtreeVariables(List<YoVariable<?>> variablesToPack)
    {
       // Add ours:
       variablesToPack.addAll(variables);
@@ -163,7 +278,7 @@ public class YoVariableRegistry implements YoVariableHolder
       // Add children's recursively:
       for (YoVariableRegistry registry : children)
       {
-         registry.getSubtreeYoVariables(variablesToPack);
+         registry.getSubtreeVariables(variablesToPack);
       }
    }
 
@@ -173,10 +288,10 @@ public class YoVariableRegistry implements YoVariableHolder
     *
     * @return list of all parameters registered to this registry and its child registries.
     */
-   public List<YoParameter<?>> getSubtreeYoParameters()
+   public List<YoParameter<?>> getSubtreeParameters()
    {
       List<YoParameter<?>> yoParameters = new ArrayList<>();
-      getSubtreeYoParameters(yoParameters);
+      getSubtreeParameters(yoParameters);
       return yoParameters;
    }
 
@@ -187,7 +302,7 @@ public class YoVariableRegistry implements YoVariableHolder
     * @param parametersToPack list used to store all parameters registered to this registry and its
     *                         child registries.
     */
-   private void getSubtreeYoParameters(List<YoParameter<?>> parametersToPack)
+   private void getSubtreeParameters(List<YoParameter<?>> parametersToPack)
    {
       // Add ours:
       parametersToPack.addAll(parameters);
@@ -195,7 +310,7 @@ public class YoVariableRegistry implements YoVariableHolder
       // Add children's recursively:
       for (YoVariableRegistry registry : children)
       {
-         registry.getSubtreeYoParameters(parametersToPack);
+         registry.getSubtreeParameters(parametersToPack);
       }
    }
 
@@ -204,11 +319,10 @@ public class YoVariableRegistry implements YoVariableHolder
     *
     * @return list of all the registries composing the subtree starting at {@code this}.
     */
-   public List<YoVariableRegistry> getSubtreeYoVariableRegistries()
+   public List<YoVariableRegistry> getSubtreeRegistries()
    {
       List<YoVariableRegistry> yoVariableRegistries = new ArrayList<>();
-      getSubtreeYoVariableRegistries(yoVariableRegistries);
-
+      getSubtreeRegistries(yoVariableRegistries);
       return yoVariableRegistries;
    }
 
@@ -219,7 +333,7 @@ public class YoVariableRegistry implements YoVariableHolder
     * @param yoVariableRegistriesToPack list used to store all the registries composing the subtree
     *                                   starting at {@code this}.
     */
-   public void getSubtreeYoVariableRegistries(List<YoVariableRegistry> yoVariableRegistriesToPack)
+   public void getSubtreeRegistries(List<YoVariableRegistry> yoVariableRegistriesToPack)
    {
       // Add mine:
       yoVariableRegistriesToPack.add(this);
@@ -227,37 +341,19 @@ public class YoVariableRegistry implements YoVariableHolder
       // Add all the children recursively:
       for (YoVariableRegistry child : children)
       {
-         child.getSubtreeYoVariableRegistries(yoVariableRegistriesToPack);
+         child.getSubtreeRegistries(yoVariableRegistriesToPack);
       }
    }
 
    /**
-    * Returns the first discovered instance of a variable matching the given name.
-    * <p>
-    * The search is first conducted in this registry, then in its children in the order in which they
-    * were added.
-    * </p>
-    * <p>
-    * The given {@code name} can either be:
-    * <ul>
-    * <li>the variable name, for instance {@code "aVariable"},
-    * <li>the variable name and its namespace, for instance:
-    * {@code "aRegistry.anotherRegistry.aVariable"}.
-    * </ul>
-    * </p>
-    * 
-    * @param name the name of the variables to retrieve. Can contain the namespace of its parent to
-    *             narrow down the search.
+    * Returns a variable previously registered in this registry.
+    *
+    * @param name the name of the variables to get.
     */
    @Override
-   public YoVariable<?> getYoVariable(String name)
+   public YoVariable<?> findVariable(String name)
    {
-      int separatorIndex = name.lastIndexOf(YoVariableTools.NAMESPACE_SEPERATOR_STRING);
-
-      if (separatorIndex == -1)
-         return getYoVariable(null, name);
-      else
-         return getYoVariable(name.substring(0, separatorIndex + 1), name.substring(separatorIndex));
+      return YoTools.findYoVariable(new SearchQuery(name), null, this);
    }
 
    /**
@@ -266,7 +362,7 @@ public class YoVariableRegistry implements YoVariableHolder
     * The search is first conducted in this registry, then in its children in the order in which they
     * were added.
     * </p>
-    * 
+    *
     * @param parentNameSpace (optional) the namespace of the registry in which the variable was
     *                        registered. The namespace does not need to be complete, i.e. it does not
     *                        need to contain the name of the registries closest to the root registry.
@@ -274,30 +370,12 @@ public class YoVariableRegistry implements YoVariableHolder
     * @param name            the name of the variable to retrieve.
     * @return the variable corresponding to the search criteria, or {@code null} if it could not be
     *         found.
-    * @throws IllegalNameException if {@code name} contains
-    *                              "{@value YoVariableTools#NAMESPACE_SEPERATOR}".
+    * @throws IllegalNameException if {@code name} contains "{@value YoTools#NAMESPACE_SEPERATOR}".
     */
    @Override
-   public YoVariable<?> getYoVariable(String parentNameSpace, String name)
+   public YoVariable<?> findVariable(String parentNameSpace, String name)
    {
-      if (name.contains(YoVariableTools.NAMESPACE_SEPERATOR_STRING))
-         throw new IllegalNameException(name + " cannot contain '" + YoVariableTools.NAMESPACE_SEPERATOR_STRING + "'.");
-
-      if (parentNameSpace == null || nameSpace.endsWith(parentNameSpace))
-      {
-         YoVariable<?> variable = nameToVariableMap.get(name);
-         if (variable != null)
-            return variable;
-      }
-
-      for (YoVariableRegistry child : children)
-      {
-         YoVariable<?> variable = child.getYoVariable(parentNameSpace, name);
-         if (variable != null)
-            return variable;
-      }
-
-      return null;
+      return YoTools.findYoVariable(new SearchQuery(parentNameSpace, name), null, this);
    }
 
    /**
@@ -314,17 +392,15 @@ public class YoVariableRegistry implements YoVariableHolder
     * {@code "aRegistry.anotherRegistry.aVariable"}.
     * </ul>
     * </p>
-    * 
+    *
     * @param name the name of the variables to retrieve. Can contain the namespace of its parent to
     *             narrow down the search.
     * @return list of all the variables corresponding to the search criteria.
     */
    @Override
-   public List<YoVariable<?>> getYoVariables(String name)
+   public List<YoVariable<?>> findVariables(String name)
    {
-      List<YoVariable<?>> matchedVariables = new ArrayList<>();
-      getYoVariables(name, matchedVariables);
-      return matchedVariables;
+      return YoTools.findYoVariables(new SearchQuery(name), null, this, null);
    }
 
    /**
@@ -333,31 +409,24 @@ public class YoVariableRegistry implements YoVariableHolder
     * The search is first conducted in this registry, then in its children in the order in which they
     * were added.
     * </p>
-    * 
+    *
     * @param parentNameSpace (optional) the namespace of the registry in which the variable was
     *                        registered. The namespace does not need to be complete, i.e. it does not
     *                        need to contain the name of the registries closest to the root registry.
     *                        If {@code null}, the search for the variable name only.
     * @param name            the name of the variable to retrieve.
     * @return list of all the variables corresponding to the search criteria.
-    * @throws IllegalNameException if {@code name} contains
-    *                              "{@value YoVariableTools#NAMESPACE_SEPERATOR}".
+    * @throws IllegalNameException if {@code name} contains "{@value YoTools#NAMESPACE_SEPERATOR}".
     */
    @Override
-   public List<YoVariable<?>> getYoVariables(String parentNameSpace, String name)
+   public List<YoVariable<?>> findVariables(String parentNameSpace, String name)
    {
-      List<YoVariable<?>> matchedVariables = new ArrayList<>();
-      getYoVariables(parentNameSpace, name, matchedVariables);
-      return matchedVariables;
+      return YoTools.findYoVariables(new SearchQuery(parentNameSpace, name), null, this, null);
    }
 
    /**
-    * Collects and stores the all of the variables matching the given name into
-    * {@code matchedVariablesToPack}.
-    * <p>
-    * The search is first conducted in this registry, then in its children in the order in which they
-    * were added.
-    * </p>
+    * Search in the subtree starting at this registry and tests if there is exactly one variable that
+    * matches the search criteria.
     * <p>
     * The given {@code name} can either be:
     * <ul>
@@ -366,62 +435,27 @@ public class YoVariableRegistry implements YoVariableHolder
     * {@code "aRegistry.anotherRegistry.aVariable"}.
     * </ul>
     * </p>
-    * 
-    * @param name                   the name of the variables to retrieve. Can contain the namespace of
-    *                               its parent to narrow down the search.
-    * @param matchedVariablesToPack list used to store all the variables corresponding to the search
-    *                               criteria.
+    *
+    * @param name the name of the variables to retrieve. Can contain the namespace of its parent to
+    *             narrow down the search.
+    * @return {@code true} if there is exactly one variable that matches the search criteria,
+    *         {@code false} otherwise.
     */
-   public void getYoVariables(String name, List<YoVariable<?>> matchedVariablesToPack)
+   @Override
+   public boolean hasUniqueVariable(String name)
    {
-      int separatorIndex = name.lastIndexOf(YoVariableTools.NAMESPACE_SEPERATOR_STRING);
+      int separatorIndex = name.lastIndexOf(YoTools.NAMESPACE_SEPERATOR_STRING);
 
       if (separatorIndex == -1)
-         getYoVariables(null, name, matchedVariablesToPack);
+         return hasUniqueVariable(null, name);
       else
-         getYoVariables(name.substring(0, separatorIndex + 1), name.substring(separatorIndex), matchedVariablesToPack);
-   }
-
-   /**
-    * Collects and stores the all of the variables matching the given name and namespace into
-    * {@code matchedVariablesToPack}.
-    * <p>
-    * The search is first conducted in this registry, then in its children in the order in which they
-    * were added.
-    * </p>
-    * 
-    * @param parentNameSpace        (optional) the namespace of the registry in which the variable was
-    *                               registered. The namespace does not need to be complete, i.e. it
-    *                               does not need to contain the name of the registries closest to the
-    *                               root registry. If {@code null}, the search for the variable name
-    *                               only.
-    * @param name                   the name of the variables to retrieve. Can contain the namespace of
-    *                               its parent to narrow down the search.
-    * @param matchedVariablesToPack list used to store all the variables corresponding to the search
-    *                               criteria.
-    */
-   public void getYoVariables(String parentNameSpace, String name, List<YoVariable<?>> matchedVariablesToPack)
-   {
-      if (name.contains(YoVariableTools.NAMESPACE_SEPERATOR_STRING))
-         throw new IllegalNameException(name + " cannot contain '" + YoVariableTools.NAMESPACE_SEPERATOR_STRING + "'.");
-
-      if (parentNameSpace == null || nameSpace.endsWith(parentNameSpace))
-      {
-         YoVariable<?> variable = nameToVariableMap.get(name);
-         if (variable != null)
-            matchedVariablesToPack.add(variable);
-      }
-
-      for (YoVariableRegistry child : children)
-      {
-         child.getYoVariables(parentNameSpace, name, matchedVariablesToPack);
-      }
+         return hasUniqueVariable(name.substring(0, separatorIndex + 1), name.substring(separatorIndex));
    }
 
    /**
     * Search in the subtree starting at this registry and tests if there is exactly one variable that
     * matches the search criteria.
-    * 
+    *
     * @param parentNameSpace (optional) the namespace of the registry in which the variable was
     *                        registered. The namespace does not need to be complete, i.e. it does not
     *                        need to contain the name of the registries closest to the root registry.
@@ -431,43 +465,15 @@ public class YoVariableRegistry implements YoVariableHolder
     *         {@code false} otherwise.
     */
    @Override
-   public boolean hasUniqueYoVariable(String parentNameSpace, String name)
+   public boolean hasUniqueVariable(String parentNameSpace, String name)
    {
-      if (name.contains(YoVariableTools.NAMESPACE_SEPERATOR_STRING))
-         throw new IllegalNameException(name + " cannot contain '" + YoVariableTools.NAMESPACE_SEPERATOR_STRING + "'.");
+      if (name.contains(YoTools.NAMESPACE_SEPERATOR_STRING))
+         throw new IllegalNameException(name + " cannot contain '" + YoTools.NAMESPACE_SEPERATOR_STRING + "'.");
 
-      return countNumberOfYoVariables(parentNameSpace, name) == 1;
+      return countNumberOfVariables(parentNameSpace, name) == 1;
    }
 
-   /**
-    * Search in the subtree starting at this registry and tests if there is exactly one variable that
-    * matches the search criteria.
-    * <p>
-    * The given {@code name} can either be:
-    * <ul>
-    * <li>the variable name, for instance {@code "aVariable"},
-    * <li>the variable name and its namespace, for instance:
-    * {@code "aRegistry.anotherRegistry.aVariable"}.
-    * </ul>
-    * </p>
-    * 
-    * @param name the name of the variables to retrieve. Can contain the namespace of its parent to
-    *             narrow down the search.
-    * @return {@code true} if there is exactly one variable that matches the search criteria,
-    *         {@code false} otherwise.
-    */
-   @Override
-   public boolean hasUniqueYoVariable(String name)
-   {
-      int separatorIndex = name.lastIndexOf(YoVariableTools.NAMESPACE_SEPERATOR_STRING);
-
-      if (separatorIndex == -1)
-         return hasUniqueYoVariable(null, name);
-      else
-         return hasUniqueYoVariable(name.substring(0, separatorIndex + 1), name.substring(separatorIndex));
-   }
-
-   private int countNumberOfYoVariables(String parentNameSpace, String name)
+   private int countNumberOfVariables(String parentNameSpace, String name)
    {
       int count = 0;
 
@@ -479,57 +485,14 @@ public class YoVariableRegistry implements YoVariableHolder
 
       for (YoVariableRegistry child : children)
       {
-         count += child.countNumberOfYoVariables(parentNameSpace, name);
+         count += child.countNumberOfVariables(parentNameSpace, name);
       }
 
       return count;
    }
 
-   public void addChild(YoVariableRegistry child)
-   {
-      addChild(child, true);
-   }
-
-   public void addChild(YoVariableRegistry child, boolean notifyListeners)
-   {
-      // Prepend the parents nameSpace to the child. NameSpace will figure out if it's valid or not.
-      // This then requires that the child only has it's portion of the NameSpace that the parent does not.
-
-      if (child == null)
-         return;
-
-      // Make sure no children with this name already:
-      for (YoVariableRegistry childToCheck : children)
-      {
-         String childToCheckShortName = childToCheck.getNameSpace().getShortName();
-         String childShortName = child.getNameSpace().getShortName();
-         if (childToCheckShortName.equals(childShortName))
-         {
-            throw new RuntimeException("Adding a child to a YoVariableRegistry that has the same name as a previous one: "
-                  + childToCheck.getNameSpace().getName() + ". Parent name space = " + getNameSpace().getName());
-         }
-      }
-
-      NameSpace parentNameSpace = getNameSpace();
-
-      child.prependNameSpace(parentNameSpace);
-
-      //    System.err.println("Child: " + child.getNameSpace().getShortName() + " parent:" + this.getNameSpace().getName());
-
-      child.setParent(this);
-      children.add(child);
-
-      if (notifyListeners)
-         notifyListenersYoVariableRegistryWasAdded(child);
-   }
-
    private void prependNameSpace(NameSpace parentNameSpace)
    {
-      if (nameSpace == null)
-         throw new RuntimeException("Cannot prepend a NameSpace. This NameSpace is null. Only root can have a null NameSpace");
-      if (parentNameSpace == null)
-         return;
-
       // Fix my name
       nameSpace = new NameSpace(parentNameSpace.getName() + "." + nameSpace.getName());
 
@@ -563,39 +526,6 @@ public class YoVariableRegistry implements YoVariableHolder
    public String toString()
    {
       return nameSpace.getName();
-   }
-
-   public YoVariableRegistry getOrCreateAndAddRegistry(NameSpace fullNameSpace)
-   {
-      if (nameSpace == null && fullNameSpace == null)
-      {
-         return this;
-      }
-
-      if (nameSpace != null && nameSpace.equals(fullNameSpace))
-      {
-         return this;
-      }
-
-      if (nameSpace == null || fullNameSpace.startsWith(nameSpace.getName()))
-      {
-         for (YoVariableRegistry child : children)
-         {
-            YoVariableRegistry registry = child.getOrCreateAndAddRegistry(fullNameSpace);
-            if (registry != null)
-               return registry;
-         }
-
-         // If, after going through all the children, none of them match, then
-         // create it here and return it.
-         NameSpace nameSpaceToContinueWith = fullNameSpace.stripOffFromBeginning(nameSpace);
-         YoVariableRegistry registry = createChainOfRegistries(nameSpaceToContinueWith);
-         this.addChild(registry);
-
-         return getToBottomRegistry(registry);
-      }
-
-      return null;
    }
 
    public YoVariableRegistry getRegistry(NameSpace fullNameSpace)
@@ -635,52 +565,12 @@ public class YoVariableRegistry implements YoVariableHolder
       return variables.get(index);
    }
 
-   private YoVariableRegistry createChainOfRegistries(NameSpace fullNameSpace)
-   {
-      String rootName = fullNameSpace.getRootName();
-      YoVariableRegistry rootRegistry = new YoVariableRegistry(rootName);
-
-      String subName = fullNameSpace.getNameWithRootStripped();
-      if (subName == null)
-         return rootRegistry;
-
-      NameSpace subNameSpace = new NameSpace(subName);
-      YoVariableRegistry subRegistry = createChainOfRegistries(subNameSpace);
-
-      rootRegistry.addChild(subRegistry);
-
-      return rootRegistry;
-   }
-
-   private static YoVariableRegistry getToBottomRegistry(YoVariableRegistry root)
-   {
-      if (root.children == null || root.children.size() == 0)
-         return root;
-      if (root.children.size() > 1)
-         throw new RuntimeException("This should only be called with a new chain!!");
-
-      return getToBottomRegistry(root.children.get(0));
-   }
-
-   public void printAllVariablesIncludingDescendants(PrintStream out)
-   {
-      for (YoVariable<?> var : variables)
-      {
-         out.print(var.getFullNameWithNameSpace() + "\n");
-      }
-
-      for (YoVariableRegistry child : children)
-      {
-         child.printAllVariablesIncludingDescendants(out);
-      }
-   }
-
    @Override
    public List<YoVariable<?>> getVariables(NameSpace nameSpace)
    {
       List<YoVariable<?>> ret = new ArrayList<>();
 
-      List<YoVariable<?>> allVariables = getSubtreeYoVariables();
+      List<YoVariable<?>> allVariables = getSubtreeVariables();
 
       for (YoVariable<?> variable : allVariables)
       {
@@ -704,7 +594,7 @@ public class YoVariableRegistry implements YoVariableHolder
             if (names[i] != null)
             {
                String name = names[i];
-               YoVariable<?> var = getYoVariable(name);
+               YoVariable<?> var = findVariable(name);
 
                if (var != null)
                {
@@ -746,59 +636,56 @@ public class YoVariableRegistry implements YoVariableHolder
       }
    }
 
-   public boolean areEqual(YoVariableRegistry registry)
+   @Override
+   public boolean equals(Object object)
    {
-      if (registry == null)
+      if (object instanceof YoVariableRegistry)
+         return equals((YoVariableRegistry) object);
+      else
+         return false;
+   }
+
+   public boolean equals(YoVariableRegistry other)
+   {
+      if (other == this)
+         return true;
+      if (other == null)
          return false;
 
-      if (!getNameSpace().equals(registry.getNameSpace()))
+      if (!getNameSpace().equals(other.getNameSpace()))
+         return false;
+
+      if (variables.size() != other.variables.size())
          return false;
 
       for (YoVariable<?> variable : variables)
       {
-         if (getVariableWithSameName(registry.variables, variable) == null)
-         {
+         if (!other.nameToVariableMap.containsKey(variable.getName()))
             return false;
-         }
       }
 
-      if (children.size() != registry.children.size())
+      if (children.size() != other.children.size())
          return false;
 
       for (YoVariableRegistry child : children)
       {
-         YoVariableRegistry matchingChild = getRegistryWithSameNameSpace(registry.children, child);
-         if (!child.areEqual(matchingChild))
-         {
+         if (!other.nameToChildMap.containsKey(child.getName()))
             return false;
-         }
       }
 
       return true;
    }
 
-   private static YoVariable<?> getVariableWithSameName(List<YoVariable<?>> variables, YoVariable<?> variableToMatch)
+   public void attachYoVariableRegistryChangedListener(YoVariableRegistryChangedListener listener)
    {
-      for (YoVariable<?> variable : variables)
+      if (yoVariableRegistryChangedListeners == null)
       {
-         if (variable.getFullNameWithNameSpace().equals(variableToMatch.getFullNameWithNameSpace()))
-            return variable;
+         yoVariableRegistryChangedListeners = new ArrayList<>();
       }
 
-      return null;
-   }
+      yoVariableRegistryChangedListeners.add(listener);
 
-   private static YoVariableRegistry getRegistryWithSameNameSpace(List<YoVariableRegistry> registries, YoVariableRegistry registryToMatch)
-   {
-      for (YoVariableRegistry registry : registries)
-      {
-         if (registryToMatch.getNameSpace().equals(registry.getNameSpace()))
-         {
-            return registry;
-         }
-      }
-
-      return null;
+      verifyDoNotHaveBothParentAndYoVariableRegistryChangedListeners();
    }
 
    private void verifyDoNotHaveBothParentAndYoVariableRegistryChangedListeners()
@@ -864,145 +751,4 @@ public class YoVariableRegistry implements YoVariableHolder
          }
       }
    }
-
-   /**
-    * Checks if this registry or its children have parameters registered
-    *
-    * @return true if this registry or its children have parameters registered
-    */
-   public boolean getIfRegistryOrChildrenHaveParameters()
-   {
-      if (!parameters.isEmpty())
-      {
-         return true;
-      }
-
-      for (int i = 0; i < children.size(); i++)
-      {
-         if (children.get(i).getIfRegistryOrChildrenHaveParameters())
-         {
-            return true;
-         }
-      }
-
-      return false;
-   }
-
-   public void closeAndDispose()
-   {
-      if (variables != null)
-      {
-         variables.clear();
-         variables = null;
-      }
-
-      if (nameToVariableMap != null)
-      {
-         nameToVariableMap.clear();
-         nameToVariableMap = null;
-      }
-
-      if (parameters != null)
-      {
-         parameters.clear();
-         parameters = null;
-      }
-
-      if (nameToParameterMap != null)
-      {
-         nameToParameterMap.clear();
-         nameToParameterMap = null;
-      }
-
-      if (children != null)
-      {
-         for (YoVariableRegistry child : children)
-         {
-            child.closeAndDispose();
-         }
-         children = null;
-      }
-
-      parent = null;
-
-      if (yoVariableRegistryChangedListeners != null)
-      {
-         yoVariableRegistryChangedListeners.clear();
-         yoVariableRegistryChangedListeners = null;
-      }
-   }
-
-   public static void printSizeRecursively(int minVariablesToPrint, int minChildrenToPrint, YoVariableRegistry root)
-   {
-      List<YoVariableRegistry> registriesOfInterest = new ArrayList<>();
-      int totalVariables = collectRegistries(minVariablesToPrint, minChildrenToPrint, root, registriesOfInterest);
-      Collections.sort(registriesOfInterest, new Comparator<YoVariableRegistry>()
-      {
-         @Override
-         public int compare(YoVariableRegistry o1, YoVariableRegistry o2)
-         {
-            if (o1.getNumberOfYoVariables() == o2.getNumberOfYoVariables())
-               return 0;
-            return o1.getNumberOfYoVariables() > o2.getNumberOfYoVariables() ? -1 : 1;
-         }
-      });
-
-      System.out.println("");
-      LogTools.info("Printing children of " + root.getName() + " registry.");
-      System.out.println("Total Number of YoVariables: " + totalVariables);
-      System.out.println("Listing registries with at least " + minVariablesToPrint + " variables or at least " + minChildrenToPrint + " children.");
-      System.out.println("Sorting by number of variables.");
-
-      for (int registryIdx = 0; registryIdx < registriesOfInterest.size(); registryIdx++)
-         YoVariableRegistry.printInfo(registriesOfInterest.get(registryIdx));
-
-      System.out.println("");
-   }
-
-   private static int collectRegistries(int minVariablesToPrint, int minChildrenToPrint, YoVariableRegistry registry,
-                                        List<YoVariableRegistry> registriesOfInterest)
-   {
-      int variables = registry.getNumberOfYoVariables();
-      int children = registry.getChildren().size();
-
-      if (variables >= minVariablesToPrint || children >= minChildrenToPrint)
-         registriesOfInterest.add(registry);
-
-      int totalNumberOfVariables = variables;
-      for (int childIdx = 0; childIdx < children; childIdx++)
-      {
-         YoVariableRegistry childRegistry = registry.getChildren().get(childIdx);
-         totalNumberOfVariables += YoVariableRegistry.collectRegistries(minVariablesToPrint, minChildrenToPrint, childRegistry, registriesOfInterest);
-      }
-
-      return totalNumberOfVariables;
-   }
-
-   private static void printInfo(YoVariableRegistry registry)
-   {
-      int variables = registry.getNumberOfYoVariables();
-      int children = registry.getChildren().size();
-
-      int maxPropertyLength = 17;
-      String variableString = trimStringToLength("Variables: " + variables, maxPropertyLength, "...");
-      String childrenString = trimStringToLength("Children: " + children, maxPropertyLength, "...");
-
-      int maxNameLength = 70;
-      String name = registry.getClass().getSimpleName() + " " + registry.getNameSpace().getName();
-      name = trimStringToLength(name, maxNameLength, "...");
-
-      System.out.println(name + "\t" + variableString + "\t" + childrenString);
-   }
-
-   private static String trimStringToLength(String original, int length, String placeholder)
-   {
-      int chararcters = original.length();
-      int placeholderLength = placeholder.length();
-
-      if (chararcters > length)
-         return original.substring(0, length - placeholderLength) + placeholder;
-      else
-         return StringUtils.rightPad(original, length, " ");
-   }
-
 }

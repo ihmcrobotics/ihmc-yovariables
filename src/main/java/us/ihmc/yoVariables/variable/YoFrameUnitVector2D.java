@@ -75,8 +75,8 @@ public class YoFrameUnitVector2D extends YoFrameTuple2D implements FixedFrameUni
     */
    public YoFrameUnitVector2D duplicate(YoVariableRegistry newRegistry)
    {
-      YoDouble x = (YoDouble) newRegistry.getYoVariable(getYoX().getFullNameWithNameSpace());
-      YoDouble y = (YoDouble) newRegistry.getYoVariable(getYoY().getFullNameWithNameSpace());
+      YoDouble x = (YoDouble) newRegistry.findVariable(getYoX().getFullNameWithNameSpace());
+      YoDouble y = (YoDouble) newRegistry.findVariable(getYoY().getFullNameWithNameSpace());
       return new YoFrameUnitVector2D(x, y, getReferenceFrame());
    }
 

@@ -167,6 +167,7 @@ public class NameSpaceTest
       assertFalse(nameSpace.contains("notMe.nope.noway.nada.unhunh"));
       assertTrue(nameSpace.contains("robot1.controller1"));
       assertTrue(nameSpace.contains("robot1.controller1.module1"));
+      assertFalse(nameSpace.contains("robot1.notMe"));
 
       assertTrue(!nameSpace.contains("robot1.controller1.mod"));
       assertTrue(!nameSpace.contains("robot1.controll"));
@@ -190,97 +191,32 @@ public class NameSpaceTest
    }
 
    @Test // timeout = 300000
-   public void testGetRootNameAndNameWithRootStripped()
-   {
-      NameSpace nameSpace = new NameSpace("root.name1.name2");
-      assertEquals("root", nameSpace.getRootName());
-      assertEquals("name1.name2", nameSpace.getNameWithRootStripped());
-      assertEquals("root.name1.name2", nameSpace.getName());
-      assertEquals("name2", nameSpace.getShortName());
-
-      nameSpace = new NameSpace("root");
-      assertEquals("root", nameSpace.getRootName());
-      assertEquals(null, nameSpace.getNameWithRootStripped());
-      assertEquals("root", nameSpace.getName());
-      assertEquals("root", nameSpace.getShortName());
-   }
-
-   @Test // timeout = 300000
    public void testStripOffFromBeginning()
    {
       NameSpace nameSpace = new NameSpace("root.name1.name2");
 
       NameSpace nameSpaceToRemove = new NameSpace("root");
-      NameSpace newNameSpace = nameSpace.stripOffFromBeginning(nameSpaceToRemove);
+      NameSpace newNameSpace = nameSpace.removeStart(nameSpaceToRemove);
       assertEquals(new NameSpace("name1.name2"), newNameSpace);
 
       nameSpaceToRemove = new NameSpace("root.name1");
-      newNameSpace = nameSpace.stripOffFromBeginning(nameSpaceToRemove);
+      newNameSpace = nameSpace.removeStart(nameSpaceToRemove);
       assertEquals(new NameSpace("name2"), newNameSpace);
 
       nameSpaceToRemove = new NameSpace("root.name1.name2");
-      newNameSpace = nameSpace.stripOffFromBeginning(nameSpaceToRemove);
+      newNameSpace = nameSpace.removeStart(nameSpaceToRemove);
       assertEquals(null, newNameSpace);
 
       nameSpaceToRemove = new NameSpace("name1");
-      newNameSpace = nameSpace.stripOffFromBeginning(nameSpaceToRemove);
+      newNameSpace = nameSpace.removeStart(nameSpaceToRemove);
       assertEquals(null, newNameSpace);
-   }
-
-   @Test // timeout = 300000
-   public void testCreateNameSpaceFromAFullVariableName()
-   {
-      NameSpace nameSpace = NameSpace.createNameSpaceFromAFullVariableName("root.level1.level2.variableName");
-      assertEquals(new NameSpace("root.level1.level2"), nameSpace);
-
-      nameSpace = NameSpace.createNameSpaceFromAFullVariableName("root.variableName");
-      assertEquals(new NameSpace("root"), nameSpace);
-
-      nameSpace = NameSpace.createNameSpaceFromAFullVariableName("variableName");
-      assertEquals(new NameSpace("NoNameSpaceRegistry"), nameSpace);
    }
 
    @Test // timeout = 300000
    public void testStripOffNameSpaceToGetVariableName()
    {
-      assertEquals("variable", NameSpace.stripOffNameSpaceToGetVariableName("root.level1.level2.variable"));
-      assertEquals("variable", NameSpace.stripOffNameSpaceToGetVariableName("root.variable"));
-      assertEquals("variable", NameSpace.stripOffNameSpaceToGetVariableName("variable"));
-   }
-
-   @Test // timeout = 30000
-   public void testIsRootNamespace()
-   {
-      NameSpace nameSpace1 = new NameSpace("robot1.controller1.module1");
-      NameSpace nameSpace2 = new NameSpace("robot1.controller1.module2");
-      NameSpace nameSpace3 = new NameSpace("robot1.module1");
-      NameSpace nameSpace4 = new NameSpace("robot1.controller2.mod");
-      NameSpace nameSpace5 = new NameSpace("bot1.controller1.module1");
-      NameSpace nameSpace6 = new NameSpace("bot1");
-
-      assertFalse(nameSpace1.isRootNameSpace());
-      assertFalse(nameSpace2.isRootNameSpace());
-      assertFalse(nameSpace3.isRootNameSpace());
-      assertFalse(nameSpace4.isRootNameSpace());
-      assertFalse(nameSpace5.isRootNameSpace());
-      assertTrue(nameSpace6.isRootNameSpace());
-   }
-
-   @Test // timeout = 30000
-   public void testGetParent()
-   {
-      NameSpace nameSpace1 = new NameSpace("robot1.controller1.module1");
-      NameSpace nameSpace2 = new NameSpace("robot1.controller1.module2");
-      NameSpace nameSpace3 = new NameSpace("robot1.module1");
-      NameSpace nameSpace4 = new NameSpace("robot1.controller2.mod");
-      NameSpace nameSpace5 = new NameSpace("bot1.controller1.module1.sub");
-      NameSpace nameSpace6 = new NameSpace("bot1");
-
-      assertEquals("robot1.controller1", nameSpace1.getParent().getName());
-      assertEquals("robot1.controller1", nameSpace2.getParent().getName());
-      assertEquals("robot1", nameSpace3.getParent().getName());
-      assertEquals("robot1.controller2", nameSpace4.getParent().getName());
-      assertEquals("bot1.controller1.module1", nameSpace5.getParent().getName());
-      assertEquals(null, nameSpace6.getParent());
+      assertEquals("variable", YoTools.toShortName("root.level1.level2.variable"));
+      assertEquals("variable", YoTools.toShortName("root.variable"));
+      assertEquals("variable", YoTools.toShortName("variable"));
    }
 }

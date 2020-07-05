@@ -63,9 +63,9 @@ public class YoFrameVector3D extends YoFrameTuple3D implements FixedFrameVector3
     */
    public YoFrameVector3D duplicate(YoVariableRegistry newRegistry)
    {
-      YoDouble x = (YoDouble) newRegistry.getYoVariable(getYoX().getFullNameWithNameSpace());
-      YoDouble y = (YoDouble) newRegistry.getYoVariable(getYoY().getFullNameWithNameSpace());
-      YoDouble z = (YoDouble) newRegistry.getYoVariable(getYoZ().getFullNameWithNameSpace());
+      YoDouble x = (YoDouble) newRegistry.findVariable(getYoX().getFullNameWithNameSpace());
+      YoDouble y = (YoDouble) newRegistry.findVariable(getYoY().getFullNameWithNameSpace());
+      YoDouble z = (YoDouble) newRegistry.findVariable(getYoZ().getFullNameWithNameSpace());
       return new YoFrameVector3D(x, y, z, getReferenceFrame());
    }
 }

@@ -24,7 +24,7 @@ public abstract class AbstractParameterWriter
 {
    public void writeParametersInRegistry(YoVariableRegistry registry)
    {
-      List<YoParameter<?>> parameters = registry.getSubtreeYoParameters();
+      List<YoParameter<?>> parameters = registry.getSubtreeParameters();
 
       for (int i = 0; i < parameters.size(); i++)
       {
