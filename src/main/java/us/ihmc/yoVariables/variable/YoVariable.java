@@ -1,6 +1,7 @@
 package us.ihmc.yoVariables.variable;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import us.ihmc.yoVariables.listener.VariableChangedListener;
@@ -23,15 +24,12 @@ import us.ihmc.yoVariables.registry.YoTools;
  */
 public abstract class YoVariable
 {
-   public static final int MAX_LENGTH_SHORT_NAME = 20;
+   private List<VariableChangedListener> variableChangedListeners;
+   private double manualMinScaling = 0.0, manualMaxScaling = 1.0;
 
-   protected ArrayList<VariableChangedListener> variableChangedListeners;
-   protected double manualMinScaling = 0.0, manualMaxScaling = 1.0;
-
-   private String name;
-   private String shortName;
-   private String description;
-   private YoVariableType type;
+   private final String name;
+   private final String description;
+   private final YoVariableType type;
    private YoRegistry registry;
 
    /**
@@ -50,7 +48,6 @@ public abstract class YoVariable
 
       this.type = type;
       this.name = name;
-      this.shortName = createShortName(name);
       this.description = description;
       this.variableChangedListeners = null;
 
@@ -61,27 +58,6 @@ public abstract class YoVariable
    public void setRegistry(YoRegistry registry)
    {
       this.registry = registry;
-   }
-
-   /**
-    * Internal method used to generate the short name. Does nothing if name is already less than or
-    * equal to MAX_LENGTH_SHORT_NAME.
-    *
-    * @param name to be shortened
-    * @return New short name
-    */
-   private static String createShortName(String name)
-   {
-      int textLength = name.length();
-
-      if (textLength > MAX_LENGTH_SHORT_NAME)
-      {
-         return name.substring(0, MAX_LENGTH_SHORT_NAME / 2 - 2) + "..." + name.substring(textLength - MAX_LENGTH_SHORT_NAME / 2 + 1, textLength);
-      }
-      else
-      {
-         return name;
-      }
    }
 
    /**
@@ -105,22 +81,6 @@ public abstract class YoVariable
    }
 
    /**
-    * Retrieves a shortened version of this variables name. The shortened name is created from the full
-    * name using the following method:
-    * <OL>
-    * <LI>Take the first 8 characters</LI>
-    * <LI>Insert "..."</LI>
-    * <LI>Add the last 9 characters</LI>
-    * </OL>
-    *
-    * @return the name of this variable reduced to 20 characters
-    */
-   public String getShortName()
-   {
-      return this.shortName;
-   }
-
-   /**
     * Retrieve the description of this variable, "" if not specified.
     *
     * @return the description of this variable
@@ -128,17 +88,6 @@ public abstract class YoVariable
    public String getDescription()
    {
       return this.description;
-   }
-
-   /**
-    * Adds the name of this variable to the provided string buffer. This is done to avoid object
-    * creation.
-    *
-    * @param buffer StringBuffer to which the name will be added at the beginning
-    */
-   public void getName(StringBuffer buffer)
-   {
-      buffer.insert(0, this.name);
    }
 
    /**
@@ -247,7 +196,7 @@ public abstract class YoVariable
     *
     * @return
     */
-   public ArrayList<VariableChangedListener> getVariableChangedListeners()
+   public List<VariableChangedListener> getVariableChangedListeners()
    {
       return variableChangedListeners;
    }
@@ -283,17 +232,6 @@ public abstract class YoVariable
             variableChangedListeners.get(i).notifyOfVariableChange(this);
          }
       }
-   }
-
-   /**
-    * Retrieves this variable's value interpreted as a Double and converted to a String.
-    *
-    * @see #getValueAsDouble()
-    * @return String formatted double value of this variable
-    */
-   public String getNumericValueAsAString()
-   {
-      return Double.toString(getValueAsDouble());
    }
 
    /**

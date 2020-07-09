@@ -1,6 +1,5 @@
 package us.ihmc.yoVariables.variable;
 
-import static us.ihmc.robotics.Assert.assertEquals;
 import static us.ihmc.robotics.Assert.assertFalse;
 import static us.ihmc.robotics.Assert.assertNotNull;
 import static us.ihmc.robotics.Assert.assertNull;
@@ -208,44 +207,11 @@ public class YoVariableTest
       Assert.assertEquals(integerVariable.getIntegerValue(), 5);
    }
 
-   //   @Test// timeout=300000
-   //   public void testGetManualScalingMax()
-   //   {
-   //   }
-   //
-   //   @Test// timeout=300000
-   //   public void testGetManualScalingMin()
-   //   {
-   //   }
-
    @Test // timeout=300000
    public void testGetName()
    {
       Assert.assertEquals(yoVariable.getName(), "variableOne");
    }
-
-   @Test // timeout=300000
-   public void testGetName1()
-   {
-      StringBuffer buffer = new StringBuffer();
-      yoVariable.getName(buffer);
-      assertEquals(buffer.toString(), "variableOne");
-   }
-
-   //   public void testGetNameAndValue()
-   //   {
-   //      // Don't test. Just for GUI.
-   //   }
-   //
-   //   public void testGetShortName()
-   //   {
-   //      // Don't test. Just for GUI.
-   //   }
-   //
-   //   public void testGetValue()
-   //   {
-   //      // Don't test. Just for GUI.
-   //   }
 
    @Test // timeout=300000
    public void testGetYoVariableRegistry()
@@ -255,28 +221,6 @@ public class YoVariableTest
       Assert.assertEquals(registry, this.registry);
       Assert.assertEquals(registry.findVariable(yoVariable.getName()), yoVariable);
    }
-
-   //   @Test// timeout=300000
-   //   public void testHasSameFullName()
-   //   {
-   //      // Not testing. Just used for check of repeat variables.
-   //   }
-
-   // public void testSet()
-   // {
-   //    // Already tested normal sets with testDouble, Int, Enum.
-   //    YoBoolean booleanVariable = new YoBoolean("booleanVar", registry);
-   //    YoDouble doubleVariable = new YoDouble("doubleVariable",  registry);
-   //    IntYoVariable intVariable = new IntYoVariable("intVariable", registry);
-   //    YoEnum enumVariable = YoEnum.create("enumVariable", FooEnum.class, registry);
-   //
-   //    boolean testPassed = true;
-   // }
-
-   //   public void testSetManualScalingMinMax()
-   //   {
-   //      // Not testing
-   //   }
 
    @Test // timeout=300000
    public void testToString()

@@ -42,9 +42,7 @@ public class YoDouble extends YoVariable implements DoubleProvider
    public YoDouble(String name, String description, YoRegistry registry, double minScaling, double maxScaling)
    {
       this(name, description, registry);
-
-      manualMinScaling = minScaling;
-      manualMaxScaling = maxScaling;
+      setManualScalingMinMax(minScaling, maxScaling);
    }
 
    /**

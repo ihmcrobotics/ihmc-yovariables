@@ -405,4 +405,14 @@ public class YoTools
 
       return yoVariable.getYoRegistry().getNameSpace().endsWith(nameSpace);
    }
+
+   public static String shortenString(String inputString, int maxLength)
+   {
+      int length = inputString.length();
+
+      if (length <= maxLength)
+         return inputString;
+      else
+         return inputString.substring(0, maxLength / 2 - 2) + "..." + inputString.substring(length - maxLength / 2 + 1, length);
+   }
 }
