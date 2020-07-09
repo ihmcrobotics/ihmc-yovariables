@@ -32,15 +32,4 @@ public class YoFactoriesTest
       assertEquals(registry000, YoFactories.getOrCreateAndAddRegistry(root, new NameSpace("root.registry0.registry00.registry000")));
       assertEquals(registry010, YoFactories.getOrCreateAndAddRegistry(root, new NameSpace("root.registry0.registry01.registry010")));
    }
-
-   @Test // timeout=300000
-   public void testNullNameSpace()
-   {
-      YoRegistry root = new YoRegistry("");
-      assertEquals(null, root.getNameSpace());
-
-      YoRegistry registry000 = YoFactories.getOrCreateAndAddRegistry(root, new NameSpace("root.registry0.registry00.registry000"));
-      NameSpace nameSpaceCheck = registry000.getNameSpace();
-      assertEquals(new NameSpace("root.registry0.registry00.registry000"), nameSpaceCheck);
-   }
 }

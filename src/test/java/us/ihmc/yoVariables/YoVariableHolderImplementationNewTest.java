@@ -193,7 +193,7 @@ public class YoVariableHolderImplementationNewTest
 
       for (int i = 0; i < expectedArrayListFromNameSpaceTestRegistry1.size(); i++)
       {
-         assertTrue(expectedArrayListFromNameSpaceTestRegistry1.contains(yoVariableHolderImplementation.getVariables(testRegistry1.getNameSpace()).get(i)));
+         assertTrue(expectedArrayListFromNameSpaceTestRegistry1.contains(yoVariableHolderImplementation.findVariables(testRegistry1.getNameSpace()).get(i)));
       }
       //does not return the ArrayList in specified order so contains method was used.
    }

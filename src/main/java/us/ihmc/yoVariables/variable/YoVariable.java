@@ -55,13 +55,12 @@ public abstract class YoVariable<T extends YoVariable<T>>
     */
    public YoVariable(YoVariableType type, String name, String description, YoRegistry registry)
    {
-      checkForIllegalCharacters(name);
+      YoTools.checkForIllegalCharacters(name);
 
       this.type = type;
       this.name = name;
       this.shortName = createShortName(name);
       this.description = description;
-      this.registry = registry;
       this.variableChangedListeners = null;
 
       if (SAVE_STACK_TRACE)
@@ -76,25 +75,13 @@ public abstract class YoVariable<T extends YoVariable<T>>
          stackTraceAtInitialization = stackTraceAtInitialization.replaceAll("\\)", "");
       }
 
-      registerVariable(registry, this);
+      if (registry != null)
+         registry.addVariable(this);
    }
 
-   /**
-    * Static internal method to compare the given name against the Regex
-    * {@link YoVariable#ILLEGAL_CHARACTERS} for a YoVariable.
-    *
-    * @param name String to check
-    * @throws RuntimeException if there are any illegal characters present in the name
-    */
-   private static void checkForIllegalCharacters(String name)
+   public void setRegistry(YoRegistry registry)
    {
-      // String.matches() only matches the whole string ( as if you put ^$ around it ). Use .find() of the Matcher class instead!
-
-      if (ILLEGAL_CHARACTERS.matcher(name).find())
-      {
-         throw new RuntimeException(name
-               + " is an invalid name for a YoVariable. A YoVariable cannot have crazy characters in them, otherwise namespaces will not work.");
-      }
+      this.registry = registry;
    }
 
    /**
@@ -119,33 +106,11 @@ public abstract class YoVariable<T extends YoVariable<T>>
    }
 
    /**
-    * Static function to register a YoVariable to a given {@link YoRegistry}.
-    * <p>
-    * Will print to stderr if the given registry is null and {@link YoVariable#warnAboutNullRegistries}
-    * is true.
-    * </p>
-    *
-    * @param registry YoVariableRegistry to register the given variable to
-    * @param variable YoVariable to register
-    */
-   private static void registerVariable(YoRegistry registry, YoVariable<?> variable)
-   {
-      if (registry != null)
-      {
-         registry.addYoVariable(variable);
-      }
-      else if (warnAboutNullRegistries)
-      {
-         System.err.println("[WARN] " + YoVariable.class.getSimpleName() + ": " + variable.getName() + " is getting created with a null registry");
-      }
-   }
-
-   /**
     * Retrieves the {@link YoRegistry} this variable belongs to.
     *
     * @return YoVariableRegistry this variable is registered in
     */
-   public YoRegistry getYoVariableRegistry()
+   public YoRegistry getYoRegistry()
    {
       return registry;
    }

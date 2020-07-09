@@ -6,8 +6,8 @@ import java.util.List;
 
 /**
  * Representation of a namespace that is composed of sub-names where typically each sub-name is the
- * name of a {@link YoRegistry} with the parent to child relationship between one sub-name
- * and the following one.
+ * name of a {@link YoRegistry} with the parent to child relationship between one sub-name and the
+ * following one.
  */
 public class NameSpace implements Serializable
 {
@@ -23,6 +23,9 @@ public class NameSpace implements Serializable
     */
    public NameSpace(List<String> subNames)
    {
+      if (subNames == null || subNames.isEmpty())
+         throw new IllegalArgumentException("Cannot create an empty namespace.");
+
       name = YoTools.joinNames(subNames);
       this.subNames = subNames;
    }
@@ -38,8 +41,17 @@ public class NameSpace implements Serializable
     */
    public NameSpace(String name)
    {
+      if (name == null || name.isEmpty())
+         throw new IllegalArgumentException("Cannot create an empty namespace.");
+
       this.name = name;
       subNames = YoTools.splitName(name);
+
+      for (String subName : subNames)
+      {
+         if (subName.isEmpty())
+            throw new IllegalArgumentException("Cannot create a namespace with empty sub-names: " + subNames);
+      }
    }
 
    /**
@@ -254,6 +266,22 @@ public class NameSpace implements Serializable
    }
 
    /**
+    * Returns a new namespace that is the concatenation of {@code name} followed with {@code this}
+    * namespace.
+    * <p>
+    * The given {@code name} can either a simple name or the {@code String} representation of a
+    * namespace.
+    * </p>
+    * 
+    * @param name the name to prepend to this.
+    * @return the new namespace [{@code name}, {@code this}].
+    */
+   public NameSpace prepend(String name)
+   {
+      return YoTools.concatenate(name, this);
+   }
+
+   /**
     * Returns a new namespace that is the concatenation of {@code this} namespace followed with the
     * {@code other} namespace.
     * 
@@ -263,6 +291,22 @@ public class NameSpace implements Serializable
    public NameSpace append(NameSpace other)
    {
       return YoTools.concatenate(this, other);
+   }
+
+   /**
+    * Returns a new namespace that is the concatenation of {@code this} namespace followed with
+    * {@code name}.
+    * <p>
+    * The given {@code name} can either a simple name or the {@code String} representation of a
+    * namespace.
+    * </p>
+    * 
+    * @param name the name to append to this.
+    * @return the new namespace [{@code this}, {@code name}].
+    */
+   public NameSpace append(String name)
+   {
+      return YoTools.concatenate(this, name);
    }
 
    /**
@@ -321,7 +365,7 @@ public class NameSpace implements Serializable
       if (query.size() > size())
          return false;
 
-      for (int i = 1; i <= query.size(); i++)
+      for (int i = 0; i < query.size(); i++)
       {
          if (!query.subNames.get(i).equals(subNames.get(i)))
             return false;

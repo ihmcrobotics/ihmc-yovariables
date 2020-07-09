@@ -165,7 +165,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
       {
          YoVariable<?> yoVariable = variablesWithThisName.get(i);
 
-         if (yoVariable.getYoVariableRegistry().getNameSpace().endsWith(nameSpaceEnding))
+         if (yoVariable.getYoRegistry().getNameSpace().endsWith(nameSpaceEnding))
          {
             if (foundVariable != null)
             {
@@ -231,7 +231,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
       {
          YoVariable<?> yoVariable = variablesWithThisName.get(i);
 
-         if (yoVariable.getYoVariableRegistry().getNameSpace().endsWith(nameSpaceEnding))
+         if (yoVariable.getYoRegistry().getNameSpace().endsWith(nameSpaceEnding))
          {
             if (foundVariable)
             {
@@ -265,7 +265,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
       {
          YoVariable<?> yoVariable = variablesWithThisName.get(i);
 
-         if (yoVariable.getYoVariableRegistry().getNameSpace().endsWith(nameSpaceEnding))
+         if (yoVariable.getYoRegistry().getNameSpace().endsWith(nameSpaceEnding))
          {
             ret.add(yoVariable);
          }
@@ -301,7 +301,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    }
 
    @Override
-   public List<YoVariable<?>> getVariables(NameSpace nameSpace)
+   public List<YoVariable<?>> findVariables(NameSpace nameSpace)
    {
       List<YoVariable<?>> ret = new ArrayList<>();
 
@@ -311,7 +311,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
       {
          for (YoVariable<?> variable : list)
          {
-            if (variable.getYoVariableRegistry().getNameSpace().equals(nameSpace))
+            if (variable.getYoRegistry().getNameSpace().equals(nameSpace))
             {
                ret.add(variable);
             }

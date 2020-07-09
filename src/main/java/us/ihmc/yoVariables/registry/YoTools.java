@@ -127,7 +127,7 @@ public class YoTools
    {
       if (query.parentNameSpace == null || registry.getNameSpace().endsWith(query.parentNameSpace))
       {
-         YoVariable<?> variable = registry.findVariable(query.name);
+         YoVariable<?> variable = registry.getVariable(query.name);
          if (variable != null)
          {
             if (predicate == null || predicate.test(variable))
@@ -152,7 +152,7 @@ public class YoTools
          matchedVariablesToPack = new ArrayList<>();
       if (query.parentNameSpace == null || registry.getNameSpace().endsWith(query.parentNameSpace))
       {
-         YoVariable<?> variable = registry.findVariable(query.name);
+         YoVariable<?> variable = registry.getVariable(query.name);
          if (variable != null)
          {
             if (predicate == null || predicate.test(variable))
@@ -219,9 +219,9 @@ public class YoTools
          @Override
          public int compare(YoRegistry o1, YoRegistry o2)
          {
-            if (o1.getNumberOfYoVariables() == o2.getNumberOfYoVariables())
+            if (o1.getNumberOfVariables() == o2.getNumberOfVariables())
                return 0;
-            return o1.getNumberOfYoVariables() > o2.getNumberOfYoVariables() ? -1 : 1;
+            return o1.getNumberOfVariables() > o2.getNumberOfVariables() ? -1 : 1;
          }
       });
 
@@ -237,10 +237,9 @@ public class YoTools
       System.out.println("");
    }
 
-   private static int collectRegistries(int minVariablesToPrint, int minChildrenToPrint, YoRegistry registry,
-                                        List<YoRegistry> registriesOfInterest)
+   private static int collectRegistries(int minVariablesToPrint, int minChildrenToPrint, YoRegistry registry, List<YoRegistry> registriesOfInterest)
    {
-      int variables = registry.getNumberOfYoVariables();
+      int variables = registry.getNumberOfVariables();
       int children = registry.getChildren().size();
 
       if (variables >= minVariablesToPrint || children >= minChildrenToPrint)
@@ -258,7 +257,7 @@ public class YoTools
 
    private static void printInfo(YoRegistry registry)
    {
-      int variables = registry.getNumberOfYoVariables();
+      int variables = registry.getNumberOfVariables();
       int children = registry.getChildren().size();
 
       int maxPropertyLength = 17;
@@ -306,18 +305,18 @@ public class YoTools
    {
       if (nameSpace.getSubNames().stream().anyMatch(subName -> subName.isEmpty()))
       {
-         throw new IllegalNameException("Can not construct a namespace with an empty subname.\nNamespace: " + nameSpace.getName());
+         throw new IllegalNameException("The namespace has 1+ empty subname.\nNamespace: " + nameSpace.getName());
       }
 
       if (!joinNames(nameSpace.getSubNames()).equals(nameSpace.getName()))
       {
-         throw new IllegalNameException("Can not construct a namespace with inconsistent sub names.\nNamespace: " + nameSpace.getName() + "\nSub Names: "
+         throw new IllegalNameException("The namespace has inconsistent sub names.\nNamespace: " + nameSpace.getName() + "\nSub Names: "
                + joinNames(nameSpace.getSubNames()));
       }
 
       if (new HashSet<>(nameSpace.getSubNames()).size() != nameSpace.size())
       {
-         throw new IllegalNameException("Can not construct a namespace with duplicate sub names.\nNamespace: " + nameSpace.getName());
+         throw new IllegalNameException("The namespace has duplicate sub names.\nNamespace: " + nameSpace.getName());
       }
    }
 
@@ -327,5 +326,62 @@ public class YoTools
       subNames.addAll(nameSpaceA.getSubNames());
       subNames.addAll(nameSpaceB.getSubNames());
       return new NameSpace(subNames);
+   }
+
+   public static NameSpace concatenate(NameSpace nameSpace, String name)
+   {
+      List<String> splitName = splitName(name);
+      List<String> subNames = new ArrayList<>(nameSpace.size() + splitName.size());
+      subNames.addAll(nameSpace.getSubNames());
+      subNames.addAll(splitName);
+      return new NameSpace(subNames);
+   }
+
+   public static NameSpace concatenate(String name, NameSpace nameSpace)
+   {
+      List<String> splitName = splitName(name);
+      List<String> subNames = new ArrayList<>(splitName.size() + nameSpace.size());
+      subNames.addAll(splitName);
+      subNames.addAll(nameSpace.getSubNames());
+      return new NameSpace(subNames);
+   }
+
+   public static NameSpace concatenate(String nameA, String nameB)
+   {
+      List<String> splitNameA = splitName(nameA);
+      List<String> splitNameB = splitName(nameB);
+      List<String> subNames = new ArrayList<>(splitNameA.size() + splitNameB.size());
+      subNames.addAll(splitNameA);
+      subNames.addAll(splitNameB);
+      return new NameSpace(subNames);
+   }
+
+   public static List<YoVariable<?>> searchVariablesRegex(String regularExpression, YoRegistry registry)
+   {
+      return searchVariablesPattern(Pattern.compile(regularExpression), registry);
+   }
+
+   public static List<YoVariable<?>> searchVariablesPattern(Pattern pattern, YoRegistry registry)
+   {
+      return searchVariablesPattern(pattern, registry, null);
+   }
+
+   public static List<YoVariable<?>> searchVariablesPattern(Pattern pattern, YoRegistry registry, List<YoVariable<?>> variablesToPack)
+   {
+      if (variablesToPack == null)
+         variablesToPack = new ArrayList<>();
+
+      for (YoVariable<?> variable : registry.getVariables())
+      {
+         if (pattern.matcher(variable.getName()).matches())
+            variablesToPack.add(variable);
+      }
+
+      for (YoRegistry child : registry.getChildren())
+      {
+         searchVariablesPattern(pattern, child, variablesToPack);
+      }
+
+      return variablesToPack;
    }
 }

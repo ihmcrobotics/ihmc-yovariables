@@ -55,7 +55,7 @@ public class NameSpaceTest
 
       try
       {
-         new NameSpace("foo.foo");
+         new NameSpace("foo.foo").checkSanity();
          fail();
       }
       catch (RuntimeException e)
@@ -64,7 +64,7 @@ public class NameSpaceTest
 
       try
       {
-         new NameSpace("foo.bar.foo");
+         new NameSpace("foo.bar.foo").checkSanity();
          fail();
       }
       catch (RuntimeException e)

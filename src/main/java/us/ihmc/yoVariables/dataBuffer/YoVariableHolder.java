@@ -93,6 +93,6 @@ public interface YoVariableHolder
     * @param nameSpace NameSpace to match.
     * @return ArrayList<YoVariable> matching YoVariables.
     */
-   public abstract List<YoVariable<?>> getVariables(NameSpace nameSpace);
+   public abstract List<YoVariable<?>> findVariables(NameSpace nameSpace);
 
 }

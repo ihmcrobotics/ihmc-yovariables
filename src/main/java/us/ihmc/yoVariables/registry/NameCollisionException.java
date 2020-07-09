@@ -8,7 +8,7 @@ public class NameCollisionException extends RuntimeException
    private static final long serialVersionUID = -3153679831785972848L;
 
    /**
-    * Creates a new {@code IllegalOperationException} with no detail message.
+    * Creates a new {@code NameCollisionException} with no detail message.
     * 
     * @see RuntimeException#RuntimeException()
     */
@@ -18,7 +18,7 @@ public class NameCollisionException extends RuntimeException
    }
 
    /**
-    * Creates a new {@code IllegalOperationException} with the specified detail message.
+    * Creates a new {@code NameCollisionException} with the specified detail message.
     *
     * @param message the detail message.
     * @see RuntimeException#RuntimeException(String)
@@ -29,7 +29,7 @@ public class NameCollisionException extends RuntimeException
    }
 
    /**
-    * Creates a new {@code IllegalOperationException} with the specified detail message and cause.
+    * Creates a new {@code NameCollisionException} with the specified detail message and cause.
     *
     * @param message the detail message.
     * @param cause   the cause.
@@ -41,7 +41,7 @@ public class NameCollisionException extends RuntimeException
    }
 
    /**
-    * Creates a new {@code IllegalOperationException} with the specified cause.
+    * Creates a new {@code NameCollisionException} with the specified cause.
     *
     * @param cause the cause.
     * @see RuntimeException#RuntimeException(Throwable)

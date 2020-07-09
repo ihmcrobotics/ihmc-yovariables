@@ -993,7 +993,7 @@ public class DataBufferTest
          @Override
          public YoDouble[] getVariablesOfInterest(YoVariableHolder yoVariableHolder)
          {
-            List<YoVariable<?>> variables = yoVariableHolder.getVariables(registryOfInterestNameSpace);
+            List<YoVariable<?>> variables = yoVariableHolder.findVariables(registryOfInterestNameSpace);
             YoDouble[] ret = new YoDouble[variables.size()];
             for (int i = 0; i < ret.length; i++)
             {

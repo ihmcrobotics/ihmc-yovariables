@@ -151,27 +151,27 @@ public class YoVariableHolderImplementationTest
    public void testGetVariables()
    {
       NameSpace nameSpace = new NameSpace("robot.registryA");
-      List<YoVariable<?>> variables = yoVariableHolderImplementation.getVariables(nameSpace);
+      List<YoVariable<?>> variables = yoVariableHolderImplementation.findVariables(nameSpace);
       assertEquals(3, variables.size());
 
       nameSpace = new NameSpace("robot.registryB");
-      variables = yoVariableHolderImplementation.getVariables(nameSpace);
+      variables = yoVariableHolderImplementation.findVariables(nameSpace);
       assertEquals(3, variables.size());
 
       nameSpace = new NameSpace("robot.registryC");
-      variables = yoVariableHolderImplementation.getVariables(nameSpace);
+      variables = yoVariableHolderImplementation.findVariables(nameSpace);
       assertEquals(3, variables.size());
 
       nameSpace = new NameSpace("robot2.registryC");
-      variables = yoVariableHolderImplementation.getVariables(nameSpace);
+      variables = yoVariableHolderImplementation.findVariables(nameSpace);
       assertEquals(3, variables.size());
 
       nameSpace = new NameSpace("robot");
-      variables = yoVariableHolderImplementation.getVariables(nameSpace);
+      variables = yoVariableHolderImplementation.findVariables(nameSpace);
       assertEquals(0, variables.size());
 
       nameSpace = new NameSpace("registryA");
-      variables = yoVariableHolderImplementation.getVariables(nameSpace);
+      variables = yoVariableHolderImplementation.findVariables(nameSpace);
       assertEquals(0, variables.size());
 
    }

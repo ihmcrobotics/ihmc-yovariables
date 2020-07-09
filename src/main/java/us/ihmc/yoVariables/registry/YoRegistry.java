@@ -5,46 +5,211 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import us.ihmc.yoVariables.dataBuffer.YoVariableHolder;
-import us.ihmc.yoVariables.listener.YoVariableRegistryChangedListener;
+import us.ihmc.yoVariables.listener.YoRegistryChangedListener;
+import us.ihmc.yoVariables.listener.YoRegistryChangedListener.Change;
 import us.ihmc.yoVariables.parameters.YoParameter;
 import us.ihmc.yoVariables.registry.YoTools.SearchQuery;
 import us.ihmc.yoVariables.variable.YoVariable;
 
+/**
+ * Data structure for creating, managing, and interacting with a hierarchy of {@code YoVariable}.
+ * <p>
+ * Registries are organized into a tree structure with one parent, variables, and child registries.
+ * Each {@code YoVariable} can only be registered to one registry at a time.
+ * </p>
+ */
 public class YoRegistry implements YoVariableHolder
 {
+   /** The name of this registry. */
    private final String name;
+   /**
+    * The namespace of this registry, it is the collection of the registry names from the root to here.
+    */
    private NameSpace nameSpace;
 
+   /** The list of variables that are currently registered in {@code this}. */
    private final List<YoVariable<?>> variables = new ArrayList<>();
-   private final Map<String, YoVariable<?>> nameToVariableMap = new LinkedHashMap<>(); // From name to the variable with that name.
+   /**
+    * Mapping from the lower-case simple name of a variable to the instance of the variable.
+    * Facilitates retrieval of registered variables from their name.
+    */
+   private final Map<String, YoVariable<?>> nameToVariableMap = new LinkedHashMap<>();
+   /**
+    * The list of parameters that are currently registered in this {@code this}. This list is mostly
+    * used for book keeping.
+    */
    private final List<YoParameter<?>> parameters = new ArrayList<>();
 
+   /**
+    * The registry to which this registry is currently a child of, or {@code null} if {@code this} is
+    * the root.
+    */
    private YoRegistry parent;
+   /** The list of child registries that are currently registered in {@code this}. */
    private final List<YoRegistry> children = new ArrayList<>();
+   /**
+    * Mapping from the lower-case simple name of a registry to the instance of the registry.
+    * Facilitates retrieval of registered children from their name.
+    */
    private final Map<String, YoRegistry> nameToChildMap = new LinkedHashMap<>();
 
-   private List<YoVariableRegistryChangedListener> yoVariableRegistryChangedListeners;
+   /**
+    * List of active listeners currently attached to this registry. Only instantiated when adding the
+    * first listener.
+    */
+   private List<YoRegistryChangedListener> changedListeners;
 
+   /**
+    * Current level of restriction to apply to this registry, also indicates the minimum level of
+    * restriction to be applied on the descendants of this registry.
+    */
+   private YoRegistryRestrictionLevel restrictionLevel = YoRegistryRestrictionLevel.FULLY_MUTABLE;
+
+   /**
+    * Creates a new registry.
+    * <p>
+    * Typically, the new registry will need to be registered as a child of another registry that is
+    * accessible from variable visualizer, for instance simulation or server.
+    * </p>
+    * 
+    * @param name the name of the new registry.
+    * @throws IllegalNameException if the name contains any of the following characters:
+    *                              {@value YoTools#ILLEGAL_CHARACTERS_STRING}.
+    */
    public YoRegistry(String name)
    {
-      YoTools.checkForIllegalCharacters(name);
+      if (name == null || name.isEmpty())
+         throw new IllegalArgumentException("Cannot create a registry without a name.");
 
+      YoTools.checkForIllegalCharacters(name);
       this.name = name;
       nameSpace = new NameSpace(name);
    }
 
+   /**
+    * Gets the name of this registry.
+    * 
+    * @return this registry's name.
+    */
    public String getName()
    {
       return name;
    }
 
+   /**
+    * Gets the current namespace for this registry.
+    * <p>
+    * The namespace contains in order the name of all the registries from the root ending with this
+    * registry.
+    * </p>
+    * 
+    * @return this registry's namespace.
+    */
    public NameSpace getNameSpace()
    {
       return nameSpace;
+   }
+
+   /**
+    * Sets the desired level of restriction for this registry.
+    * <p>
+    * This allows to control restrictions to be applied on this registry and its subtree, such as
+    * whether it is permitted to add and/or remove variables and registries. The level can only be
+    * changed such that it is more restrictive. The level of restriction of the registries in the
+    * subtree is automatically raised to match the new mode. Registries in the subtree that were
+    * previously configured with a higher restriction level are not affected by this operation.
+    * </p>
+    * 
+    * @param restrictionLevel the new restriction level for this registry.
+    */
+   public void setRestrictionLevel(YoRegistryRestrictionLevel restrictionLevel)
+   {
+      if (this.restrictionLevel.ordinal() > restrictionLevel.ordinal())
+         throw new IllegalArgumentException("Cannot reduce restriction level. Current mode: " + restrictionLevel + ", tried to set to: " + restrictionLevel);
+
+      this.restrictionLevel = restrictionLevel;
+
+      // Raise the restriction level of the children if needed.
+      for (YoRegistry child : children)
+      {
+         if (child.restrictionLevel.ordinal() < restrictionLevel.ordinal())
+            child.setRestrictionLevel(restrictionLevel);
+      }
+   }
+
+   /**
+    * Gets the current restriction level for this registry.
+    * 
+    * @return this registry's restriction level.
+    */
+   public YoRegistryRestrictionLevel getRestrictionLevel()
+   {
+      return restrictionLevel;
+   }
+
+   /**
+    * Clears the internal data of this registry and its children.
+    * <p>
+    * The root registry can be cleared regardless of its current restriction level, in which case the
+    * restriction level is reverted to {@link YoRegistryRestrictionLevel#FULLY_MUTABLE} such that the
+    * registry can be used. However, for any registry that is not the root, the restriction level needs
+    * to allow for removing variables and registries.
+    * </p>
+    * <p>
+    * After a registry has been clear, it contains no variables and no child registries. This registry
+    * is detached from its parent and the variables detached from this registry.
+    * </p>
+    * 
+    * @throws IllegalOperationException if this registry is not fully mutable and is not the root.
+    */
+   public void clear()
+   {
+      if (!isRoot() && restrictionLevel != YoRegistryRestrictionLevel.FULLY_MUTABLE)
+         throw new IllegalOperationException("Cannot clear a registry that is not the root and that does not have appropriate restriction level.");
+      detachFromParent();
+      clearInternal();
+      notifyListeners(null, null, null, ChangeType.CLEARED);
+   }
+
+   private void clearInternal()
+   {
+      variables.forEach(variable -> variable.setRegistry(null));
+      variables.clear();
+      nameToVariableMap.clear();
+      parameters.clear();
+      children.forEach(YoRegistry::clearInternal);
+      children.clear();
+      nameToChildMap.clear();
+      restrictionLevel = YoRegistryRestrictionLevel.FULLY_MUTABLE;
+   }
+
+   /**
+    * Adds a listener to this registry.
+    * 
+    * @param listener the listener for listening to changes done on this registry and its descendants.
+    */
+   public void addChangedListener(YoRegistryChangedListener listener)
+   {
+      if (changedListeners == null)
+         changedListeners = new ArrayList<>();
+      changedListeners.add(listener);
+   }
+
+   /**
+    * Tries to remove a listener from this registry. If the listener could not be found and removed,
+    * nothing happens.
+    * 
+    * @param listener the listener to remove.
+    * @return {@code true} if the listener was removed, {@code false} if the listener was not found and
+    *         nothing happened.
+    */
+   public boolean removeChangedListener(YoRegistryChangedListener listener)
+   {
+      if (changedListeners == null)
+         return false;
+      return changedListeners.remove(listener);
    }
 
    /**
@@ -55,19 +220,25 @@ public class YoRegistry implements YoVariableHolder
     * </p>
     *
     * @param variable the new variable to register.
-    * @throws NameCollisionException if the new variable's name collide with another variable
-    *                                previously registered.
+    * @throws NameCollisionException    if the new variable's name collide with another variable
+    *                                   previously registered.
+    * @throws IllegalOperationException if the operation is not permitted.
     */
-   public void addYoVariable(YoVariable<?> variable)
+   public void addVariable(YoVariable<?> variable)
    {
+      if (!restrictionLevel.isAdditionAllowed())
+         throw new IllegalOperationException("Cannot add variables to this registry: " + nameSpace);
+
       // Make everything case insensitive! Cannot have two YoVariables with same names except case.
       String variableName = variable.getName().toLowerCase();
 
       if (nameToVariableMap.containsKey(variableName))
-      {
          throw new NameCollisionException("Name collision for new variable: " + variableName + ". Parent name space = " + getNameSpace());
-      }
 
+      if (variable.getYoRegistry() != null)
+         variable.getYoRegistry().removeVariable(variable);
+
+      variable.setRegistry(this);
       variables.add(variable);
       nameToVariableMap.put(variableName, variable);
 
@@ -76,7 +247,36 @@ public class YoRegistry implements YoVariableHolder
          parameters.add(variable.getParameter());
       }
 
-      notifyListenersYoVariableWasRegistered(variable);
+      notifyListeners(this, null, variable, ChangeType.VARIABLE_ADDED);
+   }
+
+   /**
+    * Removes a variable previously registered in this registry.
+    *
+    * @param variable the variable to remove.
+    * @throws IllegalOperationException if the operation is not permitted.
+    */
+   public void removeVariable(YoVariable<?> variable)
+   {
+      if (variable.getYoRegistry() != this)
+         return;
+
+      String variableName = variable.getName().toLowerCase();
+
+      if (!nameToVariableMap.containsKey(variableName))
+         return;
+
+      if (!restrictionLevel.isRemovalAllowed())
+         throw new IllegalOperationException("Cannot remove variables from this registry: " + nameSpace);
+
+      variable.setRegistry(null);
+      variables.remove(variable);
+      nameToVariableMap.remove(variableName);
+
+      if (variable.isParameter())
+         parameters.remove(variable.getParameter());
+
+      notifyListeners(this, null, variable, ChangeType.VARIABLE_REMOVED);
    }
 
    /**
@@ -87,7 +287,8 @@ public class YoRegistry implements YoVariableHolder
     * </p>
     *
     * @param child the new registry to add.
-    * @throws NameCollisionException if adding the new registry would cause a name collision.
+    * @throws NameCollisionException    if adding the new registry would cause a name collision.
+    * @throws IllegalOperationException if the operation is not permitted.
     */
    public void addChild(YoRegistry child)
    {
@@ -104,12 +305,18 @@ public class YoRegistry implements YoVariableHolder
     * @param child           the new registry to add.
     * @param notifyListeners indicates whether this operation should trigger the change listeners.
     *                        Default value is {@code true}.
-    * @throws NameCollisionException if adding the new registry would cause a name collision.
+    * @throws NameCollisionException    if adding the new registry would cause a name collision.
+    * @throws IllegalOperationException if the operation is not permitted.
     */
    public void addChild(YoRegistry child, boolean notifyListeners)
    {
       if (child == null)
          return;
+      if (child == this)
+         throw new IllegalOperationException("Cannot register a registry as a child of itself, registry: " + nameSpace);
+
+      if (!restrictionLevel.isAdditionAllowed())
+         throw new IllegalOperationException("Cannot add children to this registry: " + nameSpace);
 
       String childName = child.getName().toLowerCase();
 
@@ -117,13 +324,67 @@ public class YoRegistry implements YoVariableHolder
       if (nameToChildMap.containsKey(childName))
          throw new NameCollisionException("Name collision for new child: " + childName + ". Parent name space = " + getNameSpace());
 
-      child.setParent(this);
-      child.prependNameSpace(nameSpace);
+      child.detachFromParent();
+      child.parent = this;
+      child.setParentNameSpace(nameSpace);
+
       children.add(child);
       nameToChildMap.put(childName, child);
 
       if (notifyListeners)
-         notifyListenersYoVariableRegistryWasAdded(child);
+         notifyListeners(this, child, null, ChangeType.REGISTRY_ADDED);
+   }
+
+   /**
+    * Removes a child registry that was previously added in this registry.
+    *
+    * @param child the registry to remove.
+    * @throws IllegalOperationException if the operation is not permitted.
+    */
+   public void removeChild(YoRegistry child)
+   {
+      if (child == null || child.getParent() != this)
+         return;
+
+      if (!restrictionLevel.isRemovalAllowed())
+         throw new IllegalOperationException("Cannot remove children from this registry: " + nameSpace);
+
+      String childName = child.getName().toLowerCase();
+
+      child.parent = null;
+      child.setParentNameSpace(null);
+
+      children.remove(child);
+      nameToChildMap.remove(childName);
+
+      notifyListeners(this, child, null, ChangeType.REGISTRY_REMOVED);
+   }
+
+   /**
+    * Detaches this registry from its parent if it has any.
+    * 
+    * @throws IllegalOperationException if the operation is not permitted.
+    */
+   public void detachFromParent()
+   {
+      if (parent == null)
+         return;
+      parent.removeChild(this);
+   }
+
+   /**
+    * Convenience method for prepending the namespace of
+    * 
+    * @param parentNameSpace
+    */
+   private void setParentNameSpace(NameSpace parentNameSpace)
+   {
+      if (parentNameSpace == null)
+         nameSpace = new NameSpace(name);
+      else
+         nameSpace = parentNameSpace.append(name);
+      nameSpace.checkSanity();
+      children.forEach(child -> child.setParentNameSpace(nameSpace));
    }
 
    /**
@@ -160,7 +421,7 @@ public class YoRegistry implements YoVariableHolder
 
    /**
     * Returns whether this registry is the root registry, i.e. it has no parent.
-    * 
+    *
     * @return {@code true} if this registry is the root, {@code false} otherwise.
     */
    public boolean isRoot()
@@ -170,7 +431,7 @@ public class YoRegistry implements YoVariableHolder
 
    /**
     * Retrieves and returns the root registry.
-    * 
+    *
     * @return the root registry or {@code this} if it is the root.
     */
    public YoRegistry getRoot()
@@ -211,7 +472,7 @@ public class YoRegistry implements YoVariableHolder
     */
    public YoVariable<?> getVariable(String name)
    {
-      return nameToVariableMap.get(name);
+      return nameToVariableMap.get(name.toLowerCase());
    }
 
    /**
@@ -256,10 +517,10 @@ public class YoRegistry implements YoVariableHolder
     *
     * @return list of all variables registered to this registry and its child registries.
     */
-   public List<YoVariable<?>> getSubtreeVariables()
+   public List<YoVariable<?>> subtreeVariables()
    {
       List<YoVariable<?>> yoVariables = new ArrayList<>();
-      getSubtreeVariables(yoVariables);
+      subtreeVariables(yoVariables);
       return yoVariables;
    }
 
@@ -270,7 +531,7 @@ public class YoRegistry implements YoVariableHolder
     * @param variablesToPack list used to store all variables registered to this registry and its child
     *                        registries.
     */
-   private void getSubtreeVariables(List<YoVariable<?>> variablesToPack)
+   private void subtreeVariables(List<YoVariable<?>> variablesToPack)
    {
       // Add ours:
       variablesToPack.addAll(variables);
@@ -278,7 +539,7 @@ public class YoRegistry implements YoVariableHolder
       // Add children's recursively:
       for (YoRegistry registry : children)
       {
-         registry.getSubtreeVariables(variablesToPack);
+         registry.subtreeVariables(variablesToPack);
       }
    }
 
@@ -288,10 +549,10 @@ public class YoRegistry implements YoVariableHolder
     *
     * @return list of all parameters registered to this registry and its child registries.
     */
-   public List<YoParameter<?>> getSubtreeParameters()
+   public List<YoParameter<?>> subtreeParameters()
    {
       List<YoParameter<?>> yoParameters = new ArrayList<>();
-      getSubtreeParameters(yoParameters);
+      subtreeParameters(yoParameters);
       return yoParameters;
    }
 
@@ -302,7 +563,7 @@ public class YoRegistry implements YoVariableHolder
     * @param parametersToPack list used to store all parameters registered to this registry and its
     *                         child registries.
     */
-   private void getSubtreeParameters(List<YoParameter<?>> parametersToPack)
+   private void subtreeParameters(List<YoParameter<?>> parametersToPack)
    {
       // Add ours:
       parametersToPack.addAll(parameters);
@@ -310,7 +571,7 @@ public class YoRegistry implements YoVariableHolder
       // Add children's recursively:
       for (YoRegistry registry : children)
       {
-         registry.getSubtreeParameters(parametersToPack);
+         registry.subtreeParameters(parametersToPack);
       }
    }
 
@@ -319,10 +580,10 @@ public class YoRegistry implements YoVariableHolder
     *
     * @return list of all the registries composing the subtree starting at {@code this}.
     */
-   public List<YoRegistry> getSubtreeRegistries()
+   public List<YoRegistry> subtreeRegistries()
    {
       List<YoRegistry> yoVariableRegistries = new ArrayList<>();
-      getSubtreeRegistries(yoVariableRegistries);
+      subtreeRegistries(yoVariableRegistries);
       return yoVariableRegistries;
    }
 
@@ -333,7 +594,7 @@ public class YoRegistry implements YoVariableHolder
     * @param yoVariableRegistriesToPack list used to store all the registries composing the subtree
     *                                   starting at {@code this}.
     */
-   public void getSubtreeRegistries(List<YoRegistry> yoVariableRegistriesToPack)
+   public void subtreeRegistries(List<YoRegistry> yoVariableRegistriesToPack)
    {
       // Add mine:
       yoVariableRegistriesToPack.add(this);
@@ -341,7 +602,7 @@ public class YoRegistry implements YoVariableHolder
       // Add all the children recursively:
       for (YoRegistry child : children)
       {
-         child.getSubtreeRegistries(yoVariableRegistriesToPack);
+         child.subtreeRegistries(yoVariableRegistriesToPack);
       }
    }
 
@@ -425,6 +686,55 @@ public class YoRegistry implements YoVariableHolder
    }
 
    /**
+    * Finds the registry matching the given {@code nameSpace} and returns its variables.
+    * <p>
+    * The search is first conducted in this registry, then in its children in the order in which they
+    * were added.
+    * </p>
+    * 
+    * @param nameSpace the full namespace of the registry of interest.
+    * @return the variables that were registered at the given namespace.
+    */
+   @Override
+   public List<YoVariable<?>> findVariables(NameSpace nameSpace)
+   {
+      YoRegistry registry = findRegistry(nameSpace);
+      if (registry == null)
+         return Collections.emptyList();
+      else
+         return registry.getVariables();
+   }
+
+   /**
+    * Finds and returns the registry with the given {@code nameSpace}.
+    * <p>
+    * The search is first conducted in this registry, then in its children in the order in which they
+    * were added.
+    * </p>
+    * 
+    * @param nameSpace the namespace of the registry of interest
+    * @return the registry which namespace matches the given one, or {@code null} if it could not be
+    *         found.
+    */
+   public YoRegistry findRegistry(NameSpace nameSpace)
+   {
+      if (nameSpace.equals(this.nameSpace))
+         return this;
+
+      if (!nameSpace.startsWith(this.nameSpace))
+         return null;
+
+      for (YoRegistry child : children)
+      {
+         YoRegistry registry = child.findRegistry(nameSpace);
+         if (registry != null)
+            return registry;
+      }
+
+      return null;
+   }
+
+   /**
     * Search in the subtree starting at this registry and tests if there is exactly one variable that
     * matches the search criteria.
     * <p>
@@ -449,7 +759,7 @@ public class YoRegistry implements YoVariableHolder
       if (separatorIndex == -1)
          return hasUniqueVariable(null, name);
       else
-         return hasUniqueVariable(name.substring(0, separatorIndex + 1), name.substring(separatorIndex));
+         return hasUniqueVariable(name.substring(0, separatorIndex), name.substring(separatorIndex + 1));
    }
 
    /**
@@ -479,7 +789,7 @@ public class YoRegistry implements YoVariableHolder
 
       if (parentNameSpace == null || nameSpace.endsWith(parentNameSpace))
       {
-         if (nameToVariableMap.containsKey(name))
+         if (nameToVariableMap.containsKey(name.toLowerCase()))
             count++;
       }
 
@@ -491,166 +801,56 @@ public class YoRegistry implements YoVariableHolder
       return count;
    }
 
-   private void prependNameSpace(NameSpace parentNameSpace)
-   {
-      // Fix my name
-      nameSpace = new NameSpace(parentNameSpace.getName() + "." + nameSpace.getName());
-
-      // Fix my children
-      for (YoRegistry child : children)
-      {
-         child.prependNameSpace(parentNameSpace);
-      }
-   }
-
-   private void setParent(YoRegistry parent)
-   {
-      if (this.parent != null)
-         throw new RuntimeException("Parent was already set!! It was " + this.parent + ". this = " + this);
-
-      this.parent = parent;
-
-      verifyDoNotHaveBothParentAndYoVariableRegistryChangedListeners();
-   }
-
-   public void clear()
-   {
-      variables.clear();
-      nameToVariableMap.clear();
-      children.clear();
-
-      notifyListenersYoVariableRegistryWasCleared(this);
-   }
-
-   @Override
-   public String toString()
-   {
-      return nameSpace.getName();
-   }
-
-   public YoRegistry getRegistry(NameSpace fullNameSpace)
-   {
-      if (nameSpace == null && fullNameSpace == null)
-      {
-         return this;
-      }
-
-      if (nameSpace != null && nameSpace.equals(fullNameSpace))
-      {
-         return this;
-      }
-
-      if (nameSpace == null || fullNameSpace.startsWith(nameSpace.getName()))
-      {
-         for (YoRegistry child : children)
-         {
-            YoRegistry registry = child.getRegistry(fullNameSpace);
-            if (registry != null)
-               return registry;
-         }
-
-         throw new RuntimeException("Registry not found");
-      }
-
-      return null;
-   }
-
-   public int getNumberOfYoVariables()
+   /**
+    * Returns the number of variables this registry contains.
+    * 
+    * @return the number of variables in this registry only.
+    */
+   public int getNumberOfVariables()
    {
       return variables.size();
    }
 
-   public YoVariable<?> getYoVariable(int index)
+   /**
+    * Return the variable at the given index, the variables are stored in the order they were
+    * registered.
+    * 
+    * @param index the index of the variable of interest.
+    * @return the corresponding variable.
+    */
+   public YoVariable<?> getVariable(int index)
    {
       return variables.get(index);
    }
 
-   @Override
-   public List<YoVariable<?>> getVariables(NameSpace nameSpace)
+   private void notifyListeners(YoRegistry targetParentRegistry, YoRegistry targetRegistry, YoVariable<?> targetVariable, ChangeType type)
    {
-      List<YoVariable<?>> ret = new ArrayList<>();
-
-      List<YoVariable<?>> allVariables = getSubtreeVariables();
-
-      for (YoVariable<?> variable : allVariables)
+      RegistryChange change;
+      if (changedListeners != null)
       {
-         if (variable.getYoVariableRegistry().getNameSpace().equals(nameSpace))
+         // Making a copy ensures that the source of the event is 'this'.
+         change = new RegistryChange(targetParentRegistry, targetRegistry, targetVariable, type);
+         for (YoRegistryChangedListener listener : changedListeners)
          {
-            ret.add(variable);
+            listener.onChanged(change);
          }
       }
 
-      return ret;
-   }
-
-   public synchronized List<YoVariable<?>> getMatchingVariables(String[] names, String[] regularExpressions)
-   {
-      List<YoVariable<?>> ret = new ArrayList<>();
-
-      if (names != null)
+      if (parent != null)
       {
-         for (int i = 0; i < names.length; i++)
-         {
-            if (names[i] != null)
-            {
-               String name = names[i];
-               YoVariable<?> var = findVariable(name);
-
-               if (var != null)
-               {
-                  ret.add(var);
-               }
-            }
-         }
-      }
-
-      recursivelyGetMatchingVariables(ret, regularExpressions);
-
-      return ret;
-   }
-
-   private void recursivelyGetMatchingVariables(List<YoVariable<?>> ret, String[] regularExpressions)
-   {
-      if (regularExpressions != null)
-      {
-         for (int i = 0; i < regularExpressions.length; i++)
-         {
-            Pattern pattern = Pattern.compile(regularExpressions[i]);
-
-            for (int j = 0; j < variables.size(); j++)
-            {
-               YoVariable<?> var = variables.get(j);
-               Matcher matcher = pattern.matcher(var.getName());
-
-               if (matcher.matches())
-               {
-                  ret.add(var);
-               }
-            }
-         }
-      }
-
-      for (YoRegistry child : children)
-      {
-         child.recursivelyGetMatchingVariables(ret, regularExpressions);
+         parent.notifyListeners(targetParentRegistry, targetRegistry, targetVariable, type);
       }
    }
 
    @Override
    public boolean equals(Object object)
    {
-      if (object instanceof YoRegistry)
-         return equals((YoRegistry) object);
-      else
-         return false;
-   }
-
-   public boolean equals(YoRegistry other)
-   {
-      if (other == this)
+      if (object == this)
          return true;
-      if (other == null)
+      if (!(object instanceof YoRegistry))
          return false;
+
+      YoRegistry other = (YoRegistry) object;
 
       if (!getNameSpace().equals(other.getNameSpace()))
          return false;
@@ -660,7 +860,7 @@ public class YoRegistry implements YoVariableHolder
 
       for (YoVariable<?> variable : variables)
       {
-         if (!other.nameToVariableMap.containsKey(variable.getName()))
+         if (!other.nameToVariableMap.containsKey(variable.getName().toLowerCase()))
             return false;
       }
 
@@ -669,85 +869,129 @@ public class YoRegistry implements YoVariableHolder
 
       for (YoRegistry child : children)
       {
-         if (!other.nameToChildMap.containsKey(child.getName()))
+         if (!other.nameToChildMap.containsKey(child.getName().toLowerCase()))
             return false;
       }
 
       return true;
    }
 
-   public void attachYoVariableRegistryChangedListener(YoVariableRegistryChangedListener listener)
+   @Override
+   public int hashCode()
    {
-      if (yoVariableRegistryChangedListeners == null)
-      {
-         yoVariableRegistryChangedListeners = new ArrayList<>();
-      }
-
-      yoVariableRegistryChangedListeners.add(listener);
-
-      verifyDoNotHaveBothParentAndYoVariableRegistryChangedListeners();
+      return nameSpace.hashCode();
    }
 
-   private void verifyDoNotHaveBothParentAndYoVariableRegistryChangedListeners()
+   @Override
+   public String toString()
    {
-      if (parent != null && yoVariableRegistryChangedListeners != null)
-      {
-         throw new RuntimeException("Only root YoVariableRegistries should have listeners. This registry does! YoVariableRegistry = " + this);
-      }
+      return nameSpace.getName();
    }
 
-   private void notifyListenersYoVariableRegistryWasAdded(YoRegistry child)
+   private enum ChangeType
    {
-      // Push it up the chain. Only the root will notify it's listeners. Non-roots shouldn't have listeners.
-      verifyDoNotHaveBothParentAndYoVariableRegistryChangedListeners();
+      REGISTRY_ADDED, REGISTRY_REMOVED, VARIABLE_ADDED, VARIABLE_REMOVED, CLEARED
+   };
 
-      if (parent != null)
+   private final class RegistryChange implements Change
+   {
+      private final YoRegistry targetParentRegistry;
+      private final YoRegistry targetRegistry;
+      private final YoVariable<?> targetVariable;
+      private final ChangeType type;
+
+      public RegistryChange(YoRegistry targetParentRegistry, YoRegistry targetRegistry, YoVariable<?> targetVariable, ChangeType type)
       {
-         parent.notifyListenersYoVariableRegistryWasAdded(child);
+         this.targetParentRegistry = targetParentRegistry;
+         this.targetRegistry = targetRegistry;
+         this.targetVariable = targetVariable;
+         this.type = type;
       }
-      else if (yoVariableRegistryChangedListeners != null)
+
+      @Override
+      public boolean wasRegistryAdded()
       {
-         for (YoVariableRegistryChangedListener listener : yoVariableRegistryChangedListeners)
+         return type == ChangeType.REGISTRY_ADDED;
+      }
+
+      @Override
+      public boolean wasRegistryRemoved()
+      {
+         return type == ChangeType.REGISTRY_REMOVED;
+      }
+
+      @Override
+      public boolean wasVariableAdded()
+      {
+         return type == ChangeType.VARIABLE_ADDED;
+      }
+
+      @Override
+      public boolean wasVariableRemoved()
+      {
+         return type == ChangeType.VARIABLE_REMOVED;
+      }
+
+      @Override
+      public boolean wasCleared()
+      {
+         return type == ChangeType.CLEARED;
+      }
+
+      @Override
+      public YoRegistry getSource()
+      {
+         return YoRegistry.this;
+      }
+
+      @Override
+      public YoRegistry getTargetParentRegistry()
+      {
+         return targetParentRegistry;
+      }
+
+      @Override
+      public YoRegistry getTargetRegistry()
+      {
+         return targetRegistry;
+      }
+
+      @Override
+      public YoVariable<?> getTargetVariable()
+      {
+         return targetVariable;
+      }
+
+      @Override
+      public String toString()
+      {
+         switch (type)
          {
-            listener.yoVariableRegistryWasAdded(child);
-         }
-      }
-   }
+            case REGISTRY_ADDED:
+               return String.format("Added registry: %s. Child of: %s. Source of event: %s",
+                                    targetRegistry.getName(),
+                                    targetParentRegistry.getName(),
+                                    YoRegistry.this.getName());
+            case REGISTRY_REMOVED:
+               return String.format("Removed registry: %s. Was child of: %s. Source of event: %s",
+                                    targetRegistry.getName(),
+                                    targetParentRegistry.getName(),
+                                    YoRegistry.this.getName());
+            case VARIABLE_ADDED:
+               return String.format("Added variable: %s. Registered in: %s. Source of event: %s",
+                                    targetVariable.getName(),
+                                    targetParentRegistry.getName(),
+                                    YoRegistry.this.getName());
+            case VARIABLE_REMOVED:
+               return String.format("Removed variable: %s. Was registered in: %s. Source of event: %s",
+                                    targetVariable.getName(),
+                                    targetParentRegistry.getName(),
+                                    YoRegistry.this.getName());
+            case CLEARED:
+               return String.format("Cleared registry: %s.", YoRegistry.this.getName());
 
-   private void notifyListenersYoVariableRegistryWasCleared(YoRegistry registry)
-   {
-      // Push it up the chain. Only the root will notify it's listeners. Non-roots shouldn't have listeners.
-      verifyDoNotHaveBothParentAndYoVariableRegistryChangedListeners();
-
-      if (parent != null)
-      {
-         parent.notifyListenersYoVariableRegistryWasCleared(registry);
-      }
-
-      if (yoVariableRegistryChangedListeners != null)
-      {
-         for (YoVariableRegistryChangedListener listener : yoVariableRegistryChangedListeners)
-         {
-            listener.yoVariableRegistryWasCleared(registry);
-         }
-      }
-   }
-
-   private void notifyListenersYoVariableWasRegistered(YoVariable<?> variable)
-   {
-      // Push it up the chain. Only the root will notify it's listeners. Non-roots shouldn't have listeners.
-      verifyDoNotHaveBothParentAndYoVariableRegistryChangedListeners();
-
-      if (parent != null)
-      {
-         parent.notifyListenersYoVariableWasRegistered(variable);
-      }
-
-      else if (yoVariableRegistryChangedListeners != null)
-      {
-         for (YoVariableRegistryChangedListener listener : yoVariableRegistryChangedListeners)
-         {
-            listener.yoVariableWasRegistered(this, variable);
+            default:
+               return "Unexpected event type: " + type;
          }
       }
    }
