@@ -1,20 +1,12 @@
 package us.ihmc.yoVariables.variable;
 
+import java.util.Random;
+
 import us.ihmc.euclid.tuple3D.Vector3DBasicsTest;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
-import java.util.Random;
-
-import org.junit.jupiter.api.BeforeAll;
-
 public class YoVector3DTest extends Vector3DBasicsTest<YoVector3D>
 {
-   @BeforeAll
-   public static void disableStackTrack()
-   {
-      YoVariable.SAVE_STACK_TRACE = false;
-   }
-
    @Override
    public YoVector3D createEmptyTuple()
    {

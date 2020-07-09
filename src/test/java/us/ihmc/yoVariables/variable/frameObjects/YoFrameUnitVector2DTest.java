@@ -17,16 +17,9 @@ import us.ihmc.euclid.tools.EuclidCoreRandomTools;
 import us.ihmc.euclid.tuple2D.interfaces.UnitVector2DBasics;
 import us.ihmc.euclid.tuple2D.interfaces.UnitVector2DReadOnly;
 import us.ihmc.yoVariables.variable.YoFrameUnitVector2D;
-import us.ihmc.yoVariables.variable.YoVariable;
 
 public class YoFrameUnitVector2DTest
 {
-   static
-   {
-      YoVariable.SAVE_STACK_TRACE = false;
-      YoVariable.warnAboutNullRegistries = false;
-   }
-
    @Test
    public void testAPIOverloading()
    {

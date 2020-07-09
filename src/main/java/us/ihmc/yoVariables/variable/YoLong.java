@@ -9,7 +9,7 @@ import us.ihmc.yoVariables.registry.YoRegistry;
  * All abstract functions of YoVariable will be implemented using long type for interpretation.
  * Values will be interpreted, compared, and returned as longs rather than other native types.
  */
-public class YoLong extends YoVariable<YoLong> implements LongProvider
+public class YoLong extends YoVariable implements LongProvider
 {
    /**
     * Internal long value of this YoLong.
@@ -193,29 +193,6 @@ public class YoLong extends YoVariable<YoLong> implements LongProvider
    }
 
    /**
-    * Appends the value of this variable to the end of the given StringBuffer.
-    *
-    * @param stringBuffer StringBuffer to which the value will be appended
-    */
-   @Override
-   public void getValueString(StringBuffer stringBuffer)
-   {
-      stringBuffer.append(val);
-   }
-
-   /**
-    * Appends the YoLong representation of the given double value to the given StringBuffer.
-    *
-    * @param stringBuffer StringBuffer to append to
-    * @param doubleValue  double value to convert to YoLong representation
-    */
-   @Override
-   public void getValueStringFromDouble(StringBuffer stringBuffer, double doubleValue)
-   {
-      stringBuffer.append(convertFromDoubleToLong(doubleValue));
-   }
-
-   /**
     * Retrieves this YoLong's value as a long.
     * <p>
     * Effectively equivalent to {@link #getLongValue()}.
@@ -256,20 +233,6 @@ public class YoLong extends YoVariable<YoLong> implements LongProvider
       YoLong retVar = new YoLong(getName(), getDescription(), newRegistry, getManualScalingMin(), getManualScalingMax());
       retVar.set(getLongValue());
       return retVar;
-   }
-
-   /**
-    * Sets the internal value of this YoLong to the current value of the passed YoLong.
-    *
-    * @param value           YoLong value to set this variable's value to
-    * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyVariableChangedListeners()}
-    * @return boolean whether or not internal state differed from the passed value
-    */
-   @Override
-   public boolean setValue(YoLong value, boolean notifyListeners)
-   {
-      return set(value.getLongValue(), notifyListeners);
    }
 
    /**

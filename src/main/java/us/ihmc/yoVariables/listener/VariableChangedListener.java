@@ -14,5 +14,5 @@ public interface VariableChangedListener
     *
     * @param v YoVariable the listener is attached to
     */
-   public void notifyOfVariableChange(YoVariable<?> v);
+   public void notifyOfVariableChange(YoVariable v);
 }

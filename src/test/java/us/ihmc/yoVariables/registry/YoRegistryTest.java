@@ -26,7 +26,7 @@ public class YoRegistryTest
 
    private YoRegistryChangedListener listener = null;
 
-   private YoVariable<?> lastRegisteredVariable = null;
+   private YoVariable lastRegisteredVariable = null;
    private YoRegistry lastAddedRegistry = null;
    private YoRegistry lastRemovedRegistry = null;
    private YoRegistry lastClearedRegistry = null;
@@ -117,7 +117,7 @@ public class YoRegistryTest
    @Test
    public void testGetAllVariables()
    {
-      List<YoVariable<?>> allVars = testRegistry.subtreeVariables();
+      List<YoVariable> allVars = testRegistry.subtreeVariables();
       assertTrue(allVars.size() == 4);
    }
 
@@ -132,17 +132,17 @@ public class YoRegistryTest
    @Test
    public void testGetVariable()
    {
-      YoVariable<?> variableOne = testRegistry.findVariable("variableOne");
-      YoVariable<?> variableTwo = testRegistry.findVariable("variableTwo");
-      YoVariable<?> variableThree = testRegistry.findVariable("variableThree");
-      YoVariable<?> variableFour = testRegistry.findVariable("variableFour");
+      YoVariable variableOne = testRegistry.findVariable("variableOne");
+      YoVariable variableTwo = testRegistry.findVariable("variableTwo");
+      YoVariable variableThree = testRegistry.findVariable("variableThree");
+      YoVariable variableFour = testRegistry.findVariable("variableFour");
 
       assertTrue(variableOne.getName().equals("variableOne"));
       assertTrue(variableTwo.getName().equals("variableTwo"));
       assertTrue(variableThree.getName().equals("variableThree"));
       assertTrue(variableFour.getName().equals("variableFour"));
 
-      YoVariable<?> doesntExist = testRegistry.findVariable("fooy");
+      YoVariable doesntExist = testRegistry.findVariable("fooy");
       assertTrue(doesntExist == null);
 
       variableOne = testRegistry.findVariable("robot.controller.testRegistry.variableOne");
@@ -179,10 +179,10 @@ public class YoRegistryTest
    @Test
    public void testCaseInsensitivityToNameButNotNamespace()
    {
-      YoVariable<?> variableOne = testRegistry.findVariable("variableone");
-      YoVariable<?> variableTwo = testRegistry.findVariable("variableTWO");
-      YoVariable<?> variableThree = testRegistry.findVariable("VAriableThree");
-      YoVariable<?> variableFour = testRegistry.findVariable("variableFour");
+      YoVariable variableOne = testRegistry.findVariable("variableone");
+      YoVariable variableTwo = testRegistry.findVariable("variableTWO");
+      YoVariable variableThree = testRegistry.findVariable("VAriableThree");
+      YoVariable variableFour = testRegistry.findVariable("variableFour");
 
       assertTrue(variableOne.getName().equals("variableOne"));
       assertTrue(variableTwo.getName().equals("variableTwo"));
@@ -225,10 +225,10 @@ public class YoRegistryTest
    {
       String nameSpace = "robot.controller.testRegistry";
 
-      YoVariable<?> variableOne = testRegistry.findVariable(nameSpace, "variableOne");
-      YoVariable<?> variableTwo = testRegistry.findVariable(nameSpace, "variableTwo");
-      YoVariable<?> variableThree = testRegistry.findVariable(nameSpace, "variableThree");
-      YoVariable<?> variableFour = testRegistry.findVariable(nameSpace, "variableFour");
+      YoVariable variableOne = testRegistry.findVariable(nameSpace, "variableOne");
+      YoVariable variableTwo = testRegistry.findVariable(nameSpace, "variableTwo");
+      YoVariable variableThree = testRegistry.findVariable(nameSpace, "variableThree");
+      YoVariable variableFour = testRegistry.findVariable(nameSpace, "variableFour");
 
       assertTrue(variableOne.getName().equals("variableOne"));
       assertTrue(variableTwo.getName().equals("variableTwo"));
@@ -287,7 +287,7 @@ public class YoRegistryTest
    @Test
    public void testGetVariables1()
    {
-      List<YoVariable<?>> variables = testRegistry.findVariables("variableOne");
+      List<YoVariable> variables = testRegistry.findVariables("variableOne");
       assertTrue(variables.size() == 1);
 
       variables = testRegistry.findVariables("variableTwo");
@@ -321,7 +321,7 @@ public class YoRegistryTest
    @Test
    public void testGetVariables2()
    {
-      List<YoVariable<?>> variables = testRegistry.findVariables("robot.controller.testRegistry", "variableOne");
+      List<YoVariable> variables = testRegistry.findVariables("robot.controller.testRegistry", "variableOne");
       assertTrue(variables.size() == 1);
 
       variables = testRegistry.findVariables("robot.controller.testRegistry", "variableTwo");
@@ -427,9 +427,9 @@ public class YoRegistryTest
    @Test
    public void testGetYoVariables()
    {
-      List<YoVariable<?>> robotVariablesOnly = robotRegistry.getVariables();
-      List<YoVariable<?>> controlVariablesOnly = controllerRegistry.getVariables();
-      List<YoVariable<?>> testRegistryVariablesOnly = testRegistry.getVariables();
+      List<YoVariable> robotVariablesOnly = robotRegistry.getVariables();
+      List<YoVariable> controlVariablesOnly = controllerRegistry.getVariables();
+      List<YoVariable> testRegistryVariablesOnly = testRegistry.getVariables();
 
       assertEquals(1, robotVariablesOnly.size());
       assertEquals(1, controlVariablesOnly.size());
@@ -538,7 +538,7 @@ public class YoRegistryTest
 
       int nVarsExpected = nVarsChildOne + nVarsChildTwo + N_VARS_IN_ROOT;
 
-      List<YoVariable<?>> allVariables = testRegistry.subtreeVariables();
+      List<YoVariable> allVariables = testRegistry.subtreeVariables();
       assertEquals(nVarsExpected, allVariables.size());
 
       assertEquals(nVarsChildTwo, childTwo.subtreeVariables().size());
@@ -635,7 +635,7 @@ public class YoRegistryTest
       assertEquals("root.registry1.registry10.variable10_A", variable10_A.getFullNameWithNameSpace());
       assertEquals("root.registry0.registry01.registry011.variable011_A", variable011_A.getFullNameWithNameSpace());
 
-      List<YoVariable<?>> allRootVariables = root.subtreeVariables();
+      List<YoVariable> allRootVariables = root.subtreeVariables();
       assertEquals(8, allRootVariables.size());
 
       assertTrue(registry10.hasUniqueVariable("root.registry1.registry10.variable10_A"));
@@ -804,14 +804,14 @@ public class YoRegistryTest
    public void testGetVariables()
    {
       NameSpace robotNameSpace = new NameSpace("robot");
-      List<YoVariable<?>> robotVariables = robotRegistry.findVariables(robotNameSpace);
+      List<YoVariable> robotVariables = robotRegistry.findVariables(robotNameSpace);
 
       assertTrue(robotVariables.size() == 1);
       assertTrue(robotVariables.contains(robotVariable));
       assertFalse(robotVariables.contains(controlVariable));
 
       NameSpace controllerNameSpace = new NameSpace("robot.controller");
-      List<YoVariable<?>> controllerVariables = robotRegistry.findVariables(controllerNameSpace);
+      List<YoVariable> controllerVariables = robotRegistry.findVariables(controllerNameSpace);
 
       assertTrue(controllerVariables.size() == 1);
       assertFalse(controllerVariables.contains(robotVariable));

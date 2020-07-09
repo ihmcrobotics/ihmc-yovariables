@@ -10,13 +10,15 @@ import java.util.regex.Pattern;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import us.ihmc.yoVariables.registry.YoTools;
+
 public class YoVariableList implements java.io.Serializable, java.lang.Comparable<YoVariableList>
 {
    private static final long serialVersionUID = -393664925453518934L;
    private final ArrayList<ChangeListener> listeners;
    private final String name;
-   private final List<YoVariable<?>> variables;
-   private final Map<String, List<YoVariable<?>>> variablesMappedByName;
+   private final List<YoVariable> variables;
+   private final Map<String, List<YoVariable>> variablesMappedByName;
 
    public YoVariableList(String name)
    {
@@ -51,10 +53,10 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
       return variables.size() == 0;
    }
 
-   public void addVariable(YoVariable<?> variable)
+   public void addVariable(YoVariable variable)
    {
       String variableName = variable.getName();
-      List<YoVariable<?>> arrayList = variablesMappedByName.get(variableName);
+      List<YoVariable> arrayList = variablesMappedByName.get(variableName);
       if (arrayList == null)
       {
          arrayList = new ArrayList<>(1);
@@ -84,20 +86,20 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
 
    public void addVariables(YoVariableList controlVars)
    {
-      List<YoVariable<?>> variables = controlVars.getVariables();
+      List<YoVariable> variables = controlVars.getVariables();
 
       this.addVariables(variables);
    }
 
-   public void addVariables(List<YoVariable<?>> list)
+   public void addVariables(List<YoVariable> list)
    {
-      for (YoVariable<?> variable : list)
+      for (YoVariable variable : list)
       {
          addVariable(variable);
       }
    }
 
-   public void addVariables(YoVariable<?>[] variables)
+   public void addVariables(YoVariable[] variables)
    {
       for (int i = 0; i < variables.length; i++)
       {
@@ -105,13 +107,13 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
       }
    }
 
-   public void removeVariable(YoVariable<?> variable)
+   public void removeVariable(YoVariable variable)
    {
       String variableName = variable.getName();
 
       if (variablesMappedByName.containsKey(variableName))
       {
-         List<YoVariable<?>> arrayList = variablesMappedByName.get(variableName);
+         List<YoVariable> arrayList = variablesMappedByName.get(variableName);
          arrayList.remove(variable);
          variables.remove(variable);
       }
@@ -125,10 +127,10 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
       notifyListeners();
    }
 
-   public boolean containsVariable(YoVariable<?> variable)
+   public boolean containsVariable(YoVariable variable)
    {
       String variableName = variable.getName();
-      List<YoVariable<?>> arrayList = variablesMappedByName.get(variableName);
+      List<YoVariable> arrayList = variablesMappedByName.get(variableName);
 
       if (arrayList != null && arrayList.contains(variable))
          return true;
@@ -136,9 +138,9 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
       return false;
    }
 
-   public List<YoVariable<?>> getVariables()
+   public List<YoVariable> getVariables()
    {
-      List<YoVariable<?>> ret = new ArrayList<>();
+      List<YoVariable> ret = new ArrayList<>();
       ret.addAll(variables);
 
       return ret;
@@ -149,7 +151,7 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
       return variables.size();
    }
 
-   public synchronized YoVariable<?> getVariable(int index)
+   public synchronized YoVariable getVariable(int index)
    {
       if (index <= variables.size() - 1 && index >= 0)
       {
@@ -159,9 +161,9 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
       return null;
    }
 
-   public synchronized YoVariable<?> getVariable(String name)
+   public synchronized YoVariable getVariable(String name)
    {
-      List<YoVariable<?>> arrayList;
+      List<YoVariable> arrayList;
       int lastDotIndex = name.lastIndexOf(".");
 
       if (lastDotIndex == -1)
@@ -179,9 +181,9 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
 
       for (int i = 0; i < arrayList.size(); i++)
       {
-         YoVariable<?> variable = arrayList.get(i);
+         YoVariable variable = arrayList.get(i);
 
-         if (variable.fullNameEndsWithCaseInsensitive(name))
+         if (YoTools.matchFullNameEndsWithCaseInsensitive(variable, name))
          {
             return variable;
          }
@@ -213,16 +215,16 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
    }
 
    // TODO: duplicated in YoVariableRegistry
-   public synchronized List<YoVariable<?>> getMatchingVariables(String[] names, String[] regularExpressions)
+   public synchronized List<YoVariable> getMatchingVariables(String[] names, String[] regularExpressions)
    {
-      List<YoVariable<?>> ret = new ArrayList<>();
+      List<YoVariable> ret = new ArrayList<>();
 
       if (names != null)
       {
          for (int i = 0; i < names.length; i++)
          {
             String name = names[i];
-            YoVariable<?> var = getVariable(name);
+            YoVariable var = getVariable(name);
 
             if (var != null)
             {
@@ -239,7 +241,7 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
 
             for (int j = 0; j < variables.size(); j++)
             {
-               YoVariable<?> var = variables.get(j);
+               YoVariable var = variables.get(j);
                Matcher matcher = pattern.matcher(var.getName());
 
                if (matcher.matches())
@@ -253,9 +255,9 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
       return ret;
    }
 
-   public YoVariable<?>[] getAllVariables()
+   public YoVariable[] getAllVariables()
    {
-      YoVariable<?>[] ret = new YoVariable[variables.size()];
+      YoVariable[] ret = new YoVariable[variables.size()];
 
       variables.toArray(ret);
 
@@ -280,7 +282,7 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
 
    }
 
-   public synchronized int getIndexOfVariable(YoVariable<?> variable)
+   public synchronized int getIndexOfVariable(YoVariable variable)
    {
       return variables.indexOf(variable);
    }

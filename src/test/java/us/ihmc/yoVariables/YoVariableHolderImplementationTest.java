@@ -82,7 +82,7 @@ public class YoVariableHolderImplementationTest
    @Test // timeout=300000
    public void testGetVariable()
    {
-      YoVariable<?> variable = yoVariableHolderImplementation.findVariable("robot.registryA.variableOne");
+      YoVariable variable = yoVariableHolderImplementation.findVariable("robot.registryA.variableOne");
       assertEquals(variable.getName(), "variableOne");
 
       variable = yoVariableHolderImplementation.findVariable("registryA.variableOne");
@@ -102,7 +102,7 @@ public class YoVariableHolderImplementationTest
    @Test // timeout=300000
    public void testGetVariable1()
    {
-      YoVariable<?> variable = yoVariableHolderImplementation.findVariable("robot.registryA", "variableOne");
+      YoVariable variable = yoVariableHolderImplementation.findVariable("robot.registryA", "variableOne");
       assertEquals(variable.getName(), "variableOne");
       assertEquals(variable.getFullNameWithNameSpace(), "robot.registryA.variableOne");
 
@@ -151,7 +151,7 @@ public class YoVariableHolderImplementationTest
    public void testGetVariables()
    {
       NameSpace nameSpace = new NameSpace("robot.registryA");
-      List<YoVariable<?>> variables = yoVariableHolderImplementation.findVariables(nameSpace);
+      List<YoVariable> variables = yoVariableHolderImplementation.findVariables(nameSpace);
       assertEquals(3, variables.size());
 
       nameSpace = new NameSpace("robot.registryB");
@@ -179,10 +179,10 @@ public class YoVariableHolderImplementationTest
    @Test // timeout=300000
    public void testGetVariables1()
    {
-      List<YoVariable<?>> variables = yoVariableHolderImplementation.findVariables("variableOne");
+      List<YoVariable> variables = yoVariableHolderImplementation.findVariables("variableOne");
       boolean aFound = false, bFound = false, cFound = false, c2Found = false;
 
-      for (YoVariable<?> variable : variables)
+      for (YoVariable variable : variables)
       {
          if (variable.getFullNameWithNameSpace().equals("robot.registryA.variableOne"))
             aFound = true;
@@ -210,7 +210,7 @@ public class YoVariableHolderImplementationTest
    @Test // timeout=300000
    public void testGetVariables2()
    {
-      List<YoVariable<?>> variables = yoVariableHolderImplementation.findVariables("robot.registryA", "variableOne");
+      List<YoVariable> variables = yoVariableHolderImplementation.findVariables("robot.registryA", "variableOne");
       assertEquals(1, variables.size());
 
       variables = yoVariableHolderImplementation.findVariables("robot", "variableOne");
@@ -220,7 +220,7 @@ public class YoVariableHolderImplementationTest
       assertEquals(2, variables.size());
       boolean cFound = false, c2Found = false, testPassed = true;
 
-      for (YoVariable<?> variable : variables)
+      for (YoVariable variable : variables)
       {
          if (variable.getFullNameWithNameSpace().equals("robot.registryC.variableOne"))
             cFound = true;

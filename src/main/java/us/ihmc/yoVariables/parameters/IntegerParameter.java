@@ -178,7 +178,7 @@ public class IntegerParameter extends YoParameter<IntegerParameter> implements I
    }
 
    @Override
-   YoVariable<?> getVariable()
+   YoVariable getVariable()
    {
       return value;
    }

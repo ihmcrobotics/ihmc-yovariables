@@ -105,7 +105,7 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
    }
 
    @Override
-   YoVariable<?> getVariable()
+   YoVariable getVariable()
    {
       return value;
    }

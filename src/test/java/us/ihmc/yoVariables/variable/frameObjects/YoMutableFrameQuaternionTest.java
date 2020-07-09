@@ -49,16 +49,9 @@ import us.ihmc.euclid.tuple4D.QuaternionBasicsTest;
 import us.ihmc.euclid.tuple4D.interfaces.QuaternionBasics;
 import us.ihmc.euclid.tuple4D.interfaces.QuaternionReadOnly;
 import us.ihmc.euclid.tuple4D.interfaces.Tuple4DReadOnly;
-import us.ihmc.yoVariables.variable.YoVariable;
 
 public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyTest<YoMutableFrameQuaternion>
 {
-   static
-   {
-      YoVariable.SAVE_STACK_TRACE = false;
-      YoVariable.warnAboutNullRegistries = false;
-   }
-
    public static final ReferenceFrame worldFrame = ReferenceFrame.getWorldFrame();
    public static final double EPSILON = 1e-10;
 

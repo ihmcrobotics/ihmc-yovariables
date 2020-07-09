@@ -1,13 +1,20 @@
 package us.ihmc.yoVariables.dataBuffer;
 
+import java.text.FieldPosition;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import us.ihmc.yoVariables.variable.YoBoolean;
+import us.ihmc.yoVariables.variable.YoDouble;
+import us.ihmc.yoVariables.variable.YoEnum;
+import us.ihmc.yoVariables.variable.YoInteger;
+import us.ihmc.yoVariables.variable.YoLong;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 public class DataBufferEntry implements DataEntry
 {
-   private final YoVariable<?> variable;
+   private final YoVariable variable;
    private double[] data;
 
    private boolean inverted = false;
@@ -22,7 +29,9 @@ public class DataBufferEntry implements DataEntry
    // private double manualMinScaling = 0.0, manualMaxScaling = 1.0;
    private boolean autoScale = true;
 
-   public DataBufferEntry(YoVariable<?> variable, int nPoints)
+   private final ValueStringConverter valueStringConverter;
+
+   public DataBufferEntry(YoVariable variable, int nPoints)
    {
       this.variable = variable;
 
@@ -32,6 +41,8 @@ public class DataBufferEntry implements DataEntry
       double[] emptyData = new double[nPoints];
       this.setData(emptyData, nPoints);
       reCalcMinMax();
+
+      valueStringConverter = ValueStringConverter.build(variable);
    }
 
    @Override
@@ -118,7 +129,7 @@ public class DataBufferEntry implements DataEntry
    } // this.manualMaxScaling;}
 
    @Override
-   public YoVariable<?> getVariable()
+   public YoVariable getVariable()
    {
       return variable;
    }
@@ -594,16 +605,54 @@ public class DataBufferEntry implements DataEntry
       return ret;
    }
 
+   private static final String SPACE_STRING = "  ";
+   private static final java.text.NumberFormat DOUBLE_FORMAT = new java.text.DecimalFormat(" 0.00000;-0.00000");
+   private static final FieldPosition FIELD_POSITION = new FieldPosition(NumberFormat.INTEGER_FIELD);
+
    @Override
    public void getVariableNameAndValue(StringBuffer stringBuffer)
    {
-      variable.getNameAndValueString(stringBuffer);
+      getVariableNameAndValueString(stringBuffer, variable.getValueAsDouble());
    }
 
    @Override
    public void getVariableNameAndValueAtIndex(StringBuffer stringBuffer, int index)
    {
-      variable.getNameAndValueStringFromDouble(stringBuffer, data[index]);
+      getVariableNameAndValueString(stringBuffer, data[index]);
+   }
+
+   private void getVariableNameAndValueString(StringBuffer stringBuffer, double value)
+   {
+      stringBuffer.append(variable.getName()).append(SPACE_STRING);
+      valueStringConverter.convertAndPack(stringBuffer, value);
+   }
+
+   private static interface ValueStringConverter
+   {
+      static ValueStringConverter build(YoVariable variable)
+      {
+         if (variable instanceof YoDouble)
+            return (buffer, value) -> DOUBLE_FORMAT.format(value, buffer, FIELD_POSITION);
+         else if (variable instanceof YoBoolean)
+            return (buffer, value) -> buffer.append(value > 0.5 ? true : false);
+         else if (variable instanceof YoInteger)
+            return (buffer, value) -> buffer.append((int) Math.round(value));
+         else if (variable instanceof YoLong)
+            return (buffer, value) -> buffer.append(Math.round(value));
+         else if (variable instanceof YoEnum<?>)
+            return (buffer, value) ->
+            {
+               int ordinal = (int) Math.round(value);
+               if (ordinal == YoEnum.NULL_VALUE)
+                  buffer.append("NULL");
+               else
+                  buffer.append(((YoEnum<?>) variable).getEnumValuesAsString()[ordinal]);
+            };
+         else
+            throw new UnsupportedOperationException("Unsupported type of YoVariable: " + variable.getClass().getSimpleName());
+      }
+
+      void convertAndPack(StringBuffer bufferToAppendTo, double value);
    }
 
 }

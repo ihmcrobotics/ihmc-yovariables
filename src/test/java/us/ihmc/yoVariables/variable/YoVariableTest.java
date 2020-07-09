@@ -20,10 +20,11 @@ import org.junit.jupiter.api.Test;
 import us.ihmc.robotics.Assert;
 import us.ihmc.yoVariables.listener.VariableChangedListener;
 import us.ihmc.yoVariables.registry.YoRegistry;
+import us.ihmc.yoVariables.registry.YoTools;
 
 public class YoVariableTest
 {
-   private YoVariable<?> yoVariable = null;
+   private YoVariable yoVariable = null;
    private YoRegistry registry = null;
    private ArrayList<TestVariableChangedListener> variableChangedListeners = null;
 
@@ -54,18 +55,16 @@ public class YoVariableTest
    @Test // timeout=300000
    public void testFullNameEndsWith()
    {
-      assertTrue(yoVariable.fullNameEndsWithCaseInsensitive("robot.testRegistry.variableOne"));
-      assertTrue(yoVariable.fullNameEndsWithCaseInsensitive("testRegistry.variableOne"));
-      assertTrue(yoVariable.fullNameEndsWithCaseInsensitive("variableOne"));
-
-      assertTrue(!yoVariable.fullNameEndsWithCaseInsensitive("bot.testRegistry.variableOne"));
-      assertTrue(!yoVariable.fullNameEndsWithCaseInsensitive(".testRegistry.variableOne"));
-      assertTrue(!yoVariable.fullNameEndsWithCaseInsensitive("gistry.variableOne"));
-      assertTrue(!yoVariable.fullNameEndsWithCaseInsensitive("ableOne"));
-      assertTrue(!yoVariable.fullNameEndsWithCaseInsensitive("robot.testRegistr"));
-
-      assertTrue(yoVariable.fullNameEndsWithCaseInsensitive("robot.testRegistry.VARIABLEONE"));
-      assertFalse(yoVariable.fullNameEndsWithCaseInsensitive("Robot.testRegistry.variableOne"));
+      assertTrue(YoTools.matchFullNameEndsWithCaseInsensitive(yoVariable, "robot.testRegistry.variableOne"));
+      assertTrue(YoTools.matchFullNameEndsWithCaseInsensitive(yoVariable, "testRegistry.variableOne"));
+      assertTrue(YoTools.matchFullNameEndsWithCaseInsensitive(yoVariable, "variableOne"));
+      assertTrue(!YoTools.matchFullNameEndsWithCaseInsensitive(yoVariable, "bot.testRegistry.variableOne"));
+      assertTrue(!YoTools.matchFullNameEndsWithCaseInsensitive(yoVariable, ".testRegistry.variableOne"));
+      assertTrue(!YoTools.matchFullNameEndsWithCaseInsensitive(yoVariable, "gistry.variableOne"));
+      assertTrue(!YoTools.matchFullNameEndsWithCaseInsensitive(yoVariable, "ableOne"));
+      assertTrue(!YoTools.matchFullNameEndsWithCaseInsensitive(yoVariable, "robot.testRegistr"));
+      assertTrue(YoTools.matchFullNameEndsWithCaseInsensitive(yoVariable, "robot.testRegistry.VARIABLEONE"));
+      assertFalse(YoTools.matchFullNameEndsWithCaseInsensitive(yoVariable, "Robot.testRegistry.variableOne"));
    }
 
    @Test // timeout=300000
@@ -551,15 +550,15 @@ public class YoVariableTest
     */
    private class TestVariableChangedListener implements VariableChangedListener
    {
-      private YoVariable<?> lastVariableChanged = null;
+      private YoVariable lastVariableChanged = null;
 
       @Override
-      public void notifyOfVariableChange(YoVariable<?> v)
+      public void notifyOfVariableChange(YoVariable v)
       {
          lastVariableChanged = v;
       }
 
-      public YoVariable<?> getLastVariableChanged()
+      public YoVariable getLastVariableChanged()
       {
          return lastVariableChanged;
       }

@@ -178,7 +178,7 @@ public class LongParameter extends YoParameter<LongParameter> implements LongPro
    }
 
    @Override
-   YoVariable<?> getVariable()
+   YoVariable getVariable()
    {
       return value;
    }

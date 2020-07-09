@@ -118,6 +118,6 @@ public interface YoRegistryChangedListener
        * 
        * @return the added/removed variable, or {@code null} if not applicable.
        */
-      YoVariable<?> getTargetVariable();
+      YoVariable getTargetVariable();
    }
 }

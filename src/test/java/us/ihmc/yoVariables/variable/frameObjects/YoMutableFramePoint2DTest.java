@@ -33,16 +33,9 @@ import us.ihmc.euclid.tuple2D.Point2D;
 import us.ihmc.euclid.tuple2D.Vector2D;
 import us.ihmc.euclid.tuple2D.interfaces.Tuple2DBasics;
 import us.ihmc.euclid.tuple3D.Point3D;
-import us.ihmc.yoVariables.variable.YoVariable;
 
 public class YoMutableFramePoint2DTest extends FrameTuple2DBasicsTest<YoMutableFramePoint2D>
 {
-   static
-   {
-      YoVariable.SAVE_STACK_TRACE = false;
-      YoVariable.warnAboutNullRegistries = false;
-   }
-
    public static final ReferenceFrame worldFrame = ReferenceFrame.getWorldFrame();
 
    @Override

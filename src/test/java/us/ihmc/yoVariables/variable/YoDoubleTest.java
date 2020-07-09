@@ -4,9 +4,6 @@ import static us.ihmc.robotics.Assert.assertEquals;
 import static us.ihmc.robotics.Assert.assertFalse;
 import static us.ihmc.robotics.Assert.assertTrue;
 
-import java.text.DecimalFormat;
-import java.text.FieldPosition;
-import java.text.NumberFormat;
 import java.util.Random;
 
 import org.junit.jupiter.api.AfterEach;
@@ -157,32 +154,6 @@ public class YoDoubleTest
    }
 
    @Test // timeout=300000
-   public void testSetValueWithStringBuffer()
-   {
-      FieldPosition fieldPosition = new FieldPosition(NumberFormat.INTEGER_FIELD);
-      NumberFormat doubleFormat = new DecimalFormat(" 0.00000;-0.00000");
-
-      double randomNumber = 100000 * Math.random();
-      randomNumber = Math.round(randomNumber);
-      randomNumber /= 100000; //five decimal format as determined by doubleFormat under <p>getValue</p> method.
-      StringBuffer stringBufferTest = new StringBuffer();
-      stringBufferTest.append("Test case:");
-
-      yoDouble1.set(randomNumber);
-      yoDouble1.getValueString(stringBufferTest);
-
-      StringBuffer expectedStringBuffer = new StringBuffer();
-      expectedStringBuffer.append("Test case:");
-      doubleFormat.format(randomNumber, expectedStringBuffer, fieldPosition);
-      //         expectedStringBuffer.append(" " + randomNumber); //added space that occurs in <p>getValue</p> method.
-
-      System.out.println("Expected String Buffer: " + expectedStringBuffer.toString());
-      System.out.println("String Buffer: " + stringBufferTest.toString());
-
-      assertEquals(expectedStringBuffer.toString(), stringBufferTest.toString());
-   }
-
-   @Test // timeout=300000
    public void testGetAndSetMethods()
    {
       double randomNumber = Math.random();
@@ -208,20 +179,6 @@ public class YoDoubleTest
 
       yoDouble1.set(10.0);
       Assert.assertEquals(10.0, yoDouble1.getDoubleValue(), EPSILON);
-   }
-
-   @Test // timeout=300000
-   public void testGetValueAsLongBitsAndSetValueFromLongBits()
-   {
-      long longValue = random.nextLong();
-      yoDouble1.setValueFromLongBits(longValue);
-      Assert.assertEquals(longValue, yoDouble1.getValueAsLongBits());
-
-      YoDouble yoDouble = new YoDouble("doubleYo", registry);
-      yoDouble.set(Double.NEGATIVE_INFINITY);
-
-      yoDouble1.setValue(yoDouble, true);
-      Assert.assertEquals(0xfff0000000000000L, yoDouble1.getValueAsLongBits());
    }
 
    @Test // timeout=300000

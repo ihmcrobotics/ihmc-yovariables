@@ -22,6 +22,7 @@ import java.util.NoSuchElementException;
 import us.ihmc.yoVariables.listener.ParameterChangedListener;
 import us.ihmc.yoVariables.listener.VariableChangedListener;
 import us.ihmc.yoVariables.registry.NameSpace;
+import us.ihmc.yoVariables.registry.YoTools;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 /**
@@ -151,12 +152,12 @@ public abstract class YoParameter<T extends YoParameter<T>>
 
    YoParameter(String name, String description)
    {
-      checkForIllegalCharacters(name);
+      YoTools.checkForIllegalCharacters(name);
       this.name = name;
       this.description = description;
    }
 
-   abstract YoVariable<?> getVariable();
+   abstract YoVariable getVariable();
 
    abstract void setToString(String valueString);
 
@@ -175,15 +176,6 @@ public abstract class YoParameter<T extends YoParameter<T>>
    public double getManualScalingMax()
    {
       return getVariable().getManualScalingMax();
-   }
-
-   private static void checkForIllegalCharacters(String name)
-   {
-      if (YoVariable.ILLEGAL_CHARACTERS.matcher(name).find())
-      {
-         throw new RuntimeException(name
-               + " is an invalid name for a Parameter. A Parameter cannot have crazy characters in them, otherwise namespaces will not work.");
-      }
    }
 
    void checkLoaded()
@@ -237,7 +229,7 @@ public abstract class YoParameter<T extends YoParameter<T>>
       private final ArrayList<ParameterChangedListener> parameterChangedListeners = new ArrayList<>();
 
       @Override
-      public void notifyOfVariableChange(YoVariable<?> v)
+      public void notifyOfVariableChange(YoVariable v)
       {
          for (int i = 0; i < parameterChangedListeners.size(); i++)
          {

@@ -80,11 +80,11 @@ public class YoTools
 
    public static YoParameter<?> findYoParameter(SearchQuery query, Predicate<YoParameter<?>> predicate, YoRegistry registry)
    {
-      Predicate<YoVariable<?>> yoVariablePredicate = YoVariable::isParameter;
+      Predicate<YoVariable> yoVariablePredicate = YoVariable::isParameter;
       if (predicate != null)
          yoVariablePredicate = yoVariablePredicate.and(variable -> predicate.test(variable.getParameter()));
 
-      YoVariable<?> result = findYoVariable(query, yoVariablePredicate, registry);
+      YoVariable result = findYoVariable(query, yoVariablePredicate, registry);
       if (result == null)
          return null;
       else
@@ -119,15 +119,15 @@ public class YoTools
    @SuppressWarnings({"unchecked", "rawtypes"})
    public static <E extends Enum<E>> YoEnum<E> findYoEnum(SearchQuery query, Class<E> enumType, YoRegistry registry)
    {
-      Predicate<YoVariable<?>> predicate = variable -> variable instanceof YoEnum && ((YoEnum) variable).getEnumType() == enumType;
+      Predicate<YoVariable> predicate = variable -> variable instanceof YoEnum && ((YoEnum) variable).getEnumType() == enumType;
       return (YoEnum<E>) findYoVariable(query, predicate, registry);
    }
 
-   public static YoVariable<?> findYoVariable(SearchQuery query, Predicate<YoVariable<?>> predicate, YoRegistry registry)
+   public static YoVariable findYoVariable(SearchQuery query, Predicate<YoVariable> predicate, YoRegistry registry)
    {
       if (query.parentNameSpace == null || registry.getNameSpace().endsWith(query.parentNameSpace))
       {
-         YoVariable<?> variable = registry.getVariable(query.name);
+         YoVariable variable = registry.getVariable(query.name);
          if (variable != null)
          {
             if (predicate == null || predicate.test(variable))
@@ -137,7 +137,7 @@ public class YoTools
 
       for (YoRegistry child : registry.getChildren())
       {
-         YoVariable<?> variable = findYoVariable(query, predicate, child);
+         YoVariable variable = findYoVariable(query, predicate, child);
          if (variable != null)
             return variable;
       }
@@ -145,14 +145,14 @@ public class YoTools
       return null;
    }
 
-   public static List<YoVariable<?>> findYoVariables(SearchQuery query, Predicate<YoVariable<?>> predicate, YoRegistry registry,
-                                                     List<YoVariable<?>> matchedVariablesToPack)
+   public static List<YoVariable> findYoVariables(SearchQuery query, Predicate<YoVariable> predicate, YoRegistry registry,
+                                                  List<YoVariable> matchedVariablesToPack)
    {
       if (matchedVariablesToPack == null)
          matchedVariablesToPack = new ArrayList<>();
       if (query.parentNameSpace == null || registry.getNameSpace().endsWith(query.parentNameSpace))
       {
-         YoVariable<?> variable = registry.getVariable(query.name);
+         YoVariable variable = registry.getVariable(query.name);
          if (variable != null)
          {
             if (predicate == null || predicate.test(variable))
@@ -199,7 +199,7 @@ public class YoTools
 
    public static void printAllVariablesIncludingDescendants(YoRegistry registry, PrintStream out)
    {
-      for (YoVariable<?> var : registry.getVariables())
+      for (YoVariable var : registry.getVariables())
       {
          out.print(var.getFullNameWithNameSpace() + "\n");
       }
@@ -356,22 +356,22 @@ public class YoTools
       return new NameSpace(subNames);
    }
 
-   public static List<YoVariable<?>> searchVariablesRegex(String regularExpression, YoRegistry registry)
+   public static List<YoVariable> searchVariablesRegex(String regularExpression, YoRegistry registry)
    {
       return searchVariablesPattern(Pattern.compile(regularExpression), registry);
    }
 
-   public static List<YoVariable<?>> searchVariablesPattern(Pattern pattern, YoRegistry registry)
+   public static List<YoVariable> searchVariablesPattern(Pattern pattern, YoRegistry registry)
    {
       return searchVariablesPattern(pattern, registry, null);
    }
 
-   public static List<YoVariable<?>> searchVariablesPattern(Pattern pattern, YoRegistry registry, List<YoVariable<?>> variablesToPack)
+   public static List<YoVariable> searchVariablesPattern(Pattern pattern, YoRegistry registry, List<YoVariable> variablesToPack)
    {
       if (variablesToPack == null)
          variablesToPack = new ArrayList<>();
 
-      for (YoVariable<?> variable : registry.getVariables())
+      for (YoVariable variable : registry.getVariables())
       {
          if (pattern.matcher(variable.getName()).matches())
             variablesToPack.add(variable);
@@ -383,5 +383,26 @@ public class YoTools
       }
 
       return variablesToPack;
+   }
+
+   public static boolean matchFullNameEndsWithCaseInsensitive(YoVariable yoVariable, String name)
+   {
+      int lastDotIndex = name.lastIndexOf(".");
+
+      if (lastDotIndex == -1)
+      {
+         return yoVariable.getName().toLowerCase().equals(name.toLowerCase());
+      }
+
+      String endOfName = name.substring(lastDotIndex + 1);
+      String nameSpace = name.substring(0, lastDotIndex);
+
+      if (!endOfName.toLowerCase().equals(yoVariable.getName().toLowerCase()))
+         return false;
+
+      if (yoVariable.getYoRegistry() == null)
+         return false;
+
+      return yoVariable.getYoRegistry().getNameSpace().endsWith(nameSpace);
    }
 }

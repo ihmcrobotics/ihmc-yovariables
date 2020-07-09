@@ -179,7 +179,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
    }
 
    @Override
-   YoVariable<?> getVariable()
+   YoVariable getVariable()
    {
       return value;
    }

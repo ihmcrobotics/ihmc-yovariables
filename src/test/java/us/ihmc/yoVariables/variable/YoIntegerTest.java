@@ -118,29 +118,6 @@ public class YoIntegerTest
    }
 
    @Test // timeout=300000
-   public void testGetValueString()
-   {
-      Assert.assertEquals(0, yoInteger.getIntegerValue());
-      int value = random.nextInt();
-      yoInteger.set(value);
-      StringBuffer stringBuffer = new StringBuffer();
-      yoInteger.getValueString(stringBuffer);
-      assertEquals("" + value, stringBuffer.toString());
-   }
-
-   @Test // timeout=300000
-   public void testGetValueStringFromDouble()
-   {
-      Assert.assertEquals(0, yoInteger.getIntegerValue());
-      double doubleValue = random.nextDouble();
-      int value = (int) Math.round(doubleValue);
-      yoInteger.setValueFromDouble(doubleValue);
-      StringBuffer stringBuffer = new StringBuffer();
-      yoInteger.getValueStringFromDouble(stringBuffer, doubleValue);
-      assertEquals("" + value, stringBuffer.toString());
-   }
-
-   @Test // timeout=300000
    public void testGetYoVariableType()
    {
       Assert.assertEquals(YoVariableType.INTEGER, yoInteger.getYoVariableType());
@@ -170,15 +147,6 @@ public class YoIntegerTest
       Assert.assertEquals(yoInteger2.getDescription(), duplicate.getDescription());
       Assert.assertEquals(yoInteger2.getManualScalingMin(), duplicate.getManualScalingMin(), EPSILON);
       Assert.assertEquals(yoInteger2.getManualScalingMax(), duplicate.getManualScalingMax(), EPSILON);
-   }
-
-   @Test // timeout=300000
-   public void testSetValue()
-   {
-      YoInteger yoInteger2 = new YoInteger("var2", "descriptionTest", registry);
-      boolean notifyListeners = true;
-      yoInteger.setValue(yoInteger2, notifyListeners);
-      Assert.assertEquals(yoInteger2.getIntegerValue(), yoInteger.getIntegerValue());
    }
 
    @Test // timeout = 300000

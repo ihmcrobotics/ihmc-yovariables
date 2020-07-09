@@ -184,7 +184,7 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
    }
 
    @Override
-   YoVariable<?> getVariable()
+   YoVariable getVariable()
    {
       return this.value;
    }

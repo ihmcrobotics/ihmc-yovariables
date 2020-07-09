@@ -12,7 +12,7 @@ public interface YoVariableHolder
     *
     * @return ArrayList
     */
-   public abstract List<YoVariable<?>> getVariables();
+   public abstract List<YoVariable> getVariables();
 
    /**
     * Gets a YoVariable with the given name if it is in this YoVariableHolder, otherwise returns null.
@@ -23,7 +23,7 @@ public interface YoVariableHolder
     *             ending must match that of name.
     * @return YoVariable matching the given name.
     */
-   public abstract YoVariable<?> findVariable(String name);
+   public abstract YoVariable findVariable(String name);
 
    /**
     * Checks if this YoVariableHolder holds exactly one YoVariable with the given name. If so, returns
@@ -48,7 +48,7 @@ public interface YoVariableHolder
     *                        RuntimeException.
     * @return YoVariable matching the given nameSpace and name.
     */
-   public abstract YoVariable<?> findVariable(String nameSpaceEnding, String name);
+   public abstract YoVariable findVariable(String nameSpaceEnding, String name);
 
    /**
     * Checks if this YoVariableHolder holds exactly one YoVariable with the given nameSpace and name.
@@ -74,7 +74,7 @@ public interface YoVariableHolder
     *                        RuntimeException.
     * @return ArrayList<YoVariable> matching the given nameSpace and name.
     */
-   public abstract List<YoVariable<?>> findVariables(String nameSpaceEnding, String name);
+   public abstract List<YoVariable> findVariables(String nameSpaceEnding, String name);
 
    /**
     * Returns all the YoVariables with the given name that are in this YoVariableHolder, empty if there
@@ -84,7 +84,7 @@ public interface YoVariableHolder
     *             nameSpace ending must match that of name.
     * @return ArrayList<YoVariable> matching the given name.
     */
-   public abstract List<YoVariable<?>> findVariables(String name);
+   public abstract List<YoVariable> findVariables(String name);
 
    /**
     * Returns all the YoVariables with the given nameSpace that are in this YoVariableHolder, empty if
@@ -93,6 +93,6 @@ public interface YoVariableHolder
     * @param nameSpace NameSpace to match.
     * @return ArrayList<YoVariable> matching YoVariables.
     */
-   public abstract List<YoVariable<?>> findVariables(NameSpace nameSpace);
+   public abstract List<YoVariable> findVariables(NameSpace nameSpace);
 
 }

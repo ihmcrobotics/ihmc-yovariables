@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import us.ihmc.yoVariables.listener.RewoundListener;
+import us.ihmc.yoVariables.registry.YoTools;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoVariable;
 import us.ihmc.yoVariables.variable.YoVariableList;
@@ -90,7 +91,7 @@ public class DataBuffer extends YoVariableHolderImplementation
       entries.add(entry);
    }
 
-   public DataBufferEntry addVariable(YoVariable<?> newVariable, int nPoints)
+   public DataBufferEntry addVariable(YoVariable newVariable, int nPoints)
    {
       addVariableToHolder(newVariable);
 
@@ -105,18 +106,18 @@ public class DataBuffer extends YoVariableHolderImplementation
       return entry;
    }
 
-   public void addVariable(YoVariable<?> newVariable)
+   public void addVariable(YoVariable newVariable)
    {
       addVariable(newVariable, bufferSize);
    }
 
-   public void addVariables(List<YoVariable<?>> variables)
+   public void addVariables(List<YoVariable> variables)
    {
       entries.ensureCapacity(entries.size() + variables.size()); // do this first so that 'entries' will only have to grow once.
 
       for (int i = 0; i < variables.size(); i++)
       {
-         YoVariable<?> v = variables.get(i);
+         YoVariable v = variables.get(i);
 
          //       System.out.println("Adding YoVariable: " + v);
 
@@ -129,9 +130,9 @@ public class DataBuffer extends YoVariableHolderImplementation
       dataBufferListeners.add(dataBufferListener);
    }
 
-   public List<YoVariable<?>> getVariablesThatContain(String searchString, boolean caseSensitive, List<YoVariable<?>> currentlyMatched)
+   public List<YoVariable> getVariablesThatContain(String searchString, boolean caseSensitive, List<YoVariable> currentlyMatched)
    {
-      ArrayList<YoVariable<?>> ret = null;
+      ArrayList<YoVariable> ret = null;
 
       if (currentlyMatched != null)
       {
@@ -142,7 +143,7 @@ public class DataBuffer extends YoVariableHolderImplementation
 
          for (int i = 0; i < currentlyMatched.size(); i++)
          {
-            YoVariable<?> entry = currentlyMatched.get(i);
+            YoVariable entry = currentlyMatched.get(i);
 
             if (entry.getName().toLowerCase().contains(searchString))
             {
@@ -159,9 +160,9 @@ public class DataBuffer extends YoVariableHolderImplementation
       return ret;
    }
 
-   public List<YoVariable<?>> getVariablesThatStartWith(String searchString)
+   public List<YoVariable> getVariablesThatStartWith(String searchString)
    {
-      ArrayList<YoVariable<?>> ret = null;
+      ArrayList<YoVariable> ret = null;
 
       for (int i = 0; i < entries.size(); i++)
       {
@@ -186,9 +187,9 @@ public class DataBuffer extends YoVariableHolderImplementation
       for (int i = 0; i < entries.size(); i++)
       {
          DataBufferEntry entry = entries.get(i);
-         YoVariable<?> variable = entry.getVariable();
+         YoVariable variable = entry.getVariable();
 
-         if (variable.fullNameEndsWithCaseInsensitive(name))
+         if (YoTools.matchFullNameEndsWithCaseInsensitive(variable, name))
          {
             return entry;
          }
@@ -198,7 +199,7 @@ public class DataBuffer extends YoVariableHolderImplementation
    }
 
    @Override
-   public DataBufferEntry getEntry(YoVariable<?> v)
+   public DataBufferEntry getEntry(YoVariable v)
    {
       for (int i = 0; i < entries.size(); i++)
       {
@@ -218,9 +219,9 @@ public class DataBuffer extends YoVariableHolderImplementation
       return entries;
    }
 
-   public List<YoVariable<?>> getVariables()
+   public List<YoVariable> getVariables()
    {
-      ArrayList<YoVariable<?>> ret = new ArrayList<>(entries.size());
+      ArrayList<YoVariable> ret = new ArrayList<>(entries.size());
 
       for (int i = 0; i < entries.size(); i++)
       {
@@ -232,13 +233,13 @@ public class DataBuffer extends YoVariableHolderImplementation
       return ret;
    }
 
-   public List<YoVariable<?>> getVars(String[] varNames, String[] regularExpressions)
+   public List<YoVariable> getVars(String[] varNames, String[] regularExpressions)
    {
       YoVariableList tempList = new YoVariableList("temp");
 
       for (int i = 0; i < entries.size(); i++)
       {
-         YoVariable<?> var = entries.get(i).getVariable();
+         YoVariable var = entries.get(i).getVariable();
 
          tempList.addVariable(var);
       }
@@ -544,7 +545,7 @@ public class DataBuffer extends YoVariableHolderImplementation
       gotoInPoint();
    }
 
-   public double computeAverage(YoVariable<?> variable)
+   public double computeAverage(YoVariable variable)
    {
       DataBufferEntry entry = this.getEntry(variable);
       return entry.computeAverage();
@@ -892,7 +893,7 @@ public class DataBuffer extends YoVariableHolderImplementation
       for (int i = 0; i < dataBufferListeners.size(); i++)
       {
          DataBufferListener dataBufferListener = dataBufferListeners.get(i);
-         YoVariable<?>[] yoVariables = dataBufferListener.getVariablesOfInterest(this);
+         YoVariable[] yoVariables = dataBufferListener.getVariablesOfInterest(this);
          double[] values = new double[yoVariables.length];
 
          for (int j = 0; j < yoVariables.length; j++)
@@ -974,9 +975,9 @@ public class DataBuffer extends YoVariableHolderImplementation
       return keyPoints.getPreviousTime(index);
    }
 
-   public List<YoVariable<?>> getVariablesThatStartWith(String searchString, boolean caseSensitive)
+   public List<YoVariable> getVariablesThatStartWith(String searchString, boolean caseSensitive)
    {
-      ArrayList<YoVariable<?>> ret = null;
+      ArrayList<YoVariable> ret = null;
 
       if (!caseSensitive)
       {
@@ -1021,7 +1022,7 @@ public class DataBuffer extends YoVariableHolderImplementation
 
       for (DataBufferEntry entry : entries)
       {
-         YoVariable<?> variable = entry.getVariable();
+         YoVariable variable = entry.getVariable();
          DataBufferEntry entry2 = this.getEntry(variable.getName());
 
          if (entry2 == null)

@@ -124,7 +124,7 @@ public class YoVariableListTest
       time.set(2.2);
 
       int numberOfVariables = 4000;
-      ArrayList<YoVariable<?>> variables = new ArrayList<>();
+      ArrayList<YoVariable> variables = new ArrayList<>();
       YoVariableList varList = new YoVariableList("test");
 
       for (int i = 0; i < numberOfVariables; i++)
@@ -144,7 +144,7 @@ public class YoVariableListTest
 
       for (int i = 0; i < variables.size(); i++)
       {
-         YoVariable<?> yoVariable = variables.get(i);
+         YoVariable yoVariable = variables.get(i);
 
          assertTrue(varList.hasVariableWithName(yoVariable.getFullNameWithNameSpace()));
          assertTrue(yoVariable == varList.getVariable(yoVariable.getFullNameWithNameSpace()));
@@ -198,14 +198,14 @@ public class YoVariableListTest
       //YoVariable[]
       listThree.addVariable(a);
 
-      YoVariable<?>[] array = new YoVariable[2];
+      YoVariable[] array = new YoVariable[2];
       array[0] = b;
       array[1] = c;
 
       listThree.addVariables(array);
 
       //ArrayList
-      ArrayList<YoVariable<?>> arrayList = new ArrayList<>();
+      ArrayList<YoVariable> arrayList = new ArrayList<>();
       arrayList.add(b);
       arrayList.add(c);
 
@@ -256,7 +256,7 @@ public class YoVariableListTest
       String[] names = list.getVariableNames();
       for (int i = 0; i < names.length; i++)
       {
-         YoVariable<?> variable = list.getVariable(i);
+         YoVariable variable = list.getVariable(i);
          String name = variable.toString();
          assertEquals(names[i], name.substring(0, 1));
       }
@@ -266,7 +266,7 @@ public class YoVariableListTest
       list.removeAllVariables();
       Assert.assertEquals(list.toString(), listThree.toString());
 
-      YoVariable<?>[] allVariables = listTwo.getAllVariables();
+      YoVariable[] allVariables = listTwo.getAllVariables();
 
       for (int i = 0; i < listTwo.size(); i++)
       {
@@ -295,7 +295,7 @@ public class YoVariableListTest
       names[0] = "a_arm";
       names[1] = "b_arm";
 
-      List<YoVariable<?>> matchedName = list.getMatchingVariables(names, null);
+      List<YoVariable> matchedName = list.getMatchingVariables(names, null);
 
       assertTrue(matchedName.contains(a));
       assertTrue(matchedName.contains(b));
@@ -304,7 +304,7 @@ public class YoVariableListTest
 
       String[] regularExpressions = {".*"};
 
-      List<YoVariable<?>> matchedAll = list.getMatchingVariables(null, regularExpressions);
+      List<YoVariable> matchedAll = list.getMatchingVariables(null, regularExpressions);
 
       assertTrue(matchedAll.contains(a));
       assertTrue(matchedAll.contains(b));
@@ -312,14 +312,14 @@ public class YoVariableListTest
       assertFalse(matchedAll.contains(f));
 
       String regexpStartWithC[] = {"c.*"};
-      List<YoVariable<?>> matchedStartWithC = list.getMatchingVariables(new String[0], regexpStartWithC);
+      List<YoVariable> matchedStartWithC = list.getMatchingVariables(new String[0], regexpStartWithC);
 
       assertFalse(matchedStartWithC.contains(a));
       assertFalse(matchedStartWithC.contains(b));
       assertTrue(matchedStartWithC.contains(c));
       assertFalse(matchedStartWithC.contains(f));
 
-      List<YoVariable<?>> namesOrStartWithC = list.getMatchingVariables(names, regexpStartWithC);
+      List<YoVariable> namesOrStartWithC = list.getMatchingVariables(names, regexpStartWithC);
 
       assertTrue(namesOrStartWithC.contains(a));
       assertTrue(namesOrStartWithC.contains(b));
@@ -330,7 +330,7 @@ public class YoVariableListTest
       String[] namesThatAreNotInList = new String[2];
       namesThatAreNotInList[0] = "foo";
       namesThatAreNotInList[1] = "bar";
-      List<YoVariable<?>> matchedNameShouldBeEmpty = list.getMatchingVariables(namesThatAreNotInList, null);
+      List<YoVariable> matchedNameShouldBeEmpty = list.getMatchingVariables(namesThatAreNotInList, null);
       assertTrue(matchedNameShouldBeEmpty.isEmpty());
    }
 

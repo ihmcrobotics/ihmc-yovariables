@@ -9,7 +9,7 @@ import us.ihmc.yoVariables.registry.YoRegistry;
  * All abstract functions of YoVariable will be implemented using integer type for interpretation.
  * Values will be interpreted, compared, and returned as integers rather than other native types.
  */
-public class YoInteger extends YoVariable<YoInteger> implements IntegerProvider
+public class YoInteger extends YoVariable implements IntegerProvider
 {
    /**
     * Internal integer value of this YoInteger.
@@ -202,29 +202,6 @@ public class YoInteger extends YoVariable<YoInteger> implements IntegerProvider
    }
 
    /**
-    * Appends the value of this YoInteger to the end of the given StringBuffer.
-    *
-    * @param stringBuffer StringBuffer to which the value will be appended
-    */
-   @Override
-   public void getValueString(StringBuffer stringBuffer)
-   {
-      stringBuffer.append(val);
-   }
-
-   /**
-    * Appends the YoInteger representation of the given double value to the given StringBuffer.
-    *
-    * @param stringBuffer StringBuffer to append to
-    * @param doubleValue  double value to convert to YoInteger representation
-    */
-   @Override
-   public void getValueStringFromDouble(StringBuffer stringBuffer, double doubleValue)
-   {
-      stringBuffer.append(convertFromDoubleToInt(doubleValue));
-   }
-
-   /**
     * Retrieves this YoInteger's value as a long.
     *
     * @return return-casted long value of this YoInteger's internal integer value
@@ -262,20 +239,6 @@ public class YoInteger extends YoVariable<YoInteger> implements IntegerProvider
       YoInteger retVar = new YoInteger(getName(), getDescription(), newRegistry, getManualScalingMin(), getManualScalingMax());
       retVar.set(getIntegerValue());
       return retVar;
-   }
-
-   /**
-    * Sets the internal value of this YoInteger to the current value of the passed YoInteger.
-    *
-    * @param value           YoInteger value to set this variable's value to
-    * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyVariableChangedListeners()}
-    * @return boolean whether or not internal state differed from the passed value
-    */
-   @Override
-   public boolean setValue(YoInteger value, boolean notifyListeners)
-   {
-      return set(value.getIntegerValue(), notifyListeners);
    }
 
    /**

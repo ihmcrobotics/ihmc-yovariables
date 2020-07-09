@@ -122,29 +122,6 @@ public class YoLongTest
    }
 
    @Test // timeout=300000
-   public void testGetValueString()
-   {
-      Assert.assertEquals(0, yoLong.getLongValue());
-      int value = random.nextInt();
-      yoLong.set(value);
-      StringBuffer stringBuffer = new StringBuffer();
-      yoLong.getValueString(stringBuffer);
-      assertEquals("" + value, stringBuffer.toString());
-   }
-
-   @Test // timeout=300000
-   public void testGetValueStringFromDouble()
-   {
-      Assert.assertEquals(0, yoLong.getLongValue());
-      double doubleValue = random.nextDouble();
-      int value = (int) Math.round(doubleValue);
-      yoLong.setValueFromDouble(doubleValue);
-      StringBuffer stringBuffer = new StringBuffer();
-      yoLong.getValueStringFromDouble(stringBuffer, doubleValue);
-      assertEquals("" + value, stringBuffer.toString());
-   }
-
-   @Test // timeout=300000
    public void testGetYoVariableType()
    {
       Assert.assertEquals(YoVariableType.LONG, yoLong.getYoVariableType());
@@ -174,15 +151,6 @@ public class YoLongTest
       Assert.assertEquals(yoLong2.getDescription(), duplicate.getDescription());
       Assert.assertEquals(yoLong2.getManualScalingMin(), duplicate.getManualScalingMin(), EPSILON);
       Assert.assertEquals(yoLong2.getManualScalingMax(), duplicate.getManualScalingMax(), EPSILON);
-   }
-
-   @Test // timeout=300000
-   public void testSetValue()
-   {
-      YoLong yoLong2 = new YoLong("var2", "descriptionTest", registry);
-      boolean notifyListeners = true;
-      yoLong.setValue(yoLong2, notifyListeners);
-      Assert.assertEquals(yoLong2.getLongValue(), yoLong.getLongValue());
    }
 
    @Test // timeout = 300000

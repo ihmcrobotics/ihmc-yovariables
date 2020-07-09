@@ -11,7 +11,7 @@ import us.ihmc.yoVariables.registry.YoRegistry;
  * All abstract functions of YoVariable will be implemented using enum type for interpretation.
  * Values will be interpreted, compared, and returned as enums rather than any native types.
  */
-public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements EnumProvider<T>
+public class YoEnum<T extends Enum<T>> extends YoVariable implements EnumProvider<T>
 {
    public static final int NULL_VALUE = -1;
 
@@ -439,38 +439,6 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
    }
 
    /**
-    * Appends the value of this YoEnum to the end of the given StringBuffer.
-    *
-    * @param stringBuffer StringBuffer to which the value will be appended
-    */
-   @Override
-   public void getValueString(StringBuffer stringBuffer)
-   {
-      stringBuffer.append(getStringValue());
-   }
-
-   /**
-    * Appends the YoEnum representation of the given double value to the given StringBuffer.
-    *
-    * @param stringBuffer StringBuffer to append to
-    * @param doubleValue  double value to convert to YoEnum representation
-    */
-   @Override
-   public void getValueStringFromDouble(StringBuffer stringBuffer, double doubleValue)
-   {
-      int index = (int) Math.round(doubleValue);
-      checkBounds(index);
-      if (index == NULL_VALUE)
-      {
-         stringBuffer.append("null");
-      }
-      else
-      {
-         stringBuffer.append(enumValuesAsString[index]);
-      }
-   }
-
-   /**
     * Retrieves this YoEnum's value as a long.
     *
     * @return return-casted long value of this YoEnum's internal enum value
@@ -508,20 +476,6 @@ public class YoEnum<T extends Enum<T>> extends YoVariable<YoEnum<T>> implements 
       YoEnum<T> retVar = new YoEnum<>(getName(), getDescription(), newRegistry, getEnumType(), getAllowNullValue());
       retVar.set(getEnumValue());
       return retVar;
-   }
-
-   /**
-    * Sets the internal value of this YoEnum to the current value of the passed YoEnum.
-    *
-    * @param value           YoEnum value to set this variable's value to
-    * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyVariableChangedListeners()}
-    * @return boolean whether or not internal state differed from the passed value
-    */
-   @Override
-   public boolean setValue(YoEnum<T> value, boolean notifyListeners)
-   {
-      return set(value.getEnumValue(), notifyListeners);
    }
 
    /**

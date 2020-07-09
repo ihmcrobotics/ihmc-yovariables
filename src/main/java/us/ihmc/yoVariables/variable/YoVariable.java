@@ -1,10 +1,7 @@
 package us.ihmc.yoVariables.variable;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
-import java.util.regex.Pattern;
 
 import us.ihmc.yoVariables.listener.VariableChangedListener;
 import us.ihmc.yoVariables.parameters.YoParameter;
@@ -24,18 +21,12 @@ import us.ihmc.yoVariables.registry.YoTools;
  * stored in the DataBuffer which may be exported for later use.
  * </p>
  */
-public abstract class YoVariable<T extends YoVariable<T>>
+public abstract class YoVariable
 {
-   public static boolean SAVE_STACK_TRACE = true;
-   public static final Pattern ILLEGAL_CHARACTERS = YoTools.ILLEGAL_CHARACTERS_PATTERN;
-   private static final String SPACE_STRING = "  ";
-
    public static final int MAX_LENGTH_SHORT_NAME = 20;
-   public static boolean warnAboutNullRegistries = true;
 
-   protected transient String stackTraceAtInitialization;
    protected ArrayList<VariableChangedListener> variableChangedListeners;
-   protected double manualMinScaling = 0.0, manualMaxScaling = 1.0, stepSize = 0.1;
+   protected double manualMinScaling = 0.0, manualMaxScaling = 1.0;
 
    private String name;
    private String shortName;
@@ -62,18 +53,6 @@ public abstract class YoVariable<T extends YoVariable<T>>
       this.shortName = createShortName(name);
       this.description = description;
       this.variableChangedListeners = null;
-
-      if (SAVE_STACK_TRACE)
-      {
-         Throwable t = new Throwable();
-         StringWriter sw = new StringWriter();
-         PrintWriter pw = new PrintWriter(sw);
-         t.printStackTrace(pw);
-         stackTraceAtInitialization = sw.toString();
-         stackTraceAtInitialization = stackTraceAtInitialization.substring(21);
-         stackTraceAtInitialization = stackTraceAtInitialization.replaceAll("at(.*)\\(", "at ");
-         stackTraceAtInitialization = stackTraceAtInitialization.replaceAll("\\)", "");
-      }
 
       if (registry != null)
          registry.addVariable(this);
@@ -151,11 +130,6 @@ public abstract class YoVariable<T extends YoVariable<T>>
       return this.description;
    }
 
-   public String getStackTraceAtInitialization()
-   {
-      return this.stackTraceAtInitialization;
-   }
-
    /**
     * Adds the name of this variable to the provided string buffer. This is done to avoid object
     * creation.
@@ -201,26 +175,6 @@ public abstract class YoVariable<T extends YoVariable<T>>
    }
 
    /**
-    * Retrieve the current step size.
-    *
-    * @return double step size
-    */
-   public double getStepSize()
-   {
-      return stepSize;
-   }
-
-   /**
-    * Sets the current step size.
-    *
-    * @param stepSize double new step size to use
-    */
-   public void setStepSize(double stepSize)
-   {
-      this.stepSize = stepSize;
-   }
-
-   /**
     * Retrieves this variable's {@link YoVariableType}.
     *
     * @return YoVariableType of this variable
@@ -228,77 +182,6 @@ public abstract class YoVariable<T extends YoVariable<T>>
    public final YoVariableType getYoVariableType()
    {
       return type;
-   }
-
-   /**
-    * Adds the variables name & value to the beginning of the given string buffer
-    *
-    * @param stringBuffer StringBuffer to which the data will be added
-    */
-   public void getNameAndValueString(StringBuffer stringBuffer)
-   {
-      stringBuffer.append(name); // buffer.insert(0,this.name); // Add the variable name to it.
-      stringBuffer.append(SPACE_STRING); // Add a space.
-
-      getValueString(stringBuffer);
-   }
-
-   /**
-    * Adds the variable's name and the passed value to the beginning of the given string buffer.
-    *
-    * @param stringBuffer StringBuffer to which the data will be added
-    * @param doubleValue  double value to format and add to the stringBuffer
-    */
-   public void getNameAndValueStringFromDouble(StringBuffer stringBuffer, double doubleValue)
-   {
-      stringBuffer.append(name); // buffer.insert(0,this.name); // Add the variable name to it.
-      stringBuffer.append(SPACE_STRING); // Add a space.
-
-      getValueStringFromDouble(stringBuffer, doubleValue);
-   }
-
-   /**
-    * Checks if this variable's fully qualified name and namespace is equal to the given name, without
-    * respect to character case for only the variable's full name.
-    * <p>
-    * Returns false if this variable's registry is null, the full names differ (case ignored) or the
-    * namespace does not match exactly (case considered.)
-    * </p>
-    *
-    * @param name String variable name to compare to
-    * @return boolean if this variable's name and the given name meet the above conditions
-    */
-   public boolean fullNameEndsWithCaseInsensitive(String name)
-   {
-      int lastDotIndex = name.lastIndexOf(".");
-
-      if (lastDotIndex == -1)
-      {
-         return this.name.toLowerCase().equals(name.toLowerCase());
-      }
-
-      String endOfName = name.substring(lastDotIndex + 1);
-      String nameSpace = name.substring(0, lastDotIndex);
-
-      if (!endOfName.toLowerCase().equals(this.name.toLowerCase()))
-         return false;
-
-      if (registry == null)
-         return false;
-
-      return registry.getNameSpace().endsWith(nameSpace);
-   }
-
-   /**
-    * Compare full name including namespace of the passed variable to this variable's full name with
-    * namespace.
-    *
-    * @param variable YoVariable to compare names to
-    * @return boolean true if names are exactly identical
-    */
-   public boolean hasSameFullName(YoVariable<?> variable)
-   {
-      return this.getFullNameWithNameSpace().equals(variable.getFullNameWithNameSpace());
    }
 
    /**
@@ -403,7 +286,7 @@ public abstract class YoVariable<T extends YoVariable<T>>
    }
 
    /**
-    * Retreives this variable's value interpreted as a Double and converted to a String.
+    * Retrieves this variable's value interpreted as a Double and converted to a String.
     *
     * @see #getValueAsDouble()
     * @return String formatted double value of this variable
@@ -449,29 +332,6 @@ public abstract class YoVariable<T extends YoVariable<T>>
    public abstract void setValueFromDouble(double value, boolean notifyListeners);
 
    /**
-    * Appends this variable's value to the given stringBuffer.
-    * <p>
-    * Abstract; implemented by each extension of YoVariable to result in different output to
-    * stringBuffer.
-    * </p>
-    *
-    * @param stringBuffer StringBuffer to append to
-    */
-   public abstract void getValueString(StringBuffer stringBuffer);
-
-   /**
-    * Appends the given double value to the given stringBuffer.
-    * <p>
-    * Abstract; implemented by each extension of YoVariable to result in differnt output to
-    * stringBuffer.
-    * </p>
-    *
-    * @param stringBuffer StringBuffer to append to
-    * @param value        to be interpreted against this variable's type
-    */
-   public abstract void getValueStringFromDouble(StringBuffer stringBuffer, double value);
-
-   /**
     * Retrieves this variable's value interpreted as a long.
     * <p>
     * Abstract; implemented by each extension of YoVariable to result in different interpretation.
@@ -512,20 +372,7 @@ public abstract class YoVariable<T extends YoVariable<T>>
     * @param newRegistry YoVariableRegistry to duplicate this variable to
     * @return the newly created variable from the given newRegistry
     */
-   public abstract T duplicate(YoRegistry newRegistry);
-
-   /**
-    * Sets this variable's value to the given value.
-    * <p>
-    * Abstract; implemented by each extension of YoVariable to perform action with proper typing.
-    * </p>
-    *
-    * @param value           abstract typed value to set this variable's value to
-    * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyVariableChangedListeners()}
-    * @return true if value changed
-    */
-   public abstract boolean setValue(T value, boolean notifyListeners);
+   public abstract YoVariable duplicate(YoRegistry newRegistry);
 
    /**
     * Assesses if this variable's value is equivalent to zero.

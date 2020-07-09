@@ -133,22 +133,6 @@ public class YoBooleanTest
    }
 
    @Test // timeout=300000
-   public void testGetValueWithStringBuffer()
-   {
-      StringBuffer testStringBuffer = new StringBuffer();
-      testStringBuffer.append("Test Case: ");
-      yoBoolean.set(false);
-      yoBoolean.getValueString(testStringBuffer);
-      testStringBuffer.append(" ");
-      yoBoolean.getValueStringFromDouble(testStringBuffer, 1.0);
-
-      StringBuffer expectedTestStringBuffer = new StringBuffer();
-      expectedTestStringBuffer.append("Test Case: false true");
-
-      assertEquals(testStringBuffer.toString(), expectedTestStringBuffer.toString());
-   }
-
-   @Test // timeout=300000
    public void testGetAndSetValueAsLongBits()
    {
       assertFalse(yoBoolean.getBooleanValue());
@@ -184,19 +168,6 @@ public class YoBooleanTest
       assertTrue(val.getYoRegistry().equals(newRegistry));
       assertTrue(val.getYoRegistry().equals(testVal.getYoRegistry()));
       newRegistry = null;
-   }
-
-   @Test // timeout=300000
-   public void testSetValue()
-   {
-      boolean valSet = false;
-      YoRegistry newRegistry = new YoRegistry("newTestRegistry");
-      YoBoolean testBoolean = new YoBoolean("testBooleanVariable", newRegistry);
-      testBoolean.set(true);
-      valSet = yoBoolean.setValue(testBoolean, false);
-      assertTrue(valSet);
-      Assert.assertEquals(yoBoolean.getBooleanValue(), testBoolean.getBooleanValue());
-      assertTrue(yoBoolean.getYoRegistry().equals(registry));
    }
 
    @Test // timeout=300000

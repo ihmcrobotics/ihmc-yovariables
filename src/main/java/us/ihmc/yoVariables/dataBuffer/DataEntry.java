@@ -38,7 +38,7 @@ public interface DataEntry
 
    public abstract void enableAutoScale(boolean b);
 
-   public abstract YoVariable<?> getVariable();
+   public abstract YoVariable getVariable();
 
    public abstract void setInverted(boolean selected);
 

@@ -1,8 +1,5 @@
 package us.ihmc.yoVariables.variable;
 
-import java.text.FieldPosition;
-import java.text.NumberFormat;
-
 import org.apache.commons.math3.util.Precision;
 
 import us.ihmc.yoVariables.providers.DoubleProvider;
@@ -14,11 +11,8 @@ import us.ihmc.yoVariables.registry.YoRegistry;
  * All abstract functions of YoVariable will be implemented using double type for interpretation.
  * Values will be interpreted, compared, and returned as doubles rather than other native types.
  */
-public class YoDouble extends YoVariable<YoDouble> implements DoubleProvider
+public class YoDouble extends YoVariable implements DoubleProvider
 {
-   private static final java.text.NumberFormat DOUBLE_FORMAT = new java.text.DecimalFormat(" 0.00000;-0.00000");
-   private static final FieldPosition FIELD_POSITION = new FieldPosition(NumberFormat.INTEGER_FIELD);
-
    private double val;
 
    /**
@@ -203,29 +197,6 @@ public class YoDouble extends YoVariable<YoDouble> implements DoubleProvider
    }
 
    /**
-    * Appends the value of this variable to the end of the given StringBuffer.
-    *
-    * @param stringBuffer StringBuffer to which the value will be appended
-    */
-   @Override
-   public void getValueString(StringBuffer stringBuffer)
-   {
-      getValueStringFromDouble(stringBuffer, val);
-   }
-
-   /**
-    * Appends the YoDouble representation of the given double value to the given StringBuffer.
-    *
-    * @param stringBuffer StringBuffer to append to
-    * @param doubleValue  double value to convert to YoDouble representation
-    */
-   @Override
-   public void getValueStringFromDouble(StringBuffer stringBuffer, double doubleValue)
-   {
-      DOUBLE_FORMAT.format(doubleValue, stringBuffer, FIELD_POSITION); // Add the variable value to it
-   }
-
-   /**
     * Retrieves this YoDouble's value as a double.
     * <p>
     * Effectively equivalent to {@link #getDoubleValue()}.
@@ -293,20 +264,6 @@ public class YoDouble extends YoVariable<YoDouble> implements DoubleProvider
       YoDouble retVar = new YoDouble(getName(), getDescription(), newRegistry, getManualScalingMin(), getManualScalingMax());
       retVar.set(val);
       return retVar;
-   }
-
-   /**
-    * Sets the internal value of this YoDouble to the current value of the passed YoDouble.
-    *
-    * @param value           YoDouble value to set this variable's value to
-    * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyVariableChangedListeners()}
-    * @return boolean whether or not internal state differed from the passed value
-    */
-   @Override
-   public boolean setValue(YoDouble value, boolean notifyListeners)
-   {
-      return set(value.getDoubleValue(), notifyListeners);
    }
 
    /**

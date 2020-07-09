@@ -30,12 +30,12 @@ public class YoRegistry implements YoVariableHolder
    private NameSpace nameSpace;
 
    /** The list of variables that are currently registered in {@code this}. */
-   private final List<YoVariable<?>> variables = new ArrayList<>();
+   private final List<YoVariable> variables = new ArrayList<>();
    /**
     * Mapping from the lower-case simple name of a variable to the instance of the variable.
     * Facilitates retrieval of registered variables from their name.
     */
-   private final Map<String, YoVariable<?>> nameToVariableMap = new LinkedHashMap<>();
+   private final Map<String, YoVariable> nameToVariableMap = new LinkedHashMap<>();
    /**
     * The list of parameters that are currently registered in this {@code this}. This list is mostly
     * used for book keeping.
@@ -224,7 +224,7 @@ public class YoRegistry implements YoVariableHolder
     *                                   previously registered.
     * @throws IllegalOperationException if the operation is not permitted.
     */
-   public void addVariable(YoVariable<?> variable)
+   public void addVariable(YoVariable variable)
    {
       if (!restrictionLevel.isAdditionAllowed())
          throw new IllegalOperationException("Cannot add variables to this registry: " + nameSpace);
@@ -256,7 +256,7 @@ public class YoRegistry implements YoVariableHolder
     * @param variable the variable to remove.
     * @throws IllegalOperationException if the operation is not permitted.
     */
-   public void removeVariable(YoVariable<?> variable)
+   public void removeVariable(YoVariable variable)
    {
       if (variable.getYoRegistry() != this)
          return;
@@ -470,7 +470,7 @@ public class YoRegistry implements YoVariableHolder
     * @return the variable corresponding to the given {@code name}, or {@code null} if such variable
     *         has not been registered.
     */
-   public YoVariable<?> getVariable(String name)
+   public YoVariable getVariable(String name)
    {
       return nameToVariableMap.get(name.toLowerCase());
    }
@@ -481,7 +481,7 @@ public class YoRegistry implements YoVariableHolder
     * @return unmodifiable list of this registry's variables.
     */
    @Override
-   public List<YoVariable<?>> getVariables()
+   public List<YoVariable> getVariables()
    {
       return Collections.unmodifiableList(variables);
    }
@@ -495,7 +495,7 @@ public class YoRegistry implements YoVariableHolder
     */
    public YoParameter<?> getParameter(String name)
    {
-      YoVariable<?> yoVariable = getVariable(name);
+      YoVariable yoVariable = getVariable(name);
       if (yoVariable != null && yoVariable.isParameter())
          return yoVariable.getParameter();
       else
@@ -517,9 +517,9 @@ public class YoRegistry implements YoVariableHolder
     *
     * @return list of all variables registered to this registry and its child registries.
     */
-   public List<YoVariable<?>> subtreeVariables()
+   public List<YoVariable> subtreeVariables()
    {
-      List<YoVariable<?>> yoVariables = new ArrayList<>();
+      List<YoVariable> yoVariables = new ArrayList<>();
       subtreeVariables(yoVariables);
       return yoVariables;
    }
@@ -531,7 +531,7 @@ public class YoRegistry implements YoVariableHolder
     * @param variablesToPack list used to store all variables registered to this registry and its child
     *                        registries.
     */
-   private void subtreeVariables(List<YoVariable<?>> variablesToPack)
+   private void subtreeVariables(List<YoVariable> variablesToPack)
    {
       // Add ours:
       variablesToPack.addAll(variables);
@@ -612,7 +612,7 @@ public class YoRegistry implements YoVariableHolder
     * @param name the name of the variables to get.
     */
    @Override
-   public YoVariable<?> findVariable(String name)
+   public YoVariable findVariable(String name)
    {
       return YoTools.findYoVariable(new SearchQuery(name), null, this);
    }
@@ -634,7 +634,7 @@ public class YoRegistry implements YoVariableHolder
     * @throws IllegalNameException if {@code name} contains "{@value YoTools#NAMESPACE_SEPERATOR}".
     */
    @Override
-   public YoVariable<?> findVariable(String parentNameSpace, String name)
+   public YoVariable findVariable(String parentNameSpace, String name)
    {
       return YoTools.findYoVariable(new SearchQuery(parentNameSpace, name), null, this);
    }
@@ -659,7 +659,7 @@ public class YoRegistry implements YoVariableHolder
     * @return list of all the variables corresponding to the search criteria.
     */
    @Override
-   public List<YoVariable<?>> findVariables(String name)
+   public List<YoVariable> findVariables(String name)
    {
       return YoTools.findYoVariables(new SearchQuery(name), null, this, null);
    }
@@ -680,7 +680,7 @@ public class YoRegistry implements YoVariableHolder
     * @throws IllegalNameException if {@code name} contains "{@value YoTools#NAMESPACE_SEPERATOR}".
     */
    @Override
-   public List<YoVariable<?>> findVariables(String parentNameSpace, String name)
+   public List<YoVariable> findVariables(String parentNameSpace, String name)
    {
       return YoTools.findYoVariables(new SearchQuery(parentNameSpace, name), null, this, null);
    }
@@ -696,7 +696,7 @@ public class YoRegistry implements YoVariableHolder
     * @return the variables that were registered at the given namespace.
     */
    @Override
-   public List<YoVariable<?>> findVariables(NameSpace nameSpace)
+   public List<YoVariable> findVariables(NameSpace nameSpace)
    {
       YoRegistry registry = findRegistry(nameSpace);
       if (registry == null)
@@ -818,12 +818,12 @@ public class YoRegistry implements YoVariableHolder
     * @param index the index of the variable of interest.
     * @return the corresponding variable.
     */
-   public YoVariable<?> getVariable(int index)
+   public YoVariable getVariable(int index)
    {
       return variables.get(index);
    }
 
-   private void notifyListeners(YoRegistry targetParentRegistry, YoRegistry targetRegistry, YoVariable<?> targetVariable, ChangeType type)
+   private void notifyListeners(YoRegistry targetParentRegistry, YoRegistry targetRegistry, YoVariable targetVariable, ChangeType type)
    {
       RegistryChange change;
       if (changedListeners != null)
@@ -858,7 +858,7 @@ public class YoRegistry implements YoVariableHolder
       if (variables.size() != other.variables.size())
          return false;
 
-      for (YoVariable<?> variable : variables)
+      for (YoVariable variable : variables)
       {
          if (!other.nameToVariableMap.containsKey(variable.getName().toLowerCase()))
             return false;
@@ -897,10 +897,10 @@ public class YoRegistry implements YoVariableHolder
    {
       private final YoRegistry targetParentRegistry;
       private final YoRegistry targetRegistry;
-      private final YoVariable<?> targetVariable;
+      private final YoVariable targetVariable;
       private final ChangeType type;
 
-      public RegistryChange(YoRegistry targetParentRegistry, YoRegistry targetRegistry, YoVariable<?> targetVariable, ChangeType type)
+      public RegistryChange(YoRegistry targetParentRegistry, YoRegistry targetRegistry, YoVariable targetVariable, ChangeType type)
       {
          this.targetParentRegistry = targetParentRegistry;
          this.targetRegistry = targetRegistry;
@@ -957,7 +957,7 @@ public class YoRegistry implements YoVariableHolder
       }
 
       @Override
-      public YoVariable<?> getTargetVariable()
+      public YoVariable getTargetVariable()
       {
          return targetVariable;
       }

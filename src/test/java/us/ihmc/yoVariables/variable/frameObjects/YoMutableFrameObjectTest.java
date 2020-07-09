@@ -19,11 +19,6 @@ import us.ihmc.yoVariables.variable.YoVariable;
 
 public class YoMutableFrameObjectTest
 {
-   static
-   {
-      YoVariable.SAVE_STACK_TRACE = false;
-   }
-
    @Test
    public void testMutableFrameObject()
    {
@@ -35,7 +30,7 @@ public class YoMutableFrameObjectTest
       frames.add(null);
 
       YoMutableFrameObject mutableFrameObject = new YoMutableFrameObject("", "", registry);
-      YoVariable<?> frameIndex = registry.findVariable(YoFrameVariableNameTools.createName("", "frame", ""));
+      YoVariable frameIndex = registry.findVariable(YoFrameVariableNameTools.createName("", "frame", ""));
       Assert.assertNotNull(frameIndex);
 
       for (int i = 0; i < 1000; i++)

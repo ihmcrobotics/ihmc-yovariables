@@ -9,7 +9,7 @@ import us.ihmc.yoVariables.registry.YoRegistry;
  * All abstract functions of YoVariable will be implemented using boolean type for interpretation.
  * Values will be interpreted, compared, and returned as booleans rather than other native types.
  */
-public class YoBoolean extends YoVariable<YoBoolean> implements BooleanProvider
+public class YoBoolean extends YoVariable implements BooleanProvider
 {
    /**
     * Internal boolean value of this YoLong.
@@ -40,8 +40,6 @@ public class YoBoolean extends YoVariable<YoBoolean> implements BooleanProvider
    public YoBoolean(String name, String description, YoRegistry registry)
    {
       super(YoVariableType.BOOLEAN, name, description, registry);
-
-      stepSize = 1.0;
       this.set(false);
    }
 
@@ -156,29 +154,6 @@ public class YoBoolean extends YoVariable<YoBoolean> implements BooleanProvider
    }
 
    /**
-    * Appends the value of this variable to the end of the given StringBuffer.
-    *
-    * @param stringBuffer StringBuffer to which the value will be appended
-    */
-   @Override
-   public void getValueString(StringBuffer stringBuffer)
-   {
-      stringBuffer.append(val);
-   }
-
-   /**
-    * Appends the YoBoolean representation of the given double value to the given StringBuffer.
-    *
-    * @param stringBuffer StringBuffer to append to
-    * @param doubleValue  double value to convert to YoBoolean representation
-    */
-   @Override
-   public void getValueStringFromDouble(StringBuffer stringBuffer, double doubleValue)
-   {
-      stringBuffer.append(convertDoubleToBoolean(doubleValue));
-   }
-
-   /**
     * Retrieves this YoBoolean's value as a long.
     *
     * @return long value of internal boolean state (0 or 1)
@@ -217,20 +192,6 @@ public class YoBoolean extends YoVariable<YoBoolean> implements BooleanProvider
       YoBoolean newVar = new YoBoolean(getName(), getDescription(), newRegistry);
       newVar.set(getBooleanValue());
       return newVar;
-   }
-
-   /**
-    * Sets the internal value of this YoBoolean to the current value of the passed YoBoolean.
-    *
-    * @param value           YoBoolean value to set this variable's value to
-    * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyVariableChangedListeners()}
-    * @return boolean whether or not internal state differed from the passed value
-    */
-   @Override
-   public boolean setValue(YoBoolean value, boolean notifyListeners)
-   {
-      return set(value.getBooleanValue(), notifyListeners);
    }
 
    /**

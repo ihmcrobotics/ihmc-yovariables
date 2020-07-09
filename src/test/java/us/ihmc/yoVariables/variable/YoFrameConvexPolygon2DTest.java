@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Random;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import us.ihmc.euclid.referenceFrame.FrameConvexPolygon2D;
@@ -19,12 +18,6 @@ import us.ihmc.yoVariables.registry.YoRegistry;
 public class YoFrameConvexPolygon2DTest
 {
    private static final int ITERATIONS = 1000;
-
-   @BeforeAll
-   public static void disableStackTrace()
-   {
-      YoVariable.SAVE_STACK_TRACE = false;
-   }
 
    @Test
    public void testBugIssue6()

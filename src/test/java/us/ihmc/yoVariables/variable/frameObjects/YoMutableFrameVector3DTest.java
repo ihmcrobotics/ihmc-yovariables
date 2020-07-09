@@ -32,16 +32,9 @@ import us.ihmc.euclid.transform.RigidBodyTransform;
 import us.ihmc.euclid.tuple2D.Vector2D;
 import us.ihmc.euclid.tuple3D.Vector3D;
 import us.ihmc.euclid.tuple3D.interfaces.Tuple3DBasics;
-import us.ihmc.yoVariables.variable.YoVariable;
 
 public class YoMutableFrameVector3DTest extends FrameTuple3DBasicsTest<YoMutableFrameVector3D>
 {
-   static
-   {
-      YoVariable.SAVE_STACK_TRACE = false;
-      YoVariable.warnAboutNullRegistries = false;
-   }
-
    private static final ReferenceFrame worldFrame = ReferenceFrame.getWorldFrame();
 
    @Override
