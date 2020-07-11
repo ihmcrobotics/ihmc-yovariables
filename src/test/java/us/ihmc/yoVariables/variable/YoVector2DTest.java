@@ -10,7 +10,7 @@ public class YoVector2DTest extends Vector2DBasicsTest<YoVector2D>
    @Override
    public YoVector2D createEmptyTuple()
    {
-      YoRegistry registry = new YoRegistry("testYoVariableRegistry");
+      YoRegistry registry = new YoRegistry("testYoRegistry");
 
       return new YoVector2D("testYoVector2D", registry);
    }
@@ -18,7 +18,7 @@ public class YoVector2DTest extends Vector2DBasicsTest<YoVector2D>
    @Override
    public YoVector2D createTuple(double x, double y)
    {
-      YoRegistry registry = new YoRegistry("testYoVariableRegistry");
+      YoRegistry registry = new YoRegistry("testYoRegistry");
 
       YoVector2D vector = new YoVector2D("testYoVector2D", registry);
 
@@ -30,7 +30,7 @@ public class YoVector2DTest extends Vector2DBasicsTest<YoVector2D>
    @Override
    public YoVector2D createRandomTuple(Random random)
    {
-      YoRegistry registry = new YoRegistry("testYoVariableRegistry");
+      YoRegistry registry = new YoRegistry("testYoRegistry");
 
       YoVector2D vector = new YoVector2D("testYoVector2D", registry);
 

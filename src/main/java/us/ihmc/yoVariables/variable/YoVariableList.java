@@ -214,7 +214,7 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
       return false;
    }
 
-   // TODO: duplicated in YoVariableRegistry
+   // TODO: duplicated in YoRegistry
    public synchronized List<YoVariable> getMatchingVariables(String[] names, String[] regularExpressions)
    {
       List<YoVariable> ret = new ArrayList<>();

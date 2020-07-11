@@ -21,7 +21,7 @@ public class YoBoolean extends YoVariable implements BooleanProvider
     * with the given name and registry and an empty description.
     *
     * @param name     String that uniquely identifies this YoBoolean
-    * @param registry YoVariableRegistry for this YoBoolean to register itself to after initialization
+    * @param registry YoRegistry for this YoBoolean to register itself to after initialization
     */
    public YoBoolean(String name, YoRegistry registry)
    {
@@ -30,11 +30,11 @@ public class YoBoolean extends YoVariable implements BooleanProvider
 
    /**
     * Create a new YoBoolean. This will call its super YoVariable's {@link YoVariable(YoVariableType,
-    * String, String, YoVariableRegistry)} with {@link YoVariableType#BOOLEAN} and the given values.
+    * String, String, YoRegistry)} with {@link YoVariableType#BOOLEAN} and the given values.
     *
     * @param name        String that uniquely identifies this YoBoolean
     * @param description String that describes this YoBoolean's purpose
-    * @param registry    YoVariableRegistry for this YoBoolean to register itself to after
+    * @param registry    YoRegistry for this YoBoolean to register itself to after
     *                    initialization
     */
    public YoBoolean(String name, String description, YoRegistry registry)
@@ -183,7 +183,7 @@ public class YoBoolean extends YoVariable implements BooleanProvider
     * Creates a new YoBoolean with the same parameters as this one, and registers it to the passed
     * {@link YoRegistry}.
     *
-    * @param newRegistry YoVariableRegistry to duplicate this YoBoolean to
+    * @param newRegistry YoRegistry to duplicate this YoBoolean to
     * @return the newly created and registered YoBoolean
     */
    @Override

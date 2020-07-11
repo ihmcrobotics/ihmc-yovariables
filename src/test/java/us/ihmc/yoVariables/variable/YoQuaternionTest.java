@@ -10,7 +10,7 @@ public class YoQuaternionTest extends QuaternionBasicsTest<YoQuaternion>
    @Override
    public YoQuaternion createEmptyTuple()
    {
-      YoRegistry registry = new YoRegistry("testYoVariableRegistry");
+      YoRegistry registry = new YoRegistry("testYoRegistry");
 
       return new YoQuaternion("testYoQuaternion", registry);
    }
@@ -18,7 +18,7 @@ public class YoQuaternionTest extends QuaternionBasicsTest<YoQuaternion>
    @Override
    public YoQuaternion createTuple(double x, double y, double z, double s)
    {
-      YoRegistry registry = new YoRegistry("testYoVariableRegistry");
+      YoRegistry registry = new YoRegistry("testYoRegistry");
 
       YoQuaternion quaternion = new YoQuaternion("testYoQuaternion", registry);
 
@@ -30,7 +30,7 @@ public class YoQuaternionTest extends QuaternionBasicsTest<YoQuaternion>
    @Override
    public YoQuaternion createRandomTuple(Random random)
    {
-      YoRegistry registry = new YoRegistry("testYoVariableRegistry");
+      YoRegistry registry = new YoRegistry("testYoRegistry");
 
       YoQuaternion quaternion = new YoQuaternion("testYoQuaternion", registry);
 

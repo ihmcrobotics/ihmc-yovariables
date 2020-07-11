@@ -211,7 +211,7 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
     * {@code YoVariable}s and use them to duplicate {@code this}.
     * </p>
     *
-    * @param newRegistry YoVariableRegistry to duplicate {@code this} to.
+    * @param newRegistry YoRegistry to duplicate {@code this} to.
     * @return the duplicate of {@code this}.
     */
    public YoFrameQuaternion duplicate(YoRegistry newRegistry)

@@ -10,7 +10,7 @@ public class YoPoint2DTest extends Point2DBasicsTest<YoPoint2D>
    @Override
    public YoPoint2D createEmptyTuple()
    {
-      YoRegistry registry = new YoRegistry("testYoVariableRegistry");
+      YoRegistry registry = new YoRegistry("testYoRegistry");
 
       return new YoPoint2D("testYoPoint2D", registry);
    }
@@ -18,7 +18,7 @@ public class YoPoint2DTest extends Point2DBasicsTest<YoPoint2D>
    @Override
    public YoPoint2D createTuple(double x, double y)
    {
-      YoRegistry registry = new YoRegistry("testYoVariableRegistry");
+      YoRegistry registry = new YoRegistry("testYoRegistry");
 
       YoPoint2D point = new YoPoint2D("testYoPoint2D", registry);
 
@@ -30,7 +30,7 @@ public class YoPoint2DTest extends Point2DBasicsTest<YoPoint2D>
    @Override
    public YoPoint2D createRandomTuple(Random random)
    {
-      YoRegistry registry = new YoRegistry("testYoVariableRegistry");
+      YoRegistry registry = new YoRegistry("testYoRegistry");
 
       YoPoint2D point = new YoPoint2D("testYoPoint2D", registry);
 

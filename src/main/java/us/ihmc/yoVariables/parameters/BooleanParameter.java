@@ -34,7 +34,7 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
     * Create a new Boolean parameter, registered to the namespace of the registry.
     *
     * @param name     Desired name. Must be unique in the registry
-    * @param registry YoVariableRegistry to store under
+    * @param registry YoRegistry to store under
     */
    public BooleanParameter(String name, YoRegistry registry)
    {
@@ -46,7 +46,7 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
     *
     * @param name        Desired name. Must be unique in the registry
     * @param description User readable description that describes the purpose of this parameter
-    * @param registry    YoVariableRegistry to store under
+    * @param registry    YoRegistry to store under
     */
    public BooleanParameter(String name, String description, YoRegistry registry)
    {
@@ -57,7 +57,7 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
     * Create a new Boolean parameter, registered to the namespace of the registry.
     *
     * @param name         Desired name. Must be unique in the registry
-    * @param registry     YoVariableRegistry to store under
+    * @param registry     YoRegistry to store under
     * @param initialValue Value to set to when no value can be found in the user provided
     *                     parameterLoader
     */
@@ -71,7 +71,7 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
     *
     * @param name         Desired name. Must be unique in the registry
     * @param description  User readable description that describes the purpose of this parameter
-    * @param registry     YoVariableRegistry to store under
+    * @param registry     YoRegistry to store under
     * @param initialValue Value to set to when no value can be found in the user provided
     *                     parameterLoader
     */

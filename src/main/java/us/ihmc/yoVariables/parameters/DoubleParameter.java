@@ -37,7 +37,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
     * Create a new Double parameter, registered to the namespace of the registry.
     *
     * @param name     Desired name. Must be unique in the registry
-    * @param registry YoVariableRegistry to store under
+    * @param registry YoRegistry to store under
     */
    public DoubleParameter(String name, YoRegistry registry)
    {
@@ -48,7 +48,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
     * Create a new Double parameter, registered to the namespace of the registry.
     *
     * @param name             Desired name. Must be unique in the registry
-    * @param registry         YoVariableRegistry to store under
+    * @param registry         YoRegistry to store under
     * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
     * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
     */
@@ -62,7 +62,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
     *
     * @param name        Desired name. Must be unique in the registry
     * @param description User readable description that describes the purpose of this parameter
-    * @param registry    YoVariableRegistry to store under
+    * @param registry    YoRegistry to store under
     */
    public DoubleParameter(String name, String description, YoRegistry registry)
    {
@@ -74,7 +74,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
     *
     * @param name             Desired name. Must be unique in the registry
     * @param description      User readable description that describes the purpose of this parameter
-    * @param registry         YoVariableRegistry to store under
+    * @param registry         YoRegistry to store under
     * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
     * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
     */
@@ -87,7 +87,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
     * Create a new Double parameter, registered to the namespace of the registry.
     *
     * @param name         Desired name. Must be unique in the registry
-    * @param registry     YoVariableRegistry to store under
+    * @param registry     YoRegistry to store under
     * @param initialValue Value to set to when no value can be found in the user provided
     *                     parameterLoader
     */
@@ -100,7 +100,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
     * Create a new Double parameter, registered to the namespace of the registry.
     *
     * @param name             Desired name. Must be unique in the registry
-    * @param registry         YoVariableRegistry to store under
+    * @param registry         YoRegistry to store under
     * @param initialValue     Value to set to when no value can be found in the user provided
     *                         parameterLoader
     * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
@@ -116,7 +116,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
     *
     * @param name         Desired name. Must be unique in the registry
     * @param description  User readable description that describes the purpose of this parameter
-    * @param registry     YoVariableRegistry to store under
+    * @param registry     YoRegistry to store under
     * @param initialValue Value to set to when no value can be found in the user provided
     *                     parameterLoader
     */
@@ -130,7 +130,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
     *
     * @param name             Desired name. Must be unique in the registry
     * @param description      User readable description that describes the purpose of this parameter
-    * @param registry         YoVariableRegistry to store under
+    * @param registry         YoRegistry to store under
     * @param initialValue     Value to set to when no value can be found in the user provided
     *                         parameterLoader
     * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.

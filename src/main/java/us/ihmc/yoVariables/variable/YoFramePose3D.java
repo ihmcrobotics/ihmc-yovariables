@@ -225,7 +225,7 @@ public class YoFramePose3D implements FixedFramePose3DBasics
     * {@code YoVariable}s and use them to duplicate {@code this}.
     * </p>
     *
-    * @param newRegistry YoVariableRegistry to duplicate {@code this} to.
+    * @param newRegistry YoRegistry to duplicate {@code this} to.
     * @return the duplicate of {@code this}.
     */
    public YoFramePose3D duplicate(YoRegistry newRegistry)

@@ -28,7 +28,7 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
     * Create a new Enum parameter, registered to the namespace of the registry.
     *
     * @param name            Desired name. Must be unique in the registry
-    * @param registry        YoVariableRegistry to store under
+    * @param registry        YoRegistry to store under
     * @param enumType        The class representing the type of the enum
     * @param allowNullValues Boolean determining if null enum values are permitted
     */
@@ -42,7 +42,7 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
     *
     * @param name            Desired name. Must be unique in the registry
     * @param description     User readable description that describes the purpose of this parameter
-    * @param registry        YoVariableRegistry to store under
+    * @param registry        YoRegistry to store under
     * @param enumType        The class representing the type of the enum
     * @param allowNullValues Boolean determining if null enum values are permitted
     */
@@ -55,7 +55,7 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
     * Create a new Enum parameter, registered to the namespace of the registry.
     *
     * @param name            Desired name. Must be unique in the registry
-    * @param registry        YoVariableRegistry to store under
+    * @param registry        YoRegistry to store under
     * @param enumType        The class representing the type of the enum
     * @param allowNullValues Boolean determining if null enum values are permitted
     * @param initialValue    Value to set to when no value can be found in the user provided
@@ -71,7 +71,7 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
     *
     * @param name            Desired name. Must be unique in the registry
     * @param description     User readable description that describes the purpose of this parameter
-    * @param registry        YoVariableRegistry to store under
+    * @param registry        YoRegistry to store under
     * @param enumType        The class representing the type of the enum
     * @param allowNullValues Boolean determining if null enum values are permitted
     * @param initialValue    Value to set to when no value can be found in the user provided
@@ -115,7 +115,7 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
     *
     * @param name            Desired name. Must be unique in the registry
     * @param description     User readable description that describes the purpose of this parameter
-    * @param registry        YoVariableRegistry to store under
+    * @param registry        YoRegistry to store under
     * @param allowNullValues Boolean determining if null enum values are permitted
     * @param constants       Array of enum constants
     */

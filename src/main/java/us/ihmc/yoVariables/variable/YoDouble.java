@@ -20,7 +20,7 @@ public class YoDouble extends YoVariable implements DoubleProvider
     * the given name and registry and an empty description.
     *
     * @param name     String uniquely identifying this YoDouble
-    * @param registry YoVariableRegistry for this YoDouble to register itself to after initialization
+    * @param registry YoRegistry for this YoDouble to register itself to after initialization
     */
    public YoDouble(String name, YoRegistry registry)
    {
@@ -34,7 +34,7 @@ public class YoDouble extends YoVariable implements DoubleProvider
     *
     * @param name        String uniquely identifying this YoDouble
     * @param description String describing this YoDouble's purpose
-    * @param registry    YoVariableRegistry for this YoDouble to register itself to after
+    * @param registry    YoRegistry for this YoDouble to register itself to after
     *                    initialization
     * @param minScaling  double to set manualMinScaling to
     * @param maxScaling  double to set manualMaxScaling to
@@ -46,12 +46,12 @@ public class YoDouble extends YoVariable implements DoubleProvider
    }
 
    /**
-    * Create a new YoDouble. This will call {@link YoVariable(String, String, YoVariableRegistry)} with
+    * Create a new YoDouble. This will call {@link YoVariable(String, String, YoRegistry)} with
     * {@link YoVariableType#DOUBLE} and the given values.
     *
     * @param name        name to be used for all references of this variable by SCS
     * @param description A short description of this variable
-    * @param registry    YoVariableRegistry with which this variable is to be registered
+    * @param registry    YoRegistry with which this variable is to be registered
     */
    public YoDouble(String name, String description, YoRegistry registry)
    {
@@ -253,7 +253,7 @@ public class YoDouble extends YoVariable implements DoubleProvider
     * Creates a new YoDouble with the same parameters as this one, and registers it to the passed
     * {@link YoRegistry}.
     *
-    * @param newRegistry YoVariableRegistry to duplicate this YoDouble to
+    * @param newRegistry YoRegistry to duplicate this YoDouble to
     * @return the newly created and registered YoDouble
     */
    @Override

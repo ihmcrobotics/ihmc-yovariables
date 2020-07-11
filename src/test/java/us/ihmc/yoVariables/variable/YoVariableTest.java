@@ -214,7 +214,7 @@ public class YoVariableTest
    }
 
    @Test // timeout=300000
-   public void testGetYoVariableRegistry()
+   public void testGetYoRegistry()
    {
       YoRegistry registry = yoVariable.getYoRegistry();
       assertNotNull(registry);

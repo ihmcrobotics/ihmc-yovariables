@@ -21,7 +21,7 @@ public class YoInteger extends YoVariable implements IntegerProvider
     * with the given name and registry and an empty description.
     *
     * @param name     String that uniquely identifies this YoInteger
-    * @param registry YoVariableRegistry for this YoInteger to register itself to after initialization
+    * @param registry YoRegistry for this YoInteger to register itself to after initialization
     */
    public YoInteger(String name, YoRegistry registry)
    {
@@ -35,7 +35,7 @@ public class YoInteger extends YoVariable implements IntegerProvider
     *
     * @param name        String that uniquely identifies this YoInteger
     * @param description String that describes this YoInteger's purpose
-    * @param registry    YoVariableRegistry for this YoInteger to register itself to after
+    * @param registry    YoRegistry for this YoInteger to register itself to after
     *                    initialization
     * @param minScaling  double to set manualMinScaling to
     * @param maxScaling  double to set manualMaxScaling to
@@ -48,11 +48,11 @@ public class YoInteger extends YoVariable implements IntegerProvider
 
    /**
     * Create a new YoInteger. This will call its super YoVariable's {@link YoVariable(YoVariableType,
-    * String, String, YoVariableRegistry)} with {@link YoVariableType#INTEGER} and the given values.
+    * String, String, YoRegistry)} with {@link YoVariableType#INTEGER} and the given values.
     *
     * @param name        String that uniquely identifies this YoInteger
     * @param description String that describes this YoInteger's purpose
-    * @param registry    YoVariableRegistry for this YoInteger to register itself to after
+    * @param registry    YoRegistry for this YoInteger to register itself to after
     *                    initialization
     */
    public YoInteger(String name, String description, YoRegistry registry)
@@ -228,7 +228,7 @@ public class YoInteger extends YoVariable implements IntegerProvider
     * Creates a new YoInteger with the same parameters as this one, and registers it to the passed
     * {@link YoRegistry}.
     *
-    * @param newRegistry YoVariableRegistry to duplicate this YoInteger to
+    * @param newRegistry YoRegistry to duplicate this YoInteger to
     * @return the newly created and registered YoInteger
     */
    @Override

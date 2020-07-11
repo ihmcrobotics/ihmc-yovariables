@@ -10,7 +10,7 @@ public class YoVector3DTest extends Vector3DBasicsTest<YoVector3D>
    @Override
    public YoVector3D createEmptyTuple()
    {
-      YoRegistry registry = new YoRegistry("testYoVariableRegistry");
+      YoRegistry registry = new YoRegistry("testYoRegistry");
 
       return new YoVector3D("testYoVector3D", registry);
    }
@@ -18,7 +18,7 @@ public class YoVector3DTest extends Vector3DBasicsTest<YoVector3D>
    @Override
    public YoVector3D createTuple(double x, double y, double z)
    {
-      YoRegistry registry = new YoRegistry("testYoVariableRegistry");
+      YoRegistry registry = new YoRegistry("testYoRegistry");
 
       YoVector3D vector = new YoVector3D("testYoVector3D", registry);
 
@@ -30,7 +30,7 @@ public class YoVector3DTest extends Vector3DBasicsTest<YoVector3D>
    @Override
    public YoVector3D createRandomTuple(Random random)
    {
-      YoRegistry registry = new YoRegistry("testYoVariableRegistry");
+      YoRegistry registry = new YoRegistry("testYoRegistry");
 
       YoVector3D vector = new YoVector3D("testYoVector3D", registry);
 

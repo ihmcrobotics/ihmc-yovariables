@@ -24,11 +24,11 @@ public class YoEnum<T extends Enum<T>> extends YoVariable implements EnumProvide
 
    /**
     * Create a new YoEnum. This will call {@link YoVariable(YoVariableType, String, String,
-    * YoVariableRegistry)} with {@link YoVariableType#ENUM} and the given values.
+    * YoRegistry)} with {@link YoVariableType#ENUM} and the given values.
     *
     * @param name           String uniquely identifying this YoEnum
     * @param description    String describing this YoEnum's purpose
-    * @param registry       YoVariableRegistry for this YoEnum to register itself to after
+    * @param registry       YoRegistry for this YoEnum to register itself to after
     *                       initialization
     * @param enumType       the class representing the type of the enum
     * @param allowNullValue boolean determining if null enum values are permitted
@@ -66,11 +66,11 @@ public class YoEnum<T extends Enum<T>> extends YoVariable implements EnumProvide
    }
 
    /**
-    * Create a new YoEnum. This will call {@link YoEnum(String, YoVariableRegistry, Class)} with the
+    * Create a new YoEnum. This will call {@link YoEnum(String, YoRegistry, Class)} with the
     * given values.
     *
     * @param name     String uniquely identifying this YoEnum
-    * @param registry YoVariableRegistry for this YoEnum to register itself to after initialization
+    * @param registry YoRegistry for this YoEnum to register itself to after initialization
     * @param enumType the class representing the type of the enum
     */
    public static <T extends Enum<T>> YoEnum<T> create(String name, Class<T> enumType, YoRegistry registry)
@@ -79,12 +79,12 @@ public class YoEnum<T extends Enum<T>> extends YoVariable implements EnumProvide
    }
 
    /**
-    * Create a new YoEnum. This will call {@link YoEnum(String, String, YoVariableRegistry, Class,
+    * Create a new YoEnum. This will call {@link YoEnum(String, String, YoRegistry, Class,
     * Boolean)} with the given values.
     *
     * @param name           String uniquely identifying this YoEnum
     * @param description    String describing this YoEnum's purpose
-    * @param registry       YoVariableRegistry for this YoEnum to register itself to after
+    * @param registry       YoRegistry for this YoEnum to register itself to after
     *                       initialization
     * @param enumType       the class representing the type of the enum
     * @param allowNullValue boolean determining if null enum values are permitted
@@ -106,7 +106,7 @@ public class YoEnum<T extends Enum<T>> extends YoVariable implements EnumProvide
     *
     * @param name        String uniquely identifying this YoEnum
     * @param description String describing this YoEnum's purpose
-    * @param registry    YoVariableRegistry for this YoEnum to register itself to after initialization
+    * @param registry    YoRegistry for this YoEnum to register itself to after initialization
     * @param constants   String array of constants for this enum
     */
    public YoEnum(String name, String description, YoRegistry registry, boolean allowNullValues, String... constants)
@@ -149,7 +149,7 @@ public class YoEnum<T extends Enum<T>> extends YoVariable implements EnumProvide
     * empty description and false for allowNullValue.
     *
     * @param name     String uniquely identifying this YoEnum
-    * @param registry YoVariableRegistry for this YoEnum to register itself to after initialization
+    * @param registry YoRegistry for this YoEnum to register itself to after initialization
     * @param enumType the class representing the type of the enum
     */
    public YoEnum(String name, YoRegistry registry, Class<T> enumType)
@@ -163,7 +163,7 @@ public class YoEnum<T extends Enum<T>> extends YoVariable implements EnumProvide
     * empty description.
     *
     * @param name           String uniquely identifying this YoEnum
-    * @param registry       YoVariableRegistry for this YoEnum to register itself to after
+    * @param registry       YoRegistry for this YoEnum to register itself to after
     *                       initialization
     * @param enumType       the class representing the type of the enum
     * @param allowNullValue boolean determining if null enum values are permitted
@@ -178,7 +178,7 @@ public class YoEnum<T extends Enum<T>> extends YoVariable implements EnumProvide
     *
     * @return if not based on a Class as an enumType
     * @see #enumType
-    * @see YoEnum(String, String, YoVariableRegistry, boolean, String...)
+    * @see YoEnum(String, String, YoRegistry, boolean, String...)
     */
    public boolean isBackedByEnum()
    {
@@ -467,7 +467,7 @@ public class YoEnum<T extends Enum<T>> extends YoVariable implements EnumProvide
     * Creates a new YoEnum with the same parameters as this one, and registers it to the passed
     * {@link YoRegistry}.
     *
-    * @param newRegistry YoVariableRegistry to duplicate this YoEnum to
+    * @param newRegistry YoRegistry to duplicate this YoEnum to
     * @return the newly created and registered YoEnum
     */
    @Override

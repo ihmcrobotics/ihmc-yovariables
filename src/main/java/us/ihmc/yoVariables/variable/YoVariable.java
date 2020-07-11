@@ -39,7 +39,7 @@ public abstract class YoVariable
     * @param type        YoVariableType for this YoVariable to implement
     * @param name        String that uniquely identifies this YoVariable
     * @param description String that describes this YoVariable's purpose
-    * @param registry    YoVariableRegistry for this YoVariable to register itself to after
+    * @param registry    YoRegistry for this YoVariable to register itself to after
     *                    initialization
     */
    public YoVariable(YoVariableType type, String name, String description, YoRegistry registry)
@@ -63,7 +63,7 @@ public abstract class YoVariable
    /**
     * Retrieves the {@link YoRegistry} this variable belongs to.
     *
-    * @return YoVariableRegistry this variable is registered in
+    * @return YoRegistry this variable is registered in
     */
    public YoRegistry getYoRegistry()
    {
@@ -307,7 +307,7 @@ public abstract class YoVariable
     * Abstract; implemented by each extension of YoVariable to perform action with proper typing.
     * </p>
     *
-    * @param newRegistry YoVariableRegistry to duplicate this variable to
+    * @param newRegistry YoRegistry to duplicate this variable to
     * @return the newly created variable from the given newRegistry
     */
    public abstract YoVariable duplicate(YoRegistry newRegistry);

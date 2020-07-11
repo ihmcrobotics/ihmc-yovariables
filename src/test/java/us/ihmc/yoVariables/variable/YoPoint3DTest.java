@@ -10,7 +10,7 @@ public class YoPoint3DTest extends Point3DBasicsTest<YoPoint3D>
    @Override
    public YoPoint3D createEmptyTuple()
    {
-      YoRegistry registry = new YoRegistry("testYoVariableRegistry");
+      YoRegistry registry = new YoRegistry("testYoRegistry");
 
       return new YoPoint3D("testYoPoint3D", registry);
    }
@@ -18,7 +18,7 @@ public class YoPoint3DTest extends Point3DBasicsTest<YoPoint3D>
    @Override
    public YoPoint3D createTuple(double x, double y, double z)
    {
-      YoRegistry registry = new YoRegistry("testYoVariableRegistry");
+      YoRegistry registry = new YoRegistry("testYoRegistry");
 
       YoPoint3D point = new YoPoint3D("testYoPoint3D", registry);
 
@@ -30,7 +30,7 @@ public class YoPoint3DTest extends Point3DBasicsTest<YoPoint3D>
    @Override
    public YoPoint3D createRandomTuple(Random random)
    {
-      YoRegistry registry = new YoRegistry("testYoVariableRegistry");
+      YoRegistry registry = new YoRegistry("testYoRegistry");
 
       YoPoint3D point = new YoPoint3D("testYoPoint3D", registry);
 

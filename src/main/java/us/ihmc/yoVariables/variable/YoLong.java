@@ -21,7 +21,7 @@ public class YoLong extends YoVariable implements LongProvider
     * given name and registry and an empty description.
     *
     * @param name     String that uniquely identifies this YoLong
-    * @param registry YoVariableRegistry for this YoLong to register itself to after initialization
+    * @param registry YoRegistry for this YoLong to register itself to after initialization
     */
    public YoLong(String name, YoRegistry registry)
    {
@@ -35,7 +35,7 @@ public class YoLong extends YoVariable implements LongProvider
     *
     * @param name        String that uniquely identifies this YoLong
     * @param description String that describes this YoLong's purpose
-    * @param registry    YoVariableRegistry for this YoLong to register itself to after initialization
+    * @param registry    YoRegistry for this YoLong to register itself to after initialization
     * @param minScaling  double to set manualMinScaling to
     * @param maxScaling  double to set manualMaxScaling to
     */
@@ -47,7 +47,7 @@ public class YoLong extends YoVariable implements LongProvider
 
    /**
     * Create a new YoLong. This will call {@link YoVariable(YoVariableType, String, String,
-    * YoVariableRegistry)} with {@link YoVariableType#LONG} and the given values.
+    * YoRegistry)} with {@link YoVariableType#LONG} and the given values.
     *
     * @param name
     * @param description
@@ -222,7 +222,7 @@ public class YoLong extends YoVariable implements LongProvider
     * Creates a new YoLong with the same parameters as this one, and registers it to the passed
     * {@link YoRegistry}.
     *
-    * @param newRegistry YoVariableRegistry to duplicate this YoLong to
+    * @param newRegistry YoRegistry to duplicate this YoLong to
     * @return the newly created and registered YoLong
     */
    @Override
