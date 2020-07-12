@@ -17,7 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import us.ihmc.robotics.Assert;
-import us.ihmc.yoVariables.listener.VariableChangedListener;
+import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.registry.YoTools;
 
@@ -195,7 +195,7 @@ public class YoVariableTest
    @Test // timeout=300000
    public void testGetFullNameWithNameSpace()
    {
-      Assert.assertEquals(yoVariable.getFullNameWithNameSpace(), "robot.testRegistry.variableOne");
+      Assert.assertEquals(yoVariable.getFullNameString(), "robot.testRegistry.variableOne");
    }
 
    @Test // timeout=300000
@@ -287,7 +287,7 @@ public class YoVariableTest
       createVariableChangeListeners(5);
 
       // add them to the YoVariable
-      yoVariable.removeAllVariableChangedListeners();
+      yoVariable.removeListeners();
       addAllListenersToYoVariable();
 
       // create an observer that's not supposed to be notified.
@@ -303,7 +303,7 @@ public class YoVariableTest
 
       // now notify and check if the observers catch on
 
-      yoVariable.notifyVariableChangedListeners();
+      yoVariable.notifyListeners();
 
       for (TestVariableChangedListener observer : variableChangedListeners)
       {
@@ -318,10 +318,10 @@ public class YoVariableTest
    public void testAddVariableChangeListener()
    {
       // remove all observers, then add one new observer, and check if it can be removed without exceptions.
-      yoVariable.removeAllVariableChangedListeners();
+      yoVariable.removeListeners();
       TestVariableChangedListener listener = new TestVariableChangedListener();
-      yoVariable.addVariableChangedListener(listener);
-      yoVariable.removeVariableChangedListener(listener);
+      yoVariable.addListener(listener);
+      yoVariable.removeListener(listener);
    }
 
    @Test // timeout=300000
@@ -334,7 +334,7 @@ public class YoVariableTest
 
       // let yoVariable notify observers. Assert that they got the event.
 
-      yoVariable.notifyVariableChangedListeners();
+      yoVariable.notifyListeners();
 
       for (TestVariableChangedListener observer : variableChangedListeners)
       {
@@ -342,9 +342,9 @@ public class YoVariableTest
       }
 
       // Remove and reset observers. Let yoVariable notify observers again. Assert that the observers didn't notice anything.
-      yoVariable.removeAllVariableChangedListeners();
+      yoVariable.removeListeners();
       resetAllObservers();
-      yoVariable.notifyVariableChangedListeners();
+      yoVariable.notifyListeners();
 
       for (TestVariableChangedListener observer : variableChangedListeners)
       {
@@ -361,7 +361,7 @@ public class YoVariableTest
       addAllListenersToYoVariable();
 
       // let yoVariable notify observers. Assert that they got the event.
-      yoVariable.notifyVariableChangedListeners();
+      yoVariable.notifyListeners();
 
       for (TestVariableChangedListener observer : variableChangedListeners)
       {
@@ -369,13 +369,13 @@ public class YoVariableTest
       }
 
       // Remove and reset observers. Let yoVariable notify observers again. Assert that the observers didn't notice anything.
-      for (VariableChangedListener observer : variableChangedListeners)
+      for (YoVariableChangedListener observer : variableChangedListeners)
       {
-         yoVariable.removeVariableChangedListener(observer);
+         yoVariable.removeListener(observer);
       }
 
       resetAllObservers();
-      yoVariable.notifyVariableChangedListeners();
+      yoVariable.notifyListeners();
 
       for (TestVariableChangedListener observer : variableChangedListeners)
       {
@@ -389,7 +389,7 @@ public class YoVariableTest
       // make sure removing an observer that wasn't added throws an exception.
       try
       {
-         yoVariable.removeVariableChangedListener(new TestVariableChangedListener());
+         yoVariable.removeListener(new TestVariableChangedListener());
          fail();
       }
       catch (NoSuchElementException e)
@@ -408,7 +408,7 @@ public class YoVariableTest
          {
             createVariableChangeListeners(5);
             addAllListenersToYoVariable();
-            yoVariable.removeVariableChangedListener(new TestVariableChangedListener());
+            yoVariable.removeListener(new TestVariableChangedListener());
             //fail();
          }
          //      catch (NoSuchElementException e)
@@ -475,7 +475,7 @@ public class YoVariableTest
    {
       for (TestVariableChangedListener observer : variableChangedListeners)
       {
-         yoVariable.addVariableChangedListener(observer);
+         yoVariable.addListener(observer);
       }
    }
 
@@ -492,12 +492,12 @@ public class YoVariableTest
     *
     * @author Twan Koolen
     */
-   private class TestVariableChangedListener implements VariableChangedListener
+   private class TestVariableChangedListener implements YoVariableChangedListener
    {
       private YoVariable lastVariableChanged = null;
 
       @Override
-      public void notifyOfVariableChange(YoVariable v)
+      public void changed(YoVariable v)
       {
          lastVariableChanged = v;
       }

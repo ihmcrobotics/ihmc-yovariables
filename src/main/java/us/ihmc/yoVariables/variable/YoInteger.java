@@ -17,8 +17,8 @@ public class YoInteger extends YoVariable implements IntegerProvider
    private int val;
 
    /**
-    * Create a new YoInteger. This will call {@link #YoInteger(String, String, YoRegistry)}
-    * with the given name and registry and an empty description.
+    * Create a new YoInteger. This will call {@link #YoInteger(String, String, YoRegistry)} with the
+    * given name and registry and an empty description.
     *
     * @param name     String that uniquely identifies this YoInteger
     * @param registry YoRegistry for this YoInteger to register itself to after initialization
@@ -29,21 +29,20 @@ public class YoInteger extends YoVariable implements IntegerProvider
    }
 
    /**
-    * Create a new YoInteger. This will call {@link #YoInteger(String, String, YoRegistry)}
-    * with the given values as well as set {@link #manualMaxScaling} and {@link #manualMaxScaling} to
-    * the given values.
+    * Create a new YoInteger. This will call {@link #YoInteger(String, String, YoRegistry)} with the
+    * given values as well as set {@link #manualMaxScaling} and {@link #manualMaxScaling} to the given
+    * values.
     *
     * @param name        String that uniquely identifies this YoInteger
     * @param description String that describes this YoInteger's purpose
-    * @param registry    YoRegistry for this YoInteger to register itself to after
-    *                    initialization
+    * @param registry    YoRegistry for this YoInteger to register itself to after initialization
     * @param minScaling  double to set manualMinScaling to
     * @param maxScaling  double to set manualMaxScaling to
     */
    public YoInteger(String name, String description, YoRegistry registry, double minScaling, double maxScaling)
    {
       this(name, description, registry);
-      setManualScalingMinMax(minScaling, maxScaling);
+      setVariableBounds(minScaling, maxScaling);
    }
 
    /**
@@ -52,8 +51,7 @@ public class YoInteger extends YoVariable implements IntegerProvider
     *
     * @param name        String that uniquely identifies this YoInteger
     * @param description String that describes this YoInteger's purpose
-    * @param registry    YoRegistry for this YoInteger to register itself to after
-    *                    initialization
+    * @param registry    YoRegistry for this YoInteger to register itself to after initialization
     */
    public YoInteger(String name, String description, YoRegistry registry)
    {
@@ -77,7 +75,7 @@ public class YoInteger extends YoVariable implements IntegerProvider
     *
     * @param value           integer to set this YoInteger's internal integer state to
     * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyVariableChangedListeners()}
+    *                        {@link #notifyListeners()}
     * @return boolean if the given value differed from the current value of this YoInteger
     */
    public boolean set(int value, boolean notifyListeners)
@@ -87,7 +85,7 @@ public class YoInteger extends YoVariable implements IntegerProvider
          val = value;
          if (notifyListeners)
          {
-            notifyVariableChangedListeners();
+            notifyListeners();
          }
          return true;
       }
@@ -157,7 +155,7 @@ public class YoInteger extends YoVariable implements IntegerProvider
     *
     * @param doubleValue     double to convert and set this YoInteger to
     * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyVariableChangedListeners()}
+    *                        {@link #notifyListeners()}
     */
    @Override
    public void setValueFromDouble(double doubleValue, boolean notifyListeners)
@@ -216,7 +214,7 @@ public class YoInteger extends YoVariable implements IntegerProvider
     *
     * @param value           long to set this variable's value to
     * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyVariableChangedListeners()}
+    *                        {@link #notifyListeners()}
     */
    @Override
    public void setValueFromLongBits(long value, boolean notifyListeners)
@@ -234,9 +232,21 @@ public class YoInteger extends YoVariable implements IntegerProvider
    @Override
    public YoInteger duplicate(YoRegistry newRegistry)
    {
-      YoInteger retVar = new YoInteger(getName(), getDescription(), newRegistry, getManualScalingMin(), getManualScalingMax());
+      YoInteger retVar = new YoInteger(getName(), getDescription(), newRegistry, getLowerBound(), getUpperBound());
       retVar.set(getIntegerValue());
       return retVar;
+   }
+
+   @Override
+   public boolean setValue(YoVariable other, boolean notifyListeners)
+   {
+      return set(((YoInteger) other).getValue(), notifyListeners);
+   }
+
+   @Override
+   public String getValueAsString(String format)
+   {
+      return Integer.toString(val);
    }
 
    /**

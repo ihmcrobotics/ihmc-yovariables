@@ -5,7 +5,7 @@ import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameQuaternionBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple4DReadOnly;
 import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
-import us.ihmc.yoVariables.listener.VariableChangedListener;
+import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
 
@@ -174,12 +174,12 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
     *
     * @param variableChangedListener the listener to be attached.
     */
-   public void attachVariableChangedListener(VariableChangedListener variableChangedListener)
+   public void attachVariableChangedListener(YoVariableChangedListener variableChangedListener)
    {
-      qx.addVariableChangedListener(variableChangedListener);
-      qy.addVariableChangedListener(variableChangedListener);
-      qz.addVariableChangedListener(variableChangedListener);
-      qs.addVariableChangedListener(variableChangedListener);
+      qx.addListener(variableChangedListener);
+      qy.addListener(variableChangedListener);
+      qz.addListener(variableChangedListener);
+      qs.addListener(variableChangedListener);
    }
 
    /**
@@ -216,10 +216,10 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
     */
    public YoFrameQuaternion duplicate(YoRegistry newRegistry)
    {
-      YoDouble x = (YoDouble) newRegistry.findVariable(getYoQx().getFullNameWithNameSpace());
-      YoDouble y = (YoDouble) newRegistry.findVariable(getYoQy().getFullNameWithNameSpace());
-      YoDouble z = (YoDouble) newRegistry.findVariable(getYoQz().getFullNameWithNameSpace());
-      YoDouble s = (YoDouble) newRegistry.findVariable(getYoQs().getFullNameWithNameSpace());
+      YoDouble x = (YoDouble) newRegistry.findVariable(getYoQx().getFullNameString());
+      YoDouble y = (YoDouble) newRegistry.findVariable(getYoQy().getFullNameString());
+      YoDouble z = (YoDouble) newRegistry.findVariable(getYoQz().getFullNameString());
+      YoDouble s = (YoDouble) newRegistry.findVariable(getYoQs().getFullNameString());
       return new YoFrameQuaternion(x, y, z, s, getReferenceFrame());
    }
 

@@ -184,7 +184,7 @@ public class YoDoubleTest
    @Test // timeout=300000
    public void testGetYoVariableType()
    {
-      assertTrue(yoDouble1.getYoVariableType() == YoVariableType.DOUBLE);
+      assertTrue(yoDouble1.getType() == YoVariableType.DOUBLE);
    }
 
    @Test // timeout=300000

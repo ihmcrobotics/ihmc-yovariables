@@ -227,8 +227,8 @@ public class IntegerParameter extends YoParameter<IntegerParameter> implements I
                                                               getDescription(),
                                                               newRegistry,
                                                               initialValue,
-                                                              (int) getManualScalingMin(),
-                                                              (int) getManualScalingMax());
+                                                              (int) getLowerBound(),
+                                                              (int) getUpperBound());
          newParameter.value.set(value.getValue());
          newParameter.loadStatus = getLoadStatus();
          return newParameter.value;

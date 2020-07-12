@@ -22,11 +22,18 @@ public class YoVariableList implements java.io.Serializable, java.lang.Comparabl
 
    public YoVariableList(String name)
    {
+      this(name, null);
+   }
+
+   public YoVariableList(String name, List<YoVariable> yoVariables)
+   {
       this.name = name;
       variables = new ArrayList<>();
       variablesMappedByName = new LinkedHashMap<>();
 
       listeners = new ArrayList<>();
+      if (yoVariables != null)
+         addVariables(yoVariables);
    }
 
    public String getName()

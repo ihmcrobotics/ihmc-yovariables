@@ -20,11 +20,11 @@ public class YoFactoriesTest
       assertEquals(new NameSpace("root.registry0.registry00.registry000"), nameSpaceCheck);
 
       YoDouble foo = new YoDouble("foo", registry000);
-      assertEquals("root.registry0.registry00.registry000.foo", foo.getFullNameWithNameSpace());
+      assertEquals("root.registry0.registry00.registry000.foo", foo.getFullNameString());
 
       YoRegistry registry010 = YoFactories.getOrCreateAndAddRegistry(root, new NameSpace("root.registry0.registry01.registry010"));
       YoDouble bar = new YoDouble("bar", registry010);
-      assertEquals("root.registry0.registry01.registry010.bar", bar.getFullNameWithNameSpace());
+      assertEquals("root.registry0.registry01.registry010.bar", bar.getFullNameString());
 
       assertEquals(foo, root.findVariable("foo"));
       assertEquals(bar, root.findVariable("bar"));

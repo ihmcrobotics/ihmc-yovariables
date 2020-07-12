@@ -17,8 +17,8 @@ public class YoBoolean extends YoVariable implements BooleanProvider
    private boolean val;
 
    /**
-    * Create a new YoBoolean. This will call {@link #YoBoolean(String, String, YoRegistry)}
-    * with the given name and registry and an empty description.
+    * Create a new YoBoolean. This will call {@link #YoBoolean(String, String, YoRegistry)} with the
+    * given name and registry and an empty description.
     *
     * @param name     String that uniquely identifies this YoBoolean
     * @param registry YoRegistry for this YoBoolean to register itself to after initialization
@@ -34,8 +34,7 @@ public class YoBoolean extends YoVariable implements BooleanProvider
     *
     * @param name        String that uniquely identifies this YoBoolean
     * @param description String that describes this YoBoolean's purpose
-    * @param registry    YoRegistry for this YoBoolean to register itself to after
-    *                    initialization
+    * @param registry    YoRegistry for this YoBoolean to register itself to after initialization
     */
    public YoBoolean(String name, String description, YoRegistry registry)
    {
@@ -79,7 +78,7 @@ public class YoBoolean extends YoVariable implements BooleanProvider
     *
     * @param value           long to set this YoBoolean's internal boolean state to
     * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyVariableChangedListeners()}
+    *                        {@link #notifyListeners()}
     * @return boolean if the given value differed from the current value of this YoBoolean
     */
    public boolean set(boolean value, boolean notifyListeners)
@@ -89,7 +88,7 @@ public class YoBoolean extends YoVariable implements BooleanProvider
          val = value;
          if (notifyListeners)
          {
-            notifyVariableChangedListeners();
+            notifyListeners();
          }
          return true;
       }
@@ -102,12 +101,18 @@ public class YoBoolean extends YoVariable implements BooleanProvider
     *
     * @param value           boolean to convert and set this YoBoolean to
     * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyVariableChangedListeners()}
+    *                        {@link #notifyListeners()}
     */
    @Override
    public void setValueFromDouble(double value, boolean notifyListeners)
    {
       set(convertDoubleToBoolean(value), notifyListeners);
+   }
+
+   @Override
+   public boolean setValue(YoVariable other, boolean notifyListeners)
+   {
+      return set(((YoBoolean) other).getValue(), notifyListeners);
    }
 
    /**
@@ -171,7 +176,7 @@ public class YoBoolean extends YoVariable implements BooleanProvider
     *
     * @param value           long to set this variable's value to
     * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyVariableChangedListeners()}
+    *                        {@link #notifyListeners()}
     */
    @Override
    public void setValueFromLongBits(long value, boolean notifyListeners)
@@ -192,6 +197,12 @@ public class YoBoolean extends YoVariable implements BooleanProvider
       YoBoolean newVar = new YoBoolean(getName(), getDescription(), newRegistry);
       newVar.set(getBooleanValue());
       return newVar;
+   }
+
+   @Override
+   public String getValueAsString(String format)
+   {
+      return Boolean.toString(val);
    }
 
    /**

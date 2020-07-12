@@ -4,7 +4,7 @@ import us.ihmc.euclid.tools.EuclidCoreIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.tuple3D.interfaces.Tuple3DBasics;
 import us.ihmc.euclid.tuple3D.interfaces.Tuple3DReadOnly;
-import us.ihmc.yoVariables.listener.VariableChangedListener;
+import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
 
@@ -140,7 +140,7 @@ public abstract class YoTuple3D implements Tuple3DBasics
     */
    public void notifyVariableChangedListeners()
    {
-      x.notifyVariableChangedListeners(); // No need to do it for all
+      x.notifyListeners(); // No need to do it for all
    }
 
    /**
@@ -148,11 +148,11 @@ public abstract class YoTuple3D implements Tuple3DBasics
     *
     * @param variableChangedListener the listener to be attached.
     */
-   public final void attachVariableChangedListener(VariableChangedListener variableChangedListener)
+   public final void attachVariableChangedListener(YoVariableChangedListener variableChangedListener)
    {
-      x.addVariableChangedListener(variableChangedListener);
-      y.addVariableChangedListener(variableChangedListener);
-      z.addVariableChangedListener(variableChangedListener);
+      x.addListener(variableChangedListener);
+      y.addListener(variableChangedListener);
+      z.addListener(variableChangedListener);
    }
 
    /**

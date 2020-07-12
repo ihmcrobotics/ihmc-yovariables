@@ -2,9 +2,9 @@ package us.ihmc.yoVariables.variable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
-import us.ihmc.yoVariables.listener.VariableChangedListener;
+import us.ihmc.yoVariables.dataBuffer.DataBuffer;
+import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.parameters.YoParameter;
 import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoRegistry;
@@ -19,18 +19,20 @@ import us.ihmc.yoVariables.registry.YoTools;
  * each essentially contains a double value YoVariables are designed for integration into the SCS
  * GUI. Once registered, a variable will automatically become available to the GUI for graphing,
  * modification and other data manipulation. Historical values of all registered YoVariables are
- * stored in the DataBuffer which may be exported for later use.
+ * stored in the {@link DataBuffer} which may be exported for later use.
  * </p>
  */
 public abstract class YoVariable
 {
-   private List<VariableChangedListener> variableChangedListeners;
-   private double manualMinScaling = 0.0, manualMaxScaling = 1.0;
-
    private final String name;
    private final String description;
    private final YoVariableType type;
    private YoRegistry registry;
+   private NameSpace fullName;
+
+   private List<YoVariableChangedListener> changedListeners;
+   private double lowerBound = 0.0;
+   private double upperBound = 1.0;
 
    /**
     * Create a new YoVariable. This is called by extensions of YoVariable, and require a
@@ -39,8 +41,7 @@ public abstract class YoVariable
     * @param type        YoVariableType for this YoVariable to implement
     * @param name        String that uniquely identifies this YoVariable
     * @param description String that describes this YoVariable's purpose
-    * @param registry    YoRegistry for this YoVariable to register itself to after
-    *                    initialization
+    * @param registry    YoRegistry for this YoVariable to register itself to after initialization
     */
    public YoVariable(YoVariableType type, String name, String description, YoRegistry registry)
    {
@@ -49,7 +50,6 @@ public abstract class YoVariable
       this.type = type;
       this.name = name;
       this.description = description;
-      this.variableChangedListeners = null;
 
       if (registry != null)
          registry.addVariable(this);
@@ -58,6 +58,7 @@ public abstract class YoVariable
    public void setRegistry(YoRegistry registry)
    {
       this.registry = registry;
+      fullName = null; // Force to reset the fullName so it is updated on next query.
    }
 
    /**
@@ -77,7 +78,7 @@ public abstract class YoVariable
     */
    public String getName()
    {
-      return this.name;
+      return name;
    }
 
    /**
@@ -87,40 +88,69 @@ public abstract class YoVariable
     */
    public String getDescription()
    {
-      return this.description;
+      return description;
    }
 
    /**
-    * Set the min and max scaling values for graphing purposes. By default graphs are created using
-    * manual scaling based on these values where min = 0.0 and max = 1.0.
+    * Sets the bounds for this variable's range of values.
+    * <p>
+    * Variable bounds are typically used when interacting with the variable via a GUI. For instance,
+    * the variable bounds can be used to set the bounds of control slider or set the range when
+    * plotting this variable.
+    * </p>
+    * <p>
+    * Note that nothing in the implementation of a {@code YoVariable} enforces the value to remain
+    * within its current bounds, it is only for facilitating the definition of bounds and tracking to
+    * the bounds' owner.
+    * </p>
     *
-    * @param minScaling double representing the min scale value
-    * @param maxScaling double representing the max scale value
+    * @param lowerBound double value representing the lower bound for this variable.
+    * @param upperBound double value representing the upper bound for this variable.
     */
-   public void setManualScalingMinMax(double minScaling, double maxScaling)
+   public void setVariableBounds(double lowerBound, double upperBound)
    {
-      this.manualMinScaling = minScaling;
-      this.manualMaxScaling = maxScaling;
+      this.lowerBound = lowerBound;
+      this.upperBound = upperBound;
    }
 
    /**
-    * Retrieve the current minimum value for manual scaling.
+    * Returns the current double value representing the lower bound for this variable's value range.
+    * <p>
+    * Variable bounds are typically used when interacting with the variable via a GUI. For instance,
+    * the variable bounds can be used to set the bounds of control slider or set the range when
+    * plotting this variable.
+    * </p>
+    * <p>
+    * Note that nothing in the implementation of a {@code YoVariable} enforces the value to remain
+    * within its current bounds, it is only for facilitating the definition of bounds and tracking to
+    * the bounds' owner.
+    * </p>
     *
-    * @return double min value
+    * @return minimum value as double for this variable.
     */
-   public double getManualScalingMin()
+   public double getLowerBound()
    {
-      return manualMinScaling;
+      return lowerBound;
    }
 
    /**
-    * Retrieve the current maximum value for manual scaling.
+    * Returns the current double value representing the upper bound for this variable's value range.
+    * <p>
+    * Variable bounds are typically used when interacting with the variable via a GUI. For instance,
+    * the variable bounds can be used to set the bounds of control slider or set the range when
+    * plotting this variable.
+    * </p>
+    * <p>
+    * Note that nothing in the implementation of a {@code YoVariable} enforces the value to remain
+    * within its current bounds, it is only for facilitating the definition of bounds and tracking to
+    * the bounds' owner.
+    * </p>
     *
-    * @return double max value
+    * @return maximum value as double for this variable.
     */
-   public double getManualScalingMax()
+   public double getUpperBound()
    {
-      return manualMaxScaling;
+      return upperBound;
    }
 
    /**
@@ -128,108 +158,110 @@ public abstract class YoVariable
     *
     * @return YoVariableType of this variable
     */
-   public final YoVariableType getYoVariableType()
+   public final YoVariableType getType()
    {
       return type;
    }
 
    /**
-    * Retrieves this variable's full name and namespace, if applicable.
+    * Retrieves this variable's full name, i.e. this variable prepended with its parent's namespace if
+    * applicable, and returns the full name as a namespace.
     *
-    * @return String fully qualified name
+    * @return this variable's full name as a namespace.
     */
-   public String getFullNameWithNameSpace()
+   public NameSpace getFullName()
    {
-      if (registry == null)
-         return this.name;
-      if (registry.getNameSpace() == null)
-         return this.name;
+      if (fullName == null)
+      {
+         if (registry == null)
+            fullName = new NameSpace(name);
+         else
+            fullName = registry.getNameSpace().append(name);
+      }
 
-      return registry.getNameSpace() + "." + this.name;
+      return fullName;
    }
 
    /**
-    * Retrieves this variable's namespace alone.
+    * Retrieves this variable's full name, i.e. this variable prepended with its parent's namespace if
+    * applicable.
     *
-    * @return String namespace for this variable
+    * @return this variable's full name.
+    */
+   public String getFullNameString()
+   {
+      return getFullName().getName();
+   }
+
+   /**
+    * Returns the namespace of the registry in which this variable is currently registered to, or
+    * {@code null} if this variable is not registered to any registry.
+    *
+    * @return this variable's namespace.
     */
    public NameSpace getNameSpace()
    {
-      return registry.getNameSpace();
+      return registry == null ? null : registry.getNameSpace();
    }
 
    /**
-    * Attaches an object implementing {@link VariableChangedListener} to this variable's list of
-    * listeners.
-    * <p>
-    * Instantiates a new empty list of listeners if it is currently null.
-    * </p>
+    * Adds a listener to this variable.
     *
-    * @param variableChangedListener VariableChangedListener to attach
+    * @param listener the listener for listening to changes done to this variable.
     */
-   public void addVariableChangedListener(VariableChangedListener variableChangedListener)
+   public void addListener(YoVariableChangedListener listener)
    {
-      if (variableChangedListeners == null)
-      {
-         variableChangedListeners = new ArrayList<>();
-      }
+      if (changedListeners == null)
+         changedListeners = new ArrayList<>();
 
-      this.variableChangedListeners.add(variableChangedListener);
+      changedListeners.add(listener);
    }
 
    /**
-    * Clears this variable's list of {@link VariableChangedListener}s.
-    * <p>
-    * If the list is null, does nothing.
-    * </p>
+    * Removes all listeners previously added to this variable.
     */
-   public void removeAllVariableChangedListeners()
+   public void removeListeners()
    {
-      if (this.variableChangedListeners != null)
-      {
-         this.variableChangedListeners.clear();
-      }
+      changedListeners = null;
    }
 
    /**
-    * Returns this variable's list of {@link VariableChangedListener}s.
+    * Returns this variable's list of {@link YoVariableChangedListener}s.
     *
-    * @return
+    * @return the listeners previously added to this variable, or {@code null} if this variable has no
+    *         listener.
     */
-   public List<VariableChangedListener> getVariableChangedListeners()
+   public List<YoVariableChangedListener> getListeners()
    {
-      return variableChangedListeners;
+      return changedListeners;
    }
 
    /**
-    * Removes a {@link VariableChangedListener} from this variable's list of listeners.
+    * Tries to remove a listener from this variable. If the listener could not be found and removed,
+    * nothing happens.
     *
-    * @param variableChangedListener VariableChangedListener to remove
+    * @param listener the listener to remove.
+    * @return {@code true} if the listener was removed, {@code false} if the listener was not found and
+    *         nothing happened.
     */
-   public void removeVariableChangedListener(VariableChangedListener variableChangedListener)
+   public boolean removeListener(YoVariableChangedListener listener)
    {
-      boolean success;
-
-      if (variableChangedListeners == null)
-         success = false;
+      if (changedListeners == null)
+         return false;
       else
-         success = this.variableChangedListeners.remove(variableChangedListener);
-
-      if (!success)
-         throw new NoSuchElementException("Listener not found");
+         return changedListeners.remove(listener);
    }
 
    /**
-    * Calls {@link VariableChangedListener#notifyOfVariableChange(YoVariable)} with this variable for
-    * every {@link VariableChangedListener} attached to this variable.
+    * Triggers a notification to all the listeners currently attached to this variable.
     */
-   public void notifyVariableChangedListeners()
+   public void notifyListeners()
    {
-      if (variableChangedListeners != null)
+      if (changedListeners != null)
       {
-         for (int i = 0; i < variableChangedListeners.size(); i++)
+         for (int i = 0; i < changedListeners.size(); i++)
          {
-            variableChangedListeners.get(i).notifyOfVariableChange(this);
+            changedListeners.get(i).changed(this);
          }
       }
    }
@@ -240,14 +272,14 @@ public abstract class YoVariable
     * Abstract; implemented by each extension of YoVariable to return different interpretations.
     * </p>
     *
-    * @return double value of variable interpreted as Double
+    * @return current value of this variable interpreted as double.
     */
    public abstract double getValueAsDouble();
 
    /**
     * Calls {@link #setValueFromDouble(double, boolean)} with (value, true).
     *
-    * @param value double to set this variable's value to
+    * @param value double to set this variable's value to.
     */
    public final void setValueFromDouble(double value)
    {
@@ -260,12 +292,11 @@ public abstract class YoVariable
     * Abstract; implemented by each extension of YoVariable to result in different interpretation.
     * </p>
     * <p>
-    * Will call {@link #notifyVariableChangedListeners()} if notifyListeners is true.
+    * Will call {@link #notifyListeners()} if notifyListeners is true.
     * </p>
     *
-    * @param value           double to set this variable's value to
-    * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyVariableChangedListeners()}
+    * @param value           double to set this variable's value to.
+    * @param notifyListeners boolean determining whether or not to call {@link #notifyListeners()}.
     */
    public abstract void setValueFromDouble(double value, boolean notifyListeners);
 
@@ -275,14 +306,14 @@ public abstract class YoVariable
     * Abstract; implemented by each extension of YoVariable to result in different interpretation.
     * </p>
     *
-    * @return long formatted value of this variable
+    * @return long formatted value of this variable.
     */
    public abstract long getValueAsLongBits();
 
    /**
     * Calls {@link #setValueFromLongBits(long, boolean)} with (value, true).
     *
-    * @param value long value to set this variable to
+    * @param value long value to set this variable to.
     */
    public final void setValueFromLongBits(long value)
    {
@@ -295,22 +326,61 @@ public abstract class YoVariable
     * Abstract; implemented by each extension of YoVariable to result in different action taken.
     * </p>
     *
-    * @param value           long to set this variable's value to
-    * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyVariableChangedListeners()}
+    * @param value           long to set this variable's value to.
+    * @param notifyListeners boolean determining whether or not to call {@link #notifyListeners()}.
     */
    public abstract void setValueFromLongBits(long value, boolean notifyListeners);
 
    /**
-    * Creates a copy of this variable in the given {@link YoRegistry}
+    * Creates a copy of this variable in the given {@link YoRegistry}.
     * <p>
     * Abstract; implemented by each extension of YoVariable to perform action with proper typing.
     * </p>
     *
-    * @param newRegistry YoRegistry to duplicate this variable to
-    * @return the newly created variable from the given newRegistry
+    * @param newRegistry YoRegistry to duplicate this variable to.
+    * @return the newly created variable from the given newRegistry.
     */
    public abstract YoVariable duplicate(YoRegistry newRegistry);
+
+   /**
+    * Sets this variable's value to the given value.
+    * <p>
+    * Abstract; implemented by each extension of {@code YoVariable} to perform action with proper
+    * typing.
+    * </p>
+    * <p>
+    * Note that {@code other} is casted to the final implementation of this {@code YoVariable}.
+    * </p>
+    *
+    * @param other           the other variable used to set the value of {@code this}. It is assumed to
+    *                        be of the same type as {@code this}.
+    * @param notifyListeners boolean determining whether or not to call {@link #notifyListeners()}
+    * @return true if value changed
+    */
+   public abstract boolean setValue(YoVariable other, boolean notifyListeners);
+
+   /**
+    * Returns the value of this variable as a string.
+    * <p>
+    * The returned string is expected to not be following any specific formatting, for instance for a
+    * {@code YoDouble} this relies on {@link Double#toString(double)}.
+    * </p>
+    * 
+    * @return the string representation of this variable's current value.
+    */
+   public String getValueAsString()
+   {
+      return getValueAsString(null);
+   }
+
+   /**
+    * Returns the value of this variable as a string using the given format if this is a
+    * {@link YoDouble}.
+    * 
+    * @param format the format to use for a double value.
+    * @return the string representation of this variable's current value.
+    */
+   public abstract String getValueAsString(String format);
 
    /**
     * Assesses if this variable's value is equivalent to zero.
@@ -318,14 +388,14 @@ public abstract class YoVariable
     * Abstract; implemented by each extension of YoVariable to result in different interpretation.
     * </p>
     *
-    * @return boolean if variable's value is zero, per extension's interpretation
+    * @return boolean if variable's value is zero, per extension's interpretation.
     */
    public abstract boolean isZero();
 
    /**
-    * Flag to notify if this variable should be treated as a parameter
+    * Flag to notify if this variable should be treated as a parameter.
     *
-    * @return true if this a parameter
+    * @return true if this a parameter.
     */
    public boolean isParameter()
    {
@@ -333,9 +403,9 @@ public abstract class YoVariable
    }
 
    /**
-    * If isParamater() is true, this function returns the corresponding parameter object
+    * If {@link #isParameter()} is true, this function returns the corresponding parameter object.
     *
-    * @return the parameter object if isParameter() is true, null otherwise
+    * @return the parameter object if {@link #isParameter()} is true, {@code null} otherwise.
     */
    public YoParameter<?> getParameter()
    {

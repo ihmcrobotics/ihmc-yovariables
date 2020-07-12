@@ -1,15 +1,9 @@
 package us.ihmc.yoVariables.dataBuffer;
 
-import java.text.FieldPosition;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import us.ihmc.yoVariables.variable.YoBoolean;
-import us.ihmc.yoVariables.variable.YoDouble;
-import us.ihmc.yoVariables.variable.YoEnum;
-import us.ihmc.yoVariables.variable.YoInteger;
-import us.ihmc.yoVariables.variable.YoLong;
+import us.ihmc.euclid.tools.EuclidCoreIOTools;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 public class DataBufferEntry implements DataEntry
@@ -29,8 +23,6 @@ public class DataBufferEntry implements DataEntry
    // private double manualMinScaling = 0.0, manualMaxScaling = 1.0;
    private boolean autoScale = true;
 
-   private final ValueStringConverter valueStringConverter;
-
    public DataBufferEntry(YoVariable variable, int nPoints)
    {
       this.variable = variable;
@@ -41,8 +33,6 @@ public class DataBufferEntry implements DataEntry
       double[] emptyData = new double[nPoints];
       this.setData(emptyData, nPoints);
       reCalcMinMax();
-
-      valueStringConverter = ValueStringConverter.build(variable);
    }
 
    @Override
@@ -104,7 +94,7 @@ public class DataBufferEntry implements DataEntry
    @Override
    public void setManualScaling(double minScaling, double maxScaling)
    {
-      variable.setManualScalingMinMax(minScaling, maxScaling);
+      variable.setVariableBounds(minScaling, maxScaling);
 
       // this.manualMinScaling = minScaling;
       // this.manualMaxScaling = maxScaling;
@@ -119,13 +109,13 @@ public class DataBufferEntry implements DataEntry
    @Override
    public double getManualMinScaling()
    {
-      return variable.getManualScalingMin();
+      return variable.getLowerBound();
    } // this.manualMinScaling;}
 
    @Override
    public double getManualMaxScaling()
    {
-      return variable.getManualScalingMax();
+      return variable.getUpperBound();
    } // this.manualMaxScaling;}
 
    @Override
@@ -143,7 +133,7 @@ public class DataBufferEntry implements DataEntry
    @Override
    public String getFullVariableNameWithNameSpace()
    {
-      return variable.getFullNameWithNameSpace();
+      return variable.getFullNameString();
    }
 
    protected void copyValueThrough()
@@ -606,8 +596,7 @@ public class DataBufferEntry implements DataEntry
    }
 
    private static final String SPACE_STRING = "  ";
-   private static final java.text.NumberFormat DOUBLE_FORMAT = new java.text.DecimalFormat(" 0.00000;-0.00000");
-   private static final FieldPosition FIELD_POSITION = new FieldPosition(NumberFormat.INTEGER_FIELD);
+   private static final String DOUBLE_FORMAT = EuclidCoreIOTools.getStringFormat(8, 5);
 
    @Override
    public void getVariableNameAndValue(StringBuffer stringBuffer)
@@ -623,36 +612,6 @@ public class DataBufferEntry implements DataEntry
 
    private void getVariableNameAndValueString(StringBuffer stringBuffer, double value)
    {
-      stringBuffer.append(variable.getName()).append(SPACE_STRING);
-      valueStringConverter.convertAndPack(stringBuffer, value);
+      stringBuffer.append(variable.getName()).append(SPACE_STRING).append(variable.getValueAsString(DOUBLE_FORMAT));
    }
-
-   private static interface ValueStringConverter
-   {
-      static ValueStringConverter build(YoVariable variable)
-      {
-         if (variable instanceof YoDouble)
-            return (buffer, value) -> DOUBLE_FORMAT.format(value, buffer, FIELD_POSITION);
-         else if (variable instanceof YoBoolean)
-            return (buffer, value) -> buffer.append(value > 0.5 ? true : false);
-         else if (variable instanceof YoInteger)
-            return (buffer, value) -> buffer.append((int) Math.round(value));
-         else if (variable instanceof YoLong)
-            return (buffer, value) -> buffer.append(Math.round(value));
-         else if (variable instanceof YoEnum<?>)
-            return (buffer, value) ->
-            {
-               int ordinal = (int) Math.round(value);
-               if (ordinal == YoEnum.NULL_VALUE)
-                  buffer.append("NULL");
-               else
-                  buffer.append(((YoEnum<?>) variable).getEnumValuesAsString()[ordinal]);
-            };
-         else
-            throw new UnsupportedOperationException("Unsupported type of YoVariable: " + variable.getClass().getSimpleName());
-      }
-
-      void convertAndPack(StringBuffer bufferToAppendTo, double value);
-   }
-
 }

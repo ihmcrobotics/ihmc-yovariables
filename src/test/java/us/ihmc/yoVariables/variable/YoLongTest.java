@@ -124,7 +124,7 @@ public class YoLongTest
    @Test // timeout=300000
    public void testGetYoVariableType()
    {
-      Assert.assertEquals(YoVariableType.LONG, yoLong.getYoVariableType());
+      Assert.assertEquals(YoVariableType.LONG, yoLong.getType());
    }
 
    @Test // timeout=300000
@@ -149,8 +149,8 @@ public class YoLongTest
       YoLong duplicate = yoLong2.duplicate(newRegistry);
       Assert.assertEquals(yoLong2.getName(), duplicate.getName());
       Assert.assertEquals(yoLong2.getDescription(), duplicate.getDescription());
-      Assert.assertEquals(yoLong2.getManualScalingMin(), duplicate.getManualScalingMin(), EPSILON);
-      Assert.assertEquals(yoLong2.getManualScalingMax(), duplicate.getManualScalingMax(), EPSILON);
+      Assert.assertEquals(yoLong2.getLowerBound(), duplicate.getLowerBound(), EPSILON);
+      Assert.assertEquals(yoLong2.getUpperBound(), duplicate.getUpperBound(), EPSILON);
    }
 
    @Test // timeout = 300000

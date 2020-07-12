@@ -630,10 +630,10 @@ public class YoRegistryTest
       registry01.addChild(registry011);
       assertEquals("root.registry0.registry01.registry011", registry011.getNameSpace().getName());
 
-      assertEquals("root.registry0.variable0_A", variable0_A.getFullNameWithNameSpace());
-      assertEquals("root.registry0.variable0_B", variable0_B.getFullNameWithNameSpace());
-      assertEquals("root.registry1.registry10.variable10_A", variable10_A.getFullNameWithNameSpace());
-      assertEquals("root.registry0.registry01.registry011.variable011_A", variable011_A.getFullNameWithNameSpace());
+      assertEquals("root.registry0.variable0_A", variable0_A.getFullNameString());
+      assertEquals("root.registry0.variable0_B", variable0_B.getFullNameString());
+      assertEquals("root.registry1.registry10.variable10_A", variable10_A.getFullNameString());
+      assertEquals("root.registry0.registry01.registry011.variable011_A", variable011_A.getFullNameString());
 
       List<YoVariable> allRootVariables = root.subtreeVariables();
       assertEquals(8, allRootVariables.size());
@@ -751,7 +751,7 @@ public class YoRegistryTest
    @Test
    public void testListenersOne()
    {
-      robotRegistry.addChangedListener(listener);
+      robotRegistry.addListener(listener);
 
       assertNull(lastRegisteredVariable);
       YoDouble addedYoVariable = new YoDouble("addedLater", controllerRegistry);
@@ -762,7 +762,7 @@ public class YoRegistryTest
       testRegistry.addChild(addedRegistry);
       assertEquals(addedRegistry, lastAddedRegistry);
 
-      testRegistry.addChangedListener(listener);
+      testRegistry.addListener(listener);
       assertNull(lastClearedRegistry);
       assertNull(lastRemovedRegistry);
       testRegistry.clear();

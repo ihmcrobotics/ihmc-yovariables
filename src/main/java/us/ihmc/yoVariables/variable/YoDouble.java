@@ -16,8 +16,8 @@ public class YoDouble extends YoVariable implements DoubleProvider
    private double val;
 
    /**
-    * Create a new YoDouble. This will call {@link #YoDouble(String, String, YoRegistry)} with
-    * the given name and registry and an empty description.
+    * Create a new YoDouble. This will call {@link #YoDouble(String, String, YoRegistry)} with the
+    * given name and registry and an empty description.
     *
     * @param name     String uniquely identifying this YoDouble
     * @param registry YoRegistry for this YoDouble to register itself to after initialization
@@ -28,21 +28,20 @@ public class YoDouble extends YoVariable implements DoubleProvider
    }
 
    /**
-    * Create a new YoDouble. This will call {@link #YoDouble(String, String, YoRegistry)} with
-    * the given values as well as set {@link #manualMinScaling} and {@link #manualMaxScaling} to the
-    * given values.
+    * Create a new YoDouble. This will call {@link #YoDouble(String, String, YoRegistry)} with the
+    * given values as well as set {@link #manualMinScaling} and {@link #manualMaxScaling} to the given
+    * values.
     *
     * @param name        String uniquely identifying this YoDouble
     * @param description String describing this YoDouble's purpose
-    * @param registry    YoRegistry for this YoDouble to register itself to after
-    *                    initialization
+    * @param registry    YoRegistry for this YoDouble to register itself to after initialization
     * @param minScaling  double to set manualMinScaling to
     * @param maxScaling  double to set manualMaxScaling to
     */
    public YoDouble(String name, String description, YoRegistry registry, double minScaling, double maxScaling)
    {
       this(name, description, registry);
-      setManualScalingMinMax(minScaling, maxScaling);
+      setVariableBounds(minScaling, maxScaling);
    }
 
    /**
@@ -177,7 +176,7 @@ public class YoDouble extends YoVariable implements DoubleProvider
     *
     * @param value           double to set this YoDouble's internal long state to
     * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyVariableChangedListeners()}
+    *                        {@link #notifyListeners()}
     * @return boolean if the given value differed from the current value of this YoDouble
     */
    public boolean set(double value, boolean notifyListeners)
@@ -187,7 +186,7 @@ public class YoDouble extends YoVariable implements DoubleProvider
          val = value;
          if (notifyListeners)
          {
-            notifyVariableChangedListeners();
+            notifyListeners();
          }
          return true;
       }
@@ -214,7 +213,7 @@ public class YoDouble extends YoVariable implements DoubleProvider
     *
     * @param value           double to set this YoDouble to
     * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyVariableChangedListeners()}
+    *                        {@link #notifyListeners()}
     */
    @Override
    public void setValueFromDouble(double value, boolean notifyListeners)
@@ -241,7 +240,7 @@ public class YoDouble extends YoVariable implements DoubleProvider
     *
     * @param value           long to set this variable's value to
     * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyVariableChangedListeners()}
+    *                        {@link #notifyListeners()}
     */
    @Override
    public void setValueFromLongBits(long value, boolean notifyListeners)
@@ -259,9 +258,15 @@ public class YoDouble extends YoVariable implements DoubleProvider
    @Override
    public YoDouble duplicate(YoRegistry newRegistry)
    {
-      YoDouble retVar = new YoDouble(getName(), getDescription(), newRegistry, getManualScalingMin(), getManualScalingMax());
+      YoDouble retVar = new YoDouble(getName(), getDescription(), newRegistry, getLowerBound(), getUpperBound());
       retVar.set(val);
       return retVar;
+   }
+
+   @Override
+   public boolean setValue(YoVariable other, boolean notifyListeners)
+   {
+      return set(((YoDouble) other).getValue(), notifyListeners);
    }
 
    /**
@@ -290,55 +295,12 @@ public class YoDouble extends YoVariable implements DoubleProvider
       return getDoubleValue();
    }
 
-   //   NOTE: JEP October 30, 2010:
-   //   The following is very useful for debugging things so please do not delete!
-   //   I should probably use the change listener stuff instead, but this is nice for eavesdropping
-   //   to catch when a variable changes or in order to compare two runs that should be identical
-   //   to discover the first time their YoVariables differ...
-   //
-   //   private static boolean startDisplaying = false;
-   //   private static boolean stopDisplaying = false;
-   //   private static YoDouble time;
-   //   private static PrintWriter writer;
-   //
-   //   private void setAndLogToAFile(double value)
-   //   {
-   //      if ((time == null) && (this.getName().equals("t")))
-   //      {
-   //         System.out.println("found time");
-   //         time = this;
-   //
-   //
-   //         try
-   //         {
-   //            writer = new PrintWriter("run.txt");
-   //         } catch (FileNotFoundException e)
-   //         {
-   //
-   //         }
-   //      }
-   //
-   //      if ((time != null) && (time.getDoubleValue() >= 1.656-1e-7)) startDisplaying = true;
-   //      if ((time != null) && (time.getDoubleValue() >= 1.6632+1e-7))
-   //      {
-   //         stopDisplaying = true; //1.6705
-   //         writer.close();
-   //      }
-   //
-   //      if (startDisplaying & !stopDisplaying)
-   //      {
-   //         if ((Math.abs(time.getDoubleValue() - 1.6632) < 0.00005) && (this.getName().equals("o_tau_rh_roll")))
-   //         {
-   //            System.out.println("time = " + time.getDoubleValue());
-   //            System.out.println(this.getName() + " is getting set to " + value);
-   //         }
-   //
-   //         if (!this.name.contains("DurationMilli"))
-   //         {
-   //            writer.println(time.getDoubleValue() + ": " + this.name + " = " + value);
-   //            //       System.out.println(time.getDoubleValue() + ": " + this.name + " = " + value);
-   //         }
-   //      }
-   //
-   //   }
+   @Override
+   public String getValueAsString(String format)
+   {
+      if (format == null)
+         return Double.toString(val);
+      else
+         return String.format(format, val);
+   }
 }

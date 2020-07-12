@@ -33,8 +33,8 @@ public abstract class AbstractParameterWriter
          NameSpace relativeNamespace = AbstractParameterReader.getRelativeNamespace(parameter.getNameSpace(), registry);
 
          String value = parameter.getValueAsString();
-         String min = String.valueOf(parameter.getVariable().getManualScalingMin());
-         String max = String.valueOf(parameter.getVariable().getManualScalingMax());
+         String min = String.valueOf(parameter.getVariable().getLowerBound());
+         String max = String.valueOf(parameter.getVariable().getUpperBound());
          setValue(relativeNamespace, parameter.getName(), parameter.getDescription(), parameter.getClass().getSimpleName(), value, min, max);
 
       }

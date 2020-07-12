@@ -146,8 +146,8 @@ public class YoVariableListTest
       {
          YoVariable yoVariable = variables.get(i);
 
-         assertTrue(varList.hasVariableWithName(yoVariable.getFullNameWithNameSpace()));
-         assertTrue(yoVariable == varList.getVariable(yoVariable.getFullNameWithNameSpace()));
+         assertTrue(varList.hasVariableWithName(yoVariable.getFullNameString()));
+         assertTrue(yoVariable == varList.getVariable(yoVariable.getFullNameString()));
       }
    }
 

@@ -9,7 +9,7 @@ import us.ihmc.euclid.referenceFrame.interfaces.FrameQuaternionReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple3DReadOnly;
 import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
-import us.ihmc.yoVariables.listener.VariableChangedListener;
+import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
@@ -210,7 +210,7 @@ public class YoFramePose3D implements FixedFramePose3DBasics
     *
     * @param variableChangedListener the listener to be attached.
     */
-   public void attachVariableChangedListener(VariableChangedListener variableChangedListener)
+   public void attachVariableChangedListener(YoVariableChangedListener variableChangedListener)
    {
       position.attachVariableChangedListener(variableChangedListener);
       orientation.attachVariableChangedListener(variableChangedListener);

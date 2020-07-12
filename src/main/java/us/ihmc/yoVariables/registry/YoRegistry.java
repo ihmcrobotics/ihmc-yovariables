@@ -73,7 +73,7 @@ public class YoRegistry implements YoVariableHolder
     * Typically, the new registry will need to be registered as a child of another registry that is
     * accessible from variable visualizer, for instance simulation or server.
     * </p>
-    * 
+    *
     * @param name the name of the new registry.
     * @throws IllegalNameException if the name contains any of the following characters:
     *                              {@value YoTools#ILLEGAL_CHARACTERS_STRING}.
@@ -90,7 +90,7 @@ public class YoRegistry implements YoVariableHolder
 
    /**
     * Gets the name of this registry.
-    * 
+    *
     * @return this registry's name.
     */
    public String getName()
@@ -104,7 +104,7 @@ public class YoRegistry implements YoVariableHolder
     * The namespace contains in order the name of all the registries from the root ending with this
     * registry.
     * </p>
-    * 
+    *
     * @return this registry's namespace.
     */
    public NameSpace getNameSpace()
@@ -121,7 +121,7 @@ public class YoRegistry implements YoVariableHolder
     * subtree is automatically raised to match the new mode. Registries in the subtree that were
     * previously configured with a higher restriction level are not affected by this operation.
     * </p>
-    * 
+    *
     * @param restrictionLevel the new restriction level for this registry.
     */
    public void setRestrictionLevel(YoRegistryRestrictionLevel restrictionLevel)
@@ -131,9 +131,9 @@ public class YoRegistry implements YoVariableHolder
 
       this.restrictionLevel = restrictionLevel;
 
-      // Raise the restriction level of the children if needed.
-      for (YoRegistry child : children)
+      for (int i = 0; i < children.size(); i++)
       {
+         YoRegistry child = children.get(i);
          if (child.restrictionLevel.ordinal() < restrictionLevel.ordinal())
             child.setRestrictionLevel(restrictionLevel);
       }
@@ -141,7 +141,7 @@ public class YoRegistry implements YoVariableHolder
 
    /**
     * Gets the current restriction level for this registry.
-    * 
+    *
     * @return this registry's restriction level.
     */
    public YoRegistryRestrictionLevel getRestrictionLevel()
@@ -161,7 +161,7 @@ public class YoRegistry implements YoVariableHolder
     * After a registry has been clear, it contains no variables and no child registries. This registry
     * is detached from its parent and the variables detached from this registry.
     * </p>
-    * 
+    *
     * @throws IllegalOperationException if this registry is not fully mutable and is not the root.
     */
    public void clear()
@@ -171,6 +171,7 @@ public class YoRegistry implements YoVariableHolder
       detachFromParent();
       clearInternal();
       notifyListeners(null, null, null, ChangeType.CLEARED);
+      changedListeners = null;
    }
 
    private void clearInternal()
@@ -187,10 +188,10 @@ public class YoRegistry implements YoVariableHolder
 
    /**
     * Adds a listener to this registry.
-    * 
+    *
     * @param listener the listener for listening to changes done on this registry and its descendants.
     */
-   public void addChangedListener(YoRegistryChangedListener listener)
+   public void addListener(YoRegistryChangedListener listener)
    {
       if (changedListeners == null)
          changedListeners = new ArrayList<>();
@@ -198,14 +199,22 @@ public class YoRegistry implements YoVariableHolder
    }
 
    /**
+    * Removes all listeners previously added to this registry.
+    */
+   public void removeListeners()
+   {
+      changedListeners = null;
+   }
+
+   /**
     * Tries to remove a listener from this registry. If the listener could not be found and removed,
     * nothing happens.
-    * 
+    *
     * @param listener the listener to remove.
     * @return {@code true} if the listener was removed, {@code false} if the listener was not found and
     *         nothing happened.
     */
-   public boolean removeChangedListener(YoRegistryChangedListener listener)
+   public boolean removeListener(YoRegistryChangedListener listener)
    {
       if (changedListeners == null)
          return false;
@@ -327,6 +336,8 @@ public class YoRegistry implements YoVariableHolder
       child.detachFromParent();
       child.parent = this;
       child.setParentNameSpace(nameSpace);
+      if (child.getRestrictionLevel().ordinal() < restrictionLevel.ordinal())
+         child.setRestrictionLevel(restrictionLevel);
 
       children.add(child);
       nameToChildMap.put(childName, child);
@@ -362,7 +373,7 @@ public class YoRegistry implements YoVariableHolder
 
    /**
     * Detaches this registry from its parent if it has any.
-    * 
+    *
     * @throws IllegalOperationException if the operation is not permitted.
     */
    public void detachFromParent()
@@ -373,9 +384,10 @@ public class YoRegistry implements YoVariableHolder
    }
 
    /**
-    * Convenience method for prepending the namespace of
-    * 
-    * @param parentNameSpace
+    * Convenience method for updating the namespace of this registry when its parent is being updated.
+    *
+    * @param parentNameSpace the new namespace of this registry's parent.
+    * @throws IllegalNameException if the namespace sanity check fails.
     */
    private void setParentNameSpace(NameSpace parentNameSpace)
    {
@@ -537,9 +549,9 @@ public class YoRegistry implements YoVariableHolder
       variablesToPack.addAll(variables);
 
       // Add children's recursively:
-      for (YoRegistry registry : children)
+      for (YoRegistry child : children)
       {
-         registry.subtreeVariables(variablesToPack);
+         child.subtreeVariables(variablesToPack);
       }
    }
 
@@ -569,9 +581,9 @@ public class YoRegistry implements YoVariableHolder
       parametersToPack.addAll(parameters);
 
       // Add children's recursively:
-      for (YoRegistry registry : children)
+      for (YoRegistry child : children)
       {
-         registry.subtreeParameters(parametersToPack);
+         child.subtreeParameters(parametersToPack);
       }
    }
 
@@ -691,7 +703,7 @@ public class YoRegistry implements YoVariableHolder
     * The search is first conducted in this registry, then in its children in the order in which they
     * were added.
     * </p>
-    * 
+    *
     * @param nameSpace the full namespace of the registry of interest.
     * @return the variables that were registered at the given namespace.
     */
@@ -711,7 +723,7 @@ public class YoRegistry implements YoVariableHolder
     * The search is first conducted in this registry, then in its children in the order in which they
     * were added.
     * </p>
-    * 
+    *
     * @param nameSpace the namespace of the registry of interest
     * @return the registry which namespace matches the given one, or {@code null} if it could not be
     *         found.
@@ -803,7 +815,7 @@ public class YoRegistry implements YoVariableHolder
 
    /**
     * Returns the number of variables this registry contains.
-    * 
+    *
     * @return the number of variables in this registry only.
     */
    public int getNumberOfVariables()
@@ -814,7 +826,7 @@ public class YoRegistry implements YoVariableHolder
    /**
     * Return the variable at the given index, the variables are stored in the order they were
     * registered.
-    * 
+    *
     * @param index the index of the variable of interest.
     * @return the corresponding variable.
     */
@@ -891,7 +903,7 @@ public class YoRegistry implements YoVariableHolder
    private enum ChangeType
    {
       REGISTRY_ADDED, REGISTRY_REMOVED, VARIABLE_ADDED, VARIABLE_REMOVED, CLEARED
-   };
+   }
 
    private final class RegistryChange implements Change
    {
@@ -971,24 +983,24 @@ public class YoRegistry implements YoVariableHolder
                return String.format("Added registry: %s. Child of: %s. Source of event: %s",
                                     targetRegistry.getName(),
                                     targetParentRegistry.getName(),
-                                    YoRegistry.this.getName());
+                                    getName());
             case REGISTRY_REMOVED:
                return String.format("Removed registry: %s. Was child of: %s. Source of event: %s",
                                     targetRegistry.getName(),
                                     targetParentRegistry.getName(),
-                                    YoRegistry.this.getName());
+                                    getName());
             case VARIABLE_ADDED:
                return String.format("Added variable: %s. Registered in: %s. Source of event: %s",
                                     targetVariable.getName(),
                                     targetParentRegistry.getName(),
-                                    YoRegistry.this.getName());
+                                    getName());
             case VARIABLE_REMOVED:
                return String.format("Removed variable: %s. Was registered in: %s. Source of event: %s",
                                     targetVariable.getName(),
                                     targetParentRegistry.getName(),
-                                    YoRegistry.this.getName());
+                                    getName());
             case CLEARED:
-               return String.format("Cleared registry: %s.", YoRegistry.this.getName());
+               return String.format("Cleared registry: %s.", getName());
 
             default:
                return "Unexpected event type: " + type;

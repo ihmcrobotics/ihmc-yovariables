@@ -120,7 +120,7 @@ public class YoIntegerTest
    @Test // timeout=300000
    public void testGetYoVariableType()
    {
-      Assert.assertEquals(YoVariableType.INTEGER, yoInteger.getYoVariableType());
+      Assert.assertEquals(YoVariableType.INTEGER, yoInteger.getType());
    }
 
    @Test // timeout=300000
@@ -145,8 +145,8 @@ public class YoIntegerTest
       YoInteger duplicate = yoInteger2.duplicate(newRegistry);
       Assert.assertEquals(yoInteger2.getName(), duplicate.getName());
       Assert.assertEquals(yoInteger2.getDescription(), duplicate.getDescription());
-      Assert.assertEquals(yoInteger2.getManualScalingMin(), duplicate.getManualScalingMin(), EPSILON);
-      Assert.assertEquals(yoInteger2.getManualScalingMax(), duplicate.getManualScalingMax(), EPSILON);
+      Assert.assertEquals(yoInteger2.getLowerBound(), duplicate.getLowerBound(), EPSILON);
+      Assert.assertEquals(yoInteger2.getUpperBound(), duplicate.getUpperBound(), EPSILON);
    }
 
    @Test // timeout = 300000

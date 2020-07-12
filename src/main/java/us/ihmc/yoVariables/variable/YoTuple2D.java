@@ -4,7 +4,7 @@ import us.ihmc.euclid.tools.EuclidCoreIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.tuple2D.interfaces.Tuple2DBasics;
 import us.ihmc.euclid.tuple2D.interfaces.Tuple2DReadOnly;
-import us.ihmc.yoVariables.listener.VariableChangedListener;
+import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
 
@@ -113,7 +113,7 @@ public abstract class YoTuple2D implements Tuple2DBasics
     */
    public void notifyVariableChangedListeners()
    {
-      x.notifyVariableChangedListeners(); // No need to do it for all
+      x.notifyListeners(); // No need to do it for all
    }
 
    /**
@@ -121,10 +121,10 @@ public abstract class YoTuple2D implements Tuple2DBasics
     *
     * @param variableChangedListener the listener to be attached.
     */
-   public final void attachVariableChangedListener(VariableChangedListener variableChangedListener)
+   public final void attachVariableChangedListener(YoVariableChangedListener variableChangedListener)
    {
-      x.addVariableChangedListener(variableChangedListener);
-      y.addVariableChangedListener(variableChangedListener);
+      x.addListener(variableChangedListener);
+      y.addListener(variableChangedListener);
    }
 
    /**

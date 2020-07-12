@@ -228,8 +228,8 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
                                                             getDescription(),
                                                             newRegistry,
                                                             initialValue,
-                                                            getManualScalingMin(),
-                                                            getManualScalingMax());
+                                                            getLowerBound(),
+                                                            getUpperBound());
          newParameter.value.set(value.getValue());
          newParameter.loadStatus = getLoadStatus();
          return newParameter.value;

@@ -38,7 +38,7 @@ public class YoFactories
       return null;
    }
 
-   private static YoRegistry createChainOfRegistries(NameSpace fullNameSpace)
+   public static YoRegistry createChainOfRegistries(NameSpace fullNameSpace)
    {
       YoRegistry rootRegistry = new YoRegistry(fullNameSpace.getRootName());
       YoRegistry current = rootRegistry;

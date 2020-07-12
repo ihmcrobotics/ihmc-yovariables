@@ -77,17 +77,17 @@ public class YoVariableHolderImplementation implements YoVariableHolder
       // Make sure the variable is unique:
       for (int i = 0; i < variablesWithThisName.size(); i++)
       {
-         if (variablesWithThisName.get(i).getFullNameWithNameSpace().equals(variable.getFullNameWithNameSpace()))
+         if (variablesWithThisName.get(i).getFullNameString().equals(variable.getFullNameString()))
          {
-            System.err.println("Not a unique variable! " + variable.getFullNameWithNameSpace()
+            System.err.println("Not a unique variable! " + variable.getFullNameString()
                   + " has already been added to this YoVariableHolder!. FullNames are \n");
 
             for (YoVariable variableToPrint : variablesWithThisName)
             {
-               System.err.println(variableToPrint.getFullNameWithNameSpace());
+               System.err.println(variableToPrint.getFullNameString());
             }
 
-            throw new RuntimeException("Not a unique variable! " + variable.getFullNameWithNameSpace() + " has already been added to this YoVariableHolder!. ");
+            throw new RuntimeException("Not a unique variable! " + variable.getFullNameString() + " has already been added to this YoVariableHolder!. ");
          }
       }
 
@@ -98,7 +98,7 @@ public class YoVariableHolderImplementation implements YoVariableHolder
    {
       for (YoVariable yoVariable : getVariables())
       {
-         if (yoVariable.getFullNameWithNameSpace().equals(fullname))
+         if (yoVariable.getFullNameString().equals(fullname))
             return yoVariable;
       }
 
@@ -133,8 +133,8 @@ public class YoVariableHolderImplementation implements YoVariableHolder
             if (foundVariable != null)
             {
                LogTools.error("Called getVariable with " + fullname + ". That is insufficient name information to distinguish a unique variable! "
-                     + "Please include more of the name space! Already found " + foundVariable.getFullNameWithNameSpace() + ". Looking for variable "
-                     + yoVariable.getFullNameWithNameSpace());
+                     + "Please include more of the name space! Already found " + foundVariable.getFullNameString() + ". Looking for variable "
+                     + yoVariable.getFullNameString());
                // new Throwable().printStackTrace(); // Use to find callers.
             }
             else

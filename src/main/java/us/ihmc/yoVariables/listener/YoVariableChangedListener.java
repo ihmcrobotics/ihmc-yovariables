@@ -7,12 +7,12 @@ import us.ihmc.yoVariables.variable.YoVariable;
  *
  * @author Jerry Pratt
  */
-public interface VariableChangedListener
+public interface YoVariableChangedListener
 {
    /**
     * Called when the primitive data-type backing a YoVariable is changed
     *
-    * @param v YoVariable the listener is attached to
+    * @param source YoVariable the listener is attached to
     */
-   public void notifyOfVariableChange(YoVariable v);
+   void changed(YoVariable source);
 }

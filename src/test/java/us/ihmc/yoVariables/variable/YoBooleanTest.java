@@ -151,7 +151,7 @@ public class YoBooleanTest
    @Test // timeout=300000
    public void testYoVariableType()
    {
-      Assert.assertEquals(yoBoolean.getYoVariableType(), YoVariableType.BOOLEAN);
+      Assert.assertEquals(yoBoolean.getType(), YoVariableType.BOOLEAN);
    }
 
    @Test // timeout=300000

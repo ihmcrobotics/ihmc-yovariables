@@ -227,8 +227,8 @@ public class LongParameter extends YoParameter<LongParameter> implements LongPro
                                                         getDescription(),
                                                         newRegistry,
                                                         initialValue,
-                                                        (long) getManualScalingMin(),
-                                                        (long) getManualScalingMax());
+                                                        (long) getLowerBound(),
+                                                        (long) getUpperBound());
          newParameter.value.set(value.getValue());
          newParameter.loadStatus = getLoadStatus();
          return newParameter.value;

@@ -76,8 +76,8 @@ public class LongParameterTest
       assertEquals(param.getName(), newParam.getName());
       assertEquals(param.getDescription(), newParam.getDescription());
       assertEquals(param.getValue(), newParam.getValue(), 1e-9);
-      assertEquals(var.getManualScalingMin(), newVar.getManualScalingMin(), 1e-9);
-      assertEquals(var.getManualScalingMax(), newVar.getManualScalingMax(), 1e-9);
+      assertEquals(var.getLowerBound(), newVar.getLowerBound(), 1e-9);
+      assertEquals(var.getUpperBound(), newVar.getUpperBound(), 1e-9);
 
    }
 

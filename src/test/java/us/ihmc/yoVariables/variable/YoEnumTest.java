@@ -200,7 +200,7 @@ public class YoEnumTest
    public void testGetYoVariableType()
    {
       YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class);
-      Assert.assertEquals(YoVariableType.ENUM, yoEnum.getYoVariableType());
+      Assert.assertEquals(YoVariableType.ENUM, yoEnum.getType());
    }
 
    @Test // timeout=300000

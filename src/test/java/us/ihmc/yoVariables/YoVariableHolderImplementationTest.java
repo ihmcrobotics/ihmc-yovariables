@@ -104,23 +104,23 @@ public class YoVariableHolderImplementationTest
    {
       YoVariable variable = yoVariableHolderImplementation.findVariable("robot.registryA", "variableOne");
       assertEquals(variable.getName(), "variableOne");
-      assertEquals(variable.getFullNameWithNameSpace(), "robot.registryA.variableOne");
+      assertEquals(variable.getFullNameString(), "robot.registryA.variableOne");
 
       variable = yoVariableHolderImplementation.findVariable("robot.registryB", "variableOne");
       assertEquals(variable.getName(), "variableOne");
-      assertEquals(variable.getFullNameWithNameSpace(), "robot.registryB.variableOne");
+      assertEquals(variable.getFullNameString(), "robot.registryB.variableOne");
 
       variable = yoVariableHolderImplementation.findVariable("robot.registryC", "variableOne");
       assertEquals(variable.getName(), "variableOne");
-      assertEquals(variable.getFullNameWithNameSpace(), "robot.registryC.variableOne");
+      assertEquals(variable.getFullNameString(), "robot.registryC.variableOne");
 
       variable = yoVariableHolderImplementation.findVariable("registryA", "variableOne");
       assertEquals(variable.getName(), "variableOne");
-      assertEquals(variable.getFullNameWithNameSpace(), "robot.registryA.variableOne");
+      assertEquals(variable.getFullNameString(), "robot.registryA.variableOne");
 
       variable = yoVariableHolderImplementation.findVariable("registryB", "variableTwo");
       assertEquals(variable.getName(), "variableTwo");
-      assertEquals(variable.getFullNameWithNameSpace(), "robot.registryB.variableTwo");
+      assertEquals(variable.getFullNameString(), "robot.registryB.variableTwo");
 
       boolean testPassed = true;
 
@@ -184,13 +184,13 @@ public class YoVariableHolderImplementationTest
 
       for (YoVariable variable : variables)
       {
-         if (variable.getFullNameWithNameSpace().equals("robot.registryA.variableOne"))
+         if (variable.getFullNameString().equals("robot.registryA.variableOne"))
             aFound = true;
-         if (variable.getFullNameWithNameSpace().equals("robot.registryB.variableOne"))
+         if (variable.getFullNameString().equals("robot.registryB.variableOne"))
             bFound = true;
-         if (variable.getFullNameWithNameSpace().equals("robot.registryC.variableOne"))
+         if (variable.getFullNameString().equals("robot.registryC.variableOne"))
             cFound = true;
-         if (variable.getFullNameWithNameSpace().equals("robot2.registryC.variableOne"))
+         if (variable.getFullNameString().equals("robot2.registryC.variableOne"))
             c2Found = true;
       }
 
@@ -222,9 +222,9 @@ public class YoVariableHolderImplementationTest
 
       for (YoVariable variable : variables)
       {
-         if (variable.getFullNameWithNameSpace().equals("robot.registryC.variableOne"))
+         if (variable.getFullNameString().equals("robot.registryC.variableOne"))
             cFound = true;
-         if (variable.getFullNameWithNameSpace().equals("robot2.registryC.variableOne"))
+         if (variable.getFullNameString().equals("robot2.registryC.variableOne"))
             c2Found = true;
       }
 

@@ -8,7 +8,7 @@ import us.ihmc.euclid.referenceFrame.interfaces.FrameOrientation3DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameYawPitchRollReadOnly;
 import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
-import us.ihmc.yoVariables.listener.VariableChangedListener;
+import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
 
@@ -180,11 +180,11 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
       return referenceFrame;
    }
 
-   public void attachVariableChangedListener(VariableChangedListener variableChangedListener)
+   public void attachVariableChangedListener(YoVariableChangedListener variableChangedListener)
    {
-      yaw.addVariableChangedListener(variableChangedListener);
-      pitch.addVariableChangedListener(variableChangedListener);
-      roll.addVariableChangedListener(variableChangedListener);
+      yaw.addListener(variableChangedListener);
+      pitch.addListener(variableChangedListener);
+      roll.addListener(variableChangedListener);
    }
 
    /**
@@ -201,9 +201,9 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
     */
    public YoFrameYawPitchRoll duplicate(YoRegistry newRegistry)
    {
-      YoDouble yaw = (YoDouble) newRegistry.findVariable(this.yaw.getFullNameWithNameSpace());
-      YoDouble pitch = (YoDouble) newRegistry.findVariable(this.pitch.getFullNameWithNameSpace());
-      YoDouble roll = (YoDouble) newRegistry.findVariable(this.roll.getFullNameWithNameSpace());
+      YoDouble yaw = (YoDouble) newRegistry.findVariable(this.yaw.getFullNameString());
+      YoDouble pitch = (YoDouble) newRegistry.findVariable(this.pitch.getFullNameString());
+      YoDouble roll = (YoDouble) newRegistry.findVariable(this.roll.getFullNameString());
       return new YoFrameYawPitchRoll(yaw, pitch, roll, getReferenceFrame());
    }
 

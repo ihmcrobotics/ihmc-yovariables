@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import us.ihmc.yoVariables.listener.ParameterChangedListener;
-import us.ihmc.yoVariables.listener.VariableChangedListener;
+import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoTools;
 import us.ihmc.yoVariables.variable.YoVariable;
@@ -87,7 +87,7 @@ public abstract class YoParameter<T extends YoParameter<T>>
       if (parameterChangedListenersHolder == null)
       {
          parameterChangedListenersHolder = new YoParameterChangedListenerHolder();
-         getVariable().addVariableChangedListener(parameterChangedListenersHolder);
+         getVariable().addListener(parameterChangedListenersHolder);
       }
 
       this.parameterChangedListenersHolder.add(parameterChangedListener);
@@ -165,17 +165,17 @@ public abstract class YoParameter<T extends YoParameter<T>>
 
    void setSuggestedRange(double min, double max)
    {
-      getVariable().setManualScalingMinMax(min, max);
+      getVariable().setVariableBounds(min, max);
    }
 
    public double getManualScalingMin()
    {
-      return getVariable().getManualScalingMin();
+      return getVariable().getLowerBound();
    }
 
    public double getManualScalingMax()
    {
-      return getVariable().getManualScalingMax();
+      return getVariable().getUpperBound();
    }
 
    void checkLoaded()
@@ -224,12 +224,12 @@ public abstract class YoParameter<T extends YoParameter<T>>
     *
     * @author Jesper Smith
     */
-   private class YoParameterChangedListenerHolder implements VariableChangedListener
+   private class YoParameterChangedListenerHolder implements YoVariableChangedListener
    {
       private final ArrayList<ParameterChangedListener> parameterChangedListeners = new ArrayList<>();
 
       @Override
-      public void notifyOfVariableChange(YoVariable v)
+      public void changed(YoVariable v)
       {
          for (int i = 0; i < parameterChangedListeners.size(); i++)
          {

@@ -28,7 +28,7 @@ import us.ihmc.euclid.transform.interfaces.RigidBodyTransformReadOnly;
 import us.ihmc.euclid.transform.interfaces.Transform;
 import us.ihmc.euclid.tuple2D.interfaces.Tuple2DReadOnly;
 import us.ihmc.euclid.tuple3D.interfaces.Tuple3DReadOnly;
-import us.ihmc.yoVariables.listener.VariableChangedListener;
+import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
@@ -1001,7 +1001,7 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
       return position.getReferenceFrame();
    }
 
-   public void attachVariableChangedListener(VariableChangedListener variableChangedListener)
+   public void attachVariableChangedListener(YoVariableChangedListener variableChangedListener)
    {
       position.attachVariableChangedListener(variableChangedListener);
       yawPitchRoll.attachVariableChangedListener(variableChangedListener);

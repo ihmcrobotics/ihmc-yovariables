@@ -201,7 +201,7 @@ public class YoTools
    {
       for (YoVariable var : registry.getVariables())
       {
-         out.print(var.getFullNameWithNameSpace() + "\n");
+         out.print(var.getFullNameString() + "\n");
       }
 
       for (YoRegistry child : registry.getChildren())
