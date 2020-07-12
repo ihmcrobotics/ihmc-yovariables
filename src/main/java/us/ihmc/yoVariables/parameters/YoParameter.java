@@ -39,7 +39,7 @@ import us.ihmc.yoVariables.variable.YoVariable;
  * @author Jesper Smith
  * @param <T>
  */
-public abstract class YoParameter<T extends YoParameter<T>>
+public abstract class YoParameter
 {
    private final String name;
    private final String description;
@@ -256,7 +256,5 @@ public abstract class YoParameter<T extends YoParameter<T>>
       {
          parameterChangedListeners.add(parameterChangedListener);
       }
-
    }
-
 }

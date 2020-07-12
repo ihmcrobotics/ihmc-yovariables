@@ -52,12 +52,12 @@ public abstract class AbstractParameterReader
       defaultParametersToPack.clear();
       unmatchedParametersToPack.clear();
 
-      List<YoParameter<?>> parameters = registry.subtreeParameters();
+      List<YoParameter> parameters = registry.subtreeParameters();
       Map<String, ParameterData> localMap = new HashMap<>(getValues());
 
       for (int i = 0; i < parameters.size(); i++)
       {
-         YoParameter<?> parameter = parameters.get(i);
+         YoParameter parameter = parameters.get(i);
 
          NameSpace relativeNamespace = getRelativeNamespace(parameter.getNameSpace(), registry);
          String fullName = relativeNamespace + "." + parameter.getName();

@@ -25,7 +25,7 @@ import us.ihmc.yoVariables.variable.YoVariable;
  *
  * @author Jesper Smith
  */
-public class IntegerParameter extends YoParameter<IntegerParameter> implements IntegerProvider
+public class IntegerParameter extends YoParameter implements IntegerProvider
 {
    private static final int DefaultSuggestedMinimum = -10;
    private static final int DefaultSuggestedMaximum = 10;
@@ -215,7 +215,7 @@ public class IntegerParameter extends YoParameter<IntegerParameter> implements I
       }
 
       @Override
-      public YoParameter<?> getParameter()
+      public IntegerParameter getParameter()
       {
          return IntegerParameter.this;
       }

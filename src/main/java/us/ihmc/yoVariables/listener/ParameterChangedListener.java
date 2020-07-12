@@ -29,6 +29,6 @@ public interface ParameterChangedListener
     *
     * @param v YoParameter the listener is attached to
     */
-   public void notifyOfParameterChange(YoParameter<?> v);
+   public void notifyOfParameterChange(YoParameter v);
 
 }

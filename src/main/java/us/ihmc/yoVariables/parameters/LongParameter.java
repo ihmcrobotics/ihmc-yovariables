@@ -25,7 +25,7 @@ import us.ihmc.yoVariables.variable.YoVariable;
  *
  * @author Jesper Smith
  */
-public class LongParameter extends YoParameter<LongParameter> implements LongProvider
+public class LongParameter extends YoParameter implements LongProvider
 {
    private final static long DefaultSuggestedMinimum = -100L;
    private final static long DefaultSuggestedMaximum = 100L;
@@ -215,7 +215,7 @@ public class LongParameter extends YoParameter<LongParameter> implements LongPro
       }
 
       @Override
-      public YoParameter<?> getParameter()
+      public LongParameter getParameter()
       {
          return LongParameter.this;
       }

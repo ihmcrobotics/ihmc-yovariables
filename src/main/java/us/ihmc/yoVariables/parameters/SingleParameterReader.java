@@ -2,7 +2,7 @@ package us.ihmc.yoVariables.parameters;
 
 public class SingleParameterReader
 {
-   public static void readParameter(YoParameter<?> parameter, double doubleValue, ParameterLoadStatus loadStatus)
+   public static void readParameter(YoParameter parameter, double doubleValue, ParameterLoadStatus loadStatus)
    {
       if (loadStatus == ParameterLoadStatus.UNLOADED)
       {

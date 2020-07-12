@@ -40,7 +40,7 @@ public class YoRegistry implements YoVariableHolder
     * The list of parameters that are currently registered in this {@code this}. This list is mostly
     * used for book keeping.
     */
-   private final List<YoParameter<?>> parameters = new ArrayList<>();
+   private final List<YoParameter> parameters = new ArrayList<>();
 
    /**
     * The registry to which this registry is currently a child of, or {@code null} if {@code this} is
@@ -505,7 +505,7 @@ public class YoRegistry implements YoVariableHolder
     * @return the parameter corresponding to the given {@code name}, or {@code null} if such parameter
     *         has not been registered.
     */
-   public YoParameter<?> getParameter(String name)
+   public YoParameter getParameter(String name)
    {
       YoVariable yoVariable = getVariable(name);
       if (yoVariable != null && yoVariable.isParameter())
@@ -519,7 +519,7 @@ public class YoRegistry implements YoVariableHolder
     *
     * @return unmodifiable list of this registry's parameters.
     */
-   public List<YoParameter<?>> getParameters()
+   public List<YoParameter> getParameters()
    {
       return Collections.unmodifiableList(parameters);
    }
@@ -561,9 +561,9 @@ public class YoRegistry implements YoVariableHolder
     *
     * @return list of all parameters registered to this registry and its child registries.
     */
-   public List<YoParameter<?>> subtreeParameters()
+   public List<YoParameter> subtreeParameters()
    {
-      List<YoParameter<?>> yoParameters = new ArrayList<>();
+      List<YoParameter> yoParameters = new ArrayList<>();
       subtreeParameters(yoParameters);
       return yoParameters;
    }
@@ -575,7 +575,7 @@ public class YoRegistry implements YoVariableHolder
     * @param parametersToPack list used to store all parameters registered to this registry and its
     *                         child registries.
     */
-   private void subtreeParameters(List<YoParameter<?>> parametersToPack)
+   private void subtreeParameters(List<YoParameter> parametersToPack)
    {
       // Add ours:
       parametersToPack.addAll(parameters);

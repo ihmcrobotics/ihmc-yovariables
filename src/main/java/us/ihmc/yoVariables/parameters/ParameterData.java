@@ -28,7 +28,7 @@ public class ParameterData
       max = 1.0;
    }
 
-   public void setParameterFromThis(YoParameter<?> parameter)
+   public void setParameterFromThis(YoParameter parameter)
    {
       parameter.load(value);
       parameter.setSuggestedRange(min, max);

@@ -19,7 +19,7 @@ import us.ihmc.yoVariables.variable.YoVariable;
  *
  * @author Jesper Smith
  */
-public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<T>> implements EnumProvider<T>
+public class EnumParameter<T extends Enum<T>> extends YoParameter implements EnumProvider<T>
 {
    private final YoEnum<T> value;
    private final int initialOrdinal;
@@ -241,7 +241,7 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter<EnumParameter<
       }
 
       @Override
-      public YoParameter<?> getParameter()
+      public EnumParameter<T> getParameter()
       {
          return EnumParameter.this;
       }

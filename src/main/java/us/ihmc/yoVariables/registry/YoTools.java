@@ -74,11 +74,11 @@ public class YoTools
    @SuppressWarnings({"unchecked", "rawtypes"})
    public static <E extends Enum<E>> EnumParameter<E> findEnumParameter(SearchQuery query, Class<E> enumType, YoRegistry registry)
    {
-      Predicate<YoParameter<?>> predicate = parameter -> parameter instanceof EnumParameter && ((EnumParameter) parameter).getEnumType() == enumType;
+      Predicate<YoParameter> predicate = parameter -> parameter instanceof EnumParameter && ((EnumParameter) parameter).getEnumType() == enumType;
       return (EnumParameter<E>) findYoParameter(query, predicate, registry);
    }
 
-   public static YoParameter<?> findYoParameter(SearchQuery query, Predicate<YoParameter<?>> predicate, YoRegistry registry)
+   public static YoParameter findYoParameter(SearchQuery query, Predicate<YoParameter> predicate, YoRegistry registry)
    {
       Predicate<YoVariable> yoVariablePredicate = YoVariable::isParameter;
       if (predicate != null)

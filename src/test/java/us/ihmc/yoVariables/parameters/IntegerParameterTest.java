@@ -153,7 +153,7 @@ public class IntegerParameterTest
       boolean set = false;
 
       @Override
-      public void notifyOfParameterChange(YoParameter<?> v)
+      public void notifyOfParameterChange(YoParameter v)
       {
          set = true;
       }

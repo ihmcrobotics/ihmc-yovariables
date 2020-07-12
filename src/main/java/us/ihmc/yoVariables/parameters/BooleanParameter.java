@@ -25,7 +25,7 @@ import us.ihmc.yoVariables.variable.YoVariable;
  *
  * @author Jesper Smith
  */
-public class BooleanParameter extends YoParameter<BooleanParameter> implements BooleanProvider
+public class BooleanParameter extends YoParameter implements BooleanProvider
 {
    private final YoBoolean value;
    private final boolean initialValue;
@@ -142,7 +142,7 @@ public class BooleanParameter extends YoParameter<BooleanParameter> implements B
       }
 
       @Override
-      public YoParameter<?> getParameter()
+      public BooleanParameter getParameter()
       {
          return BooleanParameter.this;
       }

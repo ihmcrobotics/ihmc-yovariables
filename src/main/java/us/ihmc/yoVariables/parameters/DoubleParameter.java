@@ -25,7 +25,7 @@ import us.ihmc.yoVariables.variable.YoVariable;
  *
  * @author Jesper Smith
  */
-public class DoubleParameter extends YoParameter<DoubleParameter> implements DoubleProvider
+public class DoubleParameter extends YoParameter implements DoubleProvider
 {
    private static final double defaultSuggestedMinimum = 0.0;
    private static final double defaultSuggestedMaximum = 1.0;
@@ -216,7 +216,7 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
       }
 
       @Override
-      public YoParameter<?> getParameter()
+      public DoubleParameter getParameter()
       {
          return DoubleParameter.this;
       }

@@ -407,7 +407,7 @@ public abstract class YoVariable
     *
     * @return the parameter object if {@link #isParameter()} is true, {@code null} otherwise.
     */
-   public YoParameter<?> getParameter()
+   public YoParameter getParameter()
    {
       return null;
    }

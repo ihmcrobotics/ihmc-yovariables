@@ -24,11 +24,11 @@ public abstract class AbstractParameterWriter
 {
    public void writeParametersInRegistry(YoRegistry registry)
    {
-      List<YoParameter<?>> parameters = registry.subtreeParameters();
+      List<YoParameter> parameters = registry.subtreeParameters();
 
       for (int i = 0; i < parameters.size(); i++)
       {
-         YoParameter<?> parameter = parameters.get(i);
+         YoParameter parameter = parameters.get(i);
 
          NameSpace relativeNamespace = AbstractParameterReader.getRelativeNamespace(parameter.getNameSpace(), registry);
 
