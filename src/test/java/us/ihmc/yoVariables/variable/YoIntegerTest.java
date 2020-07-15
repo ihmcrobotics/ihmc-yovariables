@@ -60,7 +60,7 @@ public class YoIntegerTest
       yoInteger.add(value);
       Assert.assertEquals(value * 2, yoInteger.getIntegerValue());
 
-      yoInteger.subtract(value);
+      yoInteger.sub(value);
       Assert.assertEquals(value, yoInteger.getIntegerValue());
    }
 

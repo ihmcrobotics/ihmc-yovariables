@@ -22,13 +22,12 @@ import us.ihmc.yoVariables.parameters.YoParameter;
  *
  * @author Jesper Smith
  */
-public interface ParameterChangedListener
+public interface YoParameterChangedListener
 {
    /**
     * Called when the primitive data-type backing a YoParameter is changed
     *
-    * @param v YoParameter the listener is attached to
+    * @param source YoParameter the listener is attached to
     */
-   public void notifyOfParameterChange(YoParameter v);
-
+   public void changed(YoParameter source);
 }

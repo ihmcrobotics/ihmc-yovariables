@@ -23,7 +23,7 @@ import static us.ihmc.robotics.Assert.assertTrue;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import us.ihmc.yoVariables.listener.ParameterChangedListener;
+import us.ihmc.yoVariables.listener.YoParameterChangedListener;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoEnum;
 
@@ -83,7 +83,7 @@ public class EnumParameterTest
       assertEquals(param.getDescription(), newParam.getDescription());
       assertEquals(param.getValue(), newParam.getValue());
 
-      assertEquals(var.getAllowNullValue(), newVar.getAllowNullValue());
+      assertEquals(var.isNullAllowed(), newVar.isNullAllowed());
       assertArrayEquals(var.getEnumValues(), newVar.getEnumValues());
 
    }
@@ -110,7 +110,7 @@ public class EnumParameterTest
       assertEquals(param.getValueAsString(), newParam.getValueAsString());
 
       assertEquals(var.isBackedByEnum(), newVar.isBackedByEnum());
-      assertEquals(var.getAllowNullValue(), newVar.getAllowNullValue());
+      assertEquals(var.isNullAllowed(), newVar.isNullAllowed());
       assertArrayEquals(var.getEnumValuesAsString(), newVar.getEnumValuesAsString());
 
    }
@@ -352,12 +352,12 @@ public class EnumParameterTest
 
    }
 
-   private class CallbackTest implements ParameterChangedListener
+   private class CallbackTest implements YoParameterChangedListener
    {
       boolean set = false;
 
       @Override
-      public void notifyOfParameterChange(YoParameter v)
+      public void changed(YoParameter v)
       {
          set = true;
       }

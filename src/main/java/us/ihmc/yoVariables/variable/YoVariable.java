@@ -38,10 +38,11 @@ public abstract class YoVariable
     * Create a new YoVariable. This is called by extensions of YoVariable, and require a
     * {@link YoVariableType}, name, description, and {@link YoRegistry} to register itself to.
     *
-    * @param type        YoVariableType for this YoVariable to implement
-    * @param name        String that uniquely identifies this YoVariable
-    * @param description String that describes this YoVariable's purpose
-    * @param registry    YoRegistry for this YoVariable to register itself to after initialization
+    * @param type        used to represent the implementation of this variable.
+    * @param name        the name for this variable that can be used to retrieve it from a
+    *                    {@link YoRegistry}.
+    * @param description description of this variable's purpose.
+    * @param registry    initial parent registry for this variable.
     */
    public YoVariable(YoVariableType type, String name, String description, YoRegistry registry)
    {
@@ -89,6 +90,47 @@ public abstract class YoVariable
    public String getDescription()
    {
       return description;
+   }
+
+   /**
+    * Retrieves this variable's full name, i.e. this variable prepended with its parent's namespace if
+    * applicable, and returns the full name as a namespace.
+    *
+    * @return this variable's full name as a namespace.
+    */
+   public NameSpace getFullName()
+   {
+      if (fullName == null)
+      {
+         if (registry == null)
+            fullName = new NameSpace(name);
+         else
+            fullName = registry.getNameSpace().append(name);
+      }
+
+      return fullName;
+   }
+
+   /**
+    * Retrieves this variable's full name, i.e. this variable prepended with its parent's namespace if
+    * applicable.
+    *
+    * @return this variable's full name.
+    */
+   public String getFullNameString()
+   {
+      return getFullName().getName();
+   }
+
+   /**
+    * Returns the namespace of the registry in which this variable is currently registered to, or
+    * {@code null} if this variable is not registered to any registry.
+    *
+    * @return this variable's namespace.
+    */
+   public NameSpace getNameSpace()
+   {
+      return registry == null ? null : registry.getNameSpace();
    }
 
    /**
@@ -161,47 +203,6 @@ public abstract class YoVariable
    public final YoVariableType getType()
    {
       return type;
-   }
-
-   /**
-    * Retrieves this variable's full name, i.e. this variable prepended with its parent's namespace if
-    * applicable, and returns the full name as a namespace.
-    *
-    * @return this variable's full name as a namespace.
-    */
-   public NameSpace getFullName()
-   {
-      if (fullName == null)
-      {
-         if (registry == null)
-            fullName = new NameSpace(name);
-         else
-            fullName = registry.getNameSpace().append(name);
-      }
-
-      return fullName;
-   }
-
-   /**
-    * Retrieves this variable's full name, i.e. this variable prepended with its parent's namespace if
-    * applicable.
-    *
-    * @return this variable's full name.
-    */
-   public String getFullNameString()
-   {
-      return getFullName().getName();
-   }
-
-   /**
-    * Returns the namespace of the registry in which this variable is currently registered to, or
-    * {@code null} if this variable is not registered to any registry.
-    *
-    * @return this variable's namespace.
-    */
-   public NameSpace getNameSpace()
-   {
-      return registry == null ? null : registry.getNameSpace();
    }
 
    /**
@@ -280,10 +281,11 @@ public abstract class YoVariable
     * Calls {@link #setValueFromDouble(double, boolean)} with (value, true).
     *
     * @param value double to set this variable's value to.
+    * @return {@code true} if this variable's value changed, {@code false} otherwise.
     */
-   public final void setValueFromDouble(double value)
+   public final boolean setValueFromDouble(double value)
    {
-      setValueFromDouble(value, true);
+      return setValueFromDouble(value, true);
    }
 
    /**
@@ -296,9 +298,11 @@ public abstract class YoVariable
     * </p>
     *
     * @param value           double to set this variable's value to.
-    * @param notifyListeners boolean determining whether or not to call {@link #notifyListeners()}.
+    * @param notifyListeners whether or not to notify this variable's listeners in the case this
+    *                        variable's value changed.
+    * @return {@code true} if this variable's value changed, {@code false} otherwise.
     */
-   public abstract void setValueFromDouble(double value, boolean notifyListeners);
+   public abstract boolean setValueFromDouble(double value, boolean notifyListeners);
 
    /**
     * Retrieves this variable's value interpreted as a long.
@@ -314,10 +318,11 @@ public abstract class YoVariable
     * Calls {@link #setValueFromLongBits(long, boolean)} with (value, true).
     *
     * @param value long value to set this variable to.
+    * @return {@code true} if this variable's value changed, {@code false} otherwise.
     */
-   public final void setValueFromLongBits(long value)
+   public final boolean setValueFromLongBits(long value)
    {
-      setValueFromLongBits(value, true);
+      return setValueFromLongBits(value, true);
    }
 
    /**
@@ -327,20 +332,11 @@ public abstract class YoVariable
     * </p>
     *
     * @param value           long to set this variable's value to.
-    * @param notifyListeners boolean determining whether or not to call {@link #notifyListeners()}.
+    * @param notifyListeners whether or not to notify this variable's listeners in the case this
+    *                        variable's value changed.
+    * @return {@code true} if this variable's value changed, {@code false} otherwise.
     */
-   public abstract void setValueFromLongBits(long value, boolean notifyListeners);
-
-   /**
-    * Creates a copy of this variable in the given {@link YoRegistry}.
-    * <p>
-    * Abstract; implemented by each extension of YoVariable to perform action with proper typing.
-    * </p>
-    *
-    * @param newRegistry YoRegistry to duplicate this variable to.
-    * @return the newly created variable from the given newRegistry.
-    */
-   public abstract YoVariable duplicate(YoRegistry newRegistry);
+   public abstract boolean setValueFromLongBits(long value, boolean notifyListeners);
 
    /**
     * Sets this variable's value to the given value.
@@ -354,8 +350,9 @@ public abstract class YoVariable
     *
     * @param other           the other variable used to set the value of {@code this}. It is assumed to
     *                        be of the same type as {@code this}.
-    * @param notifyListeners boolean determining whether or not to call {@link #notifyListeners()}
-    * @return true if value changed
+    * @param notifyListeners whether or not to notify this variable's listeners in the case this
+    *                        variable's value changed.
+    * @return {@code true} if this variable's value changed, {@code false} otherwise.
     */
    public abstract boolean setValue(YoVariable other, boolean notifyListeners);
 
@@ -377,10 +374,38 @@ public abstract class YoVariable
     * Returns the value of this variable as a string using the given format if this is a
     * {@link YoDouble}.
     * 
-    * @param format the format to use for a double value.
+    * @param format the format to use for a double value. Can be {@code null}.
     * @return the string representation of this variable's current value.
     */
    public abstract String getValueAsString(String format);
+
+   /**
+    * Tries to parse the given string and to set this variable's value.
+    * <p>
+    * This variable's listeners will be notified if this variable's value is changed.
+    * </p>
+    * 
+    * @param valueAsString the string to parse.
+    * @return {@code true} if this variable's value changed, {@code false} otherwise.
+    */
+   public boolean parseValue(String valueAsString)
+   {
+      return parseValue(valueAsString, true);
+   }
+
+   /**
+    * Tries to parse the given string and to set this variable's value.
+    * <p>
+    * If {@code notifyListeners} is {@code true}, this variable's listeners will be notified if the
+    * value parsed changes the the current value for this variable.
+    * </p>
+    * 
+    * @param valueAsString   the string to parse.
+    * @param notifyListeners whether to notify this variable's listeners if this operation results in
+    *                        changing this variable's current value.
+    * @return {@code true} if this variable's value changed, {@code false} otherwise.
+    */
+   public abstract boolean parseValue(String valueAsString, boolean notifyListeners);
 
    /**
     * Assesses if this variable's value is equivalent to zero.
@@ -411,4 +436,20 @@ public abstract class YoVariable
    {
       return null;
    }
+
+   /**
+    * Clones this variable and registers the clone to the given registry.
+    *
+    * @param newRegistry the registry in which the clone is registered.
+    * @return the cloned variable.
+    */
+   public abstract YoVariable duplicate(YoRegistry newRegistry);
+
+   /**
+    * Returns {@code String} representation of this variable.
+    *
+    * @return {@code String} representing this variable and its current value.
+    */
+   @Override
+   public abstract String toString();
 }

@@ -65,7 +65,7 @@ public class YoEnumTest
    @Test // timeout=300000
    public void testCreateNoDescription()
    {
-      YoEnum<EnumYoVariableTestEnums> yoEnum = YoEnum.create("yoEnum", EnumYoVariableTestEnums.class, registry);
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class);
       assertFalse(yoEnum == null);
       assertTrue(registry.getVariables().size() == 1);
       assertTrue(yoEnum.getName().equals("yoEnum"));
@@ -75,7 +75,7 @@ public class YoEnumTest
    @Test // timeout=300000
    public void testCreateWithDescription()
    {
-      YoEnum<EnumYoVariableTestEnums> yoEnum = YoEnum.create("yoEnum", "yoEnum with description", EnumYoVariableTestEnums.class, registry, false);
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", "yoEnum with description", registry, EnumYoVariableTestEnums.class, false);
       assertFalse(yoEnum == null);
       assertTrue(registry.getVariables().size() == 1);
       assertTrue(yoEnum.getName().equals("yoEnum"));
@@ -247,7 +247,7 @@ public class YoEnumTest
       assertTrue(yoEnum2.getName().equals(yoEnum.getName()));
       assertTrue(yoEnum2.getDescription().equals(yoEnum.getDescription()));
       assertTrue(yoEnum2.getEnumType().equals(yoEnum.getEnumType()));
-      Assert.assertEquals(yoEnum2.getAllowNullValue(), yoEnum.getAllowNullValue());
+      Assert.assertEquals(yoEnum2.isNullAllowed(), yoEnum.isNullAllowed());
    }
 
    @Test // timeout = 300000

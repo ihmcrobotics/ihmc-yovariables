@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import us.ihmc.yoVariables.listener.ParameterChangedListener;
+import us.ihmc.yoVariables.listener.YoParameterChangedListener;
 import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoTools;
@@ -44,7 +44,7 @@ public abstract class YoParameter
    private final String name;
    private final String description;
    protected ParameterLoadStatus loadStatus = ParameterLoadStatus.UNLOADED;
-   private YoParameterChangedListenerHolder parameterChangedListenersHolder;
+   private YoParameterChangedListenerHolder changedListenerHolder;
 
    /**
     * @return the name of this parameter
@@ -74,69 +74,69 @@ public abstract class YoParameter
    }
 
    /**
-    * Attaches an object implementing {@link ParameterChangedListener} to this parameter's list of
+    * Attaches an object implementing {@link YoParameterChangedListener} to this parameter's list of
     * listeners.
     * <p>
     * Instantiates a new list of listeners if it is currently empty.
     * </p>
     *
-    * @param ParameterChangedListener ParameterChangedListener to attach
+    * @param YoParameterChangedListener ParameterChangedListener to attach
     */
-   public void addParameterChangedListener(ParameterChangedListener parameterChangedListener)
+   public void addParameterChangedListener(YoParameterChangedListener parameterChangedListener)
    {
-      if (parameterChangedListenersHolder == null)
+      if (changedListenerHolder == null)
       {
-         parameterChangedListenersHolder = new YoParameterChangedListenerHolder();
-         getVariable().addListener(parameterChangedListenersHolder);
+         changedListenerHolder = new YoParameterChangedListenerHolder();
+         getVariable().addListener(changedListenerHolder);
       }
 
-      this.parameterChangedListenersHolder.add(parameterChangedListener);
+      this.changedListenerHolder.add(parameterChangedListener);
    }
 
    /**
-    * Clears this parameter's list of {@link ParameterChangedListener}s.
+    * Clears this parameter's list of {@link YoParameterChangedListener}s.
     * <p>
     * If the list is null, does nothing.
     * </p>
     */
    public void removeAllParameterChangedListeners()
    {
-      if (this.parameterChangedListenersHolder != null)
+      if (this.changedListenerHolder != null)
       {
-         this.parameterChangedListenersHolder.clear();
+         this.changedListenerHolder.clear();
       }
    }
 
    /**
-    * Returns this parameter's list of {@link ParameterChangedListener}s.
+    * Returns this parameter's list of {@link YoParameterChangedListener}s.
     *
     * @return List of change listeners, null if empty
     */
-   public List<ParameterChangedListener> getParameterChangedListeners()
+   public List<YoParameterChangedListener> getParameterChangedListeners()
    {
-      if (this.parameterChangedListenersHolder == null)
+      if (this.changedListenerHolder == null)
       {
          return null;
       }
       else
       {
-         return this.parameterChangedListenersHolder.getParameterChangedListeners();
+         return this.changedListenerHolder.getParameterChangedListeners();
       }
    }
 
    /**
-    * Removes a {@link ParameterChangedListener} from this parameter's list of listeners.
+    * Removes a {@link YoParameterChangedListener} from this parameter's list of listeners.
     *
-    * @param ParameterChangedListener ParameterChangedListener to remove
+    * @param YoParameterChangedListener ParameterChangedListener to remove
     */
-   public void removeParameterChangedListener(ParameterChangedListener parameterChangedListener)
+   public void removeParameterChangedListener(YoParameterChangedListener parameterChangedListener)
    {
       boolean success;
 
-      if (parameterChangedListenersHolder == null)
+      if (changedListenerHolder == null)
          success = false;
       else
-         success = this.parameterChangedListenersHolder.remove(parameterChangedListener);
+         success = this.changedListenerHolder.remove(parameterChangedListener);
 
       if (!success)
          throw new NoSuchElementException("Listener not found");
@@ -224,37 +224,37 @@ public abstract class YoParameter
     *
     * @author Jesper Smith
     */
-   private class YoParameterChangedListenerHolder implements YoVariableChangedListener
+   private static class YoParameterChangedListenerHolder implements YoVariableChangedListener
    {
-      private final ArrayList<ParameterChangedListener> parameterChangedListeners = new ArrayList<>();
+      private final List<YoParameterChangedListener> changedListeners = new ArrayList<>();
 
       @Override
       public void changed(YoVariable v)
       {
-         for (int i = 0; i < parameterChangedListeners.size(); i++)
+         for (int i = 0; i < changedListeners.size(); i++)
          {
-            parameterChangedListeners.get(i).notifyOfParameterChange(v.getParameter());
+            changedListeners.get(i).changed(v.getParameter());
          }
       }
 
-      public boolean remove(ParameterChangedListener parameterChangedListener)
+      public boolean remove(YoParameterChangedListener listener)
       {
-         return parameterChangedListeners.remove(parameterChangedListener);
+         return changedListeners.remove(listener);
       }
 
-      public List<ParameterChangedListener> getParameterChangedListeners()
+      public List<YoParameterChangedListener> getParameterChangedListeners()
       {
-         return parameterChangedListeners;
+         return changedListeners;
       }
 
       public void clear()
       {
-         parameterChangedListeners.clear();
+         changedListeners.clear();
       }
 
-      public void add(ParameterChangedListener parameterChangedListener)
+      public void add(YoParameterChangedListener listener)
       {
-         parameterChangedListeners.add(parameterChangedListener);
+         changedListeners.add(listener);
       }
    }
 }

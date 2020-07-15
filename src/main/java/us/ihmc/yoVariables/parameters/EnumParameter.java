@@ -91,7 +91,7 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter implements Enu
       }
 
       this.value = new YoEnumParameter(name, description, registry, enumType, allowNullValues);
-      if (!this.value.getAllowNullValue() && initialValue == null)
+      if (!this.value.isNullAllowed() && initialValue == null)
       {
          throw new RuntimeException("Cannot initialize to null value, allowNullValues is false");
       }
@@ -136,7 +136,7 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter implements Enu
       }
       this.value = new YoEnumParameter(name, description, registry, allowNullValues, constants);
 
-      if (!this.value.getAllowNullValue() && constants.length == 0)
+      if (!this.value.isNullAllowed() && constants.length == 0)
       {
          throw new RuntimeException("Cannot initialize an enum parameter with zero elements if allowNullValues is false.");
       }
@@ -262,11 +262,11 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter implements Enu
                initialValue = getEnumValues()[initialOrdinal];
             }
 
-            newParameter = new EnumParameter<>(getName(), getDescription(), newRegistry, getEnumType(), getAllowNullValue(), initialValue);
+            newParameter = new EnumParameter<>(getName(), getDescription(), newRegistry, getEnumType(), isNullAllowed(), initialValue);
          }
          else
          {
-            newParameter = new EnumParameter<>(getName(), getDescription(), newRegistry, getAllowNullValue(), getEnumValuesAsString());
+            newParameter = new EnumParameter<>(getName(), getDescription(), newRegistry, isNullAllowed(), getEnumValuesAsString());
          }
 
          newParameter.value.set(value.getOrdinal());

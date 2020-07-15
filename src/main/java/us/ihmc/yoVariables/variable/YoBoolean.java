@@ -12,16 +12,16 @@ import us.ihmc.yoVariables.registry.YoRegistry;
 public class YoBoolean extends YoVariable implements BooleanProvider
 {
    /**
-    * Internal boolean value of this YoLong.
+    * Internal boolean value of this YoBoolean.
     */
-   private boolean val;
+   private boolean value;
 
    /**
-    * Create a new YoBoolean. This will call {@link #YoBoolean(String, String, YoRegistry)} with the
-    * given name and registry and an empty description.
+    * Create a new {@code YoBoolean} and initializes to {@code false}.
     *
-    * @param name     String that uniquely identifies this YoBoolean
-    * @param registry YoRegistry for this YoBoolean to register itself to after initialization
+    * @param name     the name for this variable that can be used to retrieve it from a
+    *                 {@link YoRegistry}.
+    * @param registry initial parent registry for this variable.
     */
    public YoBoolean(String name, YoRegistry registry)
    {
@@ -29,12 +29,13 @@ public class YoBoolean extends YoVariable implements BooleanProvider
    }
 
    /**
-    * Create a new YoBoolean. This will call its super YoVariable's {@link YoVariable(YoVariableType,
-    * String, String, YoRegistry)} with {@link YoVariableType#BOOLEAN} and the given values.
+    * Create a new {@code YoBoolean} and initializes to {@code false}.
     *
-    * @param name        String that uniquely identifies this YoBoolean
-    * @param description String that describes this YoBoolean's purpose
-    * @param registry    YoRegistry for this YoBoolean to register itself to after initialization
+    * @param name        the name for this variable that can be used to retrieve it from a
+    *                    {@link YoRegistry}.
+    * @param description description of this variable's purpose.
+    * @param registry    initial parent registry for this variable.
+    * @see YoVariable#YoVariable(YoVariableType, String, String, YoRegistry)
     */
    public YoBoolean(String name, String description, YoRegistry registry)
    {
@@ -43,72 +44,121 @@ public class YoBoolean extends YoVariable implements BooleanProvider
    }
 
    /**
-    * Check if the value contained by this YoBoolean is equal to the given boolean.
+    * Tests if the variable's current value is equal to the given boolean.
     *
-    * @param value long for this YoLong to be compared to
-    * @return boolean if this YoLong's value is the same as the passed value
+    * @param value the query.
+    * @return boolean if this variable's value is equal to the query.
     */
    public boolean valueEquals(boolean value)
    {
-      return val == value;
+      return this.value == value;
    }
 
    /**
-    * Retrieve the boolean value of this YoBoolean.
+    * Retrieves the current boolean value of this variable.
     *
-    * @return the internal boolean value of this YoBoolean
+    * @return the internal boolean value of this variable.
+    */
+   @Override
+   public boolean getValue()
+   {
+      return value;
+   }
+
+   /**
+    * Retrieves the current boolean value of this variable.
+    *
+    * @return the internal boolean value of this variable.
     */
    public boolean getBooleanValue()
    {
-      return val;
+      return value;
    }
 
    /**
-    * Calls {@link #set(boolean, boolean)} with value and true.
+    * Sets this variable's current value.
+    * <p>
+    * This variable's listeners will be notified if this variable's value is changed.
+    * </p>
     *
-    * @param value boolean to set this YoBoolean's internal integer state to
+    * @param value the new value for this variable.
+    * @return {@code true} if this variable's value changed, {@code false} otherwise.
     */
-   public void set(boolean value)
+   public boolean set(boolean value)
    {
-      set(value, true);
+      return set(value, true);
    }
 
    /**
     * Sets this YoBoolean to the given value.
     *
-    * @param value           long to set this YoBoolean's internal boolean state to
-    * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyListeners()}
-    * @return boolean if the given value differed from the current value of this YoBoolean
+    * @param value           the new value for this variable.
+    * @param notifyListeners whether to notify this variable's listeners if this operation results in
+    *                        changing this variable's current value.
+    * @return {@code true} if this variable's value changed, {@code false} otherwise.
     */
    public boolean set(boolean value, boolean notifyListeners)
    {
-      if (val != value)
+      if (this.value != value)
       {
-         val = value;
+         this.value = value;
+
          if (notifyListeners)
-         {
             notifyListeners();
-         }
          return true;
       }
       return false;
    }
 
    /**
-    * Set the value of this YoBoolean using the given double, passed through
-    * {@link #convertDoubleToBoolean(double)}.
+    * Retrieves this variable's value as a double.
     *
-    * @param value           boolean to convert and set this YoBoolean to
-    * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyListeners()}
+    * @return {@code 1.0} if this variable is currently {@code true}, {@code 0.0} otherwise.
     */
    @Override
-   public void setValueFromDouble(double value, boolean notifyListeners)
+   public double getValueAsDouble()
    {
-      set(convertDoubleToBoolean(value), notifyListeners);
+      return value ? 1.0 : 0.0;
    }
 
+   /**
+    * Sets this variable's value from the given double.
+    *
+    * @param value converted to @{@code true} if {@code value >= 0.5}, {@code false} otherwise.
+    */
+   @Override
+   public boolean setValueFromDouble(double value, boolean notifyListeners)
+   {
+      return set(value >= 0.5, notifyListeners);
+   }
+
+   /**
+    * Retrieves this YoBoolean's value as a long.
+    *
+    * @return {@code 1} if this variable is currently {@code true}, {@code 0} otherwise.
+    */
+   @Override
+   public long getValueAsLongBits()
+   {
+      return value ? 1 : 0;
+   }
+
+   /**
+    * Sets this variable's current value after converting the given long value.
+    *
+    * @param value converted to {@code true} if equal to {@code 1}, {@code false} otherwise.
+    */
+   @Override
+   public boolean setValueFromLongBits(long value, boolean notifyListeners)
+   {
+      return set(value == 1, notifyListeners);
+   }
+
+   /**
+    * Sets this variable's value from the other variable once casted to {@code YoBoolean}.
+    * 
+    * @param other the other {@code YoBoolean} used to update this variable's value.
+    */
    @Override
    public boolean setValue(YoVariable other, boolean notifyListeners)
    {
@@ -116,112 +166,51 @@ public class YoBoolean extends YoVariable implements BooleanProvider
    }
 
    /**
-    * Converts the given value to a boolean representation.
-    *
-    * @param value double to convert
-    * @return boolean effectively boolean of rounded value (0 or 1)
+    * Returns the value of this variable as a string.
+    * 
+    * @return string representation of the current value according to
+    *         {@link Boolean#toString(boolean)}.
     */
-   public boolean convertDoubleToBoolean(double value)
-   {
-      if (value >= 0.5)
-         return true;
-      else
-         return false;
-   }
-
-   /**
-    * Retrieves this YoBoolean's value as a double.
-    *
-    * @return double of integer value of internal boolean value (0.0 or 1.0)
-    */
-   @Override
-   public double getValueAsDouble()
-   {
-      double returnValue = 0.0;
-
-      if (getBooleanValue())
-         returnValue = 1.0;
-      else
-         returnValue = 0.0;
-
-      return returnValue;
-   }
-
-   /**
-    * Returns String representation of this YoBoolean.
-    *
-    * @return String representing this YoBoolean and its current value as a boolean
-    */
-   @Override
-   public String toString()
-   {
-      return String.format("%s: %s", getName(), getBooleanValue());
-   }
-
-   /**
-    * Retrieves this YoBoolean's value as a long.
-    *
-    * @return long value of internal boolean state (0 or 1)
-    */
-   @Override
-   public long getValueAsLongBits()
-   {
-      return getBooleanValue() ? 1 : 0;
-   }
-
-   /**
-    * Sets the internal long value of this YoLong using the passed long value.
-    * <p>
-    * Results in being set to true if value is 1, or false otherwise.
-    *
-    * @param value           long to set this variable's value to
-    * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyListeners()}
-    */
-   @Override
-   public void setValueFromLongBits(long value, boolean notifyListeners)
-   {
-      set(value == 1, notifyListeners);
-   }
-
-   /**
-    * Creates a new YoBoolean with the same parameters as this one, and registers it to the passed
-    * {@link YoRegistry}.
-    *
-    * @param newRegistry YoRegistry to duplicate this YoBoolean to
-    * @return the newly created and registered YoBoolean
-    */
-   @Override
-   public YoBoolean duplicate(YoRegistry newRegistry)
-   {
-      YoBoolean newVar = new YoBoolean(getName(), getDescription(), newRegistry);
-      newVar.set(getBooleanValue());
-      return newVar;
-   }
-
    @Override
    public String getValueAsString(String format)
    {
-      return Boolean.toString(val);
+      return Boolean.toString(value);
    }
 
    /**
-    * Assesses if this YoBoolean is equal to zero.
-    * <p>
-    * Returns true if this YoBoolean's value is false, and false if otherwise.
+    * Tries to parse the given string and set this variable's value using
+    * {@link Boolean#parseBoolean(String)}.
+    */
+   @Override
+   public boolean parseValue(String valueAsString, boolean notifyListeners)
+   {
+      return set(Boolean.parseBoolean(valueAsString), notifyListeners);
+   }
+
+   /**
+    * Assesses if this variable is equal to zero.
     *
-    * @return boolean inverse of this YoBoolean's internal boolean value
+    * @return {@code true} if this variable's current value is {@code false}.
     */
    @Override
    public boolean isZero()
    {
-      return !getBooleanValue();
+      return !value;
    }
 
+   /** {@inheritDoc} */
    @Override
-   public boolean getValue()
+   public YoBoolean duplicate(YoRegistry newRegistry)
    {
-      return getBooleanValue();
+      YoBoolean duplicate = new YoBoolean(getName(), getDescription(), newRegistry);
+      duplicate.set(value);
+      return duplicate;
    }
 
+   /** {@inheritDoc} */
+   @Override
+   public String toString()
+   {
+      return String.format("%s: %s", getName(), value);
+   }
 }

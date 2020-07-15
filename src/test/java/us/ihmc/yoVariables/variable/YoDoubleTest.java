@@ -27,7 +27,8 @@ public class YoDoubleTest
    {
       registry = new YoRegistry("testRegistry");
       yoDouble1 = new YoDouble("yoDouble1", registry);
-      yoDouble2 = new YoDouble("yoDouble2", "description2", registry, 0.0, 10.0);
+      yoDouble2 = new YoDouble("yoDouble2", "description2", registry);
+      yoDouble2.setVariableBounds(0.0, 10.0);
    }
 
    @AfterEach
