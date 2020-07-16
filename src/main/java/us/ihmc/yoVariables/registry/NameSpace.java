@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Representation of a namespace that is composed of sub-names where typically each sub-name is the
  * name of a {@link YoRegistry} with the parent to child relationship between one sub-name and the
@@ -317,13 +319,36 @@ public class NameSpace implements Serializable
     */
    public boolean endsWith(NameSpace query)
    {
+      return endsWith(query, false);
+   }
+
+   /**
+    * Tests if this namespace ends with the provided namespace.
+    * 
+    * @param query      the namespace to test for.
+    * @param ignoreCase whether to ignore case when performing {@code String} comparison or not.
+    * @return {@code true} if this namespace ends with {@code query}, {@code false} otherwise.
+    */
+   public boolean endsWith(NameSpace query, boolean ignoreCase)
+   {
       if (query.size() > size())
          return false;
 
       for (int i = 1; i <= query.size(); i++)
       {
-         if (!query.subNames.get(query.size() - i).equals(subNames.get(size() - i)))
-            return false;
+         String querySubName = query.subNames.get(query.size() - i);
+         String thisSubName = subNames.get(size() - i);
+
+         if (ignoreCase)
+         {
+            if (!querySubName.equalsIgnoreCase(thisSubName))
+               return false;
+         }
+         else
+         {
+            if (!querySubName.equals(thisSubName))
+               return false;
+         }
       }
 
       return true;
@@ -342,11 +367,36 @@ public class NameSpace implements Serializable
     */
    public boolean endsWith(String nameToMatch)
    {
+      return endsWith(nameToMatch, false);
+   }
+
+   /**
+    * Tests if this namespace ends with the provided name.
+    * <p>
+    * For example, a namespace with name {@code robot.controller.module} ends with {@code module},
+    * {@code controller.module}, and {@code robot.controller.module} but no other string. This means
+    * this method will return false for {@code troller.module} or an empty string.
+    * </p>
+    *
+    * @param nameToMatch is the name to check for.
+    * @param ignoreCase  whether to ignore case when performing {@code String} comparison or not.
+    * @return whether this namespace ends with {@code nameToMatch}.
+    */
+   public boolean endsWith(String nameToMatch, boolean ignoreCase)
+   {
       if (nameToMatch.length() > name.length())
          return false;
 
-      if (!name.endsWith(nameToMatch))
-         return false;
+      if (ignoreCase)
+      {
+         if (!StringUtils.endsWithIgnoreCase(name, nameToMatch))
+            return false;
+      }
+      else
+      {
+         if (!name.endsWith(nameToMatch))
+            return false;
+      }
 
       if (name.length() == nameToMatch.length())
          return true;
@@ -362,13 +412,33 @@ public class NameSpace implements Serializable
     */
    public boolean startsWith(NameSpace query)
    {
+      return startsWith(query, false);
+   }
+
+   /**
+    * Tests if this namespace starts with the provided namespace.
+    * 
+    * @param query      the namespace to test for.
+    * @param ignoreCase whether to ignore case when performing {@code String} comparison or not.
+    * @return {@code true} if this namespace starts with {@code query}, {@code false} otherwise.
+    */
+   public boolean startsWith(NameSpace query, boolean ignoreCase)
+   {
       if (query.size() > size())
          return false;
 
       for (int i = 0; i < query.size(); i++)
       {
-         if (!query.subNames.get(i).equals(subNames.get(i)))
-            return false;
+         if (ignoreCase)
+         {
+            if (!query.subNames.get(i).equalsIgnoreCase(subNames.get(i)))
+               return false;
+         }
+         else
+         {
+            if (!query.subNames.get(i).equals(subNames.get(i)))
+               return false;
+         }
       }
 
       return true;
@@ -387,14 +457,40 @@ public class NameSpace implements Serializable
     */
    public boolean startsWith(String nameToMatch)
    {
-      if (!name.startsWith(nameToMatch))
-      {
+      return startsWith(nameToMatch, false);
+   }
+
+   /**
+    * Tests if this namespace starts with the provided name.
+    * <p>
+    * For example, a namespace with name {@code robot.controller.module} starts with {@code robot},
+    * {@code robot.controller}, and {@code robot.controller.module} but no other string. This means
+    * this method will return false for {@code robot.contro} or an empty string.
+    * </p>
+    *
+    * @param nameToMatch is the name to check for.
+    * @param ignoreCase  whether to ignore case when performing {@code String} comparison or not.
+    * @return whether this namespace starts with {@code nameToMatch}.
+    */
+   public boolean startsWith(String nameToMatch, boolean ignoreCase)
+   {
+      if (nameToMatch.length() > name.length())
          return false;
-      }
-      if (name.length() == nameToMatch.length())
+
+      if (ignoreCase)
       {
-         return true;
+         if (!StringUtils.startsWithIgnoreCase(name, nameToMatch))
+            return false;
       }
+      else
+      {
+         if (!name.startsWith(nameToMatch))
+            return false;
+      }
+
+      if (name.length() == nameToMatch.length())
+         return true;
+
       return name.charAt(nameToMatch.length()) == YoTools.NAMESPACE_SEPERATOR;
    }
 
@@ -406,18 +502,55 @@ public class NameSpace implements Serializable
     */
    public boolean contains(NameSpace query)
    {
+      return contains(query, false);
+   }
+
+   /**
+    * Tests if this namespace contains the provided namespace.
+    * 
+    * @param query      the namespace to test for.
+    * @param ignoreCase whether to ignore case when performing {@code String} comparison or not.
+    * @return {@code true} if this namespace contains {@code query}, {@code false} otherwise.
+    */
+   public boolean contains(NameSpace query, boolean ignoreCase)
+   {
       if (query.size() > size())
          return false;
 
-      int startIndex = subNames.indexOf(query.subNames.get(0));
+      int startIndex = -1;
+
+      String queryFirstSubName = query.subNames.get(0);
+
+      for (int i = 0; i < subNames.size() - query.size(); i++)
+      {
+         boolean areEqual;
+         if (ignoreCase)
+            areEqual = subNames.get(i).equalsIgnoreCase(queryFirstSubName);
+         else
+            areEqual = subNames.get(i).equals(queryFirstSubName);
+
+         if (areEqual)
+         {
+            startIndex = i;
+            break;
+         }
+      }
 
       if (startIndex == -1)
          return false;
 
-      for (int i = 0; i < query.size(); i++)
+      for (int i = 1; i < query.size(); i++)
       {
-         if (!query.subNames.get(i).equals(subNames.get(startIndex + i)))
-            return false;
+         if (ignoreCase)
+         {
+            if (!query.subNames.get(i).equalsIgnoreCase(subNames.get(startIndex + i)))
+               return false;
+         }
+         else
+         {
+            if (!query.subNames.get(i).equals(subNames.get(startIndex + i)))
+               return false;
+         }
       }
 
       return true;
@@ -436,7 +569,28 @@ public class NameSpace implements Serializable
     */
    public boolean contains(String nameToMatch)
    {
-      int startIndex = name.indexOf(nameToMatch);
+      return contains(nameToMatch, false);
+   }
+
+   /**
+    * Tests if this namespace contains the provided name.
+    * <p>
+    * For example, a namespace with name {@code robot.controller} contains {@code robot},
+    * {@code robot.controller}, and {@code controller} but no other string. This means this method will
+    * return false for {@code rob} or an empty string.
+    * </p>
+    *
+    * @param nameToMatch is the name to check for.
+    * @param ignoreCase  whether to ignore case when performing {@code String} comparison or not.
+    * @return whether this namespace contains with {@code nameToMatch}.
+    */
+   public boolean contains(String nameToMatch, boolean ignoreCase)
+   {
+      int startIndex;
+      if (ignoreCase)
+         startIndex = StringUtils.indexOfIgnoreCase(name, nameToMatch);
+      else
+         startIndex = name.indexOf(nameToMatch);
 
       if (startIndex == -1)
          return false;

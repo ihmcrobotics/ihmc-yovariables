@@ -10,7 +10,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import us.ihmc.yoVariables.dataBuffer.YoVariableHolderImplementation;
+import us.ihmc.yoVariables.dataBuffer.YoVariableList;
 import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
@@ -18,7 +18,7 @@ import us.ihmc.yoVariables.variable.YoVariable;
 
 public class YoVariableHolderImplementationTest
 {
-   private YoVariableHolderImplementation yoVariableHolderImplementation = null;
+   private YoVariableList yoVariableHolderImplementation = null;
 
    public YoVariableHolderImplementationTest()
    {
@@ -27,7 +27,7 @@ public class YoVariableHolderImplementationTest
    @BeforeEach
    public void setUp()
    {
-      yoVariableHolderImplementation = new YoVariableHolderImplementation();
+      yoVariableHolderImplementation = new YoVariableList("Blop");
 
       YoRegistry robotRegistry = new YoRegistry("robot");
       YoRegistry robot2Registry = new YoRegistry("robot2");
@@ -57,20 +57,20 @@ public class YoVariableHolderImplementationTest
       YoDouble variableThreeC = new YoDouble("variableThree", registryC);
       YoDouble variableThreeC2 = new YoDouble("variableThree", registryC2);
 
-      yoVariableHolderImplementation.addVariableToHolder(variableOneA);
-      yoVariableHolderImplementation.addVariableToHolder(variableOneB);
-      yoVariableHolderImplementation.addVariableToHolder(variableOneC);
-      yoVariableHolderImplementation.addVariableToHolder(variableOneC2);
+      yoVariableHolderImplementation.addVariable(variableOneA);
+      yoVariableHolderImplementation.addVariable(variableOneB);
+      yoVariableHolderImplementation.addVariable(variableOneC);
+      yoVariableHolderImplementation.addVariable(variableOneC2);
 
-      yoVariableHolderImplementation.addVariableToHolder(variableTwoA);
-      yoVariableHolderImplementation.addVariableToHolder(variableTwoB);
-      yoVariableHolderImplementation.addVariableToHolder(variableTwoC);
-      yoVariableHolderImplementation.addVariableToHolder(variableTwoC2);
+      yoVariableHolderImplementation.addVariable(variableTwoA);
+      yoVariableHolderImplementation.addVariable(variableTwoB);
+      yoVariableHolderImplementation.addVariable(variableTwoC);
+      yoVariableHolderImplementation.addVariable(variableTwoC2);
 
-      yoVariableHolderImplementation.addVariableToHolder(variableThreeA);
-      yoVariableHolderImplementation.addVariableToHolder(variableThreeB);
-      yoVariableHolderImplementation.addVariableToHolder(variableThreeC);
-      yoVariableHolderImplementation.addVariableToHolder(variableThreeC2);
+      yoVariableHolderImplementation.addVariable(variableThreeA);
+      yoVariableHolderImplementation.addVariable(variableThreeB);
+      yoVariableHolderImplementation.addVariable(variableThreeC);
+      yoVariableHolderImplementation.addVariable(variableThreeC2);
    }
 
    @AfterEach

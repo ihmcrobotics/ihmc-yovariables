@@ -1,19 +1,18 @@
 package us.ihmc.yoVariables.variable;
 
-import static us.ihmc.robotics.Assert.assertEquals;
 import static us.ihmc.robotics.Assert.assertFalse;
 import static us.ihmc.robotics.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import org.junit.jupiter.api.Test;
 
 import us.ihmc.robotics.Assert;
+import us.ihmc.yoVariables.dataBuffer.YoVariableList;
 import us.ihmc.yoVariables.registry.YoRegistry;
+import us.ihmc.yoVariables.registry.YoTools;
 
 public class YoVariableListTest
 {
@@ -47,20 +46,20 @@ public class YoVariableListTest
       YoBoolean notIncluded = new YoBoolean("notIncluded", registryTwo);
 
       Assert.assertEquals("listOne", varList.getName());
-      Assert.assertEquals(0, varList.getIndexOfVariable(booleanOne));
-      Assert.assertEquals(1, varList.getIndexOfVariable(doubleOne));
-      Assert.assertEquals(2, varList.getIndexOfVariable(booleanTwo));
-      Assert.assertEquals(3, varList.getIndexOfVariable(doubleTwo));
-      Assert.assertEquals(4, varList.getIndexOfVariable(repeatBooleanOne));
+      Assert.assertEquals(0, varList.indexOf(booleanOne));
+      Assert.assertEquals(1, varList.indexOf(doubleOne));
+      Assert.assertEquals(2, varList.indexOf(booleanTwo));
+      Assert.assertEquals(3, varList.indexOf(doubleTwo));
+      Assert.assertEquals(4, varList.indexOf(repeatBooleanOne));
 
-      Assert.assertEquals(-1, varList.getIndexOfVariable(notIncluded));
+      Assert.assertEquals(-1, varList.indexOf(notIncluded));
 
-      assertTrue(varList.containsVariable(booleanOne));
-      assertTrue(varList.containsVariable(doubleOne));
-      assertTrue(varList.containsVariable(booleanTwo));
-      assertTrue(varList.containsVariable(doubleTwo));
-      assertTrue(varList.containsVariable(repeatBooleanOne));
-      assertFalse(varList.containsVariable(notIncluded));
+      assertTrue(varList.contains(booleanOne));
+      assertTrue(varList.contains(doubleOne));
+      assertTrue(varList.contains(booleanTwo));
+      assertTrue(varList.contains(doubleTwo));
+      assertTrue(varList.contains(repeatBooleanOne));
+      assertFalse(varList.contains(notIncluded));
 
       assertTrue(null == varList.getVariable(-1));
       assertTrue(booleanOne == varList.getVariable(0));
@@ -70,32 +69,32 @@ public class YoVariableListTest
       assertTrue(repeatBooleanOne == varList.getVariable(4));
       assertTrue(null == varList.getVariable(5));
 
-      assertTrue(varList.hasVariableWithName("booleanOne"));
-      assertTrue(varList.hasVariableWithName("registryOne.booleanOne"));
-      assertTrue(varList.hasVariableWithName("doubleOne"));
-      assertTrue(varList.hasVariableWithName("registryOne.doubleOne"));
-      assertTrue(varList.hasVariableWithName("booleanTwo"));
-      assertTrue(varList.hasVariableWithName("registryTwo.booleanTwo"));
-      assertTrue(varList.hasVariableWithName("doubleTwo"));
-      assertTrue(varList.hasVariableWithName("registryTwo.doubleTwo"));
-      assertTrue(varList.hasVariableWithName("registryTwo.booleanOne"));
+      assertTrue(varList.hasUniqueVariable("booleanOne"));
+      assertTrue(varList.hasUniqueVariable("registryOne.booleanOne"));
+      assertTrue(varList.hasUniqueVariable("doubleOne"));
+      assertTrue(varList.hasUniqueVariable("registryOne.doubleOne"));
+      assertTrue(varList.hasUniqueVariable("booleanTwo"));
+      assertTrue(varList.hasUniqueVariable("registryTwo.booleanTwo"));
+      assertTrue(varList.hasUniqueVariable("doubleTwo"));
+      assertTrue(varList.hasUniqueVariable("registryTwo.doubleTwo"));
+      assertTrue(varList.hasUniqueVariable("registryTwo.booleanOne"));
 
-      assertFalse(varList.hasVariableWithName("notIncluded"));
-      assertFalse(varList.hasVariableWithName("registryOne.doubleTwo"));
+      assertFalse(varList.hasUniqueVariable("notIncluded"));
+      assertFalse(varList.hasUniqueVariable("registryOne.doubleTwo"));
 
-      assertTrue(booleanOne == varList.getVariable("booleanOne"));
-      assertTrue(doubleOne == varList.getVariable("doubleOne"));
-      assertTrue(booleanTwo == varList.getVariable("booleanTwo"));
-      assertTrue(doubleTwo == varList.getVariable("doubleTwo"));
-      assertTrue(booleanOne == varList.getVariable("registryOne.booleanOne"));
-      assertTrue(doubleOne == varList.getVariable("registryOne.doubleOne"));
-      assertTrue(booleanTwo == varList.getVariable("registryTwo.booleanTwo"));
-      assertTrue(doubleTwo == varList.getVariable("registryTwo.doubleTwo"));
+      assertTrue(booleanOne == varList.findVariable("booleanOne"));
+      assertTrue(doubleOne == varList.findVariable("doubleOne"));
+      assertTrue(booleanTwo == varList.findVariable("booleanTwo"));
+      assertTrue(doubleTwo == varList.findVariable("doubleTwo"));
+      assertTrue(booleanOne == varList.findVariable("registryOne.booleanOne"));
+      assertTrue(doubleOne == varList.findVariable("registryOne.doubleOne"));
+      assertTrue(booleanTwo == varList.findVariable("registryTwo.booleanTwo"));
+      assertTrue(doubleTwo == varList.findVariable("registryTwo.doubleTwo"));
 
-      assertTrue(repeatBooleanOne == varList.getVariable("registryTwo.booleanOne"));
+      assertTrue(repeatBooleanOne == varList.findVariable("registryTwo.booleanOne"));
 
-      assertTrue(null == varList.getVariable("registryOne.doubleTwo"));
-      assertTrue(null == varList.getVariable("notIncluded"));
+      assertTrue(null == varList.findVariable("registryOne.doubleTwo"));
+      assertTrue(null == varList.findVariable("notIncluded"));
 
    }
 
@@ -146,8 +145,8 @@ public class YoVariableListTest
       {
          YoVariable yoVariable = variables.get(i);
 
-         assertTrue(varList.hasVariableWithName(yoVariable.getFullNameString()));
-         assertTrue(yoVariable == varList.getVariable(yoVariable.getFullNameString()));
+         assertTrue(varList.hasUniqueVariable(yoVariable.getFullNameString()));
+         assertTrue(yoVariable == varList.findVariable(yoVariable.getFullNameString()));
       }
    }
 
@@ -202,7 +201,7 @@ public class YoVariableListTest
       array[0] = b;
       array[1] = c;
 
-      listThree.addVariables(array);
+      listThree.addVariables(Arrays.asList(array));
 
       //ArrayList
       ArrayList<YoVariable> arrayList = new ArrayList<>();
@@ -228,7 +227,6 @@ public class YoVariableListTest
       YoVariableList list = new YoVariableList("list");
       YoVariableList listTwo = new YoVariableList("listTwo");
       YoVariableList listThree = new YoVariableList("listThree");
-      YoVariableList List = new YoVariableList("List");
 
       assertTrue(list.isEmpty());
 
@@ -247,30 +245,18 @@ public class YoVariableListTest
       listTwo.addVariable(a);
       listTwo.addVariable(c);
 
-      assertTrue(list.compareTo(listThree) < 0);
-      assertTrue(listThree.compareTo(list) > 0);
-      assertTrue(list.compareTo(List) == 0);
-
       Assert.assertEquals(list.toString(), listTwo.toString());
-
-      String[] names = list.getVariableNames();
-      for (int i = 0; i < names.length; i++)
-      {
-         YoVariable variable = list.getVariable(i);
-         String name = variable.toString();
-         assertEquals(names[i], name.substring(0, 1));
-      }
 
       assertFalse(list.isEmpty());
 
-      list.removeAllVariables();
+      list.clear();
       Assert.assertEquals(list.toString(), listThree.toString());
 
-      YoVariable[] allVariables = listTwo.getAllVariables();
+      List<YoVariable> allVariables = listTwo.getVariables();
 
       for (int i = 0; i < listTwo.size(); i++)
       {
-         Assert.assertEquals(allVariables[i].toString(), listTwo.getVariable(i).toString());
+         Assert.assertEquals(allVariables.get(i).toString(), listTwo.getVariable(i).toString());
       }
    }
 
@@ -295,31 +281,24 @@ public class YoVariableListTest
       names[0] = "a_arm";
       names[1] = "b_arm";
 
-      List<YoVariable> matchedName = list.getMatchingVariables(names, null);
+      String regularExpression = ".*";
 
-      assertTrue(matchedName.contains(a));
-      assertTrue(matchedName.contains(b));
-      assertFalse(matchedName.contains(c));
-      assertFalse(matchedName.contains(f));
-
-      String[] regularExpressions = {".*"};
-
-      List<YoVariable> matchedAll = list.getMatchingVariables(null, regularExpressions);
+      List<YoVariable> matchedAll = YoTools.searchVariablesRegex(regularExpression, list.getVariables());
 
       assertTrue(matchedAll.contains(a));
       assertTrue(matchedAll.contains(b));
       assertTrue(matchedAll.contains(c));
       assertFalse(matchedAll.contains(f));
 
-      String regexpStartWithC[] = {"c.*"};
-      List<YoVariable> matchedStartWithC = list.getMatchingVariables(new String[0], regexpStartWithC);
+      String regexpStartWithC = "c.*";
+      List<YoVariable> matchedStartWithC = YoTools.searchVariablesRegex(regexpStartWithC, list.getVariables());
 
       assertFalse(matchedStartWithC.contains(a));
       assertFalse(matchedStartWithC.contains(b));
       assertTrue(matchedStartWithC.contains(c));
       assertFalse(matchedStartWithC.contains(f));
 
-      List<YoVariable> namesOrStartWithC = list.getMatchingVariables(names, regexpStartWithC);
+      List<YoVariable> namesOrStartWithC = YoTools.searchVariablesRegex(regularExpression, list.getVariables());
 
       assertTrue(namesOrStartWithC.contains(a));
       assertTrue(namesOrStartWithC.contains(b));
@@ -327,44 +306,9 @@ public class YoVariableListTest
       assertFalse(namesOrStartWithC.contains(f));
 
       // Return empty list when none match.
-      String[] namesThatAreNotInList = new String[2];
-      namesThatAreNotInList[0] = "foo";
-      namesThatAreNotInList[1] = "bar";
-      List<YoVariable> matchedNameShouldBeEmpty = list.getMatchingVariables(namesThatAreNotInList, null);
+      List<YoVariable> matchedNameShouldBeEmpty = YoTools.searchVariablesRegex("foo", list.getVariables());
       assertTrue(matchedNameShouldBeEmpty.isEmpty());
-   }
-
-   @Test // timeout=300000
-   public void testAddChangeListener()
-   {
-      YoRegistry registry = new YoRegistry("registry");
-      YoVariableList list = new YoVariableList("list");
-
-      ChangeListenerForTest listener = new ChangeListenerForTest();
-      list.addChangeListener(listener);
-
-      assertFalse(listener.getWasCalled());
-
-      YoBoolean variable = new YoBoolean("testBoolean", registry);
-      list.addVariable(variable);
-
-      assertTrue(listener.getWasCalled());
-   }
-
-   private class ChangeListenerForTest implements ChangeListener
-   {
-      private boolean wasCalled = false;
-
-      @Override
-      public void stateChanged(ChangeEvent e)
-      {
-         wasCalled = true;
-      }
-
-      public boolean getWasCalled()
-      {
-         return wasCalled;
-      }
-
+      matchedNameShouldBeEmpty = YoTools.searchVariablesRegex("bar", list.getVariables());
+      assertTrue(matchedNameShouldBeEmpty.isEmpty());
    }
 }

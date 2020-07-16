@@ -2,15 +2,15 @@ package us.ihmc.yoVariables.dataBuffer;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import us.ihmc.yoVariables.listener.RewoundListener;
 import us.ihmc.yoVariables.registry.YoTools;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoVariable;
-import us.ihmc.yoVariables.variable.YoVariableList;
 
-public class DataBuffer extends YoVariableHolderImplementation
+public class DataBuffer extends YoVariableList
       implements Serializable, DataBufferCommandsExecutor, ToggleKeyPointModeCommandExecutor, TimeDataHolder, DataEntryHolder
 {
    private String timeVariableName = "t";
@@ -53,6 +53,7 @@ public class DataBuffer extends YoVariableHolderImplementation
 
    public DataBuffer(int bufferSize)
    {
+      super("DataBuffer");
       entries = new ArrayList<>();
 
       this.bufferSize = bufferSize;
@@ -93,7 +94,7 @@ public class DataBuffer extends YoVariableHolderImplementation
 
    public DataBufferEntry addVariable(YoVariable newVariable, int nPoints)
    {
-      addVariableToHolder(newVariable);
+      addVariable(newVariable);
 
       DataBufferEntry entry = new DataBufferEntry(newVariable, nPoints);
       addEntry(entry);
@@ -111,7 +112,7 @@ public class DataBuffer extends YoVariableHolderImplementation
       addVariable(newVariable, bufferSize);
    }
 
-   public void addVariables(List<YoVariable> variables)
+   public void addVariables(List<? extends YoVariable> variables)
    {
       entries.ensureCapacity(entries.size() + variables.size()); // do this first so that 'entries' will only have to grow once.
 
@@ -244,7 +245,10 @@ public class DataBuffer extends YoVariableHolderImplementation
          tempList.addVariable(var);
       }
 
-      return tempList.getMatchingVariables(varNames, regularExpressions);
+      List<YoVariable> variables = new ArrayList<>();
+      Arrays.asList(varNames).forEach(varName -> tempList.findVariables(varName));
+      Arrays.asList(regularExpressions).forEach(regex -> YoTools.searchVariablesRegex(regex, tempList.getVariables()));
+      return variables;
    }
 
    /**

@@ -10,7 +10,6 @@ import us.ihmc.yoVariables.dataBuffer.YoVariableHolder;
 import us.ihmc.yoVariables.listener.YoRegistryChangedListener;
 import us.ihmc.yoVariables.listener.YoRegistryChangedListener.Change;
 import us.ihmc.yoVariables.parameters.YoParameter;
-import us.ihmc.yoVariables.registry.YoTools.SearchQuery;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 /**
@@ -619,24 +618,13 @@ public class YoRegistry implements YoVariableHolder
    }
 
    /**
-    * Returns a variable previously registered in this registry.
-    *
-    * @param name the name of the variables to get.
-    */
-   @Override
-   public YoVariable findVariable(String name)
-   {
-      return YoTools.findYoVariable(new SearchQuery(name), null, this);
-   }
-
-   /**
     * Returns the first discovered instance of a variable matching the given name.
     * <p>
     * The search is first conducted in this registry, then in its children in the order in which they
     * were added.
     * </p>
     *
-    * @param parentNameSpace (optional) the namespace of the registry in which the variable was
+    * @param nameSpaceEnding (optional) the namespace of the registry in which the variable was
     *                        registered. The namespace does not need to be complete, i.e. it does not
     *                        need to contain the name of the registries closest to the root registry.
     *                        If {@code null}, the search for the variable name only.
@@ -646,34 +634,10 @@ public class YoRegistry implements YoVariableHolder
     * @throws IllegalNameException if {@code name} contains "{@value YoTools#NAMESPACE_SEPERATOR}".
     */
    @Override
-   public YoVariable findVariable(String parentNameSpace, String name)
+   public YoVariable findVariable(String nameSpaceEnding, String name)
    {
-      return YoTools.findYoVariable(new SearchQuery(parentNameSpace, name), null, this);
-   }
-
-   /**
-    * Returns the all of the variables matching the given name.
-    * <p>
-    * The search is first conducted in this registry, then in its children in the order in which they
-    * were added.
-    * </p>
-    * <p>
-    * The given {@code name} can either be:
-    * <ul>
-    * <li>the variable name, for instance {@code "aVariable"},
-    * <li>the variable name and its namespace, for instance:
-    * {@code "aRegistry.anotherRegistry.aVariable"}.
-    * </ul>
-    * </p>
-    *
-    * @param name the name of the variables to retrieve. Can contain the namespace of its parent to
-    *             narrow down the search.
-    * @return list of all the variables corresponding to the search criteria.
-    */
-   @Override
-   public List<YoVariable> findVariables(String name)
-   {
-      return YoTools.findYoVariables(new SearchQuery(name), null, this, null);
+      YoTools.checkNameDoesNotContainSeparator(name);
+      return YoTools.findYoVariable(nameSpaceEnding, name, null, this);
    }
 
    /**
@@ -683,7 +647,7 @@ public class YoRegistry implements YoVariableHolder
     * were added.
     * </p>
     *
-    * @param parentNameSpace (optional) the namespace of the registry in which the variable was
+    * @param nameSpaceEnding (optional) the namespace of the registry in which the variable was
     *                        registered. The namespace does not need to be complete, i.e. it does not
     *                        need to contain the name of the registries closest to the root registry.
     *                        If {@code null}, the search for the variable name only.
@@ -692,9 +656,10 @@ public class YoRegistry implements YoVariableHolder
     * @throws IllegalNameException if {@code name} contains "{@value YoTools#NAMESPACE_SEPERATOR}".
     */
    @Override
-   public List<YoVariable> findVariables(String parentNameSpace, String name)
+   public List<YoVariable> findVariables(String nameSpaceEnding, String name)
    {
-      return YoTools.findYoVariables(new SearchQuery(parentNameSpace, name), null, this, null);
+      YoTools.checkNameDoesNotContainSeparator(name);
+      return YoTools.findYoVariables(nameSpaceEnding, name, null, this, null);
    }
 
    /**
@@ -749,36 +714,8 @@ public class YoRegistry implements YoVariableHolder
    /**
     * Search in the subtree starting at this registry and tests if there is exactly one variable that
     * matches the search criteria.
-    * <p>
-    * The given {@code name} can either be:
-    * <ul>
-    * <li>the variable name, for instance {@code "aVariable"},
-    * <li>the variable name and its namespace, for instance:
-    * {@code "aRegistry.anotherRegistry.aVariable"}.
-    * </ul>
-    * </p>
     *
-    * @param name the name of the variables to retrieve. Can contain the namespace of its parent to
-    *             narrow down the search.
-    * @return {@code true} if there is exactly one variable that matches the search criteria,
-    *         {@code false} otherwise.
-    */
-   @Override
-   public boolean hasUniqueVariable(String name)
-   {
-      int separatorIndex = name.lastIndexOf(YoTools.NAMESPACE_SEPERATOR_STRING);
-
-      if (separatorIndex == -1)
-         return hasUniqueVariable(null, name);
-      else
-         return hasUniqueVariable(name.substring(0, separatorIndex), name.substring(separatorIndex + 1));
-   }
-
-   /**
-    * Search in the subtree starting at this registry and tests if there is exactly one variable that
-    * matches the search criteria.
-    *
-    * @param parentNameSpace (optional) the namespace of the registry in which the variable was
+    * @param nameSpaceEnding (optional) the namespace of the registry in which the variable was
     *                        registered. The namespace does not need to be complete, i.e. it does not
     *                        need to contain the name of the registries closest to the root registry.
     *                        If {@code null}, the search for the variable name only.
@@ -787,12 +724,10 @@ public class YoRegistry implements YoVariableHolder
     *         {@code false} otherwise.
     */
    @Override
-   public boolean hasUniqueVariable(String parentNameSpace, String name)
+   public boolean hasUniqueVariable(String nameSpaceEnding, String name)
    {
-      if (name.contains(YoTools.NAMESPACE_SEPERATOR_STRING))
-         throw new IllegalNameException(name + " cannot contain '" + YoTools.NAMESPACE_SEPERATOR_STRING + "'.");
-
-      return countNumberOfVariables(parentNameSpace, name) == 1;
+      YoTools.checkNameDoesNotContainSeparator(name);
+      return countNumberOfVariables(nameSpaceEnding, name) == 1;
    }
 
    private int countNumberOfVariables(String parentNameSpace, String name)
