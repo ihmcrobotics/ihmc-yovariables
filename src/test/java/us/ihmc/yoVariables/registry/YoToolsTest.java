@@ -1,6 +1,6 @@
 package us.ihmc.yoVariables.registry;
 
-import static us.ihmc.robotics.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.OutputStream;
 import java.io.PrintStream;

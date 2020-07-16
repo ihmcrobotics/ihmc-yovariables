@@ -1,8 +1,8 @@
 package us.ihmc.yoVariables.dataBuffer;
 
-import static us.ihmc.robotics.Assert.assertEquals;
-import static us.ihmc.robotics.Assert.assertFalse;
-import static us.ihmc.robotics.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Random;
 
@@ -40,7 +40,7 @@ public class DataBufferEntryTest
 
       double tempDouble = (double) random.nextInt(20000) / (double) random.nextInt(30);
       yoDouble.set(tempDouble);
-      assertEquals(tempDouble, dataBufferEntry.getVariableValueAsADouble(), 0);
+      assertEquals(tempDouble, dataBufferEntry.getVariableValueAsADouble());
    }
 
    @Test // timeout=300000

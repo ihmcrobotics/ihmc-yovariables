@@ -1,4 +1,4 @@
-package us.ihmc.yoVariables.registry;
+package us.ihmc.yoVariables.exceptions;
 
 /**
  * Thrown to indicate that the name of an object contains illegal characters or is more generally

@@ -1,5 +1,9 @@
 package us.ihmc.yoVariables.variable.frameObjects;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,7 +16,6 @@ import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.tools.EuclidFrameRandomTools;
 import us.ihmc.euclid.referenceFrame.tools.ReferenceFrameTools;
 import us.ihmc.euclid.tuple3D.Vector3D;
-import us.ihmc.robotics.Assert;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.util.YoFrameVariableNameTools;
 import us.ihmc.yoVariables.variable.YoVariable;
@@ -31,20 +34,20 @@ public class YoMutableFrameObjectTest
 
       YoMutableFrameObject mutableFrameObject = new YoMutableFrameObject("", "", registry);
       YoVariable frameIndex = registry.findVariable(YoFrameVariableNameTools.createName("", "frame", ""));
-      Assert.assertNotNull(frameIndex);
+      assertNotNull(frameIndex);
 
       for (int i = 0; i < 1000; i++)
       {
          ReferenceFrame frame = frames.get(random.nextInt(frames.size()));
          mutableFrameObject.setReferenceFrame(frame);
-         Assert.assertTrue(frame == mutableFrameObject.getReferenceFrame());
+         assertTrue(frame == mutableFrameObject.getReferenceFrame());
          if (frame == null)
          {
-            Assert.assertEquals(FrameIndexMap.NO_ENTRY_KEY, frameIndex.getValueAsLongBits());
+            assertEquals(FrameIndexMap.NO_ENTRY_KEY, frameIndex.getValueAsLongBits());
          }
          else
          {
-            Assert.assertEquals(frame.getFrameIndex(), frameIndex.getValueAsLongBits());
+            assertEquals(frame.getFrameIndex(), frameIndex.getValueAsLongBits());
          }
       }
    }
@@ -65,13 +68,13 @@ public class YoMutableFrameObjectTest
       {
          if (frame == null)
          {
-            Assert.assertEquals(FrameIndexMap.NO_ENTRY_KEY, mapper.getFrameIndex(frame));
-            Assert.assertTrue(mapper.getReferenceFrame(FrameIndexMap.NO_ENTRY_KEY) == frame);
+            assertEquals(FrameIndexMap.NO_ENTRY_KEY, mapper.getFrameIndex(frame));
+            assertTrue(mapper.getReferenceFrame(FrameIndexMap.NO_ENTRY_KEY) == frame);
          }
          else
          {
-            Assert.assertEquals(frame.getFrameIndex(), mapper.getFrameIndex(frame));
-            Assert.assertTrue(mapper.getReferenceFrame(frame.getFrameIndex()) == frame);
+            assertEquals(frame.getFrameIndex(), mapper.getFrameIndex(frame));
+            assertTrue(mapper.getReferenceFrame(frame.getFrameIndex()) == frame);
          }
       });
 
@@ -96,18 +99,18 @@ public class YoMutableFrameObjectTest
       {
          if (frame == null)
          {
-            Assert.assertEquals(FrameIndexMap.NO_ENTRY_KEY, mapper.getFrameIndex(frame));
-            Assert.assertTrue(mapper.getReferenceFrame(FrameIndexMap.NO_ENTRY_KEY) == frame);
+            assertEquals(FrameIndexMap.NO_ENTRY_KEY, mapper.getFrameIndex(frame));
+            assertTrue(mapper.getReferenceFrame(FrameIndexMap.NO_ENTRY_KEY) == frame);
          }
          else
          {
-            Assert.assertEquals(frame.getFrameIndex(), mapper.getFrameIndex(frame));
-            Assert.assertTrue(mapper.getReferenceFrame(frame.getFrameIndex()) == frame);
+            assertEquals(frame.getFrameIndex(), mapper.getFrameIndex(frame));
+            assertTrue(mapper.getReferenceFrame(frame.getFrameIndex()) == frame);
          }
       });
 
       long frameIndex = frames.get(5).getFrameIndex();
-      Assert.assertTrue(frameIndex > 0);
+      assertTrue(frameIndex > 0);
 
       // This is a problem with this map implementation. Frames can get collected.
       mapper.getReferenceFrame(frameIndex);

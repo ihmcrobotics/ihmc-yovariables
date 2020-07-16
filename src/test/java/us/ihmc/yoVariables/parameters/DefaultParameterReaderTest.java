@@ -15,7 +15,7 @@
  */
 package us.ihmc.yoVariables.parameters;
 
-import static us.ihmc.robotics.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package us.ihmc.yoVariables.registry;
+package us.ihmc.yoVariables.exceptions;
 
 /**
  * Thrown to indicate that an operation attempted on an object resulted in a name collision.

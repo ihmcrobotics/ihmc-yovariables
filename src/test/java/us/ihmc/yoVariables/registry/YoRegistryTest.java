@@ -1,9 +1,9 @@
 package us.ihmc.yoVariables.registry;
 
-import static us.ihmc.robotics.Assert.assertEquals;
-import static us.ihmc.robotics.Assert.assertFalse;
-import static us.ihmc.robotics.Assert.assertNull;
-import static us.ihmc.robotics.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import us.ihmc.yoVariables.exceptions.IllegalNameException;
+import us.ihmc.yoVariables.exceptions.IllegalOperationException;
 import us.ihmc.yoVariables.listener.YoRegistryChangedListener;
 import us.ihmc.yoVariables.parameters.DoubleParameter;
 import us.ihmc.yoVariables.variable.YoDouble;
@@ -126,7 +128,7 @@ public class YoRegistryTest
    {
       NameSpace expectedReturn = new NameSpace("robot.controller.testRegistry");
       NameSpace actualReturn = testRegistry.getNameSpace();
-      assertEquals("return value", expectedReturn, actualReturn);
+      assertEquals(expectedReturn, actualReturn, "return value");
    }
 
    @Test
@@ -368,7 +370,7 @@ public class YoRegistryTest
       String name = "";
       boolean expectedReturn = false;
       boolean actualReturn = testRegistry.hasUniqueVariable(name);
-      assertEquals("return value", expectedReturn, actualReturn);
+      assertEquals(expectedReturn, actualReturn, "return value");
 
       assertTrue(testRegistry.hasUniqueVariable("variableOne"));
       assertFalse(testRegistry.hasUniqueVariable("dontHaveMeVariable"));
@@ -385,7 +387,7 @@ public class YoRegistryTest
       String name = "";
       boolean expectedReturn = false;
       boolean actualReturn = testRegistry.hasUniqueVariable(nameSpace, name);
-      assertEquals("return value", expectedReturn, actualReturn);
+      assertEquals(expectedReturn, actualReturn, "return value");
 
       /** @todo fill in the test code */
    }

@@ -1,8 +1,8 @@
 package us.ihmc.yoVariables.variable;
 
-import static us.ihmc.robotics.Assert.assertEquals;
-import static us.ihmc.robotics.Assert.assertFalse;
-import static us.ihmc.robotics.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Random;
 
@@ -10,7 +10,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import us.ihmc.robotics.Assert;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoDoubleTest
@@ -42,7 +41,7 @@ public class YoDoubleTest
    public void testDoubleYoVariableConstructorWithoutDescription()
    {
       assertTrue(yoDouble1.getDoubleValue() == 0.0);
-      Assert.assertEquals(yoDouble1.getName(), "yoDouble1");
+      assertEquals(yoDouble1.getName(), "yoDouble1");
    }
 
    @Test // timeout=300000
@@ -51,7 +50,7 @@ public class YoDoubleTest
       String testDescription = "This is a test description.";
       YoDouble yoDoubleWithDescription = new YoDouble("yoDoubleWithDescription", testDescription, registry);
       assertTrue(yoDoubleWithDescription.getDoubleValue() == 0.0);
-      Assert.assertEquals(yoDoubleWithDescription.getName(), "yoDoubleWithDescription");
+      assertEquals(yoDoubleWithDescription.getName(), "yoDoubleWithDescription");
       assertTrue(yoDoubleWithDescription.getDescription() == testDescription);
    }
 
@@ -60,7 +59,7 @@ public class YoDoubleTest
    {
       double randomNumber = Math.random();
       yoDouble1.set(randomNumber);
-      Assert.assertEquals(yoDouble1.toString(), "yoDouble1: " + randomNumber);
+      assertEquals(yoDouble1.toString(), "yoDouble1: " + randomNumber);
    }
 
    @Test // timeout=300000
@@ -179,7 +178,7 @@ public class YoDoubleTest
       yoDouble1.set(0.0);
 
       yoDouble1.set(10.0);
-      Assert.assertEquals(10.0, yoDouble1.getDoubleValue(), EPSILON);
+      assertEquals(10.0, yoDouble1.getDoubleValue(), EPSILON);
    }
 
    @Test // timeout=300000
@@ -196,7 +195,7 @@ public class YoDoubleTest
       yoDouble2.set(value);
       YoRegistry newRegistry = new YoRegistry(newName);
       YoDouble duplicate = yoDouble2.duplicate(newRegistry);
-      Assert.assertEquals(yoDouble2.getDoubleValue(), duplicate.getDoubleValue(), EPSILON);
+      assertEquals(yoDouble2.getDoubleValue(), duplicate.getDoubleValue(), EPSILON);
    }
 
    @Test // timeout = 300000

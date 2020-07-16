@@ -1,19 +1,15 @@
 /*
- * Copyright 2017 Florida Institute for Human and Machine Cognition (IHMC)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2017 Florida Institute for Human and Machine Cognition (IHMC) Licensed under the Apache
+ * License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 package us.ihmc.yoVariables.parameters;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,7 +20,6 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-import us.ihmc.robotics.Assert;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class AbstractParameterReaderTest
@@ -66,9 +61,9 @@ public class AbstractParameterReaderTest
          Set<String> unmatchedParameters = new HashSet<>();
          readerRoot.readParametersInRegistry(regs[i], defaultParameters, unmatchedParameters);
 
-         Assert.assertEquals(numberOfDefaults, defaultParameters.size());
-         Assert.assertEquals(numberOfUnmatched, unmatchedParameters.size());
-         Assert.assertEquals(expectedValue, parameter.getValue(), Double.MIN_VALUE);
+         assertEquals(numberOfDefaults, defaultParameters.size());
+         assertEquals(numberOfUnmatched, unmatchedParameters.size());
+         assertEquals(expectedValue, parameter.getValue(), Double.MIN_VALUE);
       }
    }
 
@@ -89,7 +84,7 @@ public class AbstractParameterReaderTest
 
       reader.readParametersInRegistry(new YoRegistry("RandomRegistry"));
       reader.readParametersInRegistry(root);
-      Assert.assertEquals(loadedValue, parameter.getValue(), Double.MIN_VALUE);
+      assertEquals(loadedValue, parameter.getValue(), Double.MIN_VALUE);
    }
 
    private static class TestParameterReader extends AbstractParameterReader

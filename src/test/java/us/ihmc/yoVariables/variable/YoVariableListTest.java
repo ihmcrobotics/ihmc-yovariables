@@ -1,7 +1,8 @@
 package us.ihmc.yoVariables.variable;
 
-import static us.ihmc.robotics.Assert.assertFalse;
-import static us.ihmc.robotics.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,7 +10,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import us.ihmc.robotics.Assert;
 import us.ihmc.yoVariables.dataBuffer.YoVariableList;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.registry.YoTools;
@@ -45,14 +45,14 @@ public class YoVariableListTest
 
       YoBoolean notIncluded = new YoBoolean("notIncluded", registryTwo);
 
-      Assert.assertEquals("listOne", varList.getName());
-      Assert.assertEquals(0, varList.indexOf(booleanOne));
-      Assert.assertEquals(1, varList.indexOf(doubleOne));
-      Assert.assertEquals(2, varList.indexOf(booleanTwo));
-      Assert.assertEquals(3, varList.indexOf(doubleTwo));
-      Assert.assertEquals(4, varList.indexOf(repeatBooleanOne));
+      assertEquals("listOne", varList.getName());
+      assertEquals(0, varList.indexOf(booleanOne));
+      assertEquals(1, varList.indexOf(doubleOne));
+      assertEquals(2, varList.indexOf(booleanTwo));
+      assertEquals(3, varList.indexOf(doubleTwo));
+      assertEquals(4, varList.indexOf(repeatBooleanOne));
 
-      Assert.assertEquals(-1, varList.indexOf(notIncluded));
+      assertEquals(-1, varList.indexOf(notIncluded));
 
       assertTrue(varList.contains(booleanOne));
       assertTrue(varList.contains(doubleOne));
@@ -139,7 +139,7 @@ public class YoVariableListTest
          varList.addVariable(variableB);
       }
 
-      Assert.assertEquals(variables.size(), varList.size());
+      assertEquals(variables.size(), varList.size());
 
       for (int i = 0; i < variables.size(); i++)
       {
@@ -164,7 +164,7 @@ public class YoVariableListTest
       list.addVariable(b);
       list.addVariable(c);
 
-      Assert.assertEquals(a.toString() + "\n" + b.toString() + "\n" + c.toString() + "\n", list.toString());
+      assertEquals(a.toString() + "\n" + b.toString() + "\n" + c.toString() + "\n", list.toString());
 
    }
 
@@ -183,16 +183,16 @@ public class YoVariableListTest
 
       //YoVariableList
       list.addVariable(a);
-      Assert.assertEquals(1, list.size());
+      assertEquals(1, list.size());
       list.addVariable(a); // Ignores if added twice.
-      Assert.assertEquals(1, list.size());
+      assertEquals(1, list.size());
 
       listTwo.addVariable(b);
       listTwo.addVariable(c);
-      Assert.assertEquals(2, listTwo.size());
+      assertEquals(2, listTwo.size());
 
       list.addVariables(listTwo);
-      Assert.assertEquals(3, list.size());
+      assertEquals(3, list.size());
 
       //YoVariable[]
       listThree.addVariable(a);
@@ -215,8 +215,8 @@ public class YoVariableListTest
       //assertions
       for (int i = 0; i < list.size(); i++)
       {
-         Assert.assertEquals(list.getVariable(i), listThree.getVariable(i));
-         Assert.assertEquals(list.getVariable(i), listFour.getVariable(i));
+         assertEquals(list.getVariable(i), listThree.getVariable(i));
+         assertEquals(list.getVariable(i), listFour.getVariable(i));
       }
    }
 
@@ -245,18 +245,18 @@ public class YoVariableListTest
       listTwo.addVariable(a);
       listTwo.addVariable(c);
 
-      Assert.assertEquals(list.toString(), listTwo.toString());
+      assertEquals(list.toString(), listTwo.toString());
 
       assertFalse(list.isEmpty());
 
       list.clear();
-      Assert.assertEquals(list.toString(), listThree.toString());
+      assertEquals(list.toString(), listThree.toString());
 
       List<YoVariable> allVariables = listTwo.getVariables();
 
       for (int i = 0; i < listTwo.size(); i++)
       {
-         Assert.assertEquals(allVariables.get(i).toString(), listTwo.getVariable(i).toString());
+         assertEquals(allVariables.get(i).toString(), listTwo.getVariable(i).toString());
       }
    }
 

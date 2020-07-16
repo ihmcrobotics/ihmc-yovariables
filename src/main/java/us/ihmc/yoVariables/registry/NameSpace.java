@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import us.ihmc.yoVariables.exceptions.IllegalNameException;
+
 /**
  * Representation of a namespace that is composed of sub-names where typically each sub-name is the
  * name of a {@link YoRegistry} with the parent to child relationship between one sub-name and the

@@ -1,10 +1,11 @@
 package us.ihmc.yoVariables.variable;
 
-import static us.ihmc.robotics.Assert.assertFalse;
-import static us.ihmc.robotics.Assert.assertNotNull;
-import static us.ihmc.robotics.Assert.assertNull;
-import static us.ihmc.robotics.Assert.assertTrue;
-import static us.ihmc.robotics.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
@@ -16,7 +17,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import us.ihmc.robotics.Assert;
 import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.registry.YoTools;
@@ -164,7 +164,7 @@ public class YoVariableTest
    {
       YoDouble descrVariable = new YoDouble("booleanVar", "Description", registry);
 
-      Assert.assertEquals(descrVariable.getDescription(), "Description");
+      assertEquals(descrVariable.getDescription(), "Description");
       assertNotNull(yoVariable.getDescription());
    }
 
@@ -174,7 +174,7 @@ public class YoVariableTest
       YoDouble doubleVariable = new YoDouble("doubleVar", registry);
       doubleVariable.set(15.6);
 
-      Assert.assertEquals(doubleVariable.getDoubleValue(), 15.6, 1e-7);
+      assertEquals(doubleVariable.getDoubleValue(), 15.6, 1e-7);
    }
 
    private enum FooEnum
@@ -188,14 +188,14 @@ public class YoVariableTest
       YoEnum<FooEnum> enumVariable = new YoEnum<>("booleanVar", registry, FooEnum.class);
       enumVariable.set(FooEnum.TWO);
 
-      Assert.assertEquals(enumVariable.getEnumValue(), FooEnum.TWO);
+      assertEquals(enumVariable.getEnumValue(), FooEnum.TWO);
       assertFalse(enumVariable.getEnumValue() == FooEnum.ONE);
    }
 
    @Test // timeout=300000
    public void testGetFullNameWithNameSpace()
    {
-      Assert.assertEquals(yoVariable.getFullNameString(), "robot.testRegistry.variableOne");
+      assertEquals(yoVariable.getFullNameString(), "robot.testRegistry.variableOne");
    }
 
    @Test // timeout=300000
@@ -204,13 +204,13 @@ public class YoVariableTest
       YoInteger integerVariable = new YoInteger("integerVariable", registry);
       integerVariable.set(5);
 
-      Assert.assertEquals(integerVariable.getIntegerValue(), 5);
+      assertEquals(integerVariable.getIntegerValue(), 5);
    }
 
    @Test // timeout=300000
    public void testGetName()
    {
-      Assert.assertEquals(yoVariable.getName(), "variableOne");
+      assertEquals(yoVariable.getName(), "variableOne");
    }
 
    @Test // timeout=300000
@@ -218,8 +218,8 @@ public class YoVariableTest
    {
       YoRegistry registry = yoVariable.getYoRegistry();
       assertNotNull(registry);
-      Assert.assertEquals(registry, this.registry);
-      Assert.assertEquals(registry.findVariable(yoVariable.getName()), yoVariable);
+      assertEquals(registry, this.registry);
+      assertEquals(registry.findVariable(yoVariable.getName()), yoVariable);
    }
 
    @Test // timeout=300000
@@ -227,19 +227,19 @@ public class YoVariableTest
    {
       YoEnum<FooEnum> enumyoEnum = new YoEnum<>("enumYoVariable", registry, FooEnum.class);
       enumyoEnum.set(FooEnum.THREE);
-      Assert.assertEquals("enumYoVariable: THREE", enumyoEnum.toString());
+      assertEquals("enumYoVariable: THREE", enumyoEnum.toString());
 
       YoInteger intyoVariable = new YoInteger("intYoVariable", registry);
       intyoVariable.set(1);
-      Assert.assertEquals("intYoVariable: 1", intyoVariable.toString());
+      assertEquals("intYoVariable: 1", intyoVariable.toString());
 
       YoDouble yoVariable = new YoDouble("doubleYoVariable", registry);
       yoVariable.set(0.0112);
-      Assert.assertEquals("doubleYoVariable: 0.0112", yoVariable.toString());
+      assertEquals("doubleYoVariable: 0.0112", yoVariable.toString());
 
       YoBoolean booleanyoBoolean = new YoBoolean("booleanYoVariable", registry);
       booleanyoBoolean.set(false);
-      Assert.assertEquals("booleanYoVariable: false", booleanyoBoolean.toString());
+      assertEquals("booleanYoVariable: false", booleanyoBoolean.toString());
    }
 
    @Test // timeout=300000
@@ -307,7 +307,7 @@ public class YoVariableTest
 
       for (TestVariableChangedListener observer : variableChangedListeners)
       {
-         Assert.assertEquals(observer.getLastVariableChanged(), yoVariable);
+         assertEquals(observer.getLastVariableChanged(), yoVariable);
       }
 
       // make sure hearNoEvil is unaware
@@ -338,7 +338,7 @@ public class YoVariableTest
 
       for (TestVariableChangedListener observer : variableChangedListeners)
       {
-         Assert.assertEquals(observer.getLastVariableChanged(), yoVariable);
+         assertEquals(observer.getLastVariableChanged(), yoVariable);
       }
 
       // Remove and reset observers. Let yoVariable notify observers again. Assert that the observers didn't notice anything.
@@ -365,7 +365,7 @@ public class YoVariableTest
 
       for (TestVariableChangedListener observer : variableChangedListeners)
       {
-         Assert.assertEquals(observer.getLastVariableChanged(), yoVariable);
+         assertEquals(observer.getLastVariableChanged(), yoVariable);
       }
 
       // Remove and reset observers. Let yoVariable notify observers again. Assert that the observers didn't notice anything.
