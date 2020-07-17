@@ -3,6 +3,7 @@ package us.ihmc.yoVariables.variable;
 import java.util.Random;
 
 import us.ihmc.euclid.tuple2D.Vector2DBasicsTest;
+import us.ihmc.yoVariables.euclid.YoVector2D;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoVector2DTest extends Vector2DBasicsTest<YoVector2D>

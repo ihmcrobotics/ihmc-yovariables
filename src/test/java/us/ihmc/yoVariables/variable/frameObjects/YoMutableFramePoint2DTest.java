@@ -33,6 +33,7 @@ import us.ihmc.euclid.tuple2D.Point2D;
 import us.ihmc.euclid.tuple2D.Vector2D;
 import us.ihmc.euclid.tuple2D.interfaces.Tuple2DBasics;
 import us.ihmc.euclid.tuple3D.Point3D;
+import us.ihmc.yoVariables.euclid.referenceFrame.YoMutableFramePoint2D;
 
 public class YoMutableFramePoint2DTest extends FrameTuple2DBasicsTest<YoMutableFramePoint2D>
 {

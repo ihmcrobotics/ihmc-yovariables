@@ -16,7 +16,7 @@ import us.ihmc.euclid.referenceFrame.api.MethodSignature;
 import us.ihmc.euclid.tools.EuclidCoreRandomTools;
 import us.ihmc.euclid.tuple2D.interfaces.UnitVector2DBasics;
 import us.ihmc.euclid.tuple2D.interfaces.UnitVector2DReadOnly;
-import us.ihmc.yoVariables.variable.YoFrameUnitVector2D;
+import us.ihmc.yoVariables.euclid.referenceFrame.YoFrameUnitVector2D;
 
 public class YoFrameUnitVector2DTest
 {

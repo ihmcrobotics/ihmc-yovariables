@@ -32,6 +32,7 @@ import us.ihmc.euclid.transform.RigidBodyTransform;
 import us.ihmc.euclid.tuple2D.Vector2D;
 import us.ihmc.euclid.tuple2D.interfaces.Tuple2DBasics;
 import us.ihmc.euclid.tuple3D.Vector3D;
+import us.ihmc.yoVariables.euclid.referenceFrame.YoMutableFrameVector2D;
 
 public class YoMutableFrameVector2DTest extends FrameTuple2DBasicsTest<YoMutableFrameVector2D>
 {

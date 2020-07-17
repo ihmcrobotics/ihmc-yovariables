@@ -2,6 +2,7 @@ package us.ihmc.yoVariables.variable.frameObjects;
 
 import org.junit.jupiter.api.Test;
 
+import us.ihmc.yoVariables.euclid.referenceFrame.YoMutableFramePose3D;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 class YoMutableFramePose3DTest

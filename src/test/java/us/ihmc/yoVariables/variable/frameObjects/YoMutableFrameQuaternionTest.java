@@ -49,6 +49,7 @@ import us.ihmc.euclid.tuple4D.QuaternionBasicsTest;
 import us.ihmc.euclid.tuple4D.interfaces.QuaternionBasics;
 import us.ihmc.euclid.tuple4D.interfaces.QuaternionReadOnly;
 import us.ihmc.euclid.tuple4D.interfaces.Tuple4DReadOnly;
+import us.ihmc.yoVariables.euclid.referenceFrame.YoMutableFrameQuaternion;
 
 public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyTest<YoMutableFrameQuaternion>
 {
