@@ -66,7 +66,7 @@ public class YoLong extends YoVariable implements LongProvider
     */
    public void add(long value)
    {
-      this.set(value + value);
+      this.set(this.value + value);
    }
 
    /**
@@ -76,7 +76,7 @@ public class YoLong extends YoVariable implements LongProvider
     */
    public void subtract(long value)
    {
-      this.set(value - value);
+      this.set(this.value - value);
    }
 
    /**

@@ -41,7 +41,7 @@ public class YoEnumTest
    {
       YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class);
       assertFalse(yoEnum == null);
-      assertTrue(registry.getVariables().size() == 1);
+      assertEquals(1, registry.getVariables().size());
       assertTrue(yoEnum.getName().equals("yoEnum"));
       assertTrue(registry.findVariable("yoEnum").equals(yoEnum));
    }
@@ -49,13 +49,9 @@ public class YoEnumTest
    @Test // timeout=300000
    public void testConstructorWithDescription()
    {
-      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum",
-                                                                                   "yoEnum with description",
-                                                                                   registry,
-                                                                                   EnumYoVariableTestEnums.class,
-                                                                                   false);
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", "yoEnum with description", registry, EnumYoVariableTestEnums.class, false);
       assertFalse(yoEnum == null);
-      assertTrue(registry.getVariables().size() == 1);
+      assertEquals(1, registry.getVariables().size());
       assertTrue(yoEnum.getName().equals("yoEnum"));
       assertTrue(registry.findVariable("yoEnum").equals(yoEnum));
       assertTrue(yoEnum.getDescription().equals("yoEnum with description"));
@@ -66,7 +62,7 @@ public class YoEnumTest
    {
       YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", registry, EnumYoVariableTestEnums.class);
       assertFalse(yoEnum == null);
-      assertTrue(registry.getVariables().size() == 1);
+      assertEquals(1, registry.getVariables().size());
       assertTrue(yoEnum.getName().equals("yoEnum"));
       assertTrue(registry.findVariable("yoEnum").equals(yoEnum));
    }
@@ -76,7 +72,7 @@ public class YoEnumTest
    {
       YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("yoEnum", "yoEnum with description", registry, EnumYoVariableTestEnums.class, false);
       assertFalse(yoEnum == null);
-      assertTrue(registry.getVariables().size() == 1);
+      assertEquals(1, registry.getVariables().size());
       assertTrue(yoEnum.getName().equals("yoEnum"));
       assertTrue(registry.findVariable("yoEnum").equals(yoEnum));
 
@@ -141,10 +137,10 @@ public class YoEnumTest
       EnumYoVariableTestEnums originalValue = yoEnum.getEnumValue();
 
       yoEnum.setValueFromDouble(2.0);
-      assertEquals(originalValue, yoEnum.getEnumValue());
+      assertEquals(EnumYoVariableTestEnums.TWO, yoEnum.getEnumValue());
 
       yoEnum.setValueFromDouble(-100.0);
-      assertEquals(originalValue, yoEnum.getEnumValue());
+      assertEquals(EnumYoVariableTestEnums.ONE, yoEnum.getEnumValue());
    }
 
    @Test // timeout=300000

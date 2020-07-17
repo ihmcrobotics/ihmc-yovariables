@@ -2,6 +2,7 @@ package us.ihmc.yoVariables.variable;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -61,15 +62,16 @@ public class YoVariableListTest
       assertTrue(varList.contains(repeatBooleanOne));
       assertFalse(varList.contains(notIncluded));
 
-      assertTrue(null == varList.getVariable(-1));
+      assertThrows(IndexOutOfBoundsException.class, () -> varList.getVariable(-1));
       assertTrue(booleanOne == varList.getVariable(0));
       assertTrue(doubleOne == varList.getVariable(1));
       assertTrue(booleanTwo == varList.getVariable(2));
       assertTrue(doubleTwo == varList.getVariable(3));
       assertTrue(repeatBooleanOne == varList.getVariable(4));
-      assertTrue(null == varList.getVariable(5));
+      assertThrows(IndexOutOfBoundsException.class, () -> varList.getVariable(5));
 
-      assertTrue(varList.hasUniqueVariable("booleanOne"));
+      assertTrue(varList.hasVariable("booleanOne"));
+      assertFalse(varList.hasUniqueVariable("booleanOne"));
       assertTrue(varList.hasUniqueVariable("registryOne.booleanOne"));
       assertTrue(varList.hasUniqueVariable("doubleOne"));
       assertTrue(varList.hasUniqueVariable("registryOne.doubleOne"));
@@ -164,7 +166,7 @@ public class YoVariableListTest
       list.addVariable(b);
       list.addVariable(c);
 
-      assertEquals(a.toString() + "\n" + b.toString() + "\n" + c.toString() + "\n", list.toString());
+      assertEquals(list.getName() + ", variables:\n" + a.toString() + "\n" + b.toString() + "\n" + c.toString(), list.toString());
 
    }
 
@@ -225,8 +227,8 @@ public class YoVariableListTest
    {
       YoRegistry registry = new YoRegistry("registry");
       YoVariableList list = new YoVariableList("list");
-      YoVariableList listTwo = new YoVariableList("listTwo");
-      YoVariableList listThree = new YoVariableList("listThree");
+      YoVariableList listTwo = new YoVariableList("list");
+      YoVariableList listThree = new YoVariableList("list");
 
       assertTrue(list.isEmpty());
 

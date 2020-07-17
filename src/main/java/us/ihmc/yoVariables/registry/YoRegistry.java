@@ -229,6 +229,9 @@ public class YoRegistry implements YoVariableHolder
     * The variable will become available for search queries from this registry and any of its parent
     * registries.
     * </p>
+    * <p>
+    * If the variable was already registered to this registry, this method does nothing.
+    * </p>
     *
     * @param variable the new variable to register.
     * @throws NameCollisionException    if the new variable's name collide with another variable
@@ -240,6 +243,9 @@ public class YoRegistry implements YoVariableHolder
       if (!restrictionLevel.isAdditionAllowed())
          throw new IllegalOperationException("Cannot add variables to this registry: " + nameSpace);
 
+      if (nameToVariableMap.containsValue(variable))
+         return;
+
       // Make everything case insensitive! Cannot have two YoVariables with same names except case.
       String variableName = variable.getName().toLowerCase();
 
@@ -249,9 +255,9 @@ public class YoRegistry implements YoVariableHolder
       if (variable.getYoRegistry() != null)
          variable.getYoRegistry().removeVariable(variable);
 
-      variable.setRegistry(this);
       variables.add(variable);
       nameToVariableMap.put(variableName, variable);
+      variable.setRegistry(this);
 
       if (variable.isParameter())
       {
@@ -312,6 +318,9 @@ public class YoRegistry implements YoVariableHolder
     * The registry and all its subtree will become available for search queries from this registry and
     * any of its parent registries.
     * </p>
+    * <p>
+    * If the given registry is already a child of this registry, this method does nothing.
+    * </p>
     *
     * @param child           the new registry to add.
     * @param notifyListeners indicates whether this operation should trigger the change listeners.
@@ -328,6 +337,9 @@ public class YoRegistry implements YoVariableHolder
 
       if (!restrictionLevel.isAdditionAllowed())
          throw new IllegalOperationException("Cannot add children to this registry: " + nameSpace);
+
+      if (nameToChildMap.containsValue(child))
+         return;
 
       String childName = child.getName().toLowerCase();
 
@@ -621,20 +633,24 @@ public class YoRegistry implements YoVariableHolder
    }
 
    /**
-    * Returns the first discovered instance of a variable matching the given name.
+    * {@inheritDoc}
     * <p>
     * The search is first conducted in this registry, then in its children in the order in which they
     * were added.
     * </p>
-    *
-    * @param nameSpaceEnding (optional) the namespace of the registry in which the variable was
-    *                        registered. The namespace does not need to be complete, i.e. it does not
-    *                        need to contain the name of the registries closest to the root registry.
-    *                        If {@code null}, the search for the variable name only.
-    * @param name            the name of the variable to retrieve.
-    * @return the variable corresponding to the search criteria, or {@code null} if it could not be
-    *         found.
-    * @throws IllegalNameException if {@code name} contains "{@value YoTools#NAMESPACE_SEPERATOR}".
+    */
+   @Override
+   public YoVariable findVariable(String name)
+   {
+      return YoVariableHolder.super.findVariable(name);
+   }
+
+   /**
+    * {@inheritDoc}
+    * <p>
+    * The search is first conducted in this registry, then in its children in the order in which they
+    * were added.
+    * </p>
     */
    @Override
    public YoVariable findVariable(String nameSpaceEnding, String name)
@@ -644,19 +660,24 @@ public class YoRegistry implements YoVariableHolder
    }
 
    /**
-    * Returns the all of the variables matching the given name and namespace.
+    * {@inheritDoc}
     * <p>
     * The search is first conducted in this registry, then in its children in the order in which they
     * were added.
     * </p>
-    *
-    * @param nameSpaceEnding (optional) the namespace of the registry in which the variable was
-    *                        registered. The namespace does not need to be complete, i.e. it does not
-    *                        need to contain the name of the registries closest to the root registry.
-    *                        If {@code null}, the search for the variable name only.
-    * @param name            the name of the variable to retrieve.
-    * @return list of all the variables corresponding to the search criteria.
-    * @throws IllegalNameException if {@code name} contains "{@value YoTools#NAMESPACE_SEPERATOR}".
+    */
+   @Override
+   public List<YoVariable> findVariables(String name)
+   {
+      return YoVariableHolder.super.findVariables(name);
+   }
+
+   /**
+    * {@inheritDoc}
+    * <p>
+    * The search is first conducted in this registry, then in its children in the order in which they
+    * were added.
+    * </p>
     */
    @Override
    public List<YoVariable> findVariables(String nameSpaceEnding, String name)
@@ -671,9 +692,6 @@ public class YoRegistry implements YoVariableHolder
     * The search is first conducted in this registry, then in its children in the order in which they
     * were added.
     * </p>
-    *
-    * @param nameSpace the full namespace of the registry of interest.
-    * @return the variables that were registered at the given namespace.
     */
    @Override
    public List<YoVariable> findVariables(NameSpace nameSpace)
@@ -715,16 +733,11 @@ public class YoRegistry implements YoVariableHolder
    }
 
    /**
-    * Search in the subtree starting at this registry and tests if there is exactly one variable that
-    * matches the search criteria.
-    *
-    * @param nameSpaceEnding (optional) the namespace of the registry in which the variable was
-    *                        registered. The namespace does not need to be complete, i.e. it does not
-    *                        need to contain the name of the registries closest to the root registry.
-    *                        If {@code null}, the search for the variable name only.
-    * @param name            the name of the variable to retrieve.
-    * @return {@code true} if there is exactly one variable that matches the search criteria,
-    *         {@code false} otherwise.
+    * {@inheritDoc}
+    * <p>
+    * The search is first conducted in this registry, then in its children in the order in which they
+    * were added.
+    * </p>
     */
    @Override
    public boolean hasUniqueVariable(String nameSpaceEnding, String name)

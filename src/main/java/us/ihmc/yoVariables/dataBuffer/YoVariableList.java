@@ -112,11 +112,12 @@ public class YoVariableList implements YoVariableHolder
       {
          homonyms = new ArrayList<>();
          simpleNameToVariablesMap.put(variable.getName().toLowerCase(), homonyms);
-         homonyms.add(variable);
-         variableList.add(variable);
       }
       else
       {
+         if (homonyms.contains(variable))
+            return;
+
          // Make sure the variable is unique:
          for (int i = 0; i < homonyms.size(); i++)
          {
@@ -125,9 +126,10 @@ public class YoVariableList implements YoVariableHolder
                throw new NameCollisionException("Name collision with " + variable.getFullNameString());
             }
          }
-
-         homonyms.add(variable);
       }
+
+      homonyms.add(variable);
+      variableList.add(variable);
    }
 
    public void removeVariable(YoVariable variable)
@@ -149,12 +151,19 @@ public class YoVariableList implements YoVariableHolder
       if (variableList == null || variableList.isEmpty())
          return null;
 
-      for (int i = 0; i < variableList.size(); i++)
+      if (nameSpaceEnding == null)
       {
-         YoVariable candidate = variableList.get(i);
+         return variableList.get(0);
+      }
+      else
+      {
+         for (int i = 0; i < variableList.size(); i++)
+         {
+            YoVariable candidate = variableList.get(i);
 
-         if (candidate.getNameSpace().endsWith(nameSpaceEnding, true))
-            return candidate;
+            if (candidate.getNameSpace().endsWith(nameSpaceEnding, true))
+               return candidate;
+         }
       }
 
       return null;
@@ -198,12 +207,19 @@ public class YoVariableList implements YoVariableHolder
 
       List<YoVariable> result = new ArrayList<>();
 
-      for (int i = 0; i < variableList.size(); i++)
+      if (nameSpaceEnding == null)
       {
-         YoVariable candidate = variableList.get(i);
+         result.addAll(variableList);
+      }
+      else
+      {
+         for (int i = 0; i < variableList.size(); i++)
+         {
+            YoVariable candidate = variableList.get(i);
 
-         if (candidate.getNameSpace().endsWith(nameSpaceEnding, true))
-            result.add(candidate);
+            if (candidate.getNameSpace().endsWith(nameSpaceEnding, true))
+               result.add(candidate);
+         }
       }
 
       return result;

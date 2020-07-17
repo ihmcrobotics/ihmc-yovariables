@@ -10,8 +10,7 @@ import us.ihmc.yoVariables.registry.YoTools;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoVariable;
 
-public class DataBuffer extends YoVariableList
-      implements Serializable, DataBufferCommandsExecutor, ToggleKeyPointModeCommandExecutor, TimeDataHolder, DataEntryHolder
+public class DataBuffer implements Serializable, DataBufferCommandsExecutor, ToggleKeyPointModeCommandExecutor, TimeDataHolder, DataEntryHolder
 {
    private String timeVariableName = "t";
 
@@ -39,6 +38,15 @@ public class DataBuffer extends YoVariableList
 
    private boolean safeToManuallyChangeIndex = true;
 
+   private final YoVariableList yoVariableList = new YoVariableList(getClass().getSimpleName());
+
+   public DataBuffer(int bufferSize)
+   {
+      entries = new ArrayList<>();
+
+      this.bufferSize = bufferSize;
+   }
+
    @Override
    public void closeAndDispose()
    {
@@ -49,14 +57,6 @@ public class DataBuffer extends YoVariableList
       entries = null;
 
       index = -1;
-   }
-
-   public DataBuffer(int bufferSize)
-   {
-      super("DataBuffer");
-      entries = new ArrayList<>();
-
-      this.bufferSize = bufferSize;
    }
 
    public void setSafeToChangeIndex(boolean safe)
@@ -94,7 +94,7 @@ public class DataBuffer extends YoVariableList
 
    public DataBufferEntry addVariable(YoVariable newVariable, int nPoints)
    {
-      addVariable(newVariable);
+      yoVariableList.addVariable(newVariable);
 
       DataBufferEntry entry = new DataBufferEntry(newVariable, nPoints);
       addEntry(entry);
@@ -246,8 +246,10 @@ public class DataBuffer extends YoVariableList
       }
 
       List<YoVariable> variables = new ArrayList<>();
-      Arrays.asList(varNames).forEach(varName -> tempList.findVariables(varName));
-      Arrays.asList(regularExpressions).forEach(regex -> YoTools.searchVariablesRegex(regex, tempList.getVariables()));
+      if (varNames != null)
+         Arrays.asList(varNames).forEach(varName -> variables.addAll(tempList.findVariables(varName)));
+      if (regularExpressions != null)
+         Arrays.asList(regularExpressions).forEach(regex -> variables.addAll(YoTools.searchVariablesRegex(regex, tempList.getVariables())));
       return variables;
    }
 
@@ -897,7 +899,7 @@ public class DataBuffer extends YoVariableList
       for (int i = 0; i < dataBufferListeners.size(); i++)
       {
          DataBufferListener dataBufferListener = dataBufferListeners.get(i);
-         YoVariable[] yoVariables = dataBufferListener.getVariablesOfInterest(this);
+         YoVariable[] yoVariables = dataBufferListener.getVariablesOfInterest(yoVariableList);
          double[] values = new double[yoVariables.length];
 
          for (int j = 0; j < yoVariables.length; j++)
@@ -1089,5 +1091,10 @@ public class DataBuffer extends YoVariableList
       }
 
       return false;
+   }
+
+   public YoVariableList getYoVariableList()
+   {
+      return yoVariableList;
    }
 }

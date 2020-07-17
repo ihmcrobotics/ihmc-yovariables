@@ -51,13 +51,22 @@ public abstract class YoVariable
       this.type = type;
       this.name = name;
       this.description = description;
+      setRegistry(registry);
+   }
+
+   /**
+    * @param registry
+    */
+   public void setRegistry(YoRegistry registry)
+   {
+      if (registry == this.registry)
+         return;
 
       if (registry != null)
          registry.addVariable(this);
-   }
+      else if (this.registry != null)
+         this.registry.removeVariable(this);
 
-   public void setRegistry(YoRegistry registry)
-   {
       this.registry = registry;
       fullName = null; // Force to reset the fullName so it is updated on next query.
    }
