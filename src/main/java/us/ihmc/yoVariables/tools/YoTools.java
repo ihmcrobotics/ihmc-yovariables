@@ -31,7 +31,6 @@ import us.ihmc.yoVariables.variable.YoVariable;
 
 public class YoTools
 {
-   // TODO: make YoVariables use the same seperator character.
    public static final char NAMESPACE_SEPERATOR = '.';
    public static final String NAMESPACE_SEPERATOR_STRING = Character.toString(NAMESPACE_SEPERATOR);
    public static final String NAMESPACE_SEPERATOR_REGEX = Pattern.quote(NAMESPACE_SEPERATOR_STRING);

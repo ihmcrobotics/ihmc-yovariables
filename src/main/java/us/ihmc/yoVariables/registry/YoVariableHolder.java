@@ -6,12 +6,18 @@ import us.ihmc.yoVariables.exceptions.IllegalNameException;
 import us.ihmc.yoVariables.tools.YoTools;
 import us.ihmc.yoVariables.variable.YoVariable;
 
+/**
+ * Base interface for a class that manages a collection of {@code YoVariable}s.
+ * 
+ * @see YoRegistry
+ * @see YoVariableList
+ */
 public interface YoVariableHolder
 {
    /**
-    * Returns all the YoVariables in this YoVariableHolder
+    * Returns all the {@code YoVariable}s in this {@code YoVariableHolder}.
     *
-    * @return ArrayList
+    * @return the list of all the variables.
     */
    List<YoVariable> getVariables();
 
