@@ -253,8 +253,8 @@ public class YoRegistry implements YoVariableHolder
       if (nameToVariableMap.containsKey(variableName))
          throw new NameCollisionException("Name collision for new variable: " + variableName + ". Parent name space = " + getNameSpace());
 
-      if (variable.getYoRegistry() != null)
-         variable.getYoRegistry().removeVariable(variable);
+      if (variable.getRegistry() != null)
+         variable.getRegistry().removeVariable(variable);
 
       variables.add(variable);
       nameToVariableMap.put(variableName, variable);
@@ -276,7 +276,7 @@ public class YoRegistry implements YoVariableHolder
     */
    public void removeVariable(YoVariable variable)
    {
-      if (variable.getYoRegistry() != this)
+      if (variable.getRegistry() != this)
          return;
 
       String variableName = variable.getName().toLowerCase();

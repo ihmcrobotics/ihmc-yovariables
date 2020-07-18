@@ -220,9 +220,9 @@ public class YoTools
       if (!endOfName.toLowerCase().equals(yoVariable.getName().toLowerCase()))
          return false;
 
-      if (yoVariable.getYoRegistry() == null)
+      if (yoVariable.getRegistry() == null)
          return false;
 
-      return yoVariable.getYoRegistry().getNameSpace().endsWith(nameSpace);
+      return yoVariable.getRegistry().getNameSpace().endsWith(nameSpace);
    }
 }

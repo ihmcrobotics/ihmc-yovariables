@@ -36,7 +36,7 @@ public class YoBooleanTest
    public void testBooleanYoVariable()
    {
       assertEquals("booleanVariable", yoBoolean.getName());
-      assertEquals("testRegistry", yoBoolean.getYoRegistry().getName());
+      assertEquals("testRegistry", yoBoolean.getRegistry().getName());
       assertEquals(false, yoBoolean.getBooleanValue());
    }
 
@@ -164,8 +164,8 @@ public class YoBooleanTest
       testVal = (YoBoolean) newRegistry.getVariables().get(0);
       assertEquals(yoBoolean.getBooleanValue(), val.getBooleanValue());
       assertEquals(yoBoolean.getBooleanValue(), testVal.getBooleanValue());
-      assertTrue(val.getYoRegistry().equals(newRegistry));
-      assertTrue(val.getYoRegistry().equals(testVal.getYoRegistry()));
+      assertTrue(val.getRegistry().equals(newRegistry));
+      assertTrue(val.getRegistry().equals(testVal.getRegistry()));
       newRegistry = null;
    }
 

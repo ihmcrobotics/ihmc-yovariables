@@ -83,7 +83,7 @@ public abstract class YoVariable
     *
     * @return YoRegistry this variable is registered in
     */
-   public YoRegistry getYoRegistry()
+   public YoRegistry getRegistry()
    {
       return registry;
    }
