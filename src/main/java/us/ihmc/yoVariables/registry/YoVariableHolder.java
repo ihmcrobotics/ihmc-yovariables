@@ -1,9 +1,8 @@
-package us.ihmc.yoVariables.dataBuffer;
+package us.ihmc.yoVariables.registry;
 
 import java.util.List;
 
 import us.ihmc.yoVariables.exceptions.IllegalNameException;
-import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.tools.YoTools;
 import us.ihmc.yoVariables.variable.YoVariable;
 

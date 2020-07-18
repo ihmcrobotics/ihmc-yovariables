@@ -6,7 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import us.ihmc.yoVariables.dataBuffer.YoVariableHolder;
 import us.ihmc.yoVariables.exceptions.IllegalNameException;
 import us.ihmc.yoVariables.exceptions.IllegalOperationException;
 import us.ihmc.yoVariables.exceptions.NameCollisionException;
