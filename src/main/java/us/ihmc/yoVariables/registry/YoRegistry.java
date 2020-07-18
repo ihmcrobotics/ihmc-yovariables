@@ -12,6 +12,7 @@ import us.ihmc.yoVariables.exceptions.NameCollisionException;
 import us.ihmc.yoVariables.listener.YoRegistryChangedListener;
 import us.ihmc.yoVariables.listener.YoRegistryChangedListener.Change;
 import us.ihmc.yoVariables.parameters.YoParameter;
+import us.ihmc.yoVariables.tools.YoSearchTools;
 import us.ihmc.yoVariables.tools.YoTools;
 import us.ihmc.yoVariables.variable.YoVariable;
 
@@ -656,7 +657,7 @@ public class YoRegistry implements YoVariableHolder
    public YoVariable findVariable(String nameSpaceEnding, String name)
    {
       YoTools.checkNameDoesNotContainSeparator(name);
-      return YoTools.findYoVariable(nameSpaceEnding, name, null, this);
+      return YoSearchTools.findFirstVariable(nameSpaceEnding, name, null, this);
    }
 
    /**
@@ -683,7 +684,7 @@ public class YoRegistry implements YoVariableHolder
    public List<YoVariable> findVariables(String nameSpaceEnding, String name)
    {
       YoTools.checkNameDoesNotContainSeparator(name);
-      return YoTools.findYoVariables(nameSpaceEnding, name, null, this, null);
+      return YoSearchTools.findVariables(nameSpaceEnding, name, null, this, null);
    }
 
    /**
@@ -710,21 +711,21 @@ public class YoRegistry implements YoVariableHolder
     * were added.
     * </p>
     *
-    * @param nameSpace the namespace of the registry of interest
+    * @param nameSpaceEnding the namespace of the registry of interest. The namespace does not need to
+    *                        be complete, i.e. it does not need to contain the name of the registries
+    *                        closest to the root registry.
     * @return the registry which namespace matches the given one, or {@code null} if it could not be
     *         found.
     */
-   public YoRegistry findRegistry(NameSpace nameSpace)
+   public YoRegistry findRegistry(NameSpace nameSpaceEnding)
    {
-      if (nameSpace.equals(this.nameSpace))
+      if (this.nameSpace.endsWith(nameSpaceEnding))
          return this;
 
-      if (!nameSpace.startsWith(this.nameSpace))
-         return null;
-
+      // TODO Can likely speed up the search by performing smart comparison of the children namespace with the query.
       for (YoRegistry child : children)
       {
-         YoRegistry registry = child.findRegistry(nameSpace);
+         YoRegistry registry = child.findRegistry(nameSpaceEnding);
          if (registry != null)
             return registry;
       }

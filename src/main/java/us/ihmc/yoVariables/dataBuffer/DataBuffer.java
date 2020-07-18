@@ -7,6 +7,7 @@ import java.util.List;
 
 import us.ihmc.yoVariables.listener.RewoundListener;
 import us.ihmc.yoVariables.registry.YoVariableList;
+import us.ihmc.yoVariables.tools.YoSearchTools;
 import us.ihmc.yoVariables.tools.YoTools;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoVariable;
@@ -250,7 +251,7 @@ public class DataBuffer implements Serializable, DataBufferCommandsExecutor, Tog
       if (varNames != null)
          Arrays.asList(varNames).forEach(varName -> variables.addAll(tempList.findVariables(varName)));
       if (regularExpressions != null)
-         Arrays.asList(regularExpressions).forEach(regex -> variables.addAll(YoTools.searchVariablesRegex(regex, tempList.getVariables())));
+         variables.addAll(YoSearchTools.filterVariables(YoSearchTools.regularExpressionFilter(regularExpressions), tempList));
       return variables;
    }
 

@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.registry.YoVariableList;
-import us.ihmc.yoVariables.tools.YoTools;
+import us.ihmc.yoVariables.tools.YoSearchTools;
 
 public class YoVariableListTest
 {
@@ -285,7 +285,7 @@ public class YoVariableListTest
 
       String regularExpression = ".*";
 
-      List<YoVariable> matchedAll = YoTools.searchVariablesRegex(regularExpression, list.getVariables());
+      List<YoVariable> matchedAll = YoSearchTools.filterVariables(YoSearchTools.regularExpressionFilter(regularExpression), list);
 
       assertTrue(matchedAll.contains(a));
       assertTrue(matchedAll.contains(b));
@@ -293,14 +293,14 @@ public class YoVariableListTest
       assertFalse(matchedAll.contains(f));
 
       String regexpStartWithC = "c.*";
-      List<YoVariable> matchedStartWithC = YoTools.searchVariablesRegex(regexpStartWithC, list.getVariables());
+      List<YoVariable> matchedStartWithC = YoSearchTools.filterVariables(YoSearchTools.regularExpressionFilter(regexpStartWithC), list);
 
       assertFalse(matchedStartWithC.contains(a));
       assertFalse(matchedStartWithC.contains(b));
       assertTrue(matchedStartWithC.contains(c));
       assertFalse(matchedStartWithC.contains(f));
 
-      List<YoVariable> namesOrStartWithC = YoTools.searchVariablesRegex(regularExpression, list.getVariables());
+      List<YoVariable> namesOrStartWithC = YoSearchTools.filterVariables(YoSearchTools.regularExpressionFilter(regularExpression), list);
 
       assertTrue(namesOrStartWithC.contains(a));
       assertTrue(namesOrStartWithC.contains(b));
@@ -308,9 +308,9 @@ public class YoVariableListTest
       assertFalse(namesOrStartWithC.contains(f));
 
       // Return empty list when none match.
-      List<YoVariable> matchedNameShouldBeEmpty = YoTools.searchVariablesRegex("foo", list.getVariables());
+      List<YoVariable> matchedNameShouldBeEmpty = YoSearchTools.filterVariables(YoSearchTools.regularExpressionFilter("foo"), list);
       assertTrue(matchedNameShouldBeEmpty.isEmpty());
-      matchedNameShouldBeEmpty = YoTools.searchVariablesRegex("bar", list.getVariables());
+      matchedNameShouldBeEmpty = YoSearchTools.filterVariables(YoSearchTools.regularExpressionFilter("bar"), list);
       assertTrue(matchedNameShouldBeEmpty.isEmpty());
    }
 }

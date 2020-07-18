@@ -1,5 +1,6 @@
 package us.ihmc.yoVariables.registry;
 
+import java.util.Collections;
 import java.util.List;
 
 import us.ihmc.yoVariables.exceptions.IllegalNameException;
@@ -17,9 +18,19 @@ public interface YoVariableHolder
    /**
     * Returns all the {@code YoVariable}s in this {@code YoVariableHolder}.
     *
-    * @return the list of all the variables.
+    * @return the list of the variables.
     */
    List<YoVariable> getVariables();
+
+   /**
+    * Returns all the children that are in this {@code YoVariableHolder}.
+    * 
+    * @return the list of the children.
+    */
+   default List<? extends YoVariableHolder> getChildren()
+   {
+      return Collections.emptyList();
+   }
 
    /**
     * Returns the first discovered instance of a variable matching the given name.
