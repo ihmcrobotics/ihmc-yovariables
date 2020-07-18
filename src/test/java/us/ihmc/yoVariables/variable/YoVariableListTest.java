@@ -11,8 +11,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import us.ihmc.yoVariables.dataBuffer.YoVariableList;
 import us.ihmc.yoVariables.registry.YoRegistry;
+import us.ihmc.yoVariables.registry.YoVariableList;
 import us.ihmc.yoVariables.tools.YoTools;
 
 public class YoVariableListTest

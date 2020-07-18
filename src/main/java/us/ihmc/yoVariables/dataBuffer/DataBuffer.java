@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import us.ihmc.yoVariables.listener.RewoundListener;
+import us.ihmc.yoVariables.registry.YoVariableList;
 import us.ihmc.yoVariables.tools.YoTools;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoVariable;
