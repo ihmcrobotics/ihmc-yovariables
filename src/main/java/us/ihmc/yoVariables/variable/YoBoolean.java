@@ -4,10 +4,9 @@ import us.ihmc.yoVariables.providers.BooleanProvider;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
- * Boolean implementation of the YoVariable class.
- * <p>
- * All abstract functions of YoVariable will be implemented using boolean type for interpretation.
- * Values will be interpreted, compared, and returned as booleans rather than other native types.
+ * Boolean implementation of a {@code YoVariable}.
+ * 
+ * @see YoVariable
  */
 public class YoBoolean extends YoVariable implements BooleanProvider
 {

@@ -4,10 +4,9 @@ import us.ihmc.yoVariables.providers.IntegerProvider;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
- * Integer implementation of the YoVariable class.
- * <p>
- * All abstract functions of YoVariable will be implemented using integer type for interpretation.
- * Values will be interpreted, compared, and returned as integers rather than other native types.
+ * Integer implementation of a {@code YoVariable}.
+ * 
+ * @see YoVariable
  */
 public class YoInteger extends YoVariable implements IntegerProvider
 {

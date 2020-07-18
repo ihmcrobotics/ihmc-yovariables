@@ -6,12 +6,10 @@ import us.ihmc.yoVariables.providers.EnumProvider;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
- * Enum implementation of the YoVariable class.
- * <p>
- * All abstract functions of YoVariable will be implemented using enum type for interpretation.
- * Values will be interpreted, compared, and returned as enums rather than any native types.
+ * Enum implementation of a {@code YoVariable}.
  * 
  * @param <E> The enum type used with this variable.
+ * @see YoVariable
  */
 public class YoEnum<E extends Enum<E>> extends YoVariable implements EnumProvider<E>
 {

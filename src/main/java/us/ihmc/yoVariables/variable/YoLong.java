@@ -4,10 +4,9 @@ import us.ihmc.yoVariables.providers.LongProvider;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
- * Long implementation of the YoVariable class.
- * <p>
- * All abstract functions of YoVariable will be implemented using long type for interpretation.
- * Values will be interpreted, compared, and returned as longs rather than other native types.
+ * Long implementation of a {@code YoVariable}.
+ * 
+ * @see YoVariable
  */
 public class YoLong extends YoVariable implements LongProvider
 {

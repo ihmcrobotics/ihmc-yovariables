@@ -4,10 +4,9 @@ import us.ihmc.yoVariables.providers.DoubleProvider;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
- * Double implementation of the YoVariable class.
- * <p>
- * All abstract functions of YoVariable will be implemented using double type for interpretation.
- * Values will be interpreted, compared, and returned as doubles rather than other native types.
+ * Double implementation of a {@code YoVariable}.
+ * 
+ * @see YoVariable
  */
 public class YoDouble extends YoVariable implements DoubleProvider
 {

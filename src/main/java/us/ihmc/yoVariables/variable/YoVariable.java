@@ -3,7 +3,6 @@ package us.ihmc.yoVariables.variable;
 import java.util.ArrayList;
 import java.util.List;
 
-import us.ihmc.yoVariables.dataBuffer.DataBuffer;
 import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.parameters.YoParameter;
 import us.ihmc.yoVariables.registry.NameSpace;
@@ -11,16 +10,21 @@ import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.registry.YoTools;
 
 /**
- * Title: Simulation Construction Set
+ * {@code YoVariable}s provide the base for a framework that allows storing, manipulating, logging,
+ * and visualizing data.
  * <p>
- * Description: Package for Simulating Dynamic Robots and Mechanisms
- * <p>
- * YoVariables provide a simple, convenient mechanism for storing and manipulating robot data. While
- * each essentially contains a double value YoVariables are designed for integration into the SCS
- * GUI. Once registered, a variable will automatically become available to the GUI for graphing,
- * modification and other data manipulation. Historical values of all registered YoVariables are
- * stored in the {@link DataBuffer} which may be exported for later use.
+ * Each {@code YoVariable} can be retrieved through its parent {@code YoRegistry}. When creating a
+ * module processing data such as a controller, all of its {@code YoVariable}s can be retrieved when
+ * registered to a given {@code YoRegistry}, allowing then for instance to collect all the variables
+ * and to publish them on the server such as a client can read the variables.
  * </p>
+ * 
+ * @see YoBoolean
+ * @see YoDouble
+ * @see YoInteger
+ * @see YoLong
+ * @see YoEnum
+ * @see YoParameter
  */
 public abstract class YoVariable
 {
@@ -55,17 +59,20 @@ public abstract class YoVariable
    }
 
    /**
-    * @param registry
+    * Sets the registry for this variable.
+    * 
+    * @param registry the new registry in which this variable is registry. If {@code null}, the
+    *                 variable is detached from its previous registry.
     */
    public void setRegistry(YoRegistry registry)
    {
       if (registry == this.registry)
          return;
 
+      if (this.registry != null)
+         this.registry.removeVariable(this);
       if (registry != null)
          registry.addVariable(this);
-      else if (this.registry != null)
-         this.registry.removeVariable(this);
 
       this.registry = registry;
       fullName = null; // Force to reset the fullName so it is updated on next query.
