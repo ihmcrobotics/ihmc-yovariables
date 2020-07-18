@@ -1,9 +1,7 @@
 package us.ihmc.yoVariables.dataBuffer;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
-import us.ihmc.euclid.tools.EuclidCoreIOTools;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 public class DataBufferEntry implements DataEntry
@@ -18,9 +16,6 @@ public class DataBufferEntry implements DataEntry
 
    private boolean minMaxStale = true;
 
-   private ArrayList<DataEntryChangeListener> changeListeners = new ArrayList<>();
-
-   // private double manualMinScaling = 0.0, manualMaxScaling = 1.0;
    private boolean autoScale = true;
 
    public DataBufferEntry(YoVariable variable, int nPoints)
@@ -47,30 +42,15 @@ public class DataBufferEntry implements DataEntry
       return inverted;
    }
 
-   @Override
-   public void attachDataEntryChangeListener(DataEntryChangeListener listener)
-   {
-      changeListeners.add(listener);
-   }
-
-   @Override
-   public void detachDataEntryChangeListener(DataEntryChangeListener listener)
-   {
-      changeListeners.remove(listener);
-   }
-
-   @Override
-   public void notifyDataEntryChangeListeners(int index)
-   {
-      for (DataEntryChangeListener listener : changeListeners)
-      {
-         listener.notifyOfDataChange(this, index);
-      }
-   }
-
    public int getDataLength()
    {
       return data.length;
+   }
+
+   @Override
+   public double getValueAt(int index)
+   {
+      return data[index];
    }
 
    @Override
@@ -339,8 +319,6 @@ public class DataBufferEntry implements DataEntry
             setMinMaxChanged();
             minMaxStale = true;
          } // reCalcMinMax();
-
-         notifyDataEntryChangeListeners(index);
       }
    }
 
@@ -593,25 +571,5 @@ public class DataBufferEntry implements DataEntry
       }
 
       return ret;
-   }
-
-   private static final String SPACE_STRING = "  ";
-   private static final String DOUBLE_FORMAT = EuclidCoreIOTools.getStringFormat(8, 5);
-
-   @Override
-   public void getVariableNameAndValue(StringBuffer stringBuffer)
-   {
-      getVariableNameAndValueString(stringBuffer, variable.getValueAsDouble());
-   }
-
-   @Override
-   public void getVariableNameAndValueAtIndex(StringBuffer stringBuffer, int index)
-   {
-      getVariableNameAndValueString(stringBuffer, data[index]);
-   }
-
-   private void getVariableNameAndValueString(StringBuffer stringBuffer, double value)
-   {
-      stringBuffer.append(variable.getName()).append(SPACE_STRING).append(variable.getValueAsString(DOUBLE_FORMAT));
    }
 }

@@ -186,6 +186,12 @@ public class YoBoolean extends YoVariable implements BooleanProvider
       return set(Boolean.parseBoolean(valueAsString), notifyListeners);
    }
 
+   @Override
+   public String convertDoubleValueToString(String format, double value)
+   {
+      return Boolean.toString(value >= 0.5 ? true : false);
+   }
+
    /**
     * Assesses if this variable is equal to zero.
     *

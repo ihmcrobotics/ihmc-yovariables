@@ -429,13 +429,10 @@ public class YoEnum<E extends Enum<E>> extends YoVariable implements EnumProvide
    @Override
    public boolean setValueFromDouble(double value, boolean notifyListeners)
    {
-      int index = (int) Math.round(value);
-      index = Math.min(index, getEnumSize() - 1);
-      if (allowNullValue)
-         index = Math.max(index, NULL_VALUE);
-      else
-         index = Math.max(index, 0);
-      return set(index, notifyListeners);
+      int ordinal = (int) Math.round(value);
+      ordinal = Math.min(ordinal, getEnumSize() - 1);
+      ordinal = Math.max(ordinal, allowNullValue ? NULL_VALUE : 0);
+      return set(ordinal, notifyListeners);
    }
 
    /**
@@ -517,6 +514,15 @@ public class YoEnum<E extends Enum<E>> extends YoVariable implements EnumProvide
       }
 
       return false;
+   }
+
+   @Override
+   public String convertDoubleValueToString(String format, double value)
+   {
+      int ordinal = (int) Math.round(value);
+      ordinal = Math.min(ordinal, getEnumSize() - 1);
+      ordinal = Math.max(ordinal, allowNullValue ? NULL_VALUE : 0);
+      return enumValuesAsString[ordinal];
    }
 
    /**

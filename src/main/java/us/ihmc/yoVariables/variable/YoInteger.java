@@ -220,6 +220,12 @@ public class YoInteger extends YoVariable implements IntegerProvider
       return set(Integer.parseInt(valueAsString), notifyListeners);
    }
 
+   @Override
+   public String convertDoubleValueToString(String format, double value)
+   {
+      return Integer.toString((int) value);
+   }
+
    /**
     * Assesses if this variable is equal to zero.
     *

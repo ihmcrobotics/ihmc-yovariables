@@ -228,6 +228,12 @@ public class YoLong extends YoVariable implements LongProvider
       return set(Long.parseLong(valueAsString), notifyListeners);
    }
 
+   @Override
+   public String convertDoubleValueToString(String format, double value)
+   {
+      return Long.toString((long) value);
+   }
+
    /**
     * Assesses if this YoLong is equal to zero.
     *

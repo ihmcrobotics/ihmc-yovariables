@@ -1,6 +1,5 @@
 package us.ihmc.yoVariables.dataBuffer;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,13 +11,10 @@ import us.ihmc.yoVariables.tools.YoTools;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoVariable;
 
-public class DataBuffer implements Serializable, DataBufferCommandsExecutor, ToggleKeyPointModeCommandExecutor, TimeDataHolder, DataEntryHolder
+public class DataBuffer implements DataBufferCommandsExecutor, ToggleKeyPointModeCommandExecutor, TimeDataHolder, DataEntryHolder
 {
    private String timeVariableName = "t";
 
-   public static final int MAX_LENGTH_SHORT_NAME = 20;
-
-   private static final long serialVersionUID = 6736812894819363756L;
    private int inPoint = 0;
 
    private int index = 0;
@@ -880,16 +876,7 @@ public class DataBuffer implements Serializable, DataBufferCommandsExecutor, Tog
       {
          for (int i = 0; i < indexChangedListeners.size(); i++)
          {
-            IndexChangedListener indexChangedListener = indexChangedListeners.get(i);
-
-            if (t != null)
-            {
-               indexChangedListener.notifyOfIndexChange(index);
-            }
-            else
-            {
-               indexChangedListener.notifyOfIndexChange(index);
-            }
+            indexChangedListeners.get(i).notifyOfIndexChange(index);
          }
       }
 

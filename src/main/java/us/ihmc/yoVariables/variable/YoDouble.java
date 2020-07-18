@@ -250,10 +250,7 @@ public class YoDouble extends YoVariable implements DoubleProvider
    @Override
    public String getValueAsString(String format)
    {
-      if (format == null)
-         return Double.toString(value);
-      else
-         return String.format(format, value);
+      return convertDoubleValueToString(format, value);
    }
 
    /**
@@ -264,6 +261,15 @@ public class YoDouble extends YoVariable implements DoubleProvider
    public boolean parseValue(String valueAsString, boolean notifyListeners)
    {
       return set(Double.parseDouble(valueAsString), notifyListeners);
+   }
+
+   @Override
+   public String convertDoubleValueToString(String format, double value)
+   {
+      if (format == null)
+         return Double.toString(value);
+      else
+         return String.format(format, value);
    }
 
    /**

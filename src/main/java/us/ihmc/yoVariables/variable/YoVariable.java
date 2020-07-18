@@ -424,6 +424,16 @@ public abstract class YoVariable
    public abstract boolean parseValue(String valueAsString, boolean notifyListeners);
 
    /**
+    * Convenience method for interpreting the given double value and converting it to a {@code String}
+    * representation according to this variable implementation.
+    * 
+    * @param format the format to use for a {@code YoDouble}.
+    * @param value  the value to be interpreted.
+    * @return the {@code String} representation of the value after interpretation.
+    */
+   public abstract String convertDoubleValueToString(String format, double value);
+
+   /**
     * Assesses if this variable's value is equivalent to zero.
     * <p>
     * Abstract; implemented by each extension of YoVariable to result in different interpretation.

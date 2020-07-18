@@ -4,49 +4,47 @@ import us.ihmc.yoVariables.variable.YoVariable;
 
 public interface DataEntry
 {
-   public abstract String getVariableName();
+   YoVariable getVariable();
 
-   public abstract String getFullVariableNameWithNameSpace();
+   default String getVariableName()
+   {
+      return getVariable().getName();
+   }
 
-   public abstract void getVariableNameAndValue(StringBuffer stringBuffer);
+   default String getFullVariableNameWithNameSpace()
+   {
+      return getVariable().getFullNameString();
+   }
 
-   public abstract void getVariableNameAndValueAtIndex(StringBuffer stringBuffer, int index);
+   double getValueAt(int index);
 
-   public abstract double[] getData();
+   double[] getData();
 
-   public abstract double[] getData(int startIndex, int endIndex);
+   double[] getData(int startIndex, int endIndex);
+   
+   double getMax();
+   
+   double getMin();
+   
+   double getMax(int leftIndex, int rightIndex, int leftPlotIndex, int rightPlotIndex);
+   
+   double getMin(int leftIndex, int rightIndex, int leftPlotIndex, int rightPlotIndex);
 
-   public abstract double getMax();
+   boolean isAutoScaleEnabled();
 
-   public abstract double getMin();
+   double getManualMinScaling();
 
-   public abstract boolean isAutoScaleEnabled();
+   double getManualMaxScaling();
 
-   public abstract double getManualMinScaling();
+   void resetMinMaxChanged();
 
-   public abstract double getManualMaxScaling();
+   boolean hasMinMaxChanged();
 
-   public abstract void resetMinMaxChanged();
+   void setManualScaling(double newMinVal, double newMaxVal);
 
-   public abstract boolean hasMinMaxChanged();
+   void enableAutoScale(boolean b);
 
-   public abstract double getMax(int leftIndex, int rightIndex, int leftPlotIndex, int rightPlotIndex);
+   void setInverted(boolean selected);
 
-   public abstract double getMin(int leftIndex, int rightIndex, int leftPlotIndex, int rightPlotIndex);
-
-   public abstract void setManualScaling(double newMinVal, double newMaxVal);
-
-   public abstract void enableAutoScale(boolean b);
-
-   public abstract YoVariable getVariable();
-
-   public abstract void setInverted(boolean selected);
-
-   public abstract boolean getInverted();
-
-   public abstract void attachDataEntryChangeListener(DataEntryChangeListener listener);
-
-   public abstract void detachDataEntryChangeListener(DataEntryChangeListener listener);
-
-   public abstract void notifyDataEntryChangeListeners(int index);
+   boolean getInverted();
 }
