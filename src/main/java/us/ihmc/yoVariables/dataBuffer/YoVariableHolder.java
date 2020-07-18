@@ -4,7 +4,7 @@ import java.util.List;
 
 import us.ihmc.yoVariables.exceptions.IllegalNameException;
 import us.ihmc.yoVariables.registry.NameSpace;
-import us.ihmc.yoVariables.registry.YoTools;
+import us.ihmc.yoVariables.tools.YoTools;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 public interface YoVariableHolder

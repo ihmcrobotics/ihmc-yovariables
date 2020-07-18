@@ -1,4 +1,4 @@
-package us.ihmc.yoVariables.util;
+package us.ihmc.yoVariables.tools;
 
 import org.apache.commons.lang3.StringUtils;
 

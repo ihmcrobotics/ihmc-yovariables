@@ -1,4 +1,7 @@
-package us.ihmc.yoVariables.registry;
+package us.ihmc.yoVariables.tools;
+
+import us.ihmc.yoVariables.registry.NameSpace;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoFactories
 {

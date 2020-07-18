@@ -22,7 +22,7 @@ import us.ihmc.yoVariables.parameters.xml.Parameter;
 import us.ihmc.yoVariables.parameters.xml.Parameters;
 import us.ihmc.yoVariables.parameters.xml.Registry;
 import us.ihmc.yoVariables.registry.NameSpace;
-import us.ihmc.yoVariables.registry.YoTools;
+import us.ihmc.yoVariables.tools.YoTools;
 
 public class XmlParameterWriter extends AbstractParameterWriter
 {

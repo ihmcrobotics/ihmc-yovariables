@@ -7,7 +7,7 @@ import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.parameters.YoParameter;
 import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoRegistry;
-import us.ihmc.yoVariables.registry.YoTools;
+import us.ihmc.yoVariables.tools.YoTools;
 
 /**
  * {@code YoVariable}s provide the base for a framework that allows storing, manipulating, logging,

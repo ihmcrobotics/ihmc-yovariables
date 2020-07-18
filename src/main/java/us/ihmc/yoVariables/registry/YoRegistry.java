@@ -13,6 +13,7 @@ import us.ihmc.yoVariables.exceptions.NameCollisionException;
 import us.ihmc.yoVariables.listener.YoRegistryChangedListener;
 import us.ihmc.yoVariables.listener.YoRegistryChangedListener.Change;
 import us.ihmc.yoVariables.parameters.YoParameter;
+import us.ihmc.yoVariables.tools.YoTools;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 /**

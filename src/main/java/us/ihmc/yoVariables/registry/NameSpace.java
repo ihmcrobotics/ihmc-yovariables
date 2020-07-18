@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import us.ihmc.yoVariables.exceptions.IllegalNameException;
+import us.ihmc.yoVariables.tools.YoTools;
 
 /**
  * Representation of a namespace that is composed of sub-names where typically each sub-name is the

@@ -1,4 +1,4 @@
-package us.ihmc.yoVariables.registry;
+package us.ihmc.yoVariables.tools;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -20,6 +20,8 @@ import us.ihmc.yoVariables.parameters.EnumParameter;
 import us.ihmc.yoVariables.parameters.IntegerParameter;
 import us.ihmc.yoVariables.parameters.LongParameter;
 import us.ihmc.yoVariables.parameters.YoParameter;
+import us.ihmc.yoVariables.registry.NameSpace;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoBoolean;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoEnum;

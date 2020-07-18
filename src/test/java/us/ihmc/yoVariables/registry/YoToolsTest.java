@@ -7,6 +7,7 @@ import java.io.PrintStream;
 
 import org.junit.jupiter.api.Test;
 
+import us.ihmc.yoVariables.tools.YoTools;
 import us.ihmc.yoVariables.variable.YoDouble;
 
 public class YoToolsTest
