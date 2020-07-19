@@ -5,13 +5,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import us.ihmc.yoVariables.listener.RewoundListener;
+import us.ihmc.yoVariables.registry.NameSpace;
+import us.ihmc.yoVariables.registry.YoVariableHolder;
 import us.ihmc.yoVariables.registry.YoVariableList;
 import us.ihmc.yoVariables.tools.YoSearchTools;
 import us.ihmc.yoVariables.tools.YoTools;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoVariable;
 
-public class DataBuffer implements DataBufferCommandsExecutor, ToggleKeyPointModeCommandExecutor, TimeDataHolder, DataEntryHolder
+public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor, ToggleKeyPointModeCommandExecutor, TimeDataHolder, DataEntryHolder
 {
    private String timeVariableName = "t";
 
@@ -1080,6 +1082,30 @@ public class DataBuffer implements DataBufferCommandsExecutor, ToggleKeyPointMod
       }
 
       return false;
+   }
+
+   @Override
+   public YoVariable findVariable(String nameSpaceEnding, String name)
+   {
+      return yoVariableList.findVariable(nameSpaceEnding, name);
+   }
+
+   @Override
+   public List<YoVariable> findVariables(String nameSpaceEnding, String name)
+   {
+      return yoVariableList.findVariables(nameSpaceEnding, name);
+   }
+   
+   @Override
+   public List<YoVariable> findVariables(NameSpace nameSpace)
+   {
+      return yoVariableList.findVariables(nameSpace);
+   }
+
+   @Override
+   public boolean hasUniqueVariable(String nameSpaceEnding, String name)
+   {
+      return yoVariableList.hasUniqueVariable(nameSpaceEnding, name);
    }
 
    public YoVariableList getYoVariableList()
