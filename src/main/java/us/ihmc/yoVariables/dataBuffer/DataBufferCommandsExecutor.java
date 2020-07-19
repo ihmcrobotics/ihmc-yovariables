@@ -6,11 +6,7 @@ public interface DataBufferCommandsExecutor extends GotoInPointCommandExecutor, 
 
    public abstract void setIndex(int index);
 
-   public abstract void setIndexButDoNotNotifySimulationRewoundListeners(int index);
-
    public abstract boolean tick(int ticks);
-
-   public abstract boolean tickButDoNotNotifySimulationRewoundListeners(int ticks);
 
    public abstract int getIndex();
 

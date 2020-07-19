@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import us.ihmc.yoVariables.listener.RewoundListener;
 import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoVariableHolder;
 import us.ihmc.yoVariables.tools.YoTools;
@@ -23,15 +22,13 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    private int bufferSize;
    private int maxBufferSize = 16384;
 
-   private List<RewoundListener> simulationRewoundListeners = null;
    private boolean wrapBuffer = false; // Default to Expand, not Wrap!  true;
 
    private final ArrayList<DataBufferEntry> entries = new ArrayList<>();
    private final HashMap<String, List<DataBufferEntry>> simpleNameToEntriesMap = new HashMap<>();
 
-   public final KeyPointsHandler keyPointsHandler = new KeyPointsHandler();
-   private List<DataBufferListener> dataBufferListeners = new ArrayList<>();
-   private List<IndexChangedListener> indexChangedListeners;
+   private final KeyPointsHandler keyPointsHandler = new KeyPointsHandler();
+   private final List<IndexChangedListener> indexChangedListeners = new ArrayList<>();
 
    private boolean lockIndex = false;
 
@@ -56,7 +53,6 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
 
    public void clear()
    {
-      dataBufferListeners.clear();
       entries.clear();
       index = -1;
    }
@@ -119,11 +115,6 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       {
          this.addVariable(variables.get(i));
       }
-   }
-
-   public void addDataBufferListener(DataBufferListener dataBufferListener)
-   {
-      dataBufferListeners.add(dataBufferListener);
    }
 
    @Override
@@ -494,17 +485,6 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    @Override
    public void setIndex(int index)
    {
-      setIndex(index, true);
-   }
-
-   @Override
-   public void setIndexButDoNotNotifySimulationRewoundListeners(int index)
-   {
-      this.setIndex(index, false);
-   }
-
-   private void setIndex(int index, boolean notifySimulationRewoundListeners)
-   {
       if (lockIndex)
          return;
 
@@ -523,66 +503,22 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       setYoVariableValuesToDataAtIndex();
 
       notifyIndexChangedListeners();
-
-      // @todo: JEP 100514: Note that notifying the simulationRewoundListeners will happen in the GUI thread, not the simulation/control thread.
-      // So there may be thread timing issues here. We may need to do some sort of synchronization and/or change it so that the
-      // simulationRewoundListeners are notified in the simulation/control thread.
-      if (notifySimulationRewoundListeners)
-         notifyRewindListeners();
-   }
-
-   public void attachSimulationRewoundListeners(List<RewoundListener> simulationRewoundListeners)
-   {
-      for (RewoundListener simulationRewoundListener : simulationRewoundListeners)
-      {
-         attachSimulationRewoundListener(simulationRewoundListener);
-      }
-   }
-
-   public void attachSimulationRewoundListener(RewoundListener simulationRewoundListener)
-   {
-      if (simulationRewoundListeners == null)
-      {
-         simulationRewoundListeners = new ArrayList<>();
-      }
-
-      simulationRewoundListeners.add(simulationRewoundListener);
    }
 
    public void attachIndexChangedListener(IndexChangedListener indexChangedListener)
    {
-      if (indexChangedListeners == null)
-      {
-         indexChangedListeners = new ArrayList<>();
-      }
-
       indexChangedListeners.add(indexChangedListener);
    }
 
-   public void detachIndexChangedListener(IndexChangedListener indexChangedListener)
+   public boolean detachIndexChangedListener(IndexChangedListener indexChangedListener)
    {
-      if (indexChangedListeners != null)
-      {
-         indexChangedListeners.add(indexChangedListener);
-      }
+      return indexChangedListeners.remove(indexChangedListener);
    }
 
    @Override
    public int getIndex()
    {
       return index;
-   }
-
-   @Override
-   public boolean tick(int ticks)
-   {
-      return tick(ticks, true);
-   }
-
-   @Override
-   public boolean tickButDoNotNotifySimulationRewoundListeners(int ticks)
-   {
-      return tick(ticks, false);
    }
 
    /**
@@ -593,18 +529,19 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
     * @param n Number of steps to shift the index, this value can be negative.
     * @return Indicates whether or not the index was forced to one of the ends.
     */
-   private boolean tick(int n, boolean notifySimulationRewoundListeners)
+   @Override
+   public boolean tick(int ticks)
    {
       if (lockIndex)
          return false;
 
-      int newIndex = index + n;
+      int newIndex = index + ticks;
 
       boolean rolledOver = !isIndexBetweenInAndOutPoint(newIndex);
 
       if (rolledOver)
       {
-         if (n >= 0)
+         if (ticks >= 0)
          {
             newIndex = inPoint;
          }
@@ -614,7 +551,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
          }
       }
 
-      setIndex(newIndex, notifySimulationRewoundListeners);
+      setIndex(newIndex);
 
       return rolledOver;
    }
@@ -703,48 +640,11 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       notifyIndexChangedListeners();
    }
 
-   public void notifyRewindListeners()
-   {
-      if (simulationRewoundListeners != null)
-      {
-         for (int i = 0; i < simulationRewoundListeners.size(); i++)
-         {
-            RewoundListener simulationRewoundListener = simulationRewoundListeners.get(i);
-
-            simulationRewoundListener.notifyOfRewind();
-         }
-      }
-
-      notifyDataBufferListeners();
-   }
-
    private void notifyIndexChangedListeners()
    {
-      if (indexChangedListeners != null)
+      for (int i = 0; i < indexChangedListeners.size(); i++)
       {
-         for (int i = 0; i < indexChangedListeners.size(); i++)
-         {
-            indexChangedListeners.get(i).notifyOfIndexChange(index);
-         }
-      }
-
-      notifyDataBufferListeners();
-   }
-
-   private void notifyDataBufferListeners()
-   {
-      for (int i = 0; i < dataBufferListeners.size(); i++)
-      {
-         DataBufferListener dataBufferListener = dataBufferListeners.get(i);
-         YoVariable[] yoVariables = dataBufferListener.getVariablesOfInterest(this);
-         double[] values = new double[yoVariables.length];
-
-         for (int j = 0; j < yoVariables.length; j++)
-         {
-            values[j] = yoVariables[j].getValueAsDouble();
-         }
-
-         dataBufferListener.dataBufferUpdate(values);
+         indexChangedListeners.get(i).notifyOfIndexChange(index);
       }
    }
 

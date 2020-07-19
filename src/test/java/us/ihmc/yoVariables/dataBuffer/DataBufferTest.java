@@ -14,10 +14,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import us.ihmc.yoVariables.listener.RewoundListener;
-import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoRegistry;
-import us.ihmc.yoVariables.registry.YoVariableHolder;
 import us.ihmc.yoVariables.tools.YoSearchTools;
 import us.ihmc.yoVariables.variable.YoBoolean;
 import us.ihmc.yoVariables.variable.YoDouble;
@@ -838,34 +835,6 @@ public class DataBufferTest
    }
 
    @Test // timeout = 30000
-   public void testAttachSimulationRewoundListeners()
-   {
-      final boolean[] listenerNotified = {false, false, false};
-
-      ArrayList<RewoundListener> simulationRewoundListeners = new ArrayList<>();
-      simulationRewoundListeners.add(() -> listenerNotified[0] = true);
-      simulationRewoundListeners.add(() -> listenerNotified[1] = true);
-
-      dataBuffer.attachSimulationRewoundListeners(simulationRewoundListeners);
-
-      assertFalse(listenerNotified[0]);
-      assertFalse(listenerNotified[1]);
-      assertFalse(listenerNotified[2]);
-
-      dataBuffer.tickButDoNotNotifySimulationRewoundListeners(1);
-
-      assertFalse(listenerNotified[0]);
-      assertFalse(listenerNotified[1]);
-      assertFalse(listenerNotified[2]);
-
-      dataBuffer.notifyRewindListeners();
-
-      assertTrue(listenerNotified[0]);
-      assertTrue(listenerNotified[1]);
-      assertFalse(listenerNotified[2]);
-   }
-
-   @Test // timeout = 30000
    public void testAttachIndexChangedListener()
    {
       final boolean[] listenerNotified = {false, false};
@@ -881,52 +850,6 @@ public class DataBufferTest
 
       assertTrue(listenerNotified[0]);
       assertFalse(listenerNotified[1]);
-   }
-
-   @Test // timeout = 30000
-   public void testNotifyDataBufferListeners()
-   {
-      YoRegistry registryOfInterest = new YoRegistry("registryOfInterest");
-      NameSpace registryOfInterestNameSpace = registryOfInterest.getNameSpace();
-
-      int NUMBER_OF_VARIABLES_TO_ADD = 30;
-      double VALUE_TO_SET = 1.0;
-
-      for (int i = 0; i < NUMBER_OF_VARIABLES_TO_ADD; i++)
-      {
-         YoDouble yoDouble = new YoDouble("yoDouble_" + i, registryOfInterest);
-         yoDouble.set(VALUE_TO_SET);
-         dataBuffer.addVariable(yoDouble);
-      }
-
-      DataBufferListener dataBufferListener = new DataBufferListener()
-      {
-         @Override
-         public YoDouble[] getVariablesOfInterest(YoVariableHolder yoVariableHolder)
-         {
-            List<YoVariable> variables = yoVariableHolder.findVariables(registryOfInterestNameSpace);
-            YoDouble[] ret = new YoDouble[variables.size()];
-            for (int i = 0; i < ret.length; i++)
-            {
-               ret[i] = (YoDouble) variables.get(i);
-            }
-
-            return ret;
-         }
-
-         @Override
-         public void dataBufferUpdate(double[] values)
-         {
-            assertTrue(values.length == NUMBER_OF_VARIABLES_TO_ADD);
-            for (int i = 0; i < values.length; i++)
-            {
-               assertTrue(values[i] == VALUE_TO_SET);
-            }
-         }
-      };
-
-      dataBuffer.addDataBufferListener(dataBufferListener);
-      dataBuffer.notifyRewindListeners();
    }
 
    @Test // timeout = 30000
