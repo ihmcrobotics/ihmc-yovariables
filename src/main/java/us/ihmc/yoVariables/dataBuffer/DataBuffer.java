@@ -2,7 +2,10 @@ package us.ihmc.yoVariables.dataBuffer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import us.ihmc.yoVariables.listener.RewoundListener;
 import us.ihmc.yoVariables.registry.NameSpace;
@@ -10,7 +13,6 @@ import us.ihmc.yoVariables.registry.YoVariableHolder;
 import us.ihmc.yoVariables.registry.YoVariableList;
 import us.ihmc.yoVariables.tools.YoSearchTools;
 import us.ihmc.yoVariables.tools.YoTools;
-import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor, ToggleKeyPointModeCommandExecutor, TimeDataHolder, DataEntryHolder
@@ -18,32 +20,29 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    private String timeVariableName = "t";
 
    private int inPoint = 0;
-
-   private int index = 0;
-   private int maxBufferSize = 16384;
    private int outPoint = 0;
+   private int index = 0;
+   private int bufferSize;
+   private int maxBufferSize = 16384;
+
    private List<RewoundListener> simulationRewoundListeners = null;
-   private YoDouble t = null;
    private boolean wrapBuffer = false; // Default to Expand, not Wrap!  true;
+
+   private final ArrayList<DataBufferEntry> entries = new ArrayList<>();
+   private final HashMap<String, List<DataBufferEntry>> simpleNameToEntriesMap = new HashMap<>();
 
    public KeyPoints keyPoints = new KeyPoints();
    private List<DataBufferListener> dataBufferListeners = new ArrayList<>();
-   private int bufferSize;
-   private ArrayList<DataBufferEntry> entries;
    private List<IndexChangedListener> indexChangedListeners;
 
    public List<ToggleKeyPointModeCommandListener> toggleKeyPointModeCommandListeners = new ArrayList<>();
 
    private boolean clearing = false;
 
-   private boolean safeToManuallyChangeIndex = true;
-
-   private final YoVariableList yoVariableList = new YoVariableList(getClass().getSimpleName());
+   private boolean lockIndex = false;
 
    public DataBuffer(int bufferSize)
    {
-      entries = new ArrayList<>();
-
       this.bufferSize = bufferSize;
    }
 
@@ -51,22 +50,18 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    public void closeAndDispose()
    {
       dataBufferListeners.clear();
-      dataBufferListeners = null;
-
       entries.clear();
-      entries = null;
-
       index = -1;
    }
 
-   public void setSafeToChangeIndex(boolean safe)
+   public void setLockIndex(boolean lock)
    {
-      safeToManuallyChangeIndex = safe;
+      lockIndex = lock;
    }
 
-   public boolean isSafeToChangeIndex()
+   public boolean isIndexLocked()
    {
-      return safeToManuallyChangeIndex;
+      return lockIndex;
    }
 
    public int getBufferSize()
@@ -87,78 +82,41 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    public void addEntry(DataBufferEntry entry)
    {
       if (entry.getDataLength() != bufferSize)
-         throw new RuntimeException("entry.getDataLength() != this.bufferSize");
+         throw new IllegalArgumentException("The new entry size (" + entry.getDataLength() + ") does not match the buffer size (" + bufferSize + ").");
 
       entries.add(entry);
-   }
 
-   public DataBufferEntry addVariable(YoVariable newVariable, int nPoints)
-   {
-      yoVariableList.addVariable(newVariable);
-
-      DataBufferEntry entry = new DataBufferEntry(newVariable, nPoints);
-      addEntry(entry);
-
-      if (newVariable.getName().equals("t"))
+      String variableName = entry.getVariable().getName().toLowerCase();
+      List<DataBufferEntry> entryList = simpleNameToEntriesMap.get(variableName);
+      if (entryList == null)
       {
-         t = (YoDouble) newVariable;
+         entryList = new ArrayList<>();
+         simpleNameToEntriesMap.put(variableName, entryList);
       }
-
-      return entry;
+      entryList.add(entry);
    }
 
-   public void addVariable(YoVariable newVariable)
+   public DataBufferEntry addVariable(YoVariable variable)
    {
-      addVariable(newVariable, bufferSize);
+      DataBufferEntry entry = new DataBufferEntry(variable, bufferSize);
+      addEntry(entry);
+      return entry;
    }
 
    public void addVariables(List<? extends YoVariable> variables)
    {
-      entries.ensureCapacity(entries.size() + variables.size()); // do this first so that 'entries' will only have to grow once.
+      // do this first so that 'entries' will only have to grow once.
+      entries.ensureCapacity(entries.size() + variables.size());
 
       for (int i = 0; i < variables.size(); i++)
       {
-         YoVariable v = variables.get(i);
-
-         //       System.out.println("Adding YoVariable: " + v);
-
-         this.addVariable(v);
+         this.addVariable(variables.get(i));
       }
    }
 
    public void addDataBufferListener(DataBufferListener dataBufferListener)
    {
       dataBufferListeners.add(dataBufferListener);
-   }
-
-   public List<YoVariable> getVariablesThatContain(String searchString, boolean caseSensitive, List<YoVariable> currentlyMatched)
-   {
-      ArrayList<YoVariable> ret = null;
-
-      if (currentlyMatched != null)
-      {
-         if (!caseSensitive)
-         {
-            searchString = searchString.toLowerCase();
-         }
-
-         for (int i = 0; i < currentlyMatched.size(); i++)
-         {
-            YoVariable entry = currentlyMatched.get(i);
-
-            if (entry.getName().toLowerCase().contains(searchString))
-            {
-               if (ret == null)
-               {
-                  ret = new ArrayList<>();
-               }
-
-               ret.add(entry);
-            }
-         }
-      }
-
-      return ret;
    }
 
    public List<YoVariable> getVariablesThatStartWith(String searchString)
@@ -649,30 +607,30 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
 
    private void setIndex(int index, boolean notifySimulationRewoundListeners)
    {
-      if (safeToManuallyChangeIndex)
+      if (lockIndex)
+         return;
+
+      this.index = index;
+
+      // if (this.index > this.getMaxIndex()) this.index = 0;
+      if (this.index >= bufferSize)
       {
-         this.index = index;
-
-         // if (this.index > this.getMaxIndex()) this.index = 0;
-         if (this.index >= bufferSize)
-         {
-            this.index = 0;
-         }
-         else if (this.index < 0)
-         {
-            this.index = bufferSize - 1; // )0;
-         }
-
-         setYoVariableValuesToDataAtIndex();
-
-         notifyIndexChangedListeners();
-
-         // @todo: JEP 100514: Note that notifying the simulationRewoundListeners will happen in the GUI thread, not the simulation/control thread.
-         // So there may be thread timing issues here. We may need to do some sort of synchronization and/or change it so that the
-         // simulationRewoundListeners are notified in the simulation/control thread.
-         if (notifySimulationRewoundListeners)
-            notifyRewindListeners();
+         this.index = 0;
       }
+      else if (this.index < 0)
+      {
+         this.index = bufferSize - 1; // )0;
+      }
+
+      setYoVariableValuesToDataAtIndex();
+
+      notifyIndexChangedListeners();
+
+      // @todo: JEP 100514: Note that notifying the simulationRewoundListeners will happen in the GUI thread, not the simulation/control thread.
+      // So there may be thread timing issues here. We may need to do some sort of synchronization and/or change it so that the
+      // simulationRewoundListeners are notified in the simulation/control thread.
+      if (notifySimulationRewoundListeners)
+         notifyRewindListeners();
    }
 
    public void attachSimulationRewoundListeners(List<RewoundListener> simulationRewoundListeners)
@@ -739,30 +697,28 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
     */
    private boolean tick(int n, boolean notifySimulationRewoundListeners)
    {
-      if (safeToManuallyChangeIndex)
+      if (lockIndex)
+         return false;
+
+      int newIndex = index + n;
+
+      boolean rolledOver = !isIndexBetweenInAndOutPoint(newIndex);
+
+      if (rolledOver)
       {
-         int newIndex = index + n;
-
-         boolean rolledOver = !isIndexBetweenInAndOutPoint(newIndex);
-
-         if (rolledOver)
+         if (n >= 0)
          {
-            if (n >= 0)
-            {
-               newIndex = inPoint;
-            }
-            else
-            {
-               newIndex = outPoint;
-            }
+            newIndex = inPoint;
          }
-
-         setIndex(newIndex, notifySimulationRewoundListeners);
-
-         return rolledOver;
+         else
+         {
+            newIndex = outPoint;
+         }
       }
 
-      return false;
+      setIndex(newIndex, notifySimulationRewoundListeners);
+
+      return rolledOver;
    }
 
    public boolean updateAndTick()
@@ -890,7 +846,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       for (int i = 0; i < dataBufferListeners.size(); i++)
       {
          DataBufferListener dataBufferListener = dataBufferListeners.get(i);
-         YoVariable[] yoVariables = dataBufferListener.getVariablesOfInterest(yoVariableList);
+         YoVariable[] yoVariables = dataBufferListener.getVariablesOfInterest(this);
          double[] values = new double[yoVariables.length];
 
          for (int j = 0; j < yoVariables.length; j++)
@@ -1087,29 +1043,115 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    @Override
    public YoVariable findVariable(String nameSpaceEnding, String name)
    {
-      return yoVariableList.findVariable(nameSpaceEnding, name);
+      DataBufferEntry entry = findVariableEntry(nameSpaceEnding, name);
+      return entry == null ? null : entry.getVariable();
+   }
+
+   public DataBufferEntry findVariableEntry(String nameSpaceEnding, String name)
+   {
+      YoTools.checkNameDoesNotContainSeparator(name);
+      List<DataBufferEntry> entryList = simpleNameToEntriesMap.get(name.toLowerCase());
+
+      if (entryList == null || entryList.isEmpty())
+         return null;
+
+      if (nameSpaceEnding == null)
+      {
+         return entryList.get(0);
+      }
+      else
+      {
+         for (int i = 0; i < entryList.size(); i++)
+         {
+            DataBufferEntry candidate = entryList.get(i);
+
+            if (candidate.getVariable().getNameSpace().endsWith(nameSpaceEnding, true))
+               return candidate;
+         }
+      }
+
+      return null;
    }
 
    @Override
    public List<YoVariable> findVariables(String nameSpaceEnding, String name)
    {
-      return yoVariableList.findVariables(nameSpaceEnding, name);
+      return findVariableEntries(nameSpaceEnding, name).stream().map(DataBufferEntry::getVariable).collect(Collectors.toList());
    }
-   
+
+   public List<DataBufferEntry> findVariableEntries(String nameSpaceEnding, String name)
+   {
+      YoTools.checkNameDoesNotContainSeparator(name);
+      List<DataBufferEntry> entryList = simpleNameToEntriesMap.get(name.toLowerCase());
+
+      if (entryList == null || entryList.isEmpty())
+         return Collections.emptyList();
+
+      List<DataBufferEntry> result = new ArrayList<>();
+
+      if (nameSpaceEnding == null)
+      {
+         result.addAll(entryList);
+      }
+      else
+      {
+         for (int i = 0; i < entryList.size(); i++)
+         {
+            DataBufferEntry candidate = entryList.get(i);
+
+            if (candidate.getVariable().getNameSpace().endsWith(nameSpaceEnding, true))
+               result.add(candidate);
+         }
+      }
+
+      return result;
+   }
+
    @Override
    public List<YoVariable> findVariables(NameSpace nameSpace)
    {
-      return yoVariableList.findVariables(nameSpace);
+      return findVariableEntries(nameSpace).stream().map(DataBufferEntry::getVariable).collect(Collectors.toList());
+   }
+
+   public List<DataBufferEntry> findVariableEntries(NameSpace nameSpace)
+   {
+      List<DataBufferEntry> result = new ArrayList<>();
+
+      for (DataBufferEntry entry : entries)
+      {
+         if (entry.getVariable().getNameSpace().equals(nameSpace))
+         {
+            result.add(entry);
+         }
+      }
+
+      return result;
    }
 
    @Override
    public boolean hasUniqueVariable(String nameSpaceEnding, String name)
    {
-      return yoVariableList.hasUniqueVariable(nameSpaceEnding, name);
+      YoTools.checkNameDoesNotContainSeparator(name);
+      return countNumberOfEntries(nameSpaceEnding, name) == 1;
    }
 
-   public YoVariableList getYoVariableList()
+   private int countNumberOfEntries(String parentNameSpace, String name)
    {
-      return yoVariableList;
+      List<DataBufferEntry> entryList = simpleNameToEntriesMap.get(name.toLowerCase());
+
+      if (entryList == null || entryList.isEmpty())
+         return 0;
+
+      if (parentNameSpace == null)
+         return entryList.size();
+
+      int count = 0;
+
+      for (int i = 0; i < entryList.size(); i++)
+      {
+         if (entryList.get(i).getVariable().getNameSpace().endsWith(parentNameSpace, true))
+            count++;
+      }
+      return count;
    }
 }

@@ -130,10 +130,10 @@ public class DataBufferTest
    @Test // timeout = 300000
    public void testAddNewEntry()
    {
-      dataBuffer.addVariable(yoDouble, testBufferSize);
-      dataBuffer.addVariable(yoBoolean, testBufferSize);
-      dataBuffer.addVariable(yoInteger, testBufferSize);
-      dataBuffer.addVariable(yoEnum, testBufferSize);
+      dataBuffer.addVariable(yoDouble);
+      dataBuffer.addVariable(yoBoolean);
+      dataBuffer.addVariable(yoInteger);
+      dataBuffer.addVariable(yoEnum);
 
       DataBufferEntry doubleDataBufferEntryTest = new DataBufferEntry(yoDouble, testBufferSize);
       DataBufferEntry booleanDataBufferEntryTest = new DataBufferEntry(yoBoolean, testBufferSize);
@@ -176,47 +176,6 @@ public class DataBufferTest
       assertTrue(yoBoolean == dataBuffer.getEntry(yoBoolean).getVariable());
       assertTrue(yoInteger == dataBuffer.getEntry(yoInteger).getVariable());
       assertTrue(yoEnum == dataBuffer.getEntry(yoEnum).getVariable());
-
-   }
-
-   //add dataBuffer listener?
-
-   @Test // timeout = 300000
-   public void testGetVariablesThatContain()
-   {
-      YoDouble yoVariable123456789 = new YoDouble("123456789", registry);
-      YoDouble yoVariable12345678 = new YoDouble("12345678", registry);
-      YoDouble yoVariable1234567 = new YoDouble("1234567", registry);
-      YoDouble yoVariable123456 = new YoDouble("123456", registry);
-      YoDouble yoVariable12345 = new YoDouble("12345", registry);
-      YoDouble yoVariable1234 = new YoDouble("1234", registry);
-      YoDouble yoVariable123 = new YoDouble("123", registry);
-      YoDouble yoVariable12 = new YoDouble("12", registry);
-      YoDouble yoVariable1 = new YoDouble("1", registry);
-
-      ArrayList<YoVariable> currentlyMatched = new ArrayList<>();
-
-      currentlyMatched.add(yoVariable123456789);
-      currentlyMatched.add(yoVariable12345678);
-      currentlyMatched.add(yoVariable1234567);
-      currentlyMatched.add(yoVariable123456);
-      currentlyMatched.add(yoVariable12345);
-      currentlyMatched.add(yoVariable1234);
-      currentlyMatched.add(yoVariable123);
-      currentlyMatched.add(yoVariable12);
-      currentlyMatched.add(yoVariable1);
-
-      assertTrue(1 == dataBuffer.getVariablesThatContain("123456789", true, currentlyMatched).size());
-      assertTrue(2 == dataBuffer.getVariablesThatContain("12345678", true, currentlyMatched).size());
-      assertTrue(3 == dataBuffer.getVariablesThatContain("1234567", true, currentlyMatched).size());
-      assertTrue(4 == dataBuffer.getVariablesThatContain("123456", true, currentlyMatched).size());
-      assertTrue(5 == dataBuffer.getVariablesThatContain("12345", true, currentlyMatched).size());
-      assertTrue(6 == dataBuffer.getVariablesThatContain("1234", true, currentlyMatched).size());
-      assertTrue(7 == dataBuffer.getVariablesThatContain("123", true, currentlyMatched).size());
-      assertTrue(8 == dataBuffer.getVariablesThatContain("12", true, currentlyMatched).size());
-      assertTrue(9 == dataBuffer.getVariablesThatContain("1", true, currentlyMatched).size());
-      assertTrue(null == dataBuffer.getVariablesThatContain("1234567890", true, currentlyMatched));
-      assertTrue(null == dataBuffer.getVariablesThatContain("987654321", true, currentlyMatched));
 
    }
 
@@ -267,10 +226,10 @@ public class DataBufferTest
    @Test // timeout = 300000
    public void testGetVariables()
    {
-      dataBuffer.addVariable(yoDouble, testBufferSize);
-      dataBuffer.addVariable(yoBoolean, testBufferSize);
-      dataBuffer.addVariable(yoInteger, testBufferSize);
-      dataBuffer.addVariable(yoEnum, testBufferSize);
+      dataBuffer.addVariable(yoDouble);
+      dataBuffer.addVariable(yoBoolean);
+      dataBuffer.addVariable(yoInteger);
+      dataBuffer.addVariable(yoEnum);
 
       ArrayList<YoVariable> expectedArrayOfVariables = new ArrayList<>();
       expectedArrayOfVariables.add(yoDouble);
@@ -451,13 +410,13 @@ public class DataBufferTest
    @Test // timeout = 300000
    public void testSetSafeToChangeIndex() //Luke Morris
    {
-      boolean isSafe = dataBuffer.isSafeToChangeIndex();
+      boolean isSafe = dataBuffer.isIndexLocked();
       assertTrue(isSafe);
-      dataBuffer.setSafeToChangeIndex(false);
-      boolean isNowSafe = dataBuffer.isSafeToChangeIndex();
+      dataBuffer.setLockIndex(false);
+      boolean isNowSafe = dataBuffer.isIndexLocked();
       assertFalse(isNowSafe);
-      dataBuffer.setSafeToChangeIndex(true);
-      boolean isFinallySafe = dataBuffer.isSafeToChangeIndex();
+      dataBuffer.setLockIndex(true);
+      boolean isFinallySafe = dataBuffer.isIndexLocked();
       assertTrue(isFinallySafe);
    }
 
