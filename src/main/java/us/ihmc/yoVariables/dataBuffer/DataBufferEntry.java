@@ -334,7 +334,7 @@ public class DataBufferEntry implements DataEntry
       return total / length;
    }
 
-   public double[] getWindowedData(int in, /* int out, */int bufferLength)
+   public double[] getWindowedData(int in, int bufferLength)
    {
       double[] ret = new double[bufferLength];
       int n = in;
@@ -365,17 +365,15 @@ public class DataBufferEntry implements DataEntry
       return currentBounds;
    }
 
-   public boolean checkIfDataIsEqual(DataBufferEntry entry2, int inPoint, int outPoint, double epsilon)
+   public boolean checkIfDataIsEqual(DataBufferEntry other, int inPoint, int outPoint, double epsilon)
    {
-      //      System.out.println(this.variable.getName() + ": InPoint = " + inPoint + ", outPoint = " + outPoint);
-
       if (inPoint >= bufferData.length)
          return false;
-      if (inPoint >= entry2.bufferData.length)
+      if (inPoint >= other.bufferData.length)
          return false;
       if (outPoint >= bufferData.length)
          return false;
-      if (outPoint >= entry2.bufferData.length)
+      if (outPoint >= other.bufferData.length)
          return false;
 
       if (inPoint > outPoint)
@@ -385,9 +383,7 @@ public class DataBufferEntry implements DataEntry
       for (int i = inPoint; i < outPoint; i++)
       {
          double dataOne = bufferData[i];
-         double dataTwo = entry2.bufferData[i];
-
-         //         System.out.println(this.variable.getName() + ": dataOne = " + dataOne + ", dataTwo = " + dataTwo);
+         double dataTwo = other.bufferData[i];
 
          if (Math.abs(dataOne - dataTwo) > epsilon)
          {
