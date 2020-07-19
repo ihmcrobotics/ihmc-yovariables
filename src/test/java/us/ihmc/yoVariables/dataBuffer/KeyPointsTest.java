@@ -9,12 +9,12 @@ import org.junit.jupiter.api.Test;
 
 public class KeyPointsTest
 {
-   private KeyPoints keyPoints;
+   private KeyPointsHandler keyPoints;
 
    @BeforeEach
    public void setup()
    {
-      keyPoints = new KeyPoints();
+      keyPoints = new KeyPointsHandler();
    }
 
    @AfterEach
@@ -26,24 +26,24 @@ public class KeyPointsTest
    @Test // timeout = 30000
    public void testSetKeyPoint()
    {
-      assertTrue(keyPoints.getPoints().size() == 0);
-      assertTrue(keyPoints.setKeyPoint(0));
-      assertTrue(keyPoints.getPoints().size() == 1);
-      assertTrue(keyPoints.setKeyPoint(4));
-      assertTrue(keyPoints.getPoints().size() == 2);
-      assertTrue(keyPoints.setKeyPoint(3));
-      assertTrue(keyPoints.getPoints().size() == 3);
+      assertTrue(keyPoints.getKeyPoints().size() == 0);
+      assertTrue(keyPoints.toggleKeyPoint(0));
+      assertTrue(keyPoints.getKeyPoints().size() == 1);
+      assertTrue(keyPoints.toggleKeyPoint(4));
+      assertTrue(keyPoints.getKeyPoints().size() == 2);
+      assertTrue(keyPoints.toggleKeyPoint(3));
+      assertTrue(keyPoints.getKeyPoints().size() == 3);
    }
 
    @Test // timeout = 30000
    public void testRemoveDuplicateKeyPoint()
    {
-      assertTrue(keyPoints.getPoints().size() == 0);
-      assertTrue(keyPoints.setKeyPoint(3));
-      assertTrue(keyPoints.getPoints().size() == 1);
+      assertTrue(keyPoints.getKeyPoints().size() == 0);
+      assertTrue(keyPoints.toggleKeyPoint(3));
+      assertTrue(keyPoints.getKeyPoints().size() == 1);
 
-      assertFalse(keyPoints.setKeyPoint(3));
-      assertTrue(keyPoints.getPoints().size() == 0);
+      assertFalse(keyPoints.toggleKeyPoint(3));
+      assertTrue(keyPoints.getKeyPoints().size() == 0);
    }
 
    @Test // timeout = 30000
@@ -51,15 +51,15 @@ public class KeyPointsTest
    {
       int[] keyPointTimes = new int[] {3, 16, 20, 48, 75};
 
-      int nextTimeNotAdded = keyPoints.getNextTime(88);
+      int nextTimeNotAdded = keyPoints.getNextKeyPoint(88);
       assertTrue(nextTimeNotAdded == 88);
 
       clearAndFillKeyPoints(keyPointTimes);
 
-      int nextTimeInRange = keyPoints.getNextTime(17);
+      int nextTimeInRange = keyPoints.getNextKeyPoint(17);
       assertTrue(nextTimeInRange == 20);
 
-      int nextTimeOutOfRange = keyPoints.getNextTime(99);
+      int nextTimeOutOfRange = keyPoints.getNextKeyPoint(99);
       assertTrue(nextTimeOutOfRange == 3);
    }
 
@@ -68,15 +68,15 @@ public class KeyPointsTest
    {
       int[] keyPointTimes = new int[] {3, 16, 20, 48, 75};
 
-      int previousTimeNotAdded = keyPoints.getPreviousTime(1);
+      int previousTimeNotAdded = keyPoints.getPreviousKeyPoint(1);
       assertTrue(previousTimeNotAdded == 1);
 
       clearAndFillKeyPoints(keyPointTimes);
 
-      int previousTimeInRange = keyPoints.getPreviousTime(47);
+      int previousTimeInRange = keyPoints.getPreviousKeyPoint(47);
       assertTrue(previousTimeInRange == 20);
 
-      int previousTimeOutOfRange = keyPoints.getPreviousTime(1);
+      int previousTimeOutOfRange = keyPoints.getPreviousKeyPoint(1);
       assertTrue(previousTimeOutOfRange == 75);
    }
 
@@ -87,38 +87,38 @@ public class KeyPointsTest
 
       clearAndFillKeyPoints(keyPointTimes);
 
-      assertTrue(keyPoints.getPoints().size() == keyPointTimes.length);
+      assertTrue(keyPoints.getKeyPoints().size() == keyPointTimes.length);
 
-      keyPoints.trim(17, 47);
-      assertTrue(keyPoints.getPoints().size() == 1);
-      assertTrue(keyPoints.getNextTime(1) == 20);
+      keyPoints.trimKeyPoints(17, 47);
+      assertTrue(keyPoints.getKeyPoints().size() == 1);
+      assertTrue(keyPoints.getNextKeyPoint(1) == 20);
 
       clearAndFillKeyPoints(keyPointTimes);
 
-      keyPoints.trim(47, 17);
-      assertTrue(keyPoints.getPoints().size() == 4);
-      assertTrue(keyPoints.getPoints().get(0) == 3);
-      assertTrue(keyPoints.getPoints().get(1) == 16);
-      assertTrue(keyPoints.getPoints().get(2) == 48);
-      assertTrue(keyPoints.getPoints().get(3) == 75);
+      keyPoints.trimKeyPoints(47, 17);
+      assertTrue(keyPoints.getKeyPoints().size() == 4);
+      assertTrue(keyPoints.getKeyPoints().get(0) == 3);
+      assertTrue(keyPoints.getKeyPoints().get(1) == 16);
+      assertTrue(keyPoints.getKeyPoints().get(2) == 48);
+      assertTrue(keyPoints.getKeyPoints().get(3) == 75);
    }
 
    @Test // timeout = 30000
    public void testUseKeyPoints()
    {
-      assertFalse(keyPoints.useKeyPoints());
-      keyPoints.setUseKeyPoints(true);
-      assertTrue(keyPoints.useKeyPoints());
-      keyPoints.setUseKeyPoints(false);
-      assertFalse(keyPoints.useKeyPoints());
+      assertFalse(keyPoints.areKeyPointsEnabled());
+      keyPoints.enableKeyPoints(true);
+      assertTrue(keyPoints.areKeyPointsEnabled());
+      keyPoints.enableKeyPoints(false);
+      assertFalse(keyPoints.areKeyPointsEnabled());
    }
 
    private void clearAndFillKeyPoints(int[] keyPointTimes)
    {
-      keyPoints.getPoints().clear();
+      keyPoints.getKeyPoints().clear();
       for (int keyPointTime : keyPointTimes)
       {
-         keyPoints.setKeyPoint(keyPointTime);
+         keyPoints.toggleKeyPoint(keyPointTime);
       }
    }
 }

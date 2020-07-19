@@ -993,15 +993,15 @@ public class DataBufferTest
    @Test // timeout = 30000
    public void testToggleKeyPointMode()
    {
-      boolean keyPointModeToggled = dataBuffer.isKeyPointModeToggled();
+      boolean keyPointModeToggled = dataBuffer.getKeyPointsHandler().areKeyPointsEnabled();
 
-      dataBuffer.toggleKeyPointMode();
+      dataBuffer.getKeyPointsHandler().toggleKeyPoints();
 
-      assertFalse(keyPointModeToggled == dataBuffer.isKeyPointModeToggled());
+      assertFalse(keyPointModeToggled == dataBuffer.getKeyPointsHandler().areKeyPointsEnabled());
 
-      dataBuffer.toggleKeyPointMode();
+      dataBuffer.getKeyPointsHandler().toggleKeyPoints();
 
-      assertTrue(keyPointModeToggled == dataBuffer.isKeyPointModeToggled());
+      assertTrue(keyPointModeToggled == dataBuffer.getKeyPointsHandler().areKeyPointsEnabled());
    }
 
    @Test // timeout = 30000

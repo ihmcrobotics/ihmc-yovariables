@@ -13,7 +13,7 @@ import us.ihmc.yoVariables.registry.YoVariableHolder;
 import us.ihmc.yoVariables.tools.YoTools;
 import us.ihmc.yoVariables.variable.YoVariable;
 
-public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor, ToggleKeyPointModeCommandExecutor, TimeDataHolder, DataEntryHolder
+public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor, TimeDataHolder, DataEntryHolder
 {
    private String timeVariableName = "t";
 
@@ -29,11 +29,9 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    private final ArrayList<DataBufferEntry> entries = new ArrayList<>();
    private final HashMap<String, List<DataBufferEntry>> simpleNameToEntriesMap = new HashMap<>();
 
-   public KeyPoints keyPoints = new KeyPoints();
+   public final KeyPointsHandler keyPointsHandler = new KeyPointsHandler();
    private List<DataBufferListener> dataBufferListeners = new ArrayList<>();
    private List<IndexChangedListener> indexChangedListeners;
-
-   public List<ToggleKeyPointModeCommandListener> toggleKeyPointModeCommandListeners = new ArrayList<>();
 
    private boolean lockIndex = false;
 
@@ -451,13 +449,13 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    public void setInPoint(int in)
    {
       inPoint = in;
-      keyPoints.trim(inPoint, outPoint);
+      keyPointsHandler.trimKeyPoints(inPoint, outPoint);
    }
 
    public void setOutPoint(int out)
    {
       outPoint = out;
-      keyPoints.trim(inPoint, outPoint);
+      keyPointsHandler.trimKeyPoints(inPoint, outPoint);
    }
 
    public void setInOutPointFullBuffer()
@@ -490,18 +488,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
 
    public void setKeyPoint()
    {
-      keyPoints.setKeyPoint(index);
-   }
-
-   /**
-    * Gets the KeyPoints in the cropped data
-    *
-    * @return The current KeyPoints as an ArrayList of Integer
-    */
-   public List<Integer> getKeyPoints()
-   {
-      // only return point in the cropped data
-      return keyPoints.getPoints();
+      keyPointsHandler.toggleKeyPoint(index);
    }
 
    @Override
@@ -711,7 +698,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
          }
       }
 
-      keyPoints.removeKeyPoint(index);
+      keyPointsHandler.removeKeyPoint(index);
       setDataAtIndexToYoVariableValues();
       notifyIndexChangedListeners();
    }
@@ -791,46 +778,6 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       updateAndTickBackwards();
    }
 
-   @Override
-   public boolean isKeyPointModeToggled()
-   {
-      return keyPoints.useKeyPoints();
-   }
-
-   @Override
-   public void toggleKeyPointMode()
-   {
-      if (keyPoints.useKeyPoints())
-      {
-         keyPoints.setUseKeyPoints(false);
-      }
-      else
-      {
-         keyPoints.setUseKeyPoints(true);
-      }
-
-      for (ToggleKeyPointModeCommandListener commandListener : toggleKeyPointModeCommandListeners)
-      {
-         commandListener.updateKeyPointModeStatus();
-      }
-   }
-
-   @Override
-   public void registerToggleKeyPointModeCommandListener(ToggleKeyPointModeCommandListener commandListener)
-   {
-      toggleKeyPointModeCommandListeners.add(commandListener);
-   }
-
-   public int getNextTime()
-   {
-      return keyPoints.getNextTime(index);
-   }
-
-   public int getPreviousTime()
-   {
-      return keyPoints.getPreviousTime(index);
-   }
-
    public boolean checkIfDataIsEqual(DataBuffer dataBuffer, double epsilon)
    {
       ArrayList<DataBufferEntry> thisEntries = entries;
@@ -881,6 +828,21 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       {
          this.timeVariableName = timeVariableName;
       }
+   }
+
+   public KeyPointsHandler getKeyPointsHandler()
+   {
+      return keyPointsHandler;
+   }
+
+   public int getNextKeyPoint()
+   {
+      return keyPointsHandler.getNextKeyPoint(index);
+   }
+
+   public int getPreviousKeyPoint()
+   {
+      return keyPointsHandler.getPreviousKeyPoint(index);
    }
 
    @Override
