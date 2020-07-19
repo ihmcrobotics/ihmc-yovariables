@@ -353,10 +353,14 @@ public class DataBufferEntry implements DataEntry
    @Override
    public DataBounds getWindowBounds(int startIndex, int endIndex)
    {
-      if (bufferData == null)
+      if (bufferData != null)
       {
-         currentBounds.setWindow(startIndex, endIndex);
-         boundsChanged = currentBounds.compute(bufferData);
+         if (boundsDirty || startIndex != currentBounds.getStartIndex() || endIndex != currentBounds.getEndIndex())
+         {
+            currentBounds.setWindow(startIndex, endIndex);
+            boundsChanged = currentBounds.compute(bufferData);
+            boundsDirty = false;
+         }
       }
       return currentBounds;
    }
