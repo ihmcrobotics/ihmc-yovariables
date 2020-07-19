@@ -20,9 +20,6 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    private int outPoint = 0;
    private int index = 0;
    private int bufferSize;
-   private int maxBufferSize = 16384;
-
-   private boolean wrapBuffer = false; // Default to Expand, not Wrap!  true;
 
    private final ArrayList<DataBufferEntry> entries = new ArrayList<>();
    private final HashMap<String, List<DataBufferEntry>> simpleNameToEntriesMap = new HashMap<>();
@@ -43,8 +40,6 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       outPoint = other.outPoint;
       index = other.index;
       bufferSize = other.bufferSize;
-      maxBufferSize = other.maxBufferSize;
-      wrapBuffer = other.wrapBuffer;
       lockIndex = other.lockIndex;
 
       for (DataBufferEntry otherEntry : other.entries)
@@ -70,16 +65,6 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    public int getBufferSize()
    {
       return bufferSize;
-   }
-
-   public int getMaxBufferSize()
-   {
-      return maxBufferSize;
-   }
-
-   public boolean getWrapBuffer()
-   {
-      return wrapBuffer;
    }
 
    public void addEntry(DataBufferEntry entry)
@@ -140,29 +125,6 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    public List<YoVariable> getVariables()
    {
       return entries.stream().map(DataBufferEntry::getVariable).collect(Collectors.toList());
-   }
-
-   /**
-    * Sets the maximum size, in ticks, to which the buffer will expand. While nonsense values are not
-    * explicitly checked for, they will not cause the buffer to shrink.
-    *
-    * @param newMaxBufferSize New max buffer size.
-    */
-   public void setMaxBufferSize(int newMaxBufferSize)
-   {
-      maxBufferSize = newMaxBufferSize;
-   }
-
-   /**
-    * Enables or disables buffer wrapping in place of buffer expansion. By default the buffer will
-    * expand until it reaches maxBufferSize at which point it will wrap to the beginning. When
-    * wrapBuffer is enabled the buffer wraps to the beginning without attempting to expand.
-    *
-    * @param newWrapBuffer Enable or disable wrap buffer mode.
-    */
-   public void setWrapBuffer(boolean newWrapBuffer)
-   {
-      wrapBuffer = newWrapBuffer;
    }
 
    public void clearAll(int bufferSize)
@@ -600,21 +562,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
 
       if (index >= bufferSize)
       {
-         if (wrapBuffer || bufferSize >= maxBufferSize)
-         {
-            index = 0;
-         }
-         else // Expand the buffer, it just overflowed and there's room to grow...
-         {
-            int newSize = bufferSize * 3 / 2;
-
-            if (newSize > maxBufferSize)
-            {
-               newSize = maxBufferSize;
-            }
-
-            enlargeBufferSize(newSize);
-         }
+         index = 0;
       }
 
       if (index < 0)

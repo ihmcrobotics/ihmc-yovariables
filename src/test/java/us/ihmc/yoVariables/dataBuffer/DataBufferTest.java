@@ -75,25 +75,6 @@ public class DataBufferTest
    }
 
    @Test // timeout = 300000
-   public void testGetMaxBufferSize()
-   {
-      int expectedMaxBufferSize = 16384;
-      int testMaxBufferSize = dataBuffer.getMaxBufferSize();
-      assertTrue(expectedMaxBufferSize == testMaxBufferSize);
-   }
-
-   @Test // timeout = 300000
-   public void testGetAndSetWrapBuffer()
-   {
-      dataBuffer.setWrapBuffer(false);
-      boolean testBoolean = dataBuffer.getWrapBuffer();
-      assertFalse(testBoolean);
-      dataBuffer.setWrapBuffer(true);
-      testBoolean = dataBuffer.getWrapBuffer();
-      assertTrue(testBoolean);
-   }
-
-   @Test // timeout = 300000
    public void testAddAndGetEntry()
    {
       DataBufferEntry doubleDataBufferEntryTest = new DataBufferEntry(yoDouble, testBufferSize);
@@ -372,8 +353,6 @@ public class DataBufferTest
       dataBuffer.cropData();
       dataBuffer.gotoOutPoint();
 
-      dataBuffer.setWrapBuffer(true);
-
       assertEquals(dataBuffer.getOutPoint(), dataBuffer.getIndex());
       assertEquals(0, dataBuffer.getInPoint());
 
@@ -457,29 +436,6 @@ public class DataBufferTest
       assertFalse(cRegExp.contains(a));
       assertFalse(cRegExp.contains(b));
       assertTrue(cRegExp.contains(c));
-   }
-
-   @Test // timeout = 300000
-   public void testSetMaxBufferSize()
-
-   {
-      int minBuffer = 1;
-      int maxBuffer = 10000000;
-      int zeroBuffer = 0;
-      int normalBuffer = 200;
-
-      dataBuffer.setMaxBufferSize(minBuffer);
-      assertTrue(dataBuffer.getMaxBufferSize() == minBuffer);
-
-      dataBuffer.setMaxBufferSize(maxBuffer);
-      assertTrue(dataBuffer.getMaxBufferSize() == maxBuffer);
-
-      dataBuffer.setMaxBufferSize(zeroBuffer);
-      assertTrue(dataBuffer.getMaxBufferSize() == zeroBuffer);
-
-      dataBuffer.setMaxBufferSize(normalBuffer);
-      assertTrue(dataBuffer.getMaxBufferSize() == normalBuffer);
-
    }
 
    @Test // timeout = 30000
