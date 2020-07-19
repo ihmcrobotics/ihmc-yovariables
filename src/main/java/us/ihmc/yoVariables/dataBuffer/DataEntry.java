@@ -11,38 +11,65 @@ public interface DataEntry
       return getVariable().getName();
    }
 
-   default String getFullVariableNameWithNameSpace()
+   default String getVariableFullNameString()
    {
       return getVariable().getFullNameString();
    }
 
    double getValueAt(int index);
 
-   double[] getData();
+   double[] getBuffer();
 
-   double[] getData(int startIndex, int endIndex);
-   
-   double getMax();
-   
-   double getMin();
-   
-   double getMax(int leftIndex, int rightIndex, int leftPlotIndex, int rightPlotIndex);
-   
-   double getMin(int leftIndex, int rightIndex, int leftPlotIndex, int rightPlotIndex);
+   double[] getBufferWindow(int startIndex, int endIndex);
 
-   boolean isAutoScaleEnabled();
+   void resetBoundsChangedFlag();
 
-   double getManualMinScaling();
+   boolean haveBoundsChanged();
 
-   double getManualMaxScaling();
+   DataBounds getBounds();
 
-   void resetMinMaxChanged();
+   default double getLowerBound()
+   {
+      return getBounds().getLowerBound();
+   }
 
-   boolean hasMinMaxChanged();
+   default double getUpperBound()
+   {
+      return getBounds().getUpperBound();
+   }
 
-   void setManualScaling(double newMinVal, double newMaxVal);
+   DataBounds getWindowBounds(int startIndex, int endIndex);
 
-   void enableAutoScale(boolean b);
+   default double getWindowLowerBound(int startIndex, int endIndex)
+   {
+      return getWindowBounds(startIndex, endIndex).getLowerBound();
+   }
+
+   default double getWindowUpperBound(int startIndex, int endIndex)
+   {
+      return getWindowBounds(startIndex, endIndex).getUpperBound();
+   }
+
+   void useCustomBounds(boolean useCustomBounds);
+
+   boolean isUsingCustomBounds();
+
+   default void setCustomBounds(double customLowerBound, double customUpperBound)
+   {
+      getVariable().setVariableBounds(customLowerBound, customUpperBound);
+   }
+
+   DataBounds getCustomBounds();
+
+   default double getCustomLowerBound()
+   {
+      return getCustomBounds().getLowerBound();
+   }
+
+   default double getCustomUpperBound()
+   {
+      return getCustomBounds().getUpperBound();
+   }
 
    void setInverted(boolean selected);
 

@@ -2,8 +2,10 @@ package us.ihmc.yoVariables.registry;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 
 import us.ihmc.yoVariables.exceptions.IllegalNameException;
+import us.ihmc.yoVariables.tools.YoSearchTools;
 import us.ihmc.yoVariables.tools.YoTools;
 import us.ihmc.yoVariables.variable.YoVariable;
 
@@ -17,6 +19,10 @@ public interface YoVariableHolder
 {
    /**
     * Returns all the {@code YoVariable}s in this {@code YoVariableHolder}.
+    * <p>
+    * Note that a {@code YoRegistry} only returns the variables in the registry without recursing down
+    * the subtree.
+    * </p>
     *
     * @return the list of the variables.
     */
@@ -105,6 +111,18 @@ public interface YoVariableHolder
     * @return the variables that were registered at the given namespace.
     */
    List<YoVariable> findVariables(NameSpace nameSpace);
+
+   /**
+    * Returns all the variables in this {@code YoVariableHolder} for which the given filter returns
+    * {@code true}.
+    * 
+    * @param filter the filter used to select the variables to return.
+    * @return the filtered variables.
+    */
+   default List<YoVariable> filterVariables(Predicate<YoVariable> filter)
+   {
+      return YoSearchTools.filterVariables(filter, this);
+   }
 
    /**
     * Searches this variable holder and tests if there is exactly one variable that matches the search

@@ -34,16 +34,6 @@ public class DataBufferEntryTest
    }
 
    @Test // timeout=300000
-   public void testGetVal()
-   {
-      Random random = new Random(6432);
-
-      double tempDouble = (double) random.nextInt(20000) / (double) random.nextInt(30);
-      yoDouble.set(tempDouble);
-      assertEquals(tempDouble, dataBufferEntry.getVariableValueAsADouble());
-   }
-
-   @Test // timeout=300000
    public void testTickAndUpdate()
    {
       Random random = new Random(1345143);
@@ -57,7 +47,7 @@ public class DataBufferEntryTest
          dataBufferEntry.setDataAtIndexToYoVariableValue(i);
       }
 
-      double[] data = dataBufferEntry.getData();
+      double[] data = dataBufferEntry.getBuffer();
 
       for (int i = 0; i < nPoints; i++)
       {
@@ -105,7 +95,7 @@ public class DataBufferEntryTest
       for (int i = 0; i < nPoints; i++)
       {
          dataBufferEntry.setYoVariableValueToDataAtIndex(i);
-         assertEquals(yoDouble.getValueAsDouble(), dataBufferEntry.getData()[i], epsilon);
+         assertEquals(yoDouble.getValueAsDouble(), dataBufferEntry.getBuffer()[i], epsilon);
       }
    }
 
@@ -161,10 +151,10 @@ public class DataBufferEntryTest
 
       double minScaling = random.nextDouble();
       double maxScaling = random.nextDouble() + 2;
-      dataBufferEntry.setManualScaling(minScaling, maxScaling);
+      dataBufferEntry.setCustomBounds(minScaling, maxScaling);
 
-      assertEquals(minScaling, dataBufferEntry.getManualMinScaling(), 0);
-      assertEquals(maxScaling, dataBufferEntry.getManualMaxScaling(), 0);
+      assertEquals(minScaling, dataBufferEntry.getCustomLowerBound(), 0);
+      assertEquals(maxScaling, dataBufferEntry.getCustomUpperBound(), 0);
    }
 
    @Test // timeout=300000
@@ -185,7 +175,7 @@ public class DataBufferEntryTest
 
       for (int i = 0; i < nPoints; i++)
       {
-         assertEquals(tempDouble, dataBufferEntry.getData()[i], 0);
+         assertEquals(tempDouble, dataBufferEntry.getBuffer()[i], 0);
       }
    }
 
@@ -205,11 +195,11 @@ public class DataBufferEntryTest
       }
       dataBufferEntry.enlargeBufferSize(nPoints + newSizeDelta);
 
-      assertEquals(nPoints + newSizeDelta, dataBufferEntry.getData().length);
+      assertEquals(nPoints + newSizeDelta, dataBufferEntry.getBuffer().length);
 
       for (int i = 0; i < nPoints; i++)
       {
-         assertEquals(tempData[i], dataBufferEntry.getData()[i], 0);
+         assertEquals(tempData[i], dataBufferEntry.getBuffer()[i], 0);
       }
    }
 
@@ -229,18 +219,18 @@ public class DataBufferEntryTest
 
       // Test Failure Conditions; data remains unchanged so only examine lengths
       assertEquals(-1, dataBufferEntry.cropData(-1, nPoints));
-      assertEquals(nPoints, dataBufferEntry.getData().length);
+      assertEquals(nPoints, dataBufferEntry.getBuffer().length);
       assertEquals(-1, dataBufferEntry.cropData(0, nPoints + 1));
-      assertEquals(nPoints, dataBufferEntry.getData().length);
+      assertEquals(nPoints, dataBufferEntry.getBuffer().length);
 
       // Test unchanged size
       assertEquals(nPoints, dataBufferEntry.cropData(0, nPoints - 1));
-      assertEquals(nPoints, dataBufferEntry.getData().length);
+      assertEquals(nPoints, dataBufferEntry.getBuffer().length);
 
       // Verify data integrity
       for (int i = 0; i < nPoints; i++)
       {
-         assertEquals(tempData[i], dataBufferEntry.getData()[i], 0);
+         assertEquals(tempData[i], dataBufferEntry.getBuffer()[i], 0);
       }
 
       // Test cropping from end
@@ -249,7 +239,7 @@ public class DataBufferEntryTest
       // Verify data integrity
       for (int i = 0; i < nPoints - 100; i++)
       {
-         assertEquals(tempData[i], dataBufferEntry.getData()[i], 0);
+         assertEquals(tempData[i], dataBufferEntry.getBuffer()[i], 0);
       }
 
       // Restore dataBufferEntry to original state.
@@ -264,9 +254,9 @@ public class DataBufferEntryTest
       assertEquals(nPoints - 100, dataBufferEntry.cropData(100, nPoints - 1));
 
       // Verify data integrity
-      for (int i = 0; i < dataBufferEntry.getData().length; i++)
+      for (int i = 0; i < dataBufferEntry.getBuffer().length; i++)
       {
-         assertEquals(tempData[100 + i], dataBufferEntry.getData()[i], 0);
+         assertEquals(tempData[100 + i], dataBufferEntry.getBuffer()[i], 0);
       }
    }
 
@@ -286,35 +276,35 @@ public class DataBufferEntryTest
 
       // Test Failure Conditions; data remains unchanged so only examine lengths
       assertEquals(-1, dataBufferEntry.cropData(-1, nPoints));
-      assertEquals(nPoints, dataBufferEntry.getData().length);
+      assertEquals(nPoints, dataBufferEntry.getBuffer().length);
       assertEquals(-1, dataBufferEntry.cropData(0, nPoints + 1));
-      assertEquals(nPoints, dataBufferEntry.getData().length);
+      assertEquals(nPoints, dataBufferEntry.getBuffer().length);
 
       // Test unchanged size
       assertEquals(-1, dataBufferEntry.cutData(nPoints / 2 + 1, nPoints / 2 - 1));
-      assertEquals(nPoints, dataBufferEntry.getData().length);
+      assertEquals(nPoints, dataBufferEntry.getBuffer().length);
 
       // Verify data integrity
       for (int i = 0; i < nPoints; i++)
       {
-         assertEquals(tempData[i], dataBufferEntry.getData()[i], 0);
+         assertEquals(tempData[i], dataBufferEntry.getBuffer()[i], 0);
       }
 
       // Test cut one point in the middle:
       int cutPoint = nPoints / 2;
       int sizeAfterCut = dataBufferEntry.cutData(cutPoint, cutPoint);
       assertEquals(nPoints - 1, sizeAfterCut);
-      assertEquals(nPoints - 1, dataBufferEntry.getData().length);
+      assertEquals(nPoints - 1, dataBufferEntry.getBuffer().length);
 
       // Verify data integrity
       for (int i = 0; i < cutPoint; i++)
       {
-         assertEquals(tempData[i], dataBufferEntry.getData()[i], 0);
+         assertEquals(tempData[i], dataBufferEntry.getBuffer()[i], 0);
       }
 
       for (int i = cutPoint; i < nPoints - 1; i++)
       {
-         assertEquals(tempData[i + 1], dataBufferEntry.getData()[i], 0);
+         assertEquals(tempData[i + 1], dataBufferEntry.getBuffer()[i], 0);
       }
 
       // Restore dataBufferEntry to original state.
@@ -332,7 +322,7 @@ public class DataBufferEntryTest
       // Verify data integrity
       for (int i = 0; i < nPoints - 3; i++)
       {
-         assertEquals(tempData[i + 3], dataBufferEntry.getData()[i], 0);
+         assertEquals(tempData[i + 3], dataBufferEntry.getBuffer()[i], 0);
       }
 
       // Restore dataBufferEntry to original state.
@@ -348,9 +338,9 @@ public class DataBufferEntryTest
       assertEquals(nPoints - 3, sizeAfterCut);
 
       // Verify data integrity
-      for (int i = 0; i < dataBufferEntry.getData().length; i++)
+      for (int i = 0; i < dataBufferEntry.getBuffer().length; i++)
       {
-         assertEquals(tempData[i], dataBufferEntry.getData()[i], 0);
+         assertEquals(tempData[i], dataBufferEntry.getBuffer()[i], 0);
       }
    }
 
@@ -372,13 +362,13 @@ public class DataBufferEntryTest
       dataBufferEntry.packData(-1);
       for (int i = 0; i < nPoints - 100; i++)
       {
-         assertEquals(tempData[i], dataBufferEntry.getData()[i], 0);
+         assertEquals(tempData[i], dataBufferEntry.getBuffer()[i], 0);
       }
 
       dataBufferEntry.packData(nPoints + 10);
       for (int i = 0; i < nPoints - 100; i++)
       {
-         assertEquals(tempData[i], dataBufferEntry.getData()[i], 0);
+         assertEquals(tempData[i], dataBufferEntry.getBuffer()[i], 0);
       }
 
       // Test packing
@@ -386,7 +376,7 @@ public class DataBufferEntryTest
 
       for (int i = 0; i < nPoints - 1 - newStartIndex; i++)
       {
-         assertEquals(tempData[newStartIndex + i], dataBufferEntry.getData()[i], 0);
+         assertEquals(tempData[newStartIndex + i], dataBufferEntry.getBuffer()[i], 0);
       }
    }
 
@@ -402,7 +392,7 @@ public class DataBufferEntryTest
       dataBufferEntry.setDataAtIndexToYoVariableValue(1);
       yoDouble.set(tempInteger - 10);
       dataBufferEntry.setDataAtIndexToYoVariableValue(2);
-      assertEquals(tempInteger + 10, dataBufferEntry.getMax(), 0);
+      assertEquals(tempInteger + 10, dataBufferEntry.getUpperBound(), 0);
    }
 
    @Test // timeout=300000
@@ -417,7 +407,7 @@ public class DataBufferEntryTest
       dataBufferEntry.setDataAtIndexToYoVariableValue(1);
       yoDouble.set(tempInteger - 10);
       dataBufferEntry.setDataAtIndexToYoVariableValue(2);
-      assertEquals(0, dataBufferEntry.getMin(), 0);
+      assertEquals(0, dataBufferEntry.getBounds().getLowerBound(), 0);
    }
 
    @Test // timeout=300000
@@ -428,8 +418,8 @@ public class DataBufferEntryTest
          yoDouble.set(Double.NaN);
          dataBufferEntry.setDataAtIndexToYoVariableValue(i);
       }
-      assertEquals(0.0, dataBufferEntry.getMin(), 0.0);
-      assertEquals(0.0, dataBufferEntry.getMax(), 0.0);
+      assertEquals(0.0, dataBufferEntry.getBounds().getLowerBound(), 0.0);
+      assertEquals(0.0, dataBufferEntry.getBounds().getUpperBound(), 0.0);
    }
 
    @Test // timeout=300000
@@ -445,9 +435,10 @@ public class DataBufferEntryTest
             yoDouble.set(random.nextDouble());
          dataBufferEntry.setDataAtIndexToYoVariableValue(i);
       }
-      assertFalse(Double.isNaN(dataBufferEntry.getMin()));
-      assertFalse(Double.isNaN(dataBufferEntry.getMax()));
-      assertTrue(dataBufferEntry.getMin() <= dataBufferEntry.getMax());
+      DataBounds bounds = dataBufferEntry.getBounds();
+      assertFalse(Double.isNaN(bounds.getLowerBound()));
+      assertFalse(Double.isNaN(bounds.getUpperBound()));
+      assertTrue(bounds.getLowerBound() <= bounds.getUpperBound());
    }
 
    @Test // timeout=300000
@@ -458,9 +449,9 @@ public class DataBufferEntryTest
       int tempInteger = random.nextInt(500) + 11;
       yoDouble.set(tempInteger);
       dataBufferEntry.setDataAtIndexToYoVariableValue(0);
-      assertTrue(dataBufferEntry.hasMinMaxChanged());
-      dataBufferEntry.resetMinMaxChanged();
-      assertFalse(dataBufferEntry.hasMinMaxChanged());
+      assertTrue(dataBufferEntry.haveBoundsChanged());
+      dataBufferEntry.resetBoundsChangedFlag();
+      assertFalse(dataBufferEntry.haveBoundsChanged());
    }
 
    @Test // timeout=300000
@@ -470,9 +461,9 @@ public class DataBufferEntryTest
 
       double tempDouble = (double) random.nextInt(20000) / (double) random.nextInt(30);
       int randomIndex = random.nextInt(nPoints);
-      dataBufferEntry.setData(tempDouble, randomIndex);
+      dataBufferEntry.setDataAt(tempDouble, randomIndex);
 
-      assertEquals(tempDouble, dataBufferEntry.getData()[randomIndex], 0);
+      assertEquals(tempDouble, dataBufferEntry.getBuffer()[randomIndex], 0);
    }
 
    @Test // timeout=300000
@@ -506,14 +497,14 @@ public class DataBufferEntryTest
    @Test // timeout=300000
    public void testEnableAutoScale()
    {
-      dataBufferEntry.enableAutoScale(true);
-      assertTrue(dataBufferEntry.isAutoScaleEnabled());
-      dataBufferEntry.enableAutoScale(false);
-      assertFalse(dataBufferEntry.isAutoScaleEnabled());
+      dataBufferEntry.useCustomBounds(true);
+      assertTrue(dataBufferEntry.isUsingCustomBounds());
+      dataBufferEntry.useCustomBounds(false);
+      assertFalse(dataBufferEntry.isUsingCustomBounds());
    }
 
    @Test // timeout=300000
-   public void testGetMaxWithParameters()
+   public void testGetWindowBounds()
    {
       Random random = new Random(74839);
 
@@ -523,19 +514,14 @@ public class DataBufferEntryTest
          dataBufferEntry.setDataAtIndexToYoVariableValue(i);
       }
 
-      double oldMax = dataBufferEntry.getMax();
+      double oldMax = dataBufferEntry.getUpperBound();
       double newMax = oldMax + 100;
 
-      dataBufferEntry.setData(newMax, 200);
-      dataBufferEntry.setData(oldMax, 400);
+      dataBufferEntry.setDataAt(newMax, 200);
+      dataBufferEntry.setDataAt(oldMax, 400);
 
-      assertEquals(newMax, dataBufferEntry.getMax(150, 250, 150, 250), 0);
-      assertEquals(newMax, dataBufferEntry.getMax(150, 0, 150, 250), 0);
-      assertEquals(newMax, dataBufferEntry.getMax(500, 250, 150, 250), 0);
-
-      assertEquals(oldMax, dataBufferEntry.getMax(350, 450, 350, 450), 0);
-      assertEquals(oldMax, dataBufferEntry.getMax(350, 0, 350, 450), 0);
-      assertEquals(oldMax, dataBufferEntry.getMax(500, 450, 350, 450), 0);
+      assertEquals(newMax, dataBufferEntry.getWindowUpperBound(150, 250), 0);
+      assertEquals(oldMax, dataBufferEntry.getWindowUpperBound(350, 450), 0);
    }
 
    @Test // timeout=300000
@@ -549,19 +535,14 @@ public class DataBufferEntryTest
          dataBufferEntry.setDataAtIndexToYoVariableValue(i);
       }
 
-      double oldMin = dataBufferEntry.getMin();
+      double oldMin = dataBufferEntry.getBounds().getLowerBound();
       double newMin = oldMin - 100;
 
-      dataBufferEntry.setData(newMin, 200);
-      dataBufferEntry.setData(oldMin, 400);
+      dataBufferEntry.setDataAt(newMin, 200);
+      dataBufferEntry.setDataAt(oldMin, 400);
 
-      assertEquals(newMin, dataBufferEntry.getMin(150, 250, 150, 250), 0);
-      assertEquals(newMin, dataBufferEntry.getMin(150, 0, 150, 250), 0);
-      assertEquals(newMin, dataBufferEntry.getMin(500, 250, 150, 250), 0);
-
-      assertEquals(oldMin, dataBufferEntry.getMin(350, 450, 350, 450), 0);
-      assertEquals(oldMin, dataBufferEntry.getMin(350, 0, 350, 450), 0);
-      assertEquals(oldMin, dataBufferEntry.getMin(500, 450, 350, 450), 0);
+      assertEquals(newMin, dataBufferEntry.getWindowLowerBound(150, 250), 0);
+      assertEquals(oldMin, dataBufferEntry.getWindowLowerBound(350, 450), 0);
    }
 
    @Test // timeout = 30000
@@ -602,6 +583,6 @@ public class DataBufferEntryTest
    @Test // timeout = 30000
    public void testGetFullVariableNameWithNameSpace()
    {
-      assertTrue(dataBufferEntry.getFullVariableNameWithNameSpace().equals(yoDouble.getFullNameString()));
+      assertTrue(dataBufferEntry.getVariableFullNameString().equals(yoDouble.getFullNameString()));
    }
 }

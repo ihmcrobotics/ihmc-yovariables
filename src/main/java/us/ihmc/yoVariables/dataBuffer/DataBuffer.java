@@ -1,17 +1,15 @@
 package us.ihmc.yoVariables.dataBuffer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import us.ihmc.yoVariables.listener.RewoundListener;
 import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoVariableHolder;
-import us.ihmc.yoVariables.registry.YoVariableList;
-import us.ihmc.yoVariables.tools.YoSearchTools;
 import us.ihmc.yoVariables.tools.YoTools;
 import us.ihmc.yoVariables.variable.YoVariable;
 
@@ -37,8 +35,6 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
 
    public List<ToggleKeyPointModeCommandListener> toggleKeyPointModeCommandListeners = new ArrayList<>();
 
-   private boolean clearing = false;
-
    private boolean lockIndex = false;
 
    public DataBuffer(int bufferSize)
@@ -46,8 +42,21 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       this.bufferSize = bufferSize;
    }
 
-   @Override
-   public void closeAndDispose()
+   public DataBuffer(DataBuffer other)
+   {
+      inPoint = other.inPoint;
+      outPoint = other.outPoint;
+      index = other.index;
+      bufferSize = other.bufferSize;
+      maxBufferSize = other.maxBufferSize;
+      wrapBuffer = other.wrapBuffer;
+      lockIndex = other.lockIndex;
+
+      for (DataBufferEntry otherEntry : other.entries)
+         addEntry(new DataBufferEntry(otherEntry));
+   }
+
+   public void clear()
    {
       dataBufferListeners.clear();
       entries.clear();
@@ -119,52 +128,12 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       dataBufferListeners.add(dataBufferListener);
    }
 
-   public List<YoVariable> getVariablesThatStartWith(String searchString)
-   {
-      ArrayList<YoVariable> ret = null;
-
-      for (int i = 0; i < entries.size(); i++)
-      {
-         DataBufferEntry entry = entries.get(i);
-
-         if (entry.getVariable().getName().startsWith(searchString))
-         {
-            if (ret == null)
-            {
-               ret = new ArrayList<>();
-            }
-
-            ret.add(entry.getVariable());
-         }
-      }
-
-      return ret;
-   }
-
-   public DataBufferEntry getEntry(String name)
-   {
-      for (int i = 0; i < entries.size(); i++)
-      {
-         DataBufferEntry entry = entries.get(i);
-         YoVariable variable = entry.getVariable();
-
-         if (YoTools.matchFullNameEndsWithCaseInsensitive(variable, name))
-         {
-            return entry;
-         }
-      }
-
-      return null;
-   }
-
    @Override
-   public DataBufferEntry getEntry(YoVariable v)
+   public DataBufferEntry getEntry(YoVariable variable)
    {
-      for (int i = 0; i < entries.size(); i++)
+      for (DataBufferEntry entry : entries)
       {
-         DataBufferEntry entry = entries.get(i);
-
-         if (entry.getVariable() == v)
+         if (entry.getVariable() == variable)
          {
             return entry;
          }
@@ -178,37 +147,10 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       return entries;
    }
 
+   @Override
    public List<YoVariable> getVariables()
    {
-      ArrayList<YoVariable> ret = new ArrayList<>(entries.size());
-
-      for (int i = 0; i < entries.size(); i++)
-      {
-         DataBufferEntry entry = entries.get(i);
-
-         ret.add(entry.getVariable());
-      }
-
-      return ret;
-   }
-
-   public List<YoVariable> getVars(String[] varNames, String[] regularExpressions)
-   {
-      YoVariableList tempList = new YoVariableList("temp");
-
-      for (int i = 0; i < entries.size(); i++)
-      {
-         YoVariable var = entries.get(i).getVariable();
-
-         tempList.addVariable(var);
-      }
-
-      List<YoVariable> variables = new ArrayList<>();
-      if (varNames != null)
-         Arrays.asList(varNames).forEach(varName -> variables.addAll(tempList.findVariables(varName)));
-      if (regularExpressions != null)
-         variables.addAll(YoSearchTools.filterVariables(YoSearchTools.regularExpressionFilter(regularExpressions), tempList));
-      return variables;
+      return entries.stream().map(DataBufferEntry::getVariable).collect(Collectors.toList());
    }
 
    /**
@@ -234,42 +176,14 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       wrapBuffer = newWrapBuffer;
    }
 
-   public void resetDataBuffer()
+   public void clearAll(int bufferSize)
    {
-      clearAll(getBufferSize());
-
-      if (!clearing)
-      {
-         setInPoint(0);
-         gotoInPoint();
-         clearAll(getBufferSize());
-         tickAndUpdate();
-      }
-      else
-      {
-         setInPoint(0);
-         clearing = true;
-      }
+      entries.forEach(entry -> entry.clear(bufferSize));
+      this.bufferSize = bufferSize;
    }
 
-   public void clearAll(int nPoints)
+   public void resizeBuffer(int newBufferSize)
    {
-      double[] blankData;
-
-      for (int i = 0; i < entries.size(); i++)
-      {
-         DataBufferEntry entry = entries.get(i);
-
-         blankData = new double[nPoints];
-         entry.setData(blankData, nPoints);
-      }
-
-      bufferSize = nPoints;
-   }
-
-   public void changeBufferSize(int newBufferSize)
-   {
-      // if ((newBufferSize < 1) || (newBufferSize > maxBufferSize)) return;
       if (newBufferSize < bufferSize)
       {
          cropData(inPoint, (inPoint + newBufferSize - 1) % bufferSize);
@@ -279,8 +193,6 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
          packData();
          enlargeBufferSize(newBufferSize);
       }
-
-      // bufferSize = newBufferSize;
    }
 
    private void enlargeBufferSize(int newSize)
@@ -288,7 +200,6 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       for (int i = 0; i < entries.size(); i++)
       {
          DataBufferEntry entry = entries.get(i);
-
          entry.enlargeBufferSize(newSize);
       }
 
@@ -761,56 +672,48 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
 
    public void tickAndUpdate()
    {
-      if (!clearing)
+      index = index + 1;
+
+      if (index >= bufferSize)
       {
-         index = index + 1;
-
-         if (index >= bufferSize)
-         {
-            if (wrapBuffer || bufferSize >= maxBufferSize)
-            {
-               index = 0;
-            }
-            else // Expand the buffer, it just overflowed and there's room to grow...
-            {
-               int newSize = bufferSize * 3 / 2;
-
-               if (newSize > maxBufferSize)
-               {
-                  newSize = maxBufferSize;
-               }
-
-               enlargeBufferSize(newSize);
-            }
-         }
-
-         if (index < 0)
+         if (wrapBuffer || bufferSize >= maxBufferSize)
          {
             index = 0;
          }
-
-         // Out point should always be the last recorded tick...
-         outPoint = index;
-
-         if (outPoint == inPoint)
+         else // Expand the buffer, it just overflowed and there's room to grow...
          {
-            inPoint = inPoint + 1;
+            int newSize = bufferSize * 3 / 2;
 
-            if (inPoint >= bufferSize)
+            if (newSize > maxBufferSize)
             {
-               inPoint = 0;
+               newSize = maxBufferSize;
             }
-         }
 
-         keyPoints.removeKeyPoint(index);
-         setDataAtIndexToYoVariableValues();
-         notifyIndexChangedListeners();
+            enlargeBufferSize(newSize);
+         }
       }
-      else
+
+      if (index < 0)
       {
-         clearing = false;
-         resetDataBuffer();
+         index = 0;
       }
+
+      // Out point should always be the last recorded tick...
+      outPoint = index;
+
+      if (outPoint == inPoint)
+      {
+         inPoint = inPoint + 1;
+
+         if (inPoint >= bufferSize)
+         {
+            inPoint = 0;
+         }
+      }
+
+      keyPoints.removeKeyPoint(index);
+      setDataAtIndexToYoVariableValues();
+      notifyIndexChangedListeners();
    }
 
    public void notifyRewindListeners()
@@ -928,39 +831,6 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       return keyPoints.getPreviousTime(index);
    }
 
-   public List<YoVariable> getVariablesThatStartWith(String searchString, boolean caseSensitive)
-   {
-      ArrayList<YoVariable> ret = null;
-
-      if (!caseSensitive)
-      {
-         searchString = searchString.toLowerCase();
-      }
-
-      for (int i = 0; i < entries.size(); i++)
-      {
-         DataBufferEntry entry = entries.get(i);
-         String name = entry.getVariable().getName();
-
-         if (!caseSensitive)
-         {
-            name = name.toLowerCase();
-         }
-
-         if (name.startsWith(searchString))
-         {
-            if (ret == null)
-            {
-               ret = new ArrayList<>();
-            }
-
-            ret.add(entry.getVariable());
-         }
-      }
-
-      return ret;
-   }
-
    public boolean checkIfDataIsEqual(DataBuffer dataBuffer, double epsilon)
    {
       ArrayList<DataBufferEntry> thisEntries = entries;
@@ -976,7 +846,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       for (DataBufferEntry entry : entries)
       {
          YoVariable variable = entry.getVariable();
-         DataBufferEntry entry2 = this.getEntry(variable.getName());
+         DataBufferEntry entry2 = findVariableEntry(variable.getName());
 
          if (entry2 == null)
          {
@@ -1003,7 +873,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
 
    public void setTimeVariableName(String timeVariableName)
    {
-      if (getEntry(timeVariableName) == null)
+      if (findVariableEntry(timeVariableName) == null)
       {
          System.err.println("The requested timeVariableName does not exist, change not successful");
       }
@@ -1016,7 +886,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    @Override
    public double[] getTimeData()
    {
-      return getEntry(timeVariableName).getData();
+      return findVariableEntry(timeVariableName).getBuffer();
    }
 
    @Override
@@ -1045,6 +915,16 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    {
       DataBufferEntry entry = findVariableEntry(nameSpaceEnding, name);
       return entry == null ? null : entry.getVariable();
+   }
+
+   public DataBufferEntry findVariableEntry(String name)
+   {
+      int separatorIndex = name.lastIndexOf(YoTools.NAMESPACE_SEPERATOR_STRING);
+
+      if (separatorIndex == -1)
+         return findVariableEntry(null, name);
+      else
+         return findVariableEntry(name.substring(0, separatorIndex), name.substring(separatorIndex + 1));
    }
 
    public DataBufferEntry findVariableEntry(String nameSpaceEnding, String name)
@@ -1125,6 +1005,24 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
          }
       }
 
+      return result;
+   }
+
+   @Override
+   public List<YoVariable> filterVariables(Predicate<YoVariable> filter)
+   {
+      return filterVariableEntries(filter).stream().map(DataBufferEntry::getVariable).collect(Collectors.toList());
+   }
+
+   public List<DataBufferEntry> filterVariableEntries(Predicate<YoVariable> filter)
+   {
+      List<DataBufferEntry> result = new ArrayList<>();
+
+      for (DataBufferEntry entry : entries)
+      {
+         if (filter.test(entry.getVariable()))
+            result.add(entry);
+      }
       return result;
    }
 
