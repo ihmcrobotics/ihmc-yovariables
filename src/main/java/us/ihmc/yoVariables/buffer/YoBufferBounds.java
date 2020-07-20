@@ -1,4 +1,4 @@
-package us.ihmc.yoVariables.dataBuffer;
+package us.ihmc.yoVariables.buffer;
 
 /**
  * This class is used to store the lower and upper bounds to a series of double values typically

@@ -1,5 +1,6 @@
-package us.ihmc.yoVariables.dataBuffer;
+package us.ihmc.yoVariables.buffer.interfaces;
 
+import us.ihmc.yoVariables.buffer.YoBuffer;
 import us.ihmc.yoVariables.registry.YoVariableHolder;
 
 /**

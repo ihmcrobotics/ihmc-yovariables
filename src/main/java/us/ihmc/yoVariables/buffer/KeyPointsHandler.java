@@ -1,10 +1,12 @@
-package us.ihmc.yoVariables.dataBuffer;
+package us.ihmc.yoVariables.buffer;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import us.ihmc.yoVariables.dataBuffer.KeyPointsChangedListener.Change;
+import us.ihmc.yoVariables.buffer.interfaces.KeyPointsChangedListener;
+import us.ihmc.yoVariables.buffer.interfaces.KeyPointsHolder;
+import us.ihmc.yoVariables.buffer.interfaces.KeyPointsChangedListener.Change;
 
 /**
  * This class allows to select and store buffer indices as key points.

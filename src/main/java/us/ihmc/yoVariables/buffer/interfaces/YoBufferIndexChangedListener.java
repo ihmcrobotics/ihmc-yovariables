@@ -1,4 +1,4 @@
-package us.ihmc.yoVariables.dataBuffer;
+package us.ihmc.yoVariables.buffer.interfaces;
 
 public interface YoBufferIndexChangedListener
 {

@@ -1,5 +1,6 @@
-package us.ihmc.yoVariables.dataBuffer;
+package us.ihmc.yoVariables.buffer.interfaces;
 
+import us.ihmc.yoVariables.buffer.YoBufferBounds;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 public interface YoBufferVariableEntryReader

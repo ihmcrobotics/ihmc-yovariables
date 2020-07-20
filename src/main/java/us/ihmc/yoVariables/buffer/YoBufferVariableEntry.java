@@ -1,7 +1,8 @@
-package us.ihmc.yoVariables.dataBuffer;
+package us.ihmc.yoVariables.buffer;
 
 import java.util.Arrays;
 
+import us.ihmc.yoVariables.buffer.interfaces.YoBufferVariableEntryReader;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 public class YoBufferVariableEntry implements YoBufferVariableEntryReader

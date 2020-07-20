@@ -1,4 +1,4 @@
-package us.ihmc.yoVariables.dataBuffer;
+package us.ihmc.yoVariables.buffer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,6 +8,11 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import us.ihmc.log.LogTools;
+import us.ihmc.yoVariables.buffer.interfaces.YoBufferIndexChangedListener;
+import us.ihmc.yoVariables.buffer.interfaces.YoBufferProcessor;
+import us.ihmc.yoVariables.buffer.interfaces.YoBufferReader;
+import us.ihmc.yoVariables.buffer.interfaces.YoBufferVariableEntryHolder;
+import us.ihmc.yoVariables.buffer.interfaces.YoTimeBufferHolder;
 import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoVariableHolder;
 import us.ihmc.yoVariables.tools.YoTools;

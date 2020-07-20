@@ -1,4 +1,6 @@
-package us.ihmc.yoVariables.dataBuffer;
+package us.ihmc.yoVariables.buffer.interfaces;
+
+import us.ihmc.yoVariables.buffer.KeyPointsHandler;
 
 /**
  * Base interface for a class that manages a collection of buffer key points.
