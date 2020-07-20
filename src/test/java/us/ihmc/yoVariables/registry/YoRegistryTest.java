@@ -54,7 +54,7 @@ public class YoRegistryTest
       listener = new YoRegistryChangedListener()
       {
          @Override
-         public void onChanged(Change change)
+         public void changed(Change change)
          {
             if (change.wasVariableAdded())
                lastRegisteredVariable = change.getTargetVariable();

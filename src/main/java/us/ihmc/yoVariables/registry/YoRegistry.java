@@ -796,7 +796,7 @@ public class YoRegistry implements YoVariableHolder
          change = new RegistryChange(targetParentRegistry, targetRegistry, targetVariable, type);
          for (YoRegistryChangedListener listener : changedListeners)
          {
-            listener.onChanged(change);
+            listener.changed(change);
          }
       }
 

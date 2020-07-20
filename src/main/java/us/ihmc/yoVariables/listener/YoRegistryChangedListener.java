@@ -14,7 +14,7 @@ public interface YoRegistryChangedListener
     * @param change an object representing the change that was done.
     * @see Change
     */
-   void onChanged(Change change);
+   void changed(Change change);
 
    /**
     * Represents a report of a single change done to a {@link YoRegistry}.
