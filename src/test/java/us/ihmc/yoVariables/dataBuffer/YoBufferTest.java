@@ -22,7 +22,7 @@ import us.ihmc.yoVariables.variable.YoEnum;
 import us.ihmc.yoVariables.variable.YoInteger;
 import us.ihmc.yoVariables.variable.YoVariable;
 
-public class DataBufferTest
+public class YoBufferTest
 {
    private final int testBufferSize = 100;
 
@@ -36,10 +36,10 @@ public class DataBufferTest
    private YoBoolean yoBoolean;
    private YoInteger yoInteger;
    private YoRegistry registry;
-   private DataBuffer dataBuffer = new DataBuffer(testBufferSize);
+   private YoBuffer dataBuffer = new YoBuffer(testBufferSize);
 
    private YoDouble a, b, c;
-   private DataBufferEntry aBuffer, bBuffer, cBuffer;
+   private YoBufferVariableEntry aBuffer, bBuffer, cBuffer;
 
    @BeforeEach
    public void setUp()
@@ -54,9 +54,9 @@ public class DataBufferTest
       b = new YoDouble("b_arm", registry);
       c = new YoDouble("c_arm", registry);
 
-      aBuffer = new DataBufferEntry(a, testBufferSize);
-      bBuffer = new DataBufferEntry(b, testBufferSize);
-      cBuffer = new DataBufferEntry(c, testBufferSize);
+      aBuffer = new YoBufferVariableEntry(a, testBufferSize);
+      bBuffer = new YoBufferVariableEntry(b, testBufferSize);
+      cBuffer = new YoBufferVariableEntry(c, testBufferSize);
    }
 
    @AfterEach
@@ -77,17 +77,17 @@ public class DataBufferTest
    @Test // timeout = 300000
    public void testAddAndGetEntry()
    {
-      DataBufferEntry doubleDataBufferEntryTest = new DataBufferEntry(yoDouble, testBufferSize);
-      DataBufferEntry booleanDataBufferEntryTest = new DataBufferEntry(yoBoolean, testBufferSize);
-      DataBufferEntry integerDataBufferEntryTest = new DataBufferEntry(yoInteger, testBufferSize);
-      DataBufferEntry enumDataBufferEntryTest = new DataBufferEntry(yoEnum, testBufferSize);
+      YoBufferVariableEntry doubleDataBufferEntryTest = new YoBufferVariableEntry(yoDouble, testBufferSize);
+      YoBufferVariableEntry booleanDataBufferEntryTest = new YoBufferVariableEntry(yoBoolean, testBufferSize);
+      YoBufferVariableEntry integerDataBufferEntryTest = new YoBufferVariableEntry(yoInteger, testBufferSize);
+      YoBufferVariableEntry enumDataBufferEntryTest = new YoBufferVariableEntry(yoEnum, testBufferSize);
       dataBuffer.addEntry(doubleDataBufferEntryTest);
       dataBuffer.addEntry(booleanDataBufferEntryTest);
       dataBuffer.addEntry(integerDataBufferEntryTest);
       dataBuffer.addEntry(enumDataBufferEntryTest);
 
-      DataBufferEntry testEntryReceivedViaString = dataBuffer.findVariableEntry("yoDouble");
-      DataBufferEntry testEntryReceivedViaVariableName = dataBuffer.getEntry(yoDouble);
+      YoBufferVariableEntry testEntryReceivedViaString = dataBuffer.findVariableEntry("yoDouble");
+      YoBufferVariableEntry testEntryReceivedViaVariableName = dataBuffer.getEntry(yoDouble);
       assertEquals(doubleDataBufferEntryTest, testEntryReceivedViaString);
       assertEquals(doubleDataBufferEntryTest, testEntryReceivedViaVariableName);
 
@@ -116,10 +116,10 @@ public class DataBufferTest
       dataBuffer.addVariable(yoInteger);
       dataBuffer.addVariable(yoEnum);
 
-      DataBufferEntry doubleDataBufferEntryTest = new DataBufferEntry(yoDouble, testBufferSize);
-      DataBufferEntry booleanDataBufferEntryTest = new DataBufferEntry(yoBoolean, testBufferSize);
-      DataBufferEntry integerDataBufferEntryTest = new DataBufferEntry(yoInteger, testBufferSize);
-      DataBufferEntry enumDataBufferEntryTest = new DataBufferEntry(yoEnum, testBufferSize);
+      YoBufferVariableEntry doubleDataBufferEntryTest = new YoBufferVariableEntry(yoDouble, testBufferSize);
+      YoBufferVariableEntry booleanDataBufferEntryTest = new YoBufferVariableEntry(yoBoolean, testBufferSize);
+      YoBufferVariableEntry integerDataBufferEntryTest = new YoBufferVariableEntry(yoInteger, testBufferSize);
+      YoBufferVariableEntry enumDataBufferEntryTest = new YoBufferVariableEntry(yoEnum, testBufferSize);
 
       assertTrue(doubleDataBufferEntryTest.getVariable() == dataBuffer.getEntry(yoDouble).getVariable());
       assertTrue(booleanDataBufferEntryTest.getVariable() == dataBuffer.getEntry(yoBoolean).getVariable());
@@ -180,11 +180,11 @@ public class DataBufferTest
    @Test // timeout = 300000
    public void testGetEntries()
    {
-      ArrayList<DataBufferEntry> expectedDataEntries = new ArrayList<>();
-      DataBufferEntry doubleDataBufferEntryTest = new DataBufferEntry(yoDouble, testBufferSize);
-      DataBufferEntry booleanDataBufferEntryTest = new DataBufferEntry(yoBoolean, testBufferSize);
-      DataBufferEntry integerDataBufferEntryTest = new DataBufferEntry(yoInteger, testBufferSize);
-      DataBufferEntry enumDataBufferEntryTest = new DataBufferEntry(yoEnum, testBufferSize);
+      ArrayList<YoBufferVariableEntry> expectedDataEntries = new ArrayList<>();
+      YoBufferVariableEntry doubleDataBufferEntryTest = new YoBufferVariableEntry(yoDouble, testBufferSize);
+      YoBufferVariableEntry booleanDataBufferEntryTest = new YoBufferVariableEntry(yoBoolean, testBufferSize);
+      YoBufferVariableEntry integerDataBufferEntryTest = new YoBufferVariableEntry(yoInteger, testBufferSize);
+      YoBufferVariableEntry enumDataBufferEntryTest = new YoBufferVariableEntry(yoEnum, testBufferSize);
 
       dataBuffer.addEntry(doubleDataBufferEntryTest);
       dataBuffer.addEntry(booleanDataBufferEntryTest);
@@ -247,7 +247,7 @@ public class DataBufferTest
    @Test // timeout = 300000
    public void testEnlargeBufferSize()
    {
-      DataBufferEntry doubleDataBufferEntryTest = new DataBufferEntry(yoDouble, testBufferSize);
+      YoBufferVariableEntry doubleDataBufferEntryTest = new YoBufferVariableEntry(yoDouble, testBufferSize);
       dataBuffer.addEntry(doubleDataBufferEntryTest);
 
       int originalBufferSize = dataBuffer.getBufferSize();
@@ -261,7 +261,7 @@ public class DataBufferTest
    @Test // timeout = 300000
    public void testDecreaseBufferSize()
    {
-      DataBufferEntry doubleDataBufferEntryTest = new DataBufferEntry(yoDouble, testBufferSize);
+      YoBufferVariableEntry doubleDataBufferEntryTest = new YoBufferVariableEntry(yoDouble, testBufferSize);
       dataBuffer.addEntry(doubleDataBufferEntryTest);
 
       int originalBufferSize = dataBuffer.getBufferSize();
@@ -456,12 +456,12 @@ public class DataBufferTest
       Random random = new Random(574893);
       fillDataBufferWithRandomData(random);
 
-      List<DataBufferEntry> entries = dataBuffer.getEntries();
+      List<YoBufferVariableEntry> entries = dataBuffer.getEntries();
 
       // check that each point for each entry is filled with random data
       for (int i = 0; i < entries.size(); i++)
       {
-         DataBufferEntry dataBufferEntry = entries.get(i);
+         YoBufferVariableEntry dataBufferEntry = entries.get(i);
          double[] data = dataBufferEntry.getBuffer();
          for (int j = 0; j < data.length - 1; j++)
          {
@@ -477,7 +477,7 @@ public class DataBufferTest
       // each point for each entry should now equal the current value of the entry's YoVariable
       for (int i = 0; i < entries.size(); i++)
       {
-         DataBufferEntry dataBufferEntry = entries.get(i);
+         YoBufferVariableEntry dataBufferEntry = entries.get(i);
          YoVariable variable = dataBufferEntry.getVariable();
          double[] data = dataBufferEntry.getBuffer();
          for (int j = 0; j < data.length - 1; j++)
@@ -522,18 +522,18 @@ public class DataBufferTest
 
       for (int i = 0; i < TEST_ITERATIONS; i++)
       {
-         DataBuffer dataBufferClone = new DataBuffer(dataBuffer);
+         YoBuffer dataBufferClone = new YoBuffer(dataBuffer);
          int newIndex = random.nextInt(testBufferSize);
          dataBuffer.setCurrentIndex(newIndex);
          int newStartLocation = random.nextInt(testBufferSize);
          dataBuffer.packData(newStartLocation);
 
-         List<DataBufferEntry> entries = dataBuffer.getEntries();
-         List<DataBufferEntry> entriesClone = dataBufferClone.getEntries();
+         List<YoBufferVariableEntry> entries = dataBuffer.getEntries();
+         List<YoBufferVariableEntry> entriesClone = dataBufferClone.getEntries();
          for (int j = 0; j < dataBuffer.getEntries().size(); j++)
          {
-            DataBufferEntry entry = entries.get(j);
-            DataBufferEntry entryClone = entriesClone.get(j);
+            YoBufferVariableEntry entry = entries.get(j);
+            YoBufferVariableEntry entryClone = entriesClone.get(j);
 
             double[] data = entry.getBuffer();
             double[] dataClone = entryClone.getBuffer();
@@ -577,27 +577,27 @@ public class DataBufferTest
    @Test // timeout = 30000
    public void testCheckIfDataIsEqual()
    {
-      DataBuffer dataBuffer = new DataBuffer(0);
-      DataBuffer otherDataBuffer = new DataBuffer(0);
+      YoBuffer dataBuffer = new YoBuffer(0);
+      YoBuffer otherDataBuffer = new YoBuffer(0);
 
       assertTrue(dataBuffer.checkIfDataIsEqual(otherDataBuffer, 1e-6));
 
       YoRegistry dataBufferRegistry = new YoRegistry("dataBufferRegistry");
       YoDouble dataBufferYoDouble = new YoDouble("dataBufferYoDouble", dataBufferRegistry);
-      DataBufferEntry dataBufferEntry = new DataBufferEntry(dataBufferYoDouble, 0);
+      YoBufferVariableEntry dataBufferEntry = new YoBufferVariableEntry(dataBufferYoDouble, 0);
       dataBuffer.addEntry(dataBufferEntry);
 
       assertFalse(dataBuffer.checkIfDataIsEqual(otherDataBuffer, 1));
 
       YoRegistry otherDataBufferRegistry = new YoRegistry("otherDataBufferRegistry");
       YoDouble otherDataBufferYoDouble = new YoDouble("otherDataBufferYoDouble", otherDataBufferRegistry);
-      DataBufferEntry otherDataBufferEntry = new DataBufferEntry(otherDataBufferYoDouble, 0);
+      YoBufferVariableEntry otherDataBufferEntry = new YoBufferVariableEntry(otherDataBufferYoDouble, 0);
       otherDataBuffer.addEntry(otherDataBufferEntry);
 
       assertFalse(dataBuffer.checkIfDataIsEqual(otherDataBuffer, 1e-6));
 
-      dataBuffer = new DataBuffer(testBufferSize);
-      otherDataBuffer = new DataBuffer(testBufferSize);
+      dataBuffer = new YoBuffer(testBufferSize);
+      otherDataBuffer = new YoBuffer(testBufferSize);
 
       dataBuffer.addVariable(dataBufferYoDouble);
       otherDataBuffer.addVariable(dataBufferYoDouble);
@@ -620,7 +620,7 @@ public class DataBufferTest
    {
       Random random = new Random(19824);
       fillDataBufferWithRandomData(random);
-      DataBuffer dataBufferClone = new DataBuffer(dataBuffer);
+      YoBuffer dataBufferClone = new YoBuffer(dataBuffer);
 
       assertTrue(dataBuffer.checkIfDataIsEqual(dataBufferClone, 1e-6));
    }
@@ -670,7 +670,7 @@ public class DataBufferTest
       // this is true when the entire buffer is cut
       assertTrue(dataBuffer.getBufferSize() == testBufferSize);
 
-      for (DataBufferEntry entry : dataBuffer.getEntries())
+      for (YoBufferVariableEntry entry : dataBuffer.getEntries())
       {
          for (double d : entry.getBuffer())
          {
@@ -691,7 +691,7 @@ public class DataBufferTest
       assertTrue(dataBuffer.getOutPoint() == testBufferSize - 1);
 
       // Create a copy of dataBuffer before it is modified
-      DataBuffer unmodifiedDataBuffer = new DataBuffer(dataBuffer);
+      YoBuffer unmodifiedDataBuffer = new YoBuffer(dataBuffer);
 
       for (int i = 0; i < TEST_ITERATIONS; i++)
       {
@@ -702,8 +702,8 @@ public class DataBufferTest
 
          for (int j = 0; j < dataBuffer.getEntries().size(); j++)
          {
-            DataBufferEntry cutEntry = dataBuffer.getEntries().get(j);
-            DataBufferEntry unmodifiedEntry = unmodifiedDataBuffer.getEntries().get(j);
+            YoBufferVariableEntry cutEntry = dataBuffer.getEntries().get(j);
+            YoBufferVariableEntry unmodifiedEntry = unmodifiedDataBuffer.getEntries().get(j);
 
             for (int k = 0; k < cutEntry.getBuffer().length; k++)
             {
@@ -744,7 +744,7 @@ public class DataBufferTest
          }
 
          // Restore dataBuffer for the next iteration
-         dataBuffer = new DataBuffer(unmodifiedDataBuffer);
+         dataBuffer = new YoBuffer(unmodifiedDataBuffer);
       }
    }
 
@@ -755,7 +755,7 @@ public class DataBufferTest
       Random random = new Random(246370);
       fillDataBufferWithRandomData(random);
 
-      DataBuffer unmodifiedDataBuffer = new DataBuffer(dataBuffer);
+      YoBuffer unmodifiedDataBuffer = new YoBuffer(dataBuffer);
 
       for (int i = 0; i < TEST_ITERATIONS; i++)
       {
@@ -764,8 +764,8 @@ public class DataBufferTest
 
          for (int j = 0; j < dataBuffer.getEntries().size(); j++)
          {
-            DataBufferEntry thinnedEntry = dataBuffer.getEntries().get(j);
-            DataBufferEntry unmodifiedEntry = unmodifiedDataBuffer.getEntries().get(j);
+            YoBufferVariableEntry thinnedEntry = dataBuffer.getEntries().get(j);
+            YoBufferVariableEntry unmodifiedEntry = unmodifiedDataBuffer.getEntries().get(j);
 
             for (int k = 0; k < thinnedEntry.getBuffer().length; k++)
             {
@@ -787,7 +787,7 @@ public class DataBufferTest
             }
          }
 
-         dataBuffer = new DataBuffer(unmodifiedDataBuffer);
+         dataBuffer = new YoBuffer(unmodifiedDataBuffer);
       }
    }
 

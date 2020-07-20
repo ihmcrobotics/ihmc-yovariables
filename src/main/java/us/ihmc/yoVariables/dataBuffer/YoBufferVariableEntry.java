@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import us.ihmc.yoVariables.variable.YoVariable;
 
-public class DataBufferEntry implements DataEntry
+public class YoBufferVariableEntry implements DataEntry
 {
    private final YoVariable variable;
    private double[] bufferData;
@@ -17,13 +17,13 @@ public class DataBufferEntry implements DataEntry
 
    private boolean inverted = false;
 
-   public DataBufferEntry(YoVariable variable, int bufferSize)
+   public YoBufferVariableEntry(YoVariable variable, int bufferSize)
    {
       this.variable = variable;
       clear(bufferSize);
    }
 
-   public DataBufferEntry(DataBufferEntry other)
+   public YoBufferVariableEntry(YoBufferVariableEntry other)
    {
       this.variable = other.getVariable();
       bufferData = Arrays.copyOf(other.bufferData, other.getBufferSize());
@@ -362,7 +362,7 @@ public class DataBufferEntry implements DataEntry
       return currentBounds;
    }
 
-   public boolean checkIfDataIsEqual(DataBufferEntry other, int inPoint, int outPoint, double epsilon)
+   public boolean checkIfDataIsEqual(YoBufferVariableEntry other, int inPoint, int outPoint, double epsilon)
    {
       if (inPoint >= bufferData.length)
          return false;

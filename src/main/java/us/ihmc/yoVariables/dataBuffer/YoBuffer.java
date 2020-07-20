@@ -13,7 +13,7 @@ import us.ihmc.yoVariables.registry.YoVariableHolder;
 import us.ihmc.yoVariables.tools.YoTools;
 import us.ihmc.yoVariables.variable.YoVariable;
 
-public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor, TimeDataHolder, DataEntryHolder
+public class YoBuffer implements YoVariableHolder, YoBufferReader, TimeDataHolder, DataEntryHolder
 {
    private String timeVariableName = "t";
 
@@ -22,20 +22,20 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    private int currentIndex = 0;
    private int bufferSize;
 
-   private final ArrayList<DataBufferEntry> entries = new ArrayList<>();
-   private final HashMap<String, List<DataBufferEntry>> simpleNameToEntriesMap = new HashMap<>();
+   private final ArrayList<YoBufferVariableEntry> entries = new ArrayList<>();
+   private final HashMap<String, List<YoBufferVariableEntry>> simpleNameToEntriesMap = new HashMap<>();
 
    private final KeyPointsHandler keyPointsHandler = new KeyPointsHandler();
    private final List<BufferIndexChangedListener> indexChangedListeners = new ArrayList<>();
 
    private boolean lockIndex = false;
 
-   public DataBuffer(int bufferSize)
+   public YoBuffer(int bufferSize)
    {
       this.bufferSize = bufferSize;
    }
 
-   public DataBuffer(DataBuffer other)
+   public YoBuffer(YoBuffer other)
    {
       inPoint = other.inPoint;
       outPoint = other.outPoint;
@@ -43,8 +43,8 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       bufferSize = other.bufferSize;
       lockIndex = other.lockIndex;
 
-      for (DataBufferEntry otherEntry : other.entries)
-         addEntry(new DataBufferEntry(otherEntry));
+      for (YoBufferVariableEntry otherEntry : other.entries)
+         addEntry(new YoBufferVariableEntry(otherEntry));
    }
 
    public void clear()
@@ -68,7 +68,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       return bufferSize;
    }
 
-   public void addEntry(DataBufferEntry entry)
+   public void addEntry(YoBufferVariableEntry entry)
    {
       if (entry.getBufferSize() != bufferSize)
          throw new IllegalArgumentException("The new entry size (" + entry.getBufferSize() + ") does not match the buffer size (" + bufferSize + ").");
@@ -76,7 +76,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       entries.add(entry);
 
       String variableName = entry.getVariable().getName().toLowerCase();
-      List<DataBufferEntry> entryList = simpleNameToEntriesMap.get(variableName);
+      List<YoBufferVariableEntry> entryList = simpleNameToEntriesMap.get(variableName);
       if (entryList == null)
       {
          entryList = new ArrayList<>();
@@ -85,9 +85,9 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       entryList.add(entry);
    }
 
-   public DataBufferEntry addVariable(YoVariable variable)
+   public YoBufferVariableEntry addVariable(YoVariable variable)
    {
-      DataBufferEntry entry = new DataBufferEntry(variable, bufferSize);
+      YoBufferVariableEntry entry = new YoBufferVariableEntry(variable, bufferSize);
       addEntry(entry);
       return entry;
    }
@@ -104,9 +104,9 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    }
 
    @Override
-   public DataBufferEntry getEntry(YoVariable variable)
+   public YoBufferVariableEntry getEntry(YoVariable variable)
    {
-      for (DataBufferEntry entry : entries)
+      for (YoBufferVariableEntry entry : entries)
       {
          if (entry.getVariable() == variable)
          {
@@ -117,7 +117,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       return null;
    }
 
-   public List<DataBufferEntry> getEntries()
+   public List<YoBufferVariableEntry> getEntries()
    {
       return entries;
    }
@@ -125,7 +125,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    @Override
    public List<YoVariable> getVariables()
    {
-      return entries.stream().map(DataBufferEntry::getVariable).collect(Collectors.toList());
+      return entries.stream().map(YoBufferVariableEntry::getVariable).collect(Collectors.toList());
    }
 
    public void clearAll(int bufferSize)
@@ -151,7 +151,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    {
       for (int i = 0; i < entries.size(); i++)
       {
-         DataBufferEntry entry = entries.get(i);
+         YoBufferVariableEntry entry = entries.get(i);
          entry.enlargeBufferSize(newSize);
       }
 
@@ -162,7 +162,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    {
       for (int i = 0; i < entries.size(); i++)
       {
-         DataBufferEntry entry = entries.get(i);
+         YoBufferVariableEntry entry = entries.get(i);
 
          entry.copyValueThrough();
       }
@@ -203,7 +203,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       // Shift the data in each entry to begin with start.
       for (int i = 0; i < entries.size(); i++)
       {
-         DataBufferEntry entry = entries.get(i);
+         YoBufferVariableEntry entry = entries.get(i);
 
          entry.packData(start);
       }
@@ -248,13 +248,13 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
 
       if (entries.isEmpty())
       {
-         bufferSize = DataBufferEntry.computeBufferSizeAfterCrop(start, end, bufferSize);
+         bufferSize = YoBufferVariableEntry.computeBufferSizeAfterCrop(start, end, bufferSize);
       }
 
       // Step through the entries cropping and resizing the data set for each
       for (int i = 0; i < entries.size(); i++)
       {
-         DataBufferEntry entry = entries.get(i);
+         YoBufferVariableEntry entry = entries.get(i);
          int retSize = entry.cropData(start, end);
 
          // If the result is a positive number store the new buffer size otherwise keep the original size
@@ -299,13 +299,13 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
 
       if (entries.isEmpty())
       {
-         bufferSize = DataBufferEntry.computeBufferSizeAfterCut(start, end, bufferSize);
+         bufferSize = YoBufferVariableEntry.computeBufferSizeAfterCut(start, end, bufferSize);
       }
 
       // Step through the entries cutting and resizing the data set for each
       for (int i = 0; i < entries.size(); i++)
       {
-         DataBufferEntry entry = entries.get(i);
+         YoBufferVariableEntry entry = entries.get(i);
          int retSize = entry.cutData(start, end);
 
          // If the result is a positive number store the new buffer size otherwise keep the original size
@@ -345,7 +345,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       // Step through the entries cutting and resizing the data set for each
       for (int i = 0; i < entries.size(); i++)
       {
-         DataBufferEntry entry = entries.get(i);
+         YoBufferVariableEntry entry = entries.get(i);
          int retSize = entry.thinData(keepEveryNthPoint);
 
          // If the result is a positive number store the new buffer size otherwise keep the original size
@@ -362,7 +362,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
 
    public double computeAverage(YoVariable variable)
    {
-      DataBufferEntry entry = getEntry(variable);
+      YoBufferVariableEntry entry = getEntry(variable);
       return entry.computeAverage();
    }
 
@@ -575,10 +575,10 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       tickAndReadFromBuffer(-1);
    }
 
-   public boolean checkIfDataIsEqual(DataBuffer dataBuffer, double epsilon)
+   public boolean checkIfDataIsEqual(YoBuffer dataBuffer, double epsilon)
    {
-      ArrayList<DataBufferEntry> thisEntries = entries;
-      ArrayList<DataBufferEntry> entries = dataBuffer.entries;
+      ArrayList<YoBufferVariableEntry> thisEntries = entries;
+      ArrayList<YoBufferVariableEntry> entries = dataBuffer.entries;
 
       if (thisEntries.size() != entries.size())
       {
@@ -587,10 +587,10 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
          return false;
       }
 
-      for (DataBufferEntry entry : entries)
+      for (YoBufferVariableEntry entry : entries)
       {
          YoVariable variable = entry.getVariable();
-         DataBufferEntry entry2 = findVariableEntry(variable.getName());
+         YoBufferVariableEntry entry2 = findVariableEntry(variable.getName());
 
          if (entry2 == null)
          {
@@ -651,11 +651,11 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    @Override
    public YoVariable findVariable(String nameSpaceEnding, String name)
    {
-      DataBufferEntry entry = findVariableEntry(nameSpaceEnding, name);
+      YoBufferVariableEntry entry = findVariableEntry(nameSpaceEnding, name);
       return entry == null ? null : entry.getVariable();
    }
 
-   public DataBufferEntry findVariableEntry(String name)
+   public YoBufferVariableEntry findVariableEntry(String name)
    {
       int separatorIndex = name.lastIndexOf(YoTools.NAMESPACE_SEPERATOR_STRING);
 
@@ -665,10 +665,10 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
          return findVariableEntry(name.substring(0, separatorIndex), name.substring(separatorIndex + 1));
    }
 
-   public DataBufferEntry findVariableEntry(String nameSpaceEnding, String name)
+   public YoBufferVariableEntry findVariableEntry(String nameSpaceEnding, String name)
    {
       YoTools.checkNameDoesNotContainSeparator(name);
-      List<DataBufferEntry> entryList = simpleNameToEntriesMap.get(name.toLowerCase());
+      List<YoBufferVariableEntry> entryList = simpleNameToEntriesMap.get(name.toLowerCase());
 
       if (entryList == null || entryList.isEmpty())
          return null;
@@ -681,7 +681,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       {
          for (int i = 0; i < entryList.size(); i++)
          {
-            DataBufferEntry candidate = entryList.get(i);
+            YoBufferVariableEntry candidate = entryList.get(i);
 
             if (candidate.getVariable().getNameSpace().endsWith(nameSpaceEnding, true))
                return candidate;
@@ -694,18 +694,18 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    @Override
    public List<YoVariable> findVariables(String nameSpaceEnding, String name)
    {
-      return findVariableEntries(nameSpaceEnding, name).stream().map(DataBufferEntry::getVariable).collect(Collectors.toList());
+      return findVariableEntries(nameSpaceEnding, name).stream().map(YoBufferVariableEntry::getVariable).collect(Collectors.toList());
    }
 
-   public List<DataBufferEntry> findVariableEntries(String nameSpaceEnding, String name)
+   public List<YoBufferVariableEntry> findVariableEntries(String nameSpaceEnding, String name)
    {
       YoTools.checkNameDoesNotContainSeparator(name);
-      List<DataBufferEntry> entryList = simpleNameToEntriesMap.get(name.toLowerCase());
+      List<YoBufferVariableEntry> entryList = simpleNameToEntriesMap.get(name.toLowerCase());
 
       if (entryList == null || entryList.isEmpty())
          return Collections.emptyList();
 
-      List<DataBufferEntry> result = new ArrayList<>();
+      List<YoBufferVariableEntry> result = new ArrayList<>();
 
       if (nameSpaceEnding == null)
       {
@@ -715,7 +715,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       {
          for (int i = 0; i < entryList.size(); i++)
          {
-            DataBufferEntry candidate = entryList.get(i);
+            YoBufferVariableEntry candidate = entryList.get(i);
 
             if (candidate.getVariable().getNameSpace().endsWith(nameSpaceEnding, true))
                result.add(candidate);
@@ -728,14 +728,14 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    @Override
    public List<YoVariable> findVariables(NameSpace nameSpace)
    {
-      return findVariableEntries(nameSpace).stream().map(DataBufferEntry::getVariable).collect(Collectors.toList());
+      return findVariableEntries(nameSpace).stream().map(YoBufferVariableEntry::getVariable).collect(Collectors.toList());
    }
 
-   public List<DataBufferEntry> findVariableEntries(NameSpace nameSpace)
+   public List<YoBufferVariableEntry> findVariableEntries(NameSpace nameSpace)
    {
-      List<DataBufferEntry> result = new ArrayList<>();
+      List<YoBufferVariableEntry> result = new ArrayList<>();
 
-      for (DataBufferEntry entry : entries)
+      for (YoBufferVariableEntry entry : entries)
       {
          if (entry.getVariable().getNameSpace().equals(nameSpace))
          {
@@ -749,14 +749,14 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    @Override
    public List<YoVariable> filterVariables(Predicate<YoVariable> filter)
    {
-      return filterVariableEntries(filter).stream().map(DataBufferEntry::getVariable).collect(Collectors.toList());
+      return filterVariableEntries(filter).stream().map(YoBufferVariableEntry::getVariable).collect(Collectors.toList());
    }
 
-   public List<DataBufferEntry> filterVariableEntries(Predicate<YoVariable> filter)
+   public List<YoBufferVariableEntry> filterVariableEntries(Predicate<YoVariable> filter)
    {
-      List<DataBufferEntry> result = new ArrayList<>();
+      List<YoBufferVariableEntry> result = new ArrayList<>();
 
-      for (DataBufferEntry entry : entries)
+      for (YoBufferVariableEntry entry : entries)
       {
          if (filter.test(entry.getVariable()))
             result.add(entry);
@@ -773,7 +773,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
 
    private int countNumberOfEntries(String parentNameSpace, String name)
    {
-      List<DataBufferEntry> entryList = simpleNameToEntriesMap.get(name.toLowerCase());
+      List<YoBufferVariableEntry> entryList = simpleNameToEntriesMap.get(name.toLowerCase());
 
       if (entryList == null || entryList.isEmpty())
          return 0;

@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 
 import us.ihmc.yoVariables.variable.YoDouble;
 
-public class DataBufferEntryTest
+public class YoBufferVariableEntryTest
 {
    private YoDouble yoDouble;
-   private DataBufferEntry dataBufferEntry;
+   private YoBufferVariableEntry dataBufferEntry;
    private int nPoints = 10000;
 
    @BeforeEach
@@ -23,7 +23,7 @@ public class DataBufferEntryTest
    {
       yoDouble = new YoDouble("yoDouble", null);
       yoDouble.set(0);
-      dataBufferEntry = new DataBufferEntry(yoDouble, nPoints);
+      dataBufferEntry = new YoBufferVariableEntry(yoDouble, nPoints);
    }
 
    @AfterEach
@@ -108,7 +108,7 @@ public class DataBufferEntryTest
       double epsilon = 0;
       YoDouble yoDouble2 = new YoDouble("yoDouble2", null);
       yoDouble2.set(0);
-      DataBufferEntry entry2 = new DataBufferEntry(yoDouble2, nPoints);
+      YoBufferVariableEntry entry2 = new YoBufferVariableEntry(yoDouble2, nPoints);
 
       for (int i = 0; i < nPoints; i++)
       {
@@ -125,8 +125,8 @@ public class DataBufferEntryTest
 
       dataBufferEntry = entry2 = null;
 
-      dataBufferEntry = new DataBufferEntry(yoDouble, nPoints);
-      entry2 = new DataBufferEntry(yoDouble2, nPoints);
+      dataBufferEntry = new YoBufferVariableEntry(yoDouble, nPoints);
+      entry2 = new YoBufferVariableEntry(yoDouble2, nPoints);
 
       for (int i = 0; i < nPoints; i++)
       {

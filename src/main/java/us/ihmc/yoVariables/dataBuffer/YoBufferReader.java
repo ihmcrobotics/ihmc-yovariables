@@ -1,6 +1,6 @@
 package us.ihmc.yoVariables.dataBuffer;
 
-public interface DataBufferCommandsExecutor
+public interface YoBufferReader
 {
    int getInPoint();
    
