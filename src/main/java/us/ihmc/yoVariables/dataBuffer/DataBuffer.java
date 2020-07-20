@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import us.ihmc.log.LogTools;
 import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoVariableHolder;
 import us.ihmc.yoVariables.tools.YoTools;
@@ -618,7 +619,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    {
       if (findVariableEntry(timeVariableName) == null)
       {
-         System.err.println("The requested timeVariableName does not exist, change not successful");
+         LogTools.error("The requested timeVariableName does not exist, change not successful");
       }
       else
       {

@@ -12,7 +12,7 @@ public interface DataBufferCommandsExecutor
 
    void setCurrentIndex(int index);
 
-   boolean tickAndReadFromBuffer(int ticks);
+   boolean tickAndReadFromBuffer(int stepSize);
 
    default boolean isIndexBetweenBounds(int indexToCheck)
    {
