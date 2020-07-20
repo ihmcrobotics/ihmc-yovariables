@@ -540,7 +540,7 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
    {
       for (int i = 0; i < indexChangedListeners.size(); i++)
       {
-         indexChangedListeners.get(i).notifyOfIndexChange(currentIndex);
+         indexChangedListeners.get(i).indexChanged(currentIndex);
       }
    }
 
