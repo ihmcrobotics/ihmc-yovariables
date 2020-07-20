@@ -18,14 +18,14 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
 
    private int inPoint = 0;
    private int outPoint = 0;
-   private int index = 0;
+   private int currentIndex = 0;
    private int bufferSize;
 
    private final ArrayList<DataBufferEntry> entries = new ArrayList<>();
    private final HashMap<String, List<DataBufferEntry>> simpleNameToEntriesMap = new HashMap<>();
 
    private final KeyPointsHandler keyPointsHandler = new KeyPointsHandler();
-   private final List<IndexChangedListener> indexChangedListeners = new ArrayList<>();
+   private final List<BufferIndexChangedListener> indexChangedListeners = new ArrayList<>();
 
    private boolean lockIndex = false;
 
@@ -38,7 +38,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    {
       inPoint = other.inPoint;
       outPoint = other.outPoint;
-      index = other.index;
+      currentIndex = other.currentIndex;
       bufferSize = other.bufferSize;
       lockIndex = other.lockIndex;
 
@@ -49,7 +49,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    public void clear()
    {
       entries.clear();
-      index = -1;
+      currentIndex = -1;
    }
 
    public void setLockIndex(boolean lock)
@@ -69,8 +69,8 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
 
    public void addEntry(DataBufferEntry entry)
    {
-      if (entry.getDataLength() != bufferSize)
-         throw new IllegalArgumentException("The new entry size (" + entry.getDataLength() + ") does not match the buffer size (" + bufferSize + ").");
+      if (entry.getBufferSize() != bufferSize)
+         throw new IllegalArgumentException("The new entry size (" + entry.getBufferSize() + ") does not match the buffer size (" + bufferSize + ").");
 
       entries.add(entry);
 
@@ -98,7 +98,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
 
       for (int i = 0; i < variables.size(); i++)
       {
-         this.addVariable(variables.get(i));
+         addVariable(variables.get(i));
       }
    }
 
@@ -208,11 +208,11 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       }
 
       // Move the current index to its relative position in the new data set, if the index is outside of the buffer move to zero
-      index = (index - start + bufferSize) % bufferSize;
+      currentIndex = (currentIndex - start + bufferSize) % bufferSize;
 
-      if (index < 0)
+      if (currentIndex < 0)
       {
-         index = 0;
+         currentIndex = 0;
       }
 
       // Move the inPoint to the new beginning and the outPoint to the end
@@ -220,7 +220,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       outPoint = (outPoint - start + bufferSize) % bufferSize;
 
       // Move to the first tick
-      this.tick(0);
+      tickAndReadFromBuffer(0);
 
       // +++++this.updateUI();
    }
@@ -264,17 +264,12 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       }
 
       // Move the current index to its relative position after the resize
-      index = (index - start + bufferSize) % bufferSize;
+      currentIndex = (currentIndex - start + bufferSize) % bufferSize;
 
       // If the index is out of bounds move it to the beginning
-      if (index < 0)
+      if (currentIndex < 0 || currentIndex >= bufferSize)
       {
-         index = 0;
-      }
-
-      if (index >= bufferSize)
-      {
-         index = 0;
+         currentIndex = 0;
       }
 
       // Set the in point to the beginning and the out point to the end
@@ -282,9 +277,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       outPoint = bufferSize - 1;
 
       // Move to the first tick
-      this.tick(0);
-
-      // +++++this.updateUI();
+      tickAndReadFromBuffer(0);
    }
 
    public void cutData()
@@ -322,17 +315,12 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       }
 
       // Move the current index to its relative position after the resize
-      index = (index - start + bufferSize) % bufferSize;
+      currentIndex = (currentIndex - start + bufferSize) % bufferSize;
 
       // If the index is out of bounds move it to the beginning
-      if (index < 0)
+      if (currentIndex < 0 || currentIndex >= bufferSize)
       {
-         index = 0;
-      }
-
-      if (index >= bufferSize)
-      {
-         index = 0;
+         currentIndex = 0;
       }
 
       // Set the in point to the beginning and the out point to the end
@@ -348,7 +336,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       packData();
 
       inPoint = 0;
-      index = 0;
+      currentIndex = 0;
 
       if (bufferSize <= 2 * keepEveryNthPoint)
          return;
@@ -373,7 +361,7 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
 
    public double computeAverage(YoVariable variable)
    {
-      DataBufferEntry entry = this.getEntry(variable);
+      DataBufferEntry entry = getEntry(variable);
       return entry.computeAverage();
    }
 
@@ -391,12 +379,12 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
 
    public void setInPoint()
    {
-      setInPoint(index);
+      setInPoint(currentIndex);
    }
 
    public void setOutPoint()
    {
-      setOutPoint(index);
+      setOutPoint(currentIndex);
    }
 
    public void setInPoint(int in)
@@ -414,73 +402,67 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
    public void setInOutPointFullBuffer()
    {
       inPoint = 0;
-      outPoint = entries.get(0).getDataLength() - 1;
+      outPoint = entries.get(0).getBufferSize() - 1;
    }
 
    @Override
    public void gotoInPoint()
    {
-      setIndex(inPoint);
+      setCurrentIndex(inPoint);
    }
 
    @Override
    public void gotoOutPoint()
    {
-      setIndex(outPoint);
+      setCurrentIndex(outPoint);
    }
 
    public boolean atInPoint()
    {
-      return index == inPoint;
+      return currentIndex == inPoint;
    }
 
    public boolean atOutPoint()
    {
-      return index == outPoint;
+      return currentIndex == outPoint;
    }
 
    public void setKeyPoint()
    {
-      keyPointsHandler.toggleKeyPoint(index);
+      keyPointsHandler.toggleKeyPoint(currentIndex);
+   }
+
+   public void readFromBuffer()
+   {
+      for (int i = 0; i < entries.size(); i++)
+      {
+         entries.get(i).readFromBufferAt(currentIndex);
+      }
+   }
+
+   public void writeIntoBuffer()
+   {
+      for (int i = 0; i < entries.size(); i++)
+      {
+         entries.get(i).writeIntoBufferAt(currentIndex);
+      }
    }
 
    @Override
-   public void setIndex(int index)
+   public void setCurrentIndex(int index)
    {
       if (lockIndex)
          return;
 
-      this.index = index;
+      currentIndex = index;
 
-      // if (this.index > this.getMaxIndex()) this.index = 0;
-      if (this.index >= bufferSize)
-      {
-         this.index = 0;
-      }
-      else if (this.index < 0)
-      {
-         this.index = bufferSize - 1; // )0;
-      }
+      if (currentIndex >= bufferSize)
+         currentIndex = 0;
+      else if (currentIndex < 0)
+         currentIndex = bufferSize - 1;
 
-      setYoVariableValuesToDataAtIndex();
-
+      readFromBuffer();
       notifyIndexChangedListeners();
-   }
-
-   public void attachIndexChangedListener(IndexChangedListener indexChangedListener)
-   {
-      indexChangedListeners.add(indexChangedListener);
-   }
-
-   public boolean detachIndexChangedListener(IndexChangedListener indexChangedListener)
-   {
-      return indexChangedListeners.remove(indexChangedListener);
-   }
-
-   @Override
-   public int getIndex()
-   {
-      return index;
    }
 
    /**
@@ -492,107 +474,69 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
     * @return Indicates whether or not the index was forced to one of the ends.
     */
    @Override
-   public boolean tick(int ticks)
+   public boolean tickAndReadFromBuffer(int stepSize)
    {
       if (lockIndex)
          return false;
 
-      int newIndex = index + ticks;
+      int newIndex = currentIndex + stepSize;
 
-      boolean rolledOver = !isIndexBetweenInAndOutPoint(newIndex);
+      boolean rolledOver = !isIndexBetweenBounds(newIndex);
 
       if (rolledOver)
       {
-         if (ticks >= 0)
-         {
-            newIndex = inPoint;
-         }
-         else
-         {
-            newIndex = outPoint;
-         }
+         newIndex = stepSize >= 0 ? inPoint : outPoint;
       }
 
-      setIndex(newIndex);
+      setCurrentIndex(newIndex);
 
       return rolledOver;
    }
 
-   public boolean updateAndTick()
+   public void tickAndWriteIntoBuffer()
    {
-      setDataAtIndexToYoVariableValues();
-      boolean ret = tick(1);
-      setYoVariableValuesToDataAtIndex();
+      currentIndex = currentIndex + 1;
 
-      return ret;
-   }
-
-   public boolean updateAndTickBackwards()
-   {
-      setDataAtIndexToYoVariableValues();
-      boolean ret = tick(-1);
-      setYoVariableValuesToDataAtIndex();
-
-      return ret;
-   }
-
-   private void setYoVariableValuesToDataAtIndex()
-   {
-      //noinspection ForLoopReplaceableByForEach (iterators use memory, runs in tight loop)
-      for (int j = 0; j < entries.size(); j++)
-      {
-         DataBufferEntry entry = entries.get(j);
-         entry.setYoVariableValueToDataAtIndex(index);
-      }
-   }
-
-   public void setDataAtIndexToYoVariableValues()
-   {
-      //noinspection ForLoopReplaceableByForEach (iterators use memory, runs in tight loop)
-      for (int j = 0; j < entries.size(); j++)
-      {
-         DataBufferEntry entry = entries.get(j);
-         entry.setDataAtIndexToYoVariableValue(index);
-      }
-   }
-
-   public void tickAndUpdate()
-   {
-      index = index + 1;
-
-      if (index >= bufferSize)
-      {
-         index = 0;
-      }
-
-      if (index < 0)
-      {
-         index = 0;
-      }
+      if (currentIndex >= bufferSize || currentIndex < 0)
+         currentIndex = 0;
 
       // Out point should always be the last recorded tick...
-      outPoint = index;
+      outPoint = currentIndex;
 
       if (outPoint == inPoint)
       {
-         inPoint = inPoint + 1;
+         inPoint++;
 
          if (inPoint >= bufferSize)
-         {
             inPoint = 0;
-         }
       }
 
-      keyPointsHandler.removeKeyPoint(index);
-      setDataAtIndexToYoVariableValues();
+      keyPointsHandler.removeKeyPoint(currentIndex);
+      writeIntoBuffer();
       notifyIndexChangedListeners();
+   }
+
+   public void attachIndexChangedListener(BufferIndexChangedListener indexChangedListener)
+   {
+      indexChangedListeners.add(indexChangedListener);
+   }
+
+   public boolean detachIndexChangedListener(BufferIndexChangedListener indexChangedListener)
+   {
+      return indexChangedListeners.remove(indexChangedListener);
+   }
+
+   @Override
+   public int getCurrentIndex()
+   {
+      return currentIndex;
    }
 
    private void notifyIndexChangedListeners()
    {
       for (int i = 0; i < indexChangedListeners.size(); i++)
       {
-         indexChangedListeners.get(i).notifyOfIndexChange(index);
+         indexChangedListeners.get(i).notifyOfIndexChange(currentIndex);
       }
    }
 
@@ -604,11 +548,13 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       while (!atOutPoint())
       {
          dataProcessingFunction.processData();
-         updateAndTick();
+         writeIntoBuffer();
+         tickAndReadFromBuffer(1);
       }
 
       dataProcessingFunction.processData();
-      updateAndTick();
+      writeIntoBuffer();
+      tickAndReadFromBuffer(1);
    }
 
    public void applyDataProcessingFunctionBackward(DataProcessingFunction dataProcessingFunction)
@@ -619,11 +565,15 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       while (!atInPoint())
       {
          dataProcessingFunction.processData();
-         updateAndTickBackwards();
+
+         writeIntoBuffer();
+         tickAndReadFromBuffer(-1);
       }
 
       dataProcessingFunction.processData();
-      updateAndTickBackwards();
+
+      writeIntoBuffer();
+      tickAndReadFromBuffer(-1);
    }
 
    public boolean checkIfDataIsEqual(DataBuffer dataBuffer, double epsilon)
@@ -685,39 +635,18 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
 
    public int getNextKeyPoint()
    {
-      return keyPointsHandler.getNextKeyPoint(index);
+      return keyPointsHandler.getNextKeyPoint(currentIndex);
    }
 
    public int getPreviousKeyPoint()
    {
-      return keyPointsHandler.getPreviousKeyPoint(index);
+      return keyPointsHandler.getPreviousKeyPoint(currentIndex);
    }
 
    @Override
    public double[] getTimeData()
    {
       return findVariableEntry(timeVariableName).getBuffer();
-   }
-
-   @Override
-   public boolean isIndexBetweenInAndOutPoint(int indexToCheck)
-   {
-      if (inPoint <= outPoint)
-      {
-         if (indexToCheck >= inPoint && indexToCheck <= outPoint)
-         {
-            return true;
-         }
-      }
-      else
-      {
-         if (indexToCheck <= outPoint || indexToCheck > inPoint)
-         {
-            return true;
-         }
-      }
-
-      return false;
    }
 
    @Override

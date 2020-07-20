@@ -44,7 +44,7 @@ public class DataBufferEntryTest
       {
          tempData[i] = (double) random.nextInt(20000) / (double) random.nextInt(30);
          yoDouble.set(tempData[i]);
-         dataBufferEntry.setDataAtIndexToYoVariableValue(i);
+         dataBufferEntry.writeIntoBufferAt(i);
       }
 
       double[] data = dataBufferEntry.getBuffer();
@@ -69,7 +69,7 @@ public class DataBufferEntryTest
          double data = random.nextDouble() * (upperBound - lowerBound) + lowerBound;
          yoDouble.set(data);
          total = total + data;
-         dataBufferEntry.setDataAtIndexToYoVariableValue(i);
+         dataBufferEntry.writeIntoBufferAt(i);
       }
 
       double average = total / nPoints;
@@ -89,12 +89,12 @@ public class DataBufferEntryTest
       {
          tempData[i] = (double) random.nextInt(20000) / (double) random.nextInt(30);
          yoDouble.set(tempData[i]);
-         dataBufferEntry.setDataAtIndexToYoVariableValue(i);
+         dataBufferEntry.writeIntoBufferAt(i);
       }
 
       for (int i = 0; i < nPoints; i++)
       {
-         dataBufferEntry.setYoVariableValueToDataAtIndex(i);
+         dataBufferEntry.readFromBufferAt(i);
          assertEquals(yoDouble.getValueAsDouble(), dataBufferEntry.getBuffer()[i], epsilon);
       }
    }
@@ -117,8 +117,8 @@ public class DataBufferEntryTest
          yoDouble.set(temp);
          yoDouble2.set(temp);
 
-         dataBufferEntry.setDataAtIndexToYoVariableValue(i);
-         entry2.setDataAtIndexToYoVariableValue(i);
+         dataBufferEntry.writeIntoBufferAt(i);
+         entry2.writeIntoBufferAt(i);
       }
 
       assertTrue(dataBufferEntry.checkIfDataIsEqual(entry2, 0, nPoints - 1, epsilon));
@@ -135,8 +135,8 @@ public class DataBufferEntryTest
          yoDouble.set(temp);
          yoDouble2.set(-temp);
 
-         dataBufferEntry.setDataAtIndexToYoVariableValue(i);
-         entry2.setDataAtIndexToYoVariableValue(i);
+         dataBufferEntry.writeIntoBufferAt(i);
+         entry2.writeIntoBufferAt(i);
       }
 
       assertFalse(dataBufferEntry.checkIfDataIsEqual(entry2, 0, nPoints - 1, epsilon));
@@ -170,7 +170,7 @@ public class DataBufferEntryTest
 
       double tempDouble = random.nextDouble();
       yoDouble.set(tempDouble);
-      dataBufferEntry.setDataAtIndexToYoVariableValue(0);
+      dataBufferEntry.writeIntoBufferAt(0);
       dataBufferEntry.copyValueThrough();
 
       for (int i = 0; i < nPoints; i++)
@@ -191,7 +191,7 @@ public class DataBufferEntryTest
       {
          tempData[i] = (double) random.nextInt(20000) / (double) random.nextInt(30);
          yoDouble.set(tempData[i]);
-         dataBufferEntry.setDataAtIndexToYoVariableValue(i);
+         dataBufferEntry.writeIntoBufferAt(i);
       }
       dataBufferEntry.enlargeBufferSize(nPoints + newSizeDelta);
 
@@ -214,7 +214,7 @@ public class DataBufferEntryTest
       {
          tempData[i] = (double) random.nextInt(20000) / (double) random.nextInt(30);
          yoDouble.set(tempData[i]);
-         dataBufferEntry.setDataAtIndexToYoVariableValue(i);
+         dataBufferEntry.writeIntoBufferAt(i);
       }
 
       // Test Failure Conditions; data remains unchanged so only examine lengths
@@ -247,7 +247,7 @@ public class DataBufferEntryTest
       for (int i = 0; i < nPoints; i++)
       {
          yoDouble.set(tempData[i]);
-         dataBufferEntry.setDataAtIndexToYoVariableValue(i);
+         dataBufferEntry.writeIntoBufferAt(i);
       }
 
       // Test cropping from beginning
@@ -271,7 +271,7 @@ public class DataBufferEntryTest
       {
          tempData[i] = (double) random.nextInt(20000) / (double) random.nextInt(30);
          yoDouble.set(tempData[i]);
-         dataBufferEntry.setDataAtIndexToYoVariableValue(i);
+         dataBufferEntry.writeIntoBufferAt(i);
       }
 
       // Test Failure Conditions; data remains unchanged so only examine lengths
@@ -312,7 +312,7 @@ public class DataBufferEntryTest
       for (int i = 0; i < nPoints; i++)
       {
          yoDouble.set(tempData[i]);
-         dataBufferEntry.setDataAtIndexToYoVariableValue(i);
+         dataBufferEntry.writeIntoBufferAt(i);
       }
 
       // Test cutting at beginning
@@ -330,7 +330,7 @@ public class DataBufferEntryTest
       for (int i = 0; i < nPoints; i++)
       {
          yoDouble.set(tempData[i]);
-         dataBufferEntry.setDataAtIndexToYoVariableValue(i);
+         dataBufferEntry.writeIntoBufferAt(i);
       }
 
       // Test cutting at end
@@ -355,7 +355,7 @@ public class DataBufferEntryTest
       {
          tempData[i] = (double) random.nextInt(20000) / (double) random.nextInt(30);
          yoDouble.set(tempData[i]);
-         dataBufferEntry.setDataAtIndexToYoVariableValue(i);
+         dataBufferEntry.writeIntoBufferAt(i);
       }
 
       // Test Bad Start Index, data should be unchanged
@@ -387,11 +387,11 @@ public class DataBufferEntryTest
 
       int tempInteger = random.nextInt(500) + 11;
       yoDouble.set(tempInteger);
-      dataBufferEntry.setDataAtIndexToYoVariableValue(0);
+      dataBufferEntry.writeIntoBufferAt(0);
       yoDouble.set(tempInteger + 10);
-      dataBufferEntry.setDataAtIndexToYoVariableValue(1);
+      dataBufferEntry.writeIntoBufferAt(1);
       yoDouble.set(tempInteger - 10);
-      dataBufferEntry.setDataAtIndexToYoVariableValue(2);
+      dataBufferEntry.writeIntoBufferAt(2);
       assertEquals(tempInteger + 10, dataBufferEntry.getUpperBound(), 0);
    }
 
@@ -402,11 +402,11 @@ public class DataBufferEntryTest
 
       int tempInteger = random.nextInt(500) + 11;
       yoDouble.set(tempInteger);
-      dataBufferEntry.setDataAtIndexToYoVariableValue(0);
+      dataBufferEntry.writeIntoBufferAt(0);
       yoDouble.set(tempInteger + 10);
-      dataBufferEntry.setDataAtIndexToYoVariableValue(1);
+      dataBufferEntry.writeIntoBufferAt(1);
       yoDouble.set(tempInteger - 10);
-      dataBufferEntry.setDataAtIndexToYoVariableValue(2);
+      dataBufferEntry.writeIntoBufferAt(2);
       assertEquals(0, dataBufferEntry.getBounds().getLowerBound(), 0);
    }
 
@@ -416,7 +416,7 @@ public class DataBufferEntryTest
       for (int i = 0; i < 100; i++)
       {
          yoDouble.set(Double.NaN);
-         dataBufferEntry.setDataAtIndexToYoVariableValue(i);
+         dataBufferEntry.writeIntoBufferAt(i);
       }
       assertEquals(0.0, dataBufferEntry.getBounds().getLowerBound(), 0.0);
       assertEquals(0.0, dataBufferEntry.getBounds().getUpperBound(), 0.0);
@@ -433,7 +433,7 @@ public class DataBufferEntryTest
             yoDouble.set(Double.NaN);
          else
             yoDouble.set(random.nextDouble());
-         dataBufferEntry.setDataAtIndexToYoVariableValue(i);
+         dataBufferEntry.writeIntoBufferAt(i);
       }
       DataBounds bounds = dataBufferEntry.getBounds();
       assertFalse(Double.isNaN(bounds.getLowerBound()));
@@ -448,7 +448,7 @@ public class DataBufferEntryTest
 
       int tempInteger = random.nextInt(500) + 11;
       yoDouble.set(tempInteger);
-      dataBufferEntry.setDataAtIndexToYoVariableValue(0);
+      dataBufferEntry.writeIntoBufferAt(0);
       assertTrue(dataBufferEntry.haveBoundsChanged());
       dataBufferEntry.resetBoundsChangedFlag();
       assertFalse(dataBufferEntry.haveBoundsChanged());
@@ -461,7 +461,7 @@ public class DataBufferEntryTest
 
       double tempDouble = (double) random.nextInt(20000) / (double) random.nextInt(30);
       int randomIndex = random.nextInt(nPoints);
-      dataBufferEntry.setDataAt(tempDouble, randomIndex);
+      dataBufferEntry.setBufferValueAt(tempDouble, randomIndex);
 
       assertEquals(tempDouble, dataBufferEntry.getBuffer()[randomIndex], 0);
    }
@@ -477,7 +477,7 @@ public class DataBufferEntryTest
       {
          tempData[i] = (double) random.nextInt(20000) / (double) random.nextInt(30);
          yoDouble.set(tempData[i]);
-         dataBufferEntry.setDataAtIndexToYoVariableValue(i);
+         dataBufferEntry.writeIntoBufferAt(i);
       }
 
       double tempDataSubset[] = new double[nPoints - randomIndex];
@@ -511,14 +511,14 @@ public class DataBufferEntryTest
       for (int i = 0; i < nPoints; i++)
       {
          yoDouble.set((double) random.nextInt(20000) / (double) random.nextInt(30));
-         dataBufferEntry.setDataAtIndexToYoVariableValue(i);
+         dataBufferEntry.writeIntoBufferAt(i);
       }
 
       double oldMax = dataBufferEntry.getUpperBound();
       double newMax = oldMax + 100;
 
-      dataBufferEntry.setDataAt(newMax, 200);
-      dataBufferEntry.setDataAt(oldMax, 400);
+      dataBufferEntry.setBufferValueAt(newMax, 200);
+      dataBufferEntry.setBufferValueAt(oldMax, 400);
 
       assertEquals(newMax, dataBufferEntry.getWindowUpperBound(150, 250), 0);
       assertEquals(oldMax, dataBufferEntry.getWindowUpperBound(350, 450), 0);
@@ -532,14 +532,14 @@ public class DataBufferEntryTest
       for (int i = 0; i < nPoints; i++)
       {
          yoDouble.set((double) random.nextInt(20000) / (double) random.nextInt(30));
-         dataBufferEntry.setDataAtIndexToYoVariableValue(i);
+         dataBufferEntry.writeIntoBufferAt(i);
       }
 
       double oldMin = dataBufferEntry.getBounds().getLowerBound();
       double newMin = oldMin - 100;
 
-      dataBufferEntry.setDataAt(newMin, 200);
-      dataBufferEntry.setDataAt(oldMin, 400);
+      dataBufferEntry.setBufferValueAt(newMin, 200);
+      dataBufferEntry.setBufferValueAt(oldMin, 400);
 
       assertEquals(newMin, dataBufferEntry.getWindowLowerBound(150, 250), 0);
       assertEquals(oldMin, dataBufferEntry.getWindowLowerBound(350, 450), 0);
@@ -553,15 +553,15 @@ public class DataBufferEntryTest
       for (int i = 0; i < nPoints; i++)
       {
          yoDouble.set((double) random.nextInt(20000) / (double) random.nextInt(30));
-         dataBufferEntry.setDataAtIndexToYoVariableValue(i);
+         dataBufferEntry.writeIntoBufferAt(i);
       }
 
-      assertTrue(dataBufferEntry.getDataLength() == nPoints);
+      assertTrue(dataBufferEntry.getBufferSize() == nPoints);
 
       int keepEveryNthPoint = 5;
       dataBufferEntry.thinData(keepEveryNthPoint);
 
-      assertTrue(dataBufferEntry.getDataLength() == nPoints / keepEveryNthPoint);
+      assertTrue(dataBufferEntry.getBufferSize() == nPoints / keepEveryNthPoint);
    }
 
    @Test // timeout = 30000

@@ -2,15 +2,25 @@ package us.ihmc.yoVariables.dataBuffer;
 
 public interface DataBufferCommandsExecutor extends GotoInPointCommandExecutor, GotoOutPointCommandExecutor
 {
-   public abstract int getInPoint();
+   int getInPoint();
+   
+   int getOutPoint();
+   
+   int getCurrentIndex();
 
-   public abstract void setIndex(int index);
+   int getBufferSize();
 
-   public abstract boolean tick(int ticks);
+   void setCurrentIndex(int index);
 
-   public abstract int getIndex();
+   boolean tickAndReadFromBuffer(int ticks);
 
-   public abstract int getOutPoint();
-
-   public abstract boolean isIndexBetweenInAndOutPoint(int indexToCheck);
+   default boolean isIndexBetweenBounds(int indexToCheck)
+   {
+      if (indexToCheck < 0 || indexToCheck >= getBufferSize())
+         return false;
+      else if (getInPoint() <= getOutPoint())
+         return indexToCheck >= getInPoint() && indexToCheck <= getOutPoint();
+      else
+         return indexToCheck <= getOutPoint() || indexToCheck > getInPoint();
+   }
 }

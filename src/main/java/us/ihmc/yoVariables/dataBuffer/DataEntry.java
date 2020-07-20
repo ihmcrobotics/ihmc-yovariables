@@ -16,7 +16,7 @@ public interface DataEntry
       return getVariable().getFullNameString();
    }
 
-   double getValueAt(int index);
+   double getBufferValueAt(int index);
 
    double[] getBuffer();
 

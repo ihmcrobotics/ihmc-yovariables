@@ -1,6 +1,6 @@
 package us.ihmc.yoVariables.dataBuffer;
 
-public interface IndexChangedListener
+public interface BufferIndexChangedListener
 {
    public abstract void notifyOfIndexChange(int newIndex);
 }

@@ -278,106 +278,106 @@ public class DataBufferTest
       int numberOfTicksAndUpdates = 20;
       for (int i = 0; i < numberOfTicksAndUpdates; i++)
       {
-         dataBuffer.tickAndUpdate();
+         dataBuffer.tickAndWriteIntoBuffer();
       }
 
       dataBuffer.gotoInPoint();
 
       int expectedIndex = 0;
-      while (dataBuffer.getIndex() < dataBuffer.getBufferInOutLength() - 1)
+      while (dataBuffer.getCurrentIndex() < dataBuffer.getBufferInOutLength() - 1)
       {
-         assertEquals(expectedIndex, dataBuffer.getIndex());
-         boolean rolledOver = dataBuffer.tick(1);
+         assertEquals(expectedIndex, dataBuffer.getCurrentIndex());
+         boolean rolledOver = dataBuffer.tickAndReadFromBuffer(1);
          assertFalse(rolledOver);
          expectedIndex++;
       }
 
-      boolean rolledOver = dataBuffer.tick(1);
+      boolean rolledOver = dataBuffer.tickAndReadFromBuffer(1);
       assertTrue(rolledOver);
       expectedIndex = 0;
-      assertEquals(expectedIndex, dataBuffer.getIndex());
+      assertEquals(expectedIndex, dataBuffer.getCurrentIndex());
 
-      rolledOver = dataBuffer.tick(1);
+      rolledOver = dataBuffer.tickAndReadFromBuffer(1);
       assertFalse(rolledOver);
       expectedIndex = 1;
-      assertEquals(expectedIndex, dataBuffer.getIndex());
+      assertEquals(expectedIndex, dataBuffer.getCurrentIndex());
 
    }
 
    @Test // timeout = 300000
    public void testIsIndexBetweenInAndOutPoint()
    {
-      assertEquals(0, dataBuffer.getIndex());
+      assertEquals(0, dataBuffer.getCurrentIndex());
       assertEquals(0, dataBuffer.getInPoint());
       assertEquals(0, dataBuffer.getOutPoint());
-      assertTrue(dataBuffer.isIndexBetweenInAndOutPoint(0));
-      assertFalse(dataBuffer.isIndexBetweenInAndOutPoint(1));
-      assertFalse(dataBuffer.isIndexBetweenInAndOutPoint(-1));
+      assertTrue(dataBuffer.isIndexBetweenBounds(0));
+      assertFalse(dataBuffer.isIndexBetweenBounds(1));
+      assertFalse(dataBuffer.isIndexBetweenBounds(-1));
 
-      dataBuffer.tickAndUpdate();
-      assertEquals(1, dataBuffer.getIndex());
+      dataBuffer.tickAndWriteIntoBuffer();
+      assertEquals(1, dataBuffer.getCurrentIndex());
       assertEquals(0, dataBuffer.getInPoint());
       assertEquals(1, dataBuffer.getOutPoint());
-      assertTrue(dataBuffer.isIndexBetweenInAndOutPoint(0));
-      assertTrue(dataBuffer.isIndexBetweenInAndOutPoint(1));
-      assertFalse(dataBuffer.isIndexBetweenInAndOutPoint(-1));
+      assertTrue(dataBuffer.isIndexBetweenBounds(0));
+      assertTrue(dataBuffer.isIndexBetweenBounds(1));
+      assertFalse(dataBuffer.isIndexBetweenBounds(-1));
 
-      dataBuffer.tickAndUpdate();
-      assertEquals(2, dataBuffer.getIndex());
+      dataBuffer.tickAndWriteIntoBuffer();
+      assertEquals(2, dataBuffer.getCurrentIndex());
       assertEquals(0, dataBuffer.getInPoint());
       assertEquals(2, dataBuffer.getOutPoint());
-      assertTrue(dataBuffer.isIndexBetweenInAndOutPoint(0));
-      assertTrue(dataBuffer.isIndexBetweenInAndOutPoint(1));
-      assertTrue(dataBuffer.isIndexBetweenInAndOutPoint(2));
-      assertFalse(dataBuffer.isIndexBetweenInAndOutPoint(3));
-      assertFalse(dataBuffer.isIndexBetweenInAndOutPoint(-1));
+      assertTrue(dataBuffer.isIndexBetweenBounds(0));
+      assertTrue(dataBuffer.isIndexBetweenBounds(1));
+      assertTrue(dataBuffer.isIndexBetweenBounds(2));
+      assertFalse(dataBuffer.isIndexBetweenBounds(3));
+      assertFalse(dataBuffer.isIndexBetweenBounds(-1));
 
       int numTicks = 20;
       for (int i = 0; i < numTicks; i++)
       {
-         dataBuffer.tickAndUpdate();
+         dataBuffer.tickAndWriteIntoBuffer();
       }
-      assertEquals(dataBuffer.getOutPoint(), dataBuffer.getIndex());
+      assertEquals(dataBuffer.getOutPoint(), dataBuffer.getCurrentIndex());
       assertEquals(0, dataBuffer.getInPoint());
 
-      assertTrue(dataBuffer.isIndexBetweenInAndOutPoint(dataBuffer.getIndex() - 1));
-      assertTrue(dataBuffer.isIndexBetweenInAndOutPoint(dataBuffer.getIndex()));
-      assertFalse(dataBuffer.isIndexBetweenInAndOutPoint(dataBuffer.getIndex() + 1));
-      assertFalse(dataBuffer.isIndexBetweenInAndOutPoint(dataBuffer.getInPoint() - 1));
-      assertTrue(dataBuffer.isIndexBetweenInAndOutPoint(dataBuffer.getInPoint()));
-      assertTrue(dataBuffer.isIndexBetweenInAndOutPoint(dataBuffer.getInPoint() + 1));
-      assertTrue(dataBuffer.isIndexBetweenInAndOutPoint(dataBuffer.getOutPoint() - 1));
-      assertTrue(dataBuffer.isIndexBetweenInAndOutPoint(dataBuffer.getOutPoint()));
-      assertFalse(dataBuffer.isIndexBetweenInAndOutPoint(dataBuffer.getOutPoint() + 1));
+      assertTrue(dataBuffer.isIndexBetweenBounds(dataBuffer.getCurrentIndex() - 1));
+      assertTrue(dataBuffer.isIndexBetweenBounds(dataBuffer.getCurrentIndex()));
+      assertFalse(dataBuffer.isIndexBetweenBounds(dataBuffer.getCurrentIndex() + 1));
+      assertFalse(dataBuffer.isIndexBetweenBounds(dataBuffer.getInPoint() - 1));
+      assertTrue(dataBuffer.isIndexBetweenBounds(dataBuffer.getInPoint()));
+      assertTrue(dataBuffer.isIndexBetweenBounds(dataBuffer.getInPoint() + 1));
+      assertTrue(dataBuffer.isIndexBetweenBounds(dataBuffer.getOutPoint() - 1));
+      assertTrue(dataBuffer.isIndexBetweenBounds(dataBuffer.getOutPoint()));
+      assertFalse(dataBuffer.isIndexBetweenBounds(dataBuffer.getOutPoint() + 1));
 
       dataBuffer.cropData();
       dataBuffer.gotoOutPoint();
 
-      assertEquals(dataBuffer.getOutPoint(), dataBuffer.getIndex());
+      assertEquals(dataBuffer.getOutPoint(), dataBuffer.getCurrentIndex());
       assertEquals(0, dataBuffer.getInPoint());
 
       numTicks = 7;
 
       for (int i = 0; i < numTicks; i++)
       {
-         dataBuffer.tickAndUpdate();
+         dataBuffer.tickAndWriteIntoBuffer();
       }
 
-      assertEquals(dataBuffer.getOutPoint(), dataBuffer.getIndex());
+      assertEquals(dataBuffer.getOutPoint(), dataBuffer.getCurrentIndex());
       assertEquals(numTicks - 1, dataBuffer.getOutPoint());
       assertEquals(numTicks, dataBuffer.getInPoint());
 
-      assertTrue(dataBuffer.isIndexBetweenInAndOutPoint(dataBuffer.getIndex() - 1));
-      assertTrue(dataBuffer.isIndexBetweenInAndOutPoint(dataBuffer.getIndex()));
-      assertFalse(dataBuffer.isIndexBetweenInAndOutPoint(dataBuffer.getIndex() + 1));
+      assertTrue(dataBuffer.isIndexBetweenBounds(dataBuffer.getCurrentIndex() - 1));
+      assertTrue(dataBuffer.isIndexBetweenBounds(dataBuffer.getCurrentIndex()));
+      assertFalse(dataBuffer.isIndexBetweenBounds(dataBuffer.getCurrentIndex() + 1));
 
-      dataBuffer.tickAndUpdate();
-      assertEquals(dataBuffer.getOutPoint(), dataBuffer.getIndex());
+      dataBuffer.tickAndWriteIntoBuffer();
+      assertEquals(dataBuffer.getOutPoint(), dataBuffer.getCurrentIndex());
       assertEquals(dataBuffer.getOutPoint(), dataBuffer.getInPoint() - 1);
 
-      assertTrue(dataBuffer.isIndexBetweenInAndOutPoint(dataBuffer.getIndex() - 1));
-      assertTrue(dataBuffer.isIndexBetweenInAndOutPoint(dataBuffer.getIndex()));
-      assertFalse(dataBuffer.isIndexBetweenInAndOutPoint(dataBuffer.getIndex() + 1));
+      assertTrue(dataBuffer.isIndexBetweenBounds(dataBuffer.getCurrentIndex() - 1));
+      assertTrue(dataBuffer.isIndexBetweenBounds(dataBuffer.getCurrentIndex()));
+      assertFalse(dataBuffer.isIndexBetweenBounds(dataBuffer.getCurrentIndex() + 1));
 
    }
 
@@ -447,7 +447,7 @@ public class DataBufferTest
       assertTrue(dataBuffer.getEntries().size() == 3);
       dataBuffer.clear();
       assertTrue(dataBuffer.getEntries() == null);
-      assertTrue(dataBuffer.getIndex() == -1);
+      assertTrue(dataBuffer.getCurrentIndex() == -1);
    }
 
    @Test // timeout = 30000
@@ -524,7 +524,7 @@ public class DataBufferTest
       {
          DataBuffer dataBufferClone = new DataBuffer(dataBuffer);
          int newIndex = random.nextInt(testBufferSize);
-         dataBuffer.setIndex(newIndex);
+         dataBuffer.setCurrentIndex(newIndex);
          int newStartLocation = random.nextInt(testBufferSize);
          dataBuffer.packData(newStartLocation);
 
@@ -544,9 +544,9 @@ public class DataBufferTest
             }
 
             if (newStartLocation >= newIndex)
-               assertTrue(dataBuffer.getIndex() == 0);
+               assertTrue(dataBuffer.getCurrentIndex() == 0);
             else
-               assertTrue(dataBuffer.getIndex() == newIndex - newStartLocation);
+               assertTrue(dataBuffer.getCurrentIndex() == newIndex - newStartLocation);
             assertTrue(dataBuffer.getInPoint() == 0);
             assertTrue(dataBuffer.getOutPoint() == testBufferSize - 1 - newStartLocation);
          }
@@ -569,7 +569,8 @@ public class DataBufferTest
          a.set(random.nextDouble());
          b.set(random.nextDouble());
          c.set(random.nextDouble());
-         dataBuffer.updateAndTick();
+         dataBuffer.writeIntoBuffer();
+         dataBuffer.tickAndReadFromBuffer(1);
       }
    }
 
@@ -605,10 +606,10 @@ public class DataBufferTest
       for (int i = 0; i < numberOfTicks; i++)
       {
          dataBufferYoDouble.set(1.0);
-         dataBuffer.tickAndUpdate();
+         dataBuffer.tickAndWriteIntoBuffer();
 
          dataBufferYoDouble.set(0.0);
-         otherDataBuffer.tickAndUpdate();
+         otherDataBuffer.tickAndWriteIntoBuffer();
       }
 
       assertFalse(dataBuffer.checkIfDataIsEqual(otherDataBuffer, 1e-6));
@@ -630,7 +631,7 @@ public class DataBufferTest
       Random random = new Random(6543897);
       fillDataBufferWithRandomData(random);
 
-      assertTrue(dataBuffer.getIndex() == 0);
+      assertTrue(dataBuffer.getCurrentIndex() == 0);
       assertTrue(dataBuffer.getInPoint() == 0);
       assertTrue(dataBuffer.getOutPoint() == testBufferSize - 1);
 
@@ -638,7 +639,7 @@ public class DataBufferTest
       dataBuffer.cutData(-1, testBufferSize / 2);
 
       // assert nothing changed
-      assertTrue(dataBuffer.getIndex() == 0);
+      assertTrue(dataBuffer.getCurrentIndex() == 0);
       assertTrue(dataBuffer.getInPoint() == 0);
       assertTrue(dataBuffer.getOutPoint() == testBufferSize - 1);
 
@@ -646,7 +647,7 @@ public class DataBufferTest
       dataBuffer.cutData(testBufferSize / 2, testBufferSize + 1);
 
       // assert nothing changed
-      assertTrue(dataBuffer.getIndex() == 0);
+      assertTrue(dataBuffer.getCurrentIndex() == 0);
       assertTrue(dataBuffer.getInPoint() == 0);
       assertTrue(dataBuffer.getOutPoint() == testBufferSize - 1);
    }
@@ -773,14 +774,14 @@ public class DataBufferTest
 
                if (keepEveryNthPoint < testBufferSize / 2)
                {
-                  assertTrue(thinnedEntry.getDataLength() == testBufferSize / keepEveryNthPoint);
+                  assertTrue(thinnedEntry.getBufferSize() == testBufferSize / keepEveryNthPoint);
                   double thinnedEntryDatum = thinnedEntryData[k];
                   double unmodifiedEntryDatum = unmodifiedEntryData[k * keepEveryNthPoint];
                   assertTrue(thinnedEntryDatum == unmodifiedEntryDatum);
                }
                else
                {
-                  assertTrue(thinnedEntry.getDataLength() == testBufferSize);
+                  assertTrue(thinnedEntry.getBufferSize() == testBufferSize);
                   assertTrue(thinnedEntryData[k] == unmodifiedEntryData[k]);
                }
             }
@@ -795,14 +796,14 @@ public class DataBufferTest
    {
       final boolean[] listenerNotified = {false, false};
 
-      IndexChangedListener indexChangedListener = (int newIndex) -> listenerNotified[0] = true;
+      BufferIndexChangedListener indexChangedListener = (int newIndex) -> listenerNotified[0] = true;
 
       dataBuffer.attachIndexChangedListener(indexChangedListener);
 
       assertFalse(listenerNotified[0]);
       assertFalse(listenerNotified[1]);
 
-      dataBuffer.tickAndUpdate();
+      dataBuffer.tickAndWriteIntoBuffer();
 
       assertTrue(listenerNotified[0]);
       assertFalse(listenerNotified[1]);
@@ -840,7 +841,7 @@ public class DataBufferTest
       assertTrue(b.getDoubleValue() == 2.348);
       assertTrue(c.getDoubleValue() == 8.7834);
 
-      dataBuffer.setIndex(dataBuffer.getOutPoint());
+      dataBuffer.setCurrentIndex(dataBuffer.getOutPoint());
 
       DataProcessingFunction backwardsDataProcessingFunction = new DataProcessingFunction()
       {
@@ -900,12 +901,12 @@ public class DataBufferTest
       {
          time.set(i);
          timeData[i] = i;
-         dataBuffer.tickAndUpdate();
+         dataBuffer.tickAndWriteIntoBuffer();
       }
 
       assertTrue(dataBuffer.getTimeVariableName().equals(timeVariableName));
 
-      assertTrue(timeData.length == dataBuffer.getIndex());
+      assertTrue(timeData.length == dataBuffer.getCurrentIndex());
 
       double[] dataBufferTimeData = dataBuffer.getTimeData();
       for (int i = 0; i < timeData.length; i++)

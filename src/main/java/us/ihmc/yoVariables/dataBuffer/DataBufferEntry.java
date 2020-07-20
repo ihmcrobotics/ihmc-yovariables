@@ -26,7 +26,7 @@ public class DataBufferEntry implements DataEntry
    public DataBufferEntry(DataBufferEntry other)
    {
       this.variable = other.getVariable();
-      bufferData = Arrays.copyOf(other.bufferData, other.getDataLength());
+      bufferData = Arrays.copyOf(other.bufferData, other.getBufferSize());
       currentBounds.set(other.currentBounds);
       boundsChanged = other.boundsChanged;
       boundsDirty = other.boundsDirty;
@@ -54,17 +54,17 @@ public class DataBufferEntry implements DataEntry
       return inverted;
    }
 
-   public int getDataLength()
+   public int getBufferSize()
    {
       return bufferData.length;
    }
 
-   public synchronized void setDataAtIndexToYoVariableValue(int index)
+   public synchronized void writeIntoBufferAt(int index)
    {
-      setDataAt(variable.getValueAsDouble(), index);
+      setBufferValueAt(variable.getValueAsDouble(), index);
    }
 
-   public void setDataAt(double data, int index)
+   public void setBufferValueAt(double data, int index)
    {
       if (bufferData[index] == data)
          return;
@@ -75,13 +75,13 @@ public class DataBufferEntry implements DataEntry
          boundsChanged = true;
    }
 
-   protected void setYoVariableValueToDataAtIndex(int index)
+   protected void readFromBufferAt(int index)
    {
       variable.setValueFromDouble(bufferData[index]);
    }
 
    @Override
-   public double getValueAt(int index)
+   public double getBufferValueAt(int index)
    {
       return bufferData[index];
    }
@@ -141,7 +141,7 @@ public class DataBufferEntry implements DataEntry
          bufferData[i] = oldData[oldNPoints - 1];
       }
 
-      updateBounds();
+      boundsDirty = true;
    }
 
    /**
@@ -176,8 +176,7 @@ public class DataBufferEntry implements DataEntry
          bufferData[i] = oldData[(i + start) % oldNPoints];
       }
 
-      // Calculate the Min and Max values for the new set
-      updateBounds();
+      boundsDirty = true;
 
       // Indicate the data length
       return bufferData.length;
@@ -216,8 +215,7 @@ public class DataBufferEntry implements DataEntry
          bufferData[i - difference] = oldData[i];
       }
 
-      // Calculate the Min and Max values for the new set
-      updateBounds();
+      boundsDirty = true;
 
       // Indicate the data length
       return bufferData.length;
@@ -275,8 +273,7 @@ public class DataBufferEntry implements DataEntry
          bufferData[i] = oldData[(i + start) % nPoints];
       }
 
-      // Recalculate the new min and max values
-      updateBounds();
+      boundsDirty = true;
    }
 
    @Override
@@ -298,7 +295,7 @@ public class DataBufferEntry implements DataEntry
       if (bufferData == null)
          return false;
 
-      currentBounds.setWindow(0, getDataLength() - 1);
+      currentBounds.setWindow(0, getBufferSize() - 1);
       boundsChanged = currentBounds.compute(bufferData);
 
       return boundsChanged;
@@ -316,7 +313,7 @@ public class DataBufferEntry implements DataEntry
    @Override
    public DataBounds getCustomBounds()
    {
-      customBounds.setWindow(0, getDataLength() - 1);
+      customBounds.setWindow(0, getBufferSize() - 1);
       customBounds.setBounds(variable.getLowerBound(), variable.getUpperBound());
       return customBounds;
    }
