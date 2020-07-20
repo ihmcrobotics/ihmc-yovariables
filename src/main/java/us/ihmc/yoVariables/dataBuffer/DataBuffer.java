@@ -405,13 +405,11 @@ public class DataBuffer implements YoVariableHolder, DataBufferCommandsExecutor,
       outPoint = entries.get(0).getBufferSize() - 1;
    }
 
-   @Override
    public void gotoInPoint()
    {
       setCurrentIndex(inPoint);
    }
 
-   @Override
    public void gotoOutPoint()
    {
       setCurrentIndex(outPoint);

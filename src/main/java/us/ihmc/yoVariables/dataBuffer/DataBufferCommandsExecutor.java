@@ -1,6 +1,6 @@
 package us.ihmc.yoVariables.dataBuffer;
 
-public interface DataBufferCommandsExecutor extends GotoInPointCommandExecutor, GotoOutPointCommandExecutor
+public interface DataBufferCommandsExecutor
 {
    int getInPoint();
    
