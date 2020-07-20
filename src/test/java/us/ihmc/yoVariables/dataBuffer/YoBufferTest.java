@@ -903,7 +903,7 @@ public class YoBufferTest
 
       assertTrue(timeData.length == dataBuffer.getCurrentIndex());
 
-      double[] dataBufferTimeData = dataBuffer.getTimeData();
+      double[] dataBufferTimeData = dataBuffer.getTimeBuffer();
       for (int i = 0; i < timeData.length; i++)
       {
          // We have to add 1 to the dataBufferTimeData index because the time variable

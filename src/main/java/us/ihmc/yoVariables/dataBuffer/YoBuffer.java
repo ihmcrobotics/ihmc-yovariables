@@ -13,7 +13,7 @@ import us.ihmc.yoVariables.registry.YoVariableHolder;
 import us.ihmc.yoVariables.tools.YoTools;
 import us.ihmc.yoVariables.variable.YoVariable;
 
-public class YoBuffer implements YoVariableHolder, YoBufferReader, TimeDataHolder, YoBufferVariableEntryHolder
+public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferHolder, YoBufferVariableEntryHolder
 {
    private String timeVariableName = "t";
 
@@ -643,7 +643,7 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, TimeDataHolde
    }
 
    @Override
-   public double[] getTimeData()
+   public double[] getTimeBuffer()
    {
       return findVariableEntry(timeVariableName).getBuffer();
    }
