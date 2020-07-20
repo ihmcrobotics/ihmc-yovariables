@@ -9,11 +9,11 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
    private final YoVariable variable;
    private double[] bufferData;
 
-   private final DataBounds currentBounds = new DataBounds();
+   private final YoBufferBounds currentBounds = new YoBufferBounds();
    private boolean boundsChanged = true;
    private boolean boundsDirty = true;
    private boolean useCustomBounds = false;
-   private final DataBounds customBounds = new DataBounds();
+   private final YoBufferBounds customBounds = new YoBufferBounds();
 
    private boolean inverted = false;
 
@@ -306,14 +306,14 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
       if (bufferData == null)
          return false;
 
-      currentBounds.setWindow(0, getBufferSize() - 1);
+      currentBounds.setInterval(0, getBufferSize() - 1);
       boundsChanged = currentBounds.compute(bufferData);
 
       return boundsChanged;
    }
 
    @Override
-   public DataBounds getBounds()
+   public YoBufferBounds getBounds()
    {
       if (boundsDirty)
          updateBounds();
@@ -322,9 +322,9 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
    }
 
    @Override
-   public DataBounds getCustomBounds()
+   public YoBufferBounds getCustomBounds()
    {
-      customBounds.setWindow(0, getBufferSize() - 1);
+      customBounds.setInterval(0, getBufferSize() - 1);
       customBounds.setBounds(variable.getLowerBound(), variable.getUpperBound());
       return customBounds;
    }
@@ -343,13 +343,13 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
    }
 
    @Override
-   public DataBounds getWindowBounds(int startIndex, int endIndex)
+   public YoBufferBounds getWindowBounds(int startIndex, int endIndex)
    {
       if (bufferData != null)
       {
          if (boundsDirty || startIndex != currentBounds.getStartIndex() || endIndex != currentBounds.getEndIndex())
          {
-            currentBounds.setWindow(startIndex, endIndex);
+            currentBounds.setInterval(startIndex, endIndex);
             boundsChanged = currentBounds.compute(bufferData);
             boundsDirty = false;
          }

@@ -435,7 +435,7 @@ public class YoBufferVariableEntryTest
             yoDouble.set(random.nextDouble());
          dataBufferEntry.writeIntoBufferAt(i);
       }
-      DataBounds bounds = dataBufferEntry.getBounds();
+      YoBufferBounds bounds = dataBufferEntry.getBounds();
       assertFalse(Double.isNaN(bounds.getLowerBound()));
       assertFalse(Double.isNaN(bounds.getUpperBound()));
       assertTrue(bounds.getLowerBound() <= bounds.getUpperBound());

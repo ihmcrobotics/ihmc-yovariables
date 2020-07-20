@@ -815,15 +815,10 @@ public class YoBufferTest
       Random random = new Random(74523);
       fillDataBufferWithRandomData(random);
 
-      DataProcessingFunction forwardDataProcessingFunction = new DataProcessingFunction()
+      YoBufferProcessor forwardDataProcessingFunction = new YoBufferProcessor()
       {
          @Override
-         public void initializeProcessing()
-         {
-         }
-
-         @Override
-         public void processData()
+         public void process(int startIndex, int endIndex, int currentIndex)
          {
             a.set(1.0);
             b.set(2.348);
@@ -835,7 +830,7 @@ public class YoBufferTest
       assertFalse(b.getDoubleValue() == 2.348);
       assertFalse(c.getDoubleValue() == 8.7834);
 
-      dataBuffer.applyDataProcessingFunction(forwardDataProcessingFunction);
+      dataBuffer.applyProcessor(forwardDataProcessingFunction);
 
       assertTrue(a.getDoubleValue() == 1.0);
       assertTrue(b.getDoubleValue() == 2.348);
@@ -843,15 +838,15 @@ public class YoBufferTest
 
       dataBuffer.setCurrentIndex(dataBuffer.getOutPoint());
 
-      DataProcessingFunction backwardsDataProcessingFunction = new DataProcessingFunction()
+      YoBufferProcessor backwardsDataProcessingFunction = new YoBufferProcessor()
       {
          @Override
-         public void initializeProcessing()
+         public boolean goForward()
          {
+            return false;
          }
-
          @Override
-         public void processData()
+         public void process(int startIndex, int endIndex, int currentIndex)
          {
             a.set(0.0);
             b.set(0.0);
@@ -863,7 +858,7 @@ public class YoBufferTest
       assertFalse(b.getDoubleValue() == 0.0);
       assertFalse(c.getDoubleValue() == 0.0);
 
-      dataBuffer.applyDataProcessingFunctionBackward(backwardsDataProcessingFunction);
+      dataBuffer.applyProcessor(backwardsDataProcessingFunction);
 
       assertTrue(a.getDoubleValue() == 0.0);
       assertTrue(b.getDoubleValue() == 0.0);

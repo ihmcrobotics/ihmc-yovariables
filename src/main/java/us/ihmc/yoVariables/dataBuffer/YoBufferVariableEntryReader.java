@@ -26,7 +26,7 @@ public interface YoBufferVariableEntryReader
 
    boolean haveBoundsChanged();
 
-   DataBounds getBounds();
+   YoBufferBounds getBounds();
 
    default double getLowerBound()
    {
@@ -38,7 +38,7 @@ public interface YoBufferVariableEntryReader
       return getBounds().getUpperBound();
    }
 
-   DataBounds getWindowBounds(int startIndex, int endIndex);
+   YoBufferBounds getWindowBounds(int startIndex, int endIndex);
 
    default double getWindowLowerBound(int startIndex, int endIndex)
    {
@@ -59,7 +59,7 @@ public interface YoBufferVariableEntryReader
       getVariable().setVariableBounds(customLowerBound, customUpperBound);
    }
 
-   DataBounds getCustomBounds();
+   YoBufferBounds getCustomBounds();
 
    default double getCustomLowerBound()
    {

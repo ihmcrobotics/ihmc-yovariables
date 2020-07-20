@@ -539,40 +539,40 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, TimeDataHolde
       }
    }
 
-   public void applyDataProcessingFunction(DataProcessingFunction dataProcessingFunction)
+   public void applyProcessor(YoBufferProcessor processor)
    {
-      dataProcessingFunction.initializeProcessing();
-      gotoInPoint();
+      processor.initialize(this);
 
-      while (!atOutPoint())
+      if (processor.goForward())
       {
-         dataProcessingFunction.processData();
+         gotoInPoint();
+
+         while (!atOutPoint())
+         {
+            processor.process(inPoint, outPoint, currentIndex);
+            writeIntoBuffer();
+            tickAndReadFromBuffer(1);
+         }
+         
+         processor.process(inPoint, outPoint, currentIndex);
          writeIntoBuffer();
          tickAndReadFromBuffer(1);
       }
-
-      dataProcessingFunction.processData();
-      writeIntoBuffer();
-      tickAndReadFromBuffer(1);
-   }
-
-   public void applyDataProcessingFunctionBackward(DataProcessingFunction dataProcessingFunction)
-   {
-      dataProcessingFunction.initializeProcessing();
-      gotoOutPoint();
-
-      while (!atInPoint())
+      else
       {
-         dataProcessingFunction.processData();
-
+         gotoOutPoint();
+         
+         while (!atInPoint())
+         {
+            processor.process(outPoint, inPoint, currentIndex);
+            writeIntoBuffer();
+            tickAndReadFromBuffer(-1);
+         }
+         
+         processor.process(outPoint, inPoint, currentIndex);
          writeIntoBuffer();
          tickAndReadFromBuffer(-1);
       }
-
-      dataProcessingFunction.processData();
-
-      writeIntoBuffer();
-      tickAndReadFromBuffer(-1);
    }
 
    public boolean checkIfDataIsEqual(YoBuffer dataBuffer, double epsilon)
