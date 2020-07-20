@@ -2,7 +2,7 @@ package us.ihmc.yoVariables.dataBuffer;
 
 import us.ihmc.yoVariables.variable.YoVariable;
 
-public interface DataEntry
+public interface YoBufferVariableEntryReader
 {
    YoVariable getVariable();
 

@@ -13,7 +13,7 @@ import us.ihmc.yoVariables.registry.YoVariableHolder;
 import us.ihmc.yoVariables.tools.YoTools;
 import us.ihmc.yoVariables.variable.YoVariable;
 
-public class YoBuffer implements YoVariableHolder, YoBufferReader, TimeDataHolder, DataEntryHolder
+public class YoBuffer implements YoVariableHolder, YoBufferReader, TimeDataHolder, YoBufferVariableEntryHolder
 {
    private String timeVariableName = "t";
 
@@ -26,7 +26,7 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, TimeDataHolde
    private final HashMap<String, List<YoBufferVariableEntry>> simpleNameToEntriesMap = new HashMap<>();
 
    private final KeyPointsHandler keyPointsHandler = new KeyPointsHandler();
-   private final List<BufferIndexChangedListener> indexChangedListeners = new ArrayList<>();
+   private final List<YoBufferIndexChangedListener> indexChangedListeners = new ArrayList<>();
 
    private boolean lockIndex = false;
 
@@ -515,12 +515,12 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, TimeDataHolde
       notifyIndexChangedListeners();
    }
 
-   public void attachIndexChangedListener(BufferIndexChangedListener indexChangedListener)
+   public void attachIndexChangedListener(YoBufferIndexChangedListener indexChangedListener)
    {
       indexChangedListeners.add(indexChangedListener);
    }
 
-   public boolean detachIndexChangedListener(BufferIndexChangedListener indexChangedListener)
+   public boolean detachIndexChangedListener(YoBufferIndexChangedListener indexChangedListener)
    {
       return indexChangedListeners.remove(indexChangedListener);
    }

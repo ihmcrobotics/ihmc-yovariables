@@ -486,7 +486,7 @@ public class YoBufferVariableEntryTest
          tempDataSubset[i] = tempData[randomIndex + i];
       }
 
-      double windowedData[] = dataBufferEntry.getWindowedData(randomIndex, /* nPoints-1, */ nPoints - randomIndex);
+      double windowedData[] = dataBufferEntry.getBufferWindow(randomIndex, /* nPoints-1, */ nPoints - randomIndex);
 
       for (int i = 0; i < windowedData.length; i++)
       {

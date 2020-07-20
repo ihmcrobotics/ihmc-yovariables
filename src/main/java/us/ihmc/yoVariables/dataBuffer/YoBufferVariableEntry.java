@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import us.ihmc.yoVariables.variable.YoVariable;
 
-public class YoBufferVariableEntry implements DataEntry
+public class YoBufferVariableEntry implements YoBufferVariableEntryReader
 {
    private final YoVariable variable;
    private double[] bufferData;
@@ -35,7 +35,7 @@ public class YoBufferVariableEntry implements DataEntry
       inverted = other.inverted;
    }
 
-   public void clear(int bufferSize)
+   protected void clear(int bufferSize)
    {
       bufferData = new double[bufferSize];
       currentBounds.clear();
@@ -93,9 +93,20 @@ public class YoBufferVariableEntry implements DataEntry
    }
 
    @Override
-   public double[] getBufferWindow(int startIndex, int endIndex)
+   public double[] getBufferWindow(int startIndex, int length)
    {
-      return Arrays.copyOfRange(bufferData, startIndex, endIndex);
+      double[] sample = new double[length];
+      int n = startIndex;
+
+      for (int i = 0; i < length; i++)
+      {
+         sample[i] = bufferData[n];
+         n++;
+         if (n >= bufferData.length)
+            n = 0;
+      }
+
+      return sample;
    }
 
    @Override
@@ -329,22 +340,6 @@ public class YoBufferVariableEntry implements DataEntry
       }
 
       return total / length;
-   }
-
-   public double[] getWindowedData(int in, int bufferLength)
-   {
-      double[] ret = new double[bufferLength];
-      int n = in;
-
-      for (int i = 0; i < bufferLength; i++)
-      {
-         ret[i] = bufferData[n];
-         n++;
-         if (n >= bufferData.length)
-            n = 0;
-      }
-
-      return ret;
    }
 
    @Override

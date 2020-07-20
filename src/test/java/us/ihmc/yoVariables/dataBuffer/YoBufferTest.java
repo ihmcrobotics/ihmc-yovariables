@@ -796,7 +796,7 @@ public class YoBufferTest
    {
       final boolean[] listenerNotified = {false, false};
 
-      BufferIndexChangedListener indexChangedListener = (int newIndex) -> listenerNotified[0] = true;
+      YoBufferIndexChangedListener indexChangedListener = (int newIndex) -> listenerNotified[0] = true;
 
       dataBuffer.attachIndexChangedListener(indexChangedListener);
 
