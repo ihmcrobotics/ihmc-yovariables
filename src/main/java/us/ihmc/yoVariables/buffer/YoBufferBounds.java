@@ -108,14 +108,39 @@ public class YoBufferBounds
       double newLowerBound = Double.POSITIVE_INFINITY;
       double newUpperBound = Double.NEGATIVE_INFINITY;
 
-      for (int i = startIndex; i < endIndex; i++)
+      if (startIndex < endIndex)
       {
-         double value = buffer[i];
-         if (value < newLowerBound)
-            newLowerBound = value;
+         for (int i = startIndex; i < endIndex; i++)
+         {
+            double value = buffer[i];
+            if (value < newLowerBound)
+               newLowerBound = value;
 
-         if (value > newUpperBound)
-            newUpperBound = value;
+            if (value > newUpperBound)
+               newUpperBound = value;
+         }
+      }
+      else
+      {
+         for (int i = startIndex; i < buffer.length; i++)
+         {
+            double value = buffer[i];
+            if (value < newLowerBound)
+               newLowerBound = value;
+
+            if (value > newUpperBound)
+               newUpperBound = value;
+         }
+
+         for (int i = 0; i < endIndex; i++)
+         {
+            double value = buffer[i];
+            if (value < newLowerBound)
+               newLowerBound = value;
+
+            if (value > newUpperBound)
+               newUpperBound = value;
+         }
       }
 
       boolean changed = false;

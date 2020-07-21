@@ -26,7 +26,7 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
 
    public YoBufferVariableEntry(YoBufferVariableEntry other)
    {
-      this.variable = other.getVariable();
+      variable = other.getVariable();
       bufferData = Arrays.copyOf(other.bufferData, other.getBufferSize());
       currentBounds.set(other.currentBounds);
       boundsChanged = other.boundsChanged;
@@ -55,6 +55,7 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
       return inverted;
    }
 
+   @Override
    public int getBufferSize()
    {
       return bufferData.length;
@@ -70,7 +71,7 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
       if (bufferData[index] == data)
          return;
 
-      this.bufferData[index] = data;
+      bufferData[index] = data;
 
       if (currentBounds.update(data))
          boundsChanged = true;
@@ -90,7 +91,7 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
    @Override
    public double[] getBuffer()
    {
-      return this.getBufferWindow(0, bufferData.length);
+      return getBufferWindow(0, bufferData.length);
    }
 
    @Override

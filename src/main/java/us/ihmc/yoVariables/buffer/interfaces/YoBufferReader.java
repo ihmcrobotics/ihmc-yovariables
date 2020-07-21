@@ -4,6 +4,9 @@ import us.ihmc.yoVariables.buffer.YoBuffer;
 
 /**
  * Base interface for reading from a {@link YoBuffer}.
+ * <p>
+ * A {@link YoBufferReader} manages the buffers for a collection of {@code YoVariable}s.
+ * </p>
  */
 public interface YoBufferReader
 {
