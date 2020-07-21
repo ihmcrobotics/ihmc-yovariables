@@ -2,6 +2,7 @@ package us.ihmc.yoVariables.buffer;
 
 import java.util.Arrays;
 
+import us.ihmc.euclid.tools.EuclidCoreTools;
 import us.ihmc.yoVariables.buffer.interfaces.YoBufferVariableEntryReader;
 import us.ihmc.yoVariables.variable.YoVariable;
 
@@ -21,7 +22,7 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
    public YoBufferVariableEntry(YoVariable variable, int bufferSize)
    {
       this.variable = variable;
-      clear(bufferSize);
+      clearBuffer(bufferSize);
    }
 
    public YoBufferVariableEntry(YoBufferVariableEntry other)
@@ -36,7 +37,7 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
       inverted = other.inverted;
    }
 
-   protected void clear(int bufferSize)
+   protected void clearBuffer(int bufferSize)
    {
       bufferData = new double[bufferSize];
       currentBounds.clear();
@@ -129,7 +130,7 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
       return variable;
    }
 
-   protected void copyValueThrough()
+   protected void fillBuffer()
    {
       double value = variable.getValueAsDouble();
       for (int i = 0; i < bufferData.length; i++)
@@ -165,7 +166,7 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
     * @param end   Index of the new end point in the current data
     * @return Overall length of the new data set.
     */
-   protected int cropData(int start, int end)
+   protected int cropBuffer(int start, int end)
    {
       // If the endpoints are unreasonable indicate failure
       if (start < 0 || end > bufferData.length)
@@ -267,12 +268,12 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
     * Packs the data based on a new start point. Data is shifted in the array such that the index start
     * is the beginning. Once the data is shifted the min and max values are relocated.
     *
-    * @param start Index of the data point to become the beginning.
+    * @param shiftIndex Index of the data point to become the beginning.
     */
-   protected void packData(int start)
+   protected void shiftBuffer(int shiftIndex)
    {
       // If the start point is outside of the data set abort
-      if (start <= 0 || start >= bufferData.length)
+      if (shiftIndex <= 0 || shiftIndex >= bufferData.length)
          return;
 
       // Create a temporary array to carry out the shift
@@ -283,7 +284,7 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
       // Repopulate the array using the new order
       for (int i = 0; i < nPoints; i++)
       {
-         bufferData[i] = oldData[(i + start) % nPoints];
+         bufferData[i] = oldData[(i + shiftIndex) % nPoints];
       }
 
       boundsDirty = true;
@@ -359,32 +360,56 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
       return currentBounds;
    }
 
-   public boolean checkIfDataIsEqual(YoBufferVariableEntry other, int inPoint, int outPoint, double epsilon)
+   public boolean epsilonEquals(YoBufferVariableEntry other, double epsilon)
    {
-      if (inPoint >= bufferData.length)
+      return epsilonEquals(other, 0, getBufferSize() - 1, epsilon);
+   }
+
+   public boolean epsilonEquals(YoBufferVariableEntry other, int inPoint, int outPoint, double epsilon)
+   {
+      if (inPoint >= getBufferSize() || inPoint >= other.getBufferSize())
          return false;
-      if (inPoint >= other.bufferData.length)
-         return false;
-      if (outPoint >= bufferData.length)
-         return false;
-      if (outPoint >= other.bufferData.length)
+      if (outPoint >= getBufferSize() || outPoint >= other.getBufferSize())
          return false;
 
-      if (inPoint > outPoint)
-         throw new RuntimeException("Sorry, but we assume that inPoint is not greater than outPoint in this method!");
-
-      boolean ret = true;
-      for (int i = inPoint; i < outPoint; i++)
+      if (inPoint <= outPoint)
       {
-         double dataOne = bufferData[i];
-         double dataTwo = other.bufferData[i];
-
-         if (Math.abs(dataOne - dataTwo) > epsilon)
+         for (int i = inPoint; i < outPoint; i++)
          {
-            ret = false;
+            if (!EuclidCoreTools.epsilonEquals(bufferData[i], other.bufferData[i], epsilon))
+            {
+               return false;
+            }
+         }
+      }
+      else
+      {
+         if (getBufferSize() != other.getBufferSize())
+            return false;
+
+         for (int i = inPoint; i < getBufferSize(); i++)
+         {
+            if (!EuclidCoreTools.epsilonEquals(bufferData[i], other.bufferData[i], epsilon))
+            {
+               return false;
+            }
+         }
+
+         for (int i = 0; i < outPoint; i++)
+         {
+            if (!EuclidCoreTools.epsilonEquals(bufferData[i], other.bufferData[i], epsilon))
+            {
+               return false;
+            }
          }
       }
 
-      return ret;
+      return true;
+   }
+
+   @Override
+   public String toString()
+   {
+      return "variable: " + variable.getName() + ", buffer size: " + getBufferSize();
    }
 }

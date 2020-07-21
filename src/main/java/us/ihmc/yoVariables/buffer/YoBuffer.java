@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -18,28 +19,91 @@ import us.ihmc.yoVariables.registry.YoVariableHolder;
 import us.ihmc.yoVariables.tools.YoTools;
 import us.ihmc.yoVariables.variable.YoVariable;
 
+/**
+ * {@code YoBuffer} manages buffers to store history for a collection of {@link YoVariable}s.
+ * <p>
+ * When adding a variable to this buffer via {@link #addVariable(YoVariable)}, a new
+ * {@link YoBufferVariableEntry} for that new variable is created.
+ * </p>
+ * <p>
+ * Once variables have been registered, the two main methods of interest are:
+ * <ul>
+ * <li>{@link #tickAndWriteIntoBuffer()} to take a single step in the buffer, then writes the
+ * {@code YoVariable} values into the buffer.
+ * <li>{@link #tickAndReadFromBuffer(int)} to step forward or backward in the buffer, then reads the
+ * buffer and updates the {@code YoVariable}s.
+ * <li>{@link #setCurrentIndex(int)} to change the current position in the buffer, then reads the
+ * buffer and updates the {@code YoVariable}s.
+ * </ul>
+ * </p>
+ */
 public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferHolder, YoBufferVariableEntryHolder
 {
+   /** Name for the the time variable. */
    private String timeVariableName = "t";
 
+   /**
+    * The index of the current buffer's in-point.
+    * <p>
+    * The buffer has a sub-interval to highlight part of interest in the buffer, or the part were
+    * actual data was written. This sub-interval is defined by [{@code inPoint}, {@code outPoint}].
+    * When filled up, the buffer automatically wraps the reading/writing index, such that it is
+    * possible that {@code inPoint > outPoint} indicating that the sub-interval starts towards the end
+    * of the buffer to end at the beginning.
+    * </p>
+    */
    private int inPoint = 0;
+   /**
+    * The index of the current buffer's out-point.
+    * <p>
+    * The buffer has a sub-interval to highlight part of interest in the buffer, or the part were
+    * actual data was written. This sub-interval is defined by [{@code inPoint}, {@code outPoint}].
+    * When filled up, the buffer automatically wraps the reading/writing index, such that it is
+    * possible that {@code inPoint > outPoint} indicating that the sub-interval starts towards the end
+    * of the buffer to end at the beginning.
+    * </p>
+    */
    private int outPoint = 0;
+   /**
+    * The current index represents the current reading/writing position in the buffer.
+    */
    private int currentIndex = 0;
+   /** The current buffer size. */
    private int bufferSize;
-
+   /** List of all the single variable buffers. */
    private final ArrayList<YoBufferVariableEntry> entries = new ArrayList<>();
-   private final HashMap<String, List<YoBufferVariableEntry>> simpleNameToEntriesMap = new HashMap<>();
-
+   /**
+    * Mapping from variable name (lower case) to buffer entries to facilitates entry and variable
+    * retrieval.
+    */
+   private final Map<String, List<YoBufferVariableEntry>> simpleNameToEntriesMap = new HashMap<>();
+   /**
+    * Manages user defined key points used to highlight and keep track of key indices in the buffer.
+    */
    private final KeyPointsHandler keyPointsHandler = new KeyPointsHandler();
+   /** The list of listeners to be notified of changes on this buffer's current index. */
    private final List<YoBufferIndexChangedListener> indexChangedListeners = new ArrayList<>();
 
    private boolean lockIndex = false;
 
+   /**
+    * Creates a new empty buffer.
+    * <p>
+    * Variables can be registered to this buffer {@link #addVariable(YoVariable)}.
+    * </p>
+    *
+    * @param bufferSize the initialize buffer size.
+    */
    public YoBuffer(int bufferSize)
    {
       this.bufferSize = bufferSize;
    }
 
+   /**
+    * Clone constructor.
+    *
+    * @param other the other buffer to copy. Not modified.
+    */
    public YoBuffer(YoBuffer other)
    {
       inPoint = other.inPoint;
@@ -52,27 +116,101 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
          addEntry(new YoBufferVariableEntry(otherEntry));
    }
 
+   /**
+    * Clears the internal data and removed all variables and their buffers.
+    */
    public void clear()
    {
+      inPoint = 0;
+      outPoint = 0;
+      currentIndex = 0;
       entries.clear();
-      currentIndex = -1;
+      simpleNameToEntriesMap.clear();
+      keyPointsHandler.clear();
+      indexChangedListeners.clear();
    }
 
+   /**
+    * Clears the internal buffers, i.e. overwrite the previously written data, and resize this buffer.
+    * 
+    * @param bufferSize the new buffer size.
+    */
+   public void clearBuffers(int bufferSize)
+   {
+      entries.forEach(entry -> entry.clearBuffer(bufferSize));
+      this.bufferSize = bufferSize;
+   }
+
+   /**
+    * Resizes this buffer.
+    * <p>
+    * The data in [{@code inPoint}, {@code outPoint}] is preserved when possible is shifted to the
+    * beginning of the buffer.
+    * </p>
+    * <p>
+    * If {@code newBufferSize} is too small to retain the data in [{@code inPoint}, {@code outPoint}],
+    * then the buffer is cropped to [{@code inPoint}, {@code inPoint + newBufferSize - 1}].
+    * </p>
+    * 
+    * @param newBufferSize the new size for this buffer.
+    */
+   public void resizeBuffer(int newBufferSize)
+   {
+      if (newBufferSize < bufferSize)
+      {
+         cropBuffer(inPoint, (inPoint + newBufferSize - 1) % bufferSize);
+      }
+      else if (newBufferSize > bufferSize)
+      {
+         shiftBuffer();
+         enlargeBufferSize(newBufferSize);
+      }
+   }
+
+   private void enlargeBufferSize(int newBufferSize)
+   {
+      for (int i = 0; i < entries.size(); i++)
+      {
+         YoBufferVariableEntry entry = entries.get(i);
+         entry.enlargeBufferSize(newBufferSize);
+      }
+
+      bufferSize = newBufferSize;
+   }
+
+   /**
+    * Sets whether to lock the current index of this buffer.
+    * <p>
+    * The lock affects {@link #setCurrentIndex(int)}, {@link #tickAndReadFromBuffer(int)}, and
+    * {@link #tickAndWriteIntoBuffer()}.
+    * </p>
+    *
+    * @param lock {@code true} for preventing further changes to the reading position, {@code false} to
+    *             unlock the current index.
+    */
    public void setLockIndex(boolean lock)
    {
       lockIndex = lock;
    }
 
+   /**
+    * Returns whether this buffer's index is currently locked or not.
+    *
+    * @return {@code true} if the current index is locked and cannot be modified, {@code false}
+    *         otherwise.
+    */
    public boolean isIndexLocked()
    {
       return lockIndex;
    }
 
-   public int getBufferSize()
-   {
-      return bufferSize;
-   }
-
+   /**
+    * Adds the given entry to this buffer.
+    * 
+    * @param entry the new entry to be managed by this buffer.
+    * @throws IllegalArgumentException if the given entry buffer size is different from this buffer
+    *                                  size.
+    */
    public void addEntry(YoBufferVariableEntry entry)
    {
       if (entry.getBufferSize() != bufferSize)
@@ -90,13 +228,46 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
       entryList.add(entry);
    }
 
+   /**
+    * Registers a variable to this buffer.
+    * <p>
+    * The new variable is being associated with a new buffer.
+    * </p>
+    * <p>
+    * If the variable was already registered, this method does nothing and returns the existing
+    * variable's entry.
+    * </p>
+    * 
+    * @param variable the new variable to manage.
+    * @return the newly created buffer for the new variable.
+    */
    public YoBufferVariableEntry addVariable(YoVariable variable)
    {
-      YoBufferVariableEntry entry = new YoBufferVariableEntry(variable, bufferSize);
-      addEntry(entry);
-      return entry;
+      YoBufferVariableEntry entry = getEntry(variable);
+
+      if (entry != null)
+      {
+         return entry;
+      }
+      else
+      {
+         entry = new YoBufferVariableEntry(variable, bufferSize);
+         addEntry(entry);
+         return entry;
+      }
    }
 
+   /**
+    * Registers a list of variables.
+    * <p>
+    * The new variables are being associated with new individual buffers.
+    * </p>
+    * <p>
+    * If a variable was already registered, it is skipped.
+    * </p>
+    * 
+    * @param variables the list of variables to register to this buffer.
+    */
    public void addVariables(List<? extends YoVariable> variables)
    {
       // do this first so that 'entries' will only have to grow once.
@@ -108,334 +279,124 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
       }
    }
 
-   @Override
-   public YoBufferVariableEntry getEntry(YoVariable variable)
-   {
-      for (YoBufferVariableEntry entry : entries)
-      {
-         if (entry.getVariable() == variable)
-         {
-            return entry;
-         }
-      }
-
-      return null;
-   }
-
-   public List<YoBufferVariableEntry> getEntries()
-   {
-      return entries;
-   }
-
-   @Override
-   public List<YoVariable> getVariables()
-   {
-      return entries.stream().map(YoBufferVariableEntry::getVariable).collect(Collectors.toList());
-   }
-
-   public void clearAll(int bufferSize)
-   {
-      entries.forEach(entry -> entry.clear(bufferSize));
-      this.bufferSize = bufferSize;
-   }
-
-   public void resizeBuffer(int newBufferSize)
-   {
-      if (newBufferSize < bufferSize)
-      {
-         cropData(inPoint, (inPoint + newBufferSize - 1) % bufferSize);
-      }
-      else if (newBufferSize > bufferSize)
-      {
-         packData();
-         enlargeBufferSize(newBufferSize);
-      }
-   }
-
-   private void enlargeBufferSize(int newSize)
-   {
-      for (int i = 0; i < entries.size(); i++)
-      {
-         YoBufferVariableEntry entry = entries.get(i);
-         entry.enlargeBufferSize(newSize);
-      }
-
-      bufferSize = newSize;
-   }
-
-   public void copyValuesThrough()
-   {
-      for (int i = 0; i < entries.size(); i++)
-      {
-         YoBufferVariableEntry entry = entries.get(i);
-
-         entry.copyValueThrough();
-      }
-   }
-
-   public int getBufferInOutLength()
-   {
-      int ret;
-
-      if (outPoint > inPoint)
-      {
-         ret = outPoint - inPoint + 1;
-      }
-      else
-      {
-         ret = bufferSize - (inPoint - outPoint) + 1;
-      }
-
-      return ret;
-   }
-
-   public void packData()
-   {
-      packData(inPoint);
-   }
-
-   public void packData(int start)
-   {
-      if (start == 0)
-         return;
-
-      // If the start point is outside of the buffer abort.
-      if (start <= 0 || start >= bufferSize)
-      {
-         return;
-      }
-
-      // Shift the data in each entry to begin with start.
-      for (int i = 0; i < entries.size(); i++)
-      {
-         YoBufferVariableEntry entry = entries.get(i);
-
-         entry.packData(start);
-      }
-
-      // Move the current index to its relative position in the new data set, if the index is outside of the buffer move to zero
-      currentIndex = (currentIndex - start + bufferSize) % bufferSize;
-
-      if (currentIndex < 0)
-      {
-         currentIndex = 0;
-      }
-
-      // Move the inPoint to the new beginning and the outPoint to the end
-      inPoint = 0; // this.inPoint - start;
-      outPoint = (outPoint - start + bufferSize) % bufferSize;
-
-      // Move to the first tick
-      tickAndReadFromBuffer(0);
-
-      // +++++this.updateUI();
-   }
-
-   public void cropData()
-   {
-      if (inPoint != outPoint)
-      {
-         cropData(inPoint, outPoint);
-      }
-      else
-      {
-         cropData(inPoint, inPoint + 1);
-      }
-   }
-
-   public void cropData(int start, int end)
-   {
-      // Abort if the start or end point is unreasonable
-      if (start < 0 || end > bufferSize)
-      {
-         return; // -1; //SimulationConstructionSet.NUM_POINTS;
-      }
-
-      if (entries.isEmpty())
-      {
-         bufferSize = YoBufferVariableEntry.computeBufferSizeAfterCrop(start, end, bufferSize);
-      }
-
-      // Step through the entries cropping and resizing the data set for each
-      for (int i = 0; i < entries.size(); i++)
-      {
-         YoBufferVariableEntry entry = entries.get(i);
-         int retSize = entry.cropData(start, end);
-
-         // If the result is a positive number store the new buffer size otherwise keep the original size
-         if (retSize >= 0)
-         {
-            bufferSize = retSize;
-         }
-      }
-
-      // Move the current index to its relative position after the resize
-      currentIndex = (currentIndex - start + bufferSize) % bufferSize;
-
-      // If the index is out of bounds move it to the beginning
-      if (currentIndex < 0 || currentIndex >= bufferSize)
-      {
-         currentIndex = 0;
-      }
-
-      // Set the in point to the beginning and the out point to the end
-      inPoint = 0;
-      outPoint = bufferSize - 1;
-
-      // Move to the first tick
-      tickAndReadFromBuffer(0);
-   }
-
-   public void cutData()
-   {
-      if (inPoint <= outPoint)
-      {
-         cutData(inPoint, outPoint);
-      }
-   }
-
-   public void cutData(int start, int end)
-   {
-      // Abort if the start or end point is unreasonable
-      if (start < 0 || end > bufferSize)
-      {
-         return;
-      }
-
-      if (entries.isEmpty())
-      {
-         bufferSize = YoBufferVariableEntry.computeBufferSizeAfterCut(start, end, bufferSize);
-      }
-
-      // Step through the entries cutting and resizing the data set for each
-      for (int i = 0; i < entries.size(); i++)
-      {
-         YoBufferVariableEntry entry = entries.get(i);
-         int retSize = entry.cutData(start, end);
-
-         // If the result is a positive number store the new buffer size otherwise keep the original size
-         if (retSize >= 0)
-         {
-            bufferSize = retSize;
-         }
-      }
-
-      // Move the current index to its relative position after the resize
-      currentIndex = (currentIndex - start + bufferSize) % bufferSize;
-
-      // If the index is out of bounds move it to the beginning
-      if (currentIndex < 0 || currentIndex >= bufferSize)
-      {
-         currentIndex = 0;
-      }
-
-      // Set the in point to the beginning and the out point to the end
-      inPoint = 0;
-      outPoint = start - 1;
-
-      // Move to the first tick
-      gotoOutPoint();
-   }
-
-   public void thinData(int keepEveryNthPoint)
-   {
-      packData();
-
-      inPoint = 0;
-      currentIndex = 0;
-
-      if (bufferSize <= 2 * keepEveryNthPoint)
-         return;
-
-      // Step through the entries cutting and resizing the data set for each
-      for (int i = 0; i < entries.size(); i++)
-      {
-         YoBufferVariableEntry entry = entries.get(i);
-         int retSize = entry.thinData(keepEveryNthPoint);
-
-         // If the result is a positive number store the new buffer size otherwise keep the original size
-         if (retSize >= 0)
-         {
-            bufferSize = retSize;
-         }
-      }
-
-      outPoint = bufferSize - 1;
-
-      gotoInPoint();
-   }
-
-   public double computeAverage(YoVariable variable)
+   /**
+    * Removes a variable from this buffer.
+    * 
+    * @param variable the variable to remove from this buffer.
+    * @return the variable associated buffer that was removed or {@code null} if it could not be found.
+    */
+   public YoBufferVariableEntry removeVariable(YoVariable variable)
    {
       YoBufferVariableEntry entry = getEntry(variable);
-      return entry.computeAverage();
+
+      if (entry == null)
+         return null;
+
+      entries.remove(entry);
+      simpleNameToEntriesMap.get(variable.getName().toLowerCase()).remove(entry);
+      return entry;
    }
 
-   @Override
-   public int getInPoint()
+   /**
+    * Sets the current in-point for this buffer.
+    * <p>
+    * The buffer has a sub-interval to highlight part of interest in the buffer, or the part were
+    * actual data was written. This sub-interval is defined by [{@code inPoint}, {@code outPoint}].
+    * When filled up, the buffer automatically wraps the reading/writing index, such that it is
+    * possible that {@code inPoint > outPoint} indicating that the sub-interval starts towards the end
+    * of the buffer to end at the beginning.
+    * </p>
+    * 
+    * @param index the new position of the in-point.
+    */
+   public void setInPoint(int index)
    {
-      return inPoint;
+      inPoint = index;
+      keyPointsHandler.trimKeyPoints(inPoint, outPoint);
    }
 
-   @Override
-   public int getOutPoint()
+   /**
+    * Sets the current out-point for this buffer.
+    * <p>
+    * The buffer has a sub-interval to highlight part of interest in the buffer, or the part were
+    * actual data was written. This sub-interval is defined by [{@code inPoint}, {@code outPoint}].
+    * When filled up, the buffer automatically wraps the reading/writing index, such that it is
+    * possible that {@code inPoint > outPoint} indicating that the sub-interval starts towards the end
+    * of the buffer to end at the beginning.
+    * </p>
+    * 
+    * @param index the new position of the out-point.
+    */
+   public void setOutPoint(int index)
    {
-      return outPoint;
+      outPoint = index;
+      keyPointsHandler.trimKeyPoints(inPoint, outPoint);
    }
 
+   /**
+    * Sets the in-point to the current index.
+    * 
+    * @see #setInPoint(int)
+    */
    public void setInPoint()
    {
       setInPoint(currentIndex);
    }
 
+   /**
+    * Sets the out-point to the current index.
+    * 
+    * @see #setOutPoint(int)
+    */
    public void setOutPoint()
    {
       setOutPoint(currentIndex);
    }
 
-   public void setInPoint(int in)
-   {
-      inPoint = in;
-      keyPointsHandler.trimKeyPoints(inPoint, outPoint);
-   }
-
-   public void setOutPoint(int out)
-   {
-      outPoint = out;
-      keyPointsHandler.trimKeyPoints(inPoint, outPoint);
-   }
-
+   /**
+    * Sets the in-point at {@code 0} and the out-point at the end of the buffer, i.e.
+    * {@code getBufferSize() - 1}.
+    */
    public void setInOutPointFullBuffer()
    {
       inPoint = 0;
-      outPoint = entries.get(0).getBufferSize() - 1;
+      outPoint = getBufferSize() - 1;
    }
 
-   public void gotoInPoint()
-   {
-      setCurrentIndex(inPoint);
-   }
-
-   public void gotoOutPoint()
-   {
-      setCurrentIndex(outPoint);
-   }
-
-   public boolean atInPoint()
+   /**
+    * Tests if the current index is at the in-point.
+    * 
+    * @return {@code true} if the current index is at the in-point.
+    */
+   public boolean isAtInPoint()
    {
       return currentIndex == inPoint;
    }
 
-   public boolean atOutPoint()
+   /**
+    * Tests if the current index is at the out-point.
+    * 
+    * @return {@code true} if the current index is at the out-point.
+    */
+   public boolean isAtOutPoint()
    {
       return currentIndex == outPoint;
    }
 
-   public void setKeyPoint()
+   /**
+    * Toggle a key point at the current index.
+    * <p>
+    * If no key point was present, it is created. If there was a key point, it is removed.
+    * </p>
+    */
+   public void toggleKeyPoint()
    {
       keyPointsHandler.toggleKeyPoint(currentIndex);
    }
 
+   /**
+    * Reads the buffer at the current index and updates the values of the variables.
+    */
    public void readFromBuffer()
    {
       for (int i = 0; i < entries.size(); i++)
@@ -444,6 +405,9 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
       }
    }
 
+   /**
+    * Write into the buffer at the current index the current values of the variables.
+    */
    public void writeIntoBuffer()
    {
       for (int i = 0; i < entries.size(); i++)
@@ -452,6 +416,29 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
       }
    }
 
+   /**
+    * Sets the current index to the in-point and reads from the buffer.
+    * 
+    * @see #setCurrentIndex(int)
+    * @see #readFromBuffer()
+    */
+   public void gotoInPoint()
+   {
+      setCurrentIndex(inPoint);
+   }
+
+   /**
+    * Sets the current index to the out-point and reads from the buffer.
+    * 
+    * @see #setCurrentIndex(int)
+    * @see #readFromBuffer()
+    */
+   public void gotoOutPoint()
+   {
+      setCurrentIndex(outPoint);
+   }
+
+   /** {@inheritDoc} */
    @Override
    public void setCurrentIndex(int index)
    {
@@ -469,14 +456,7 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
       notifyIndexChangedListeners();
    }
 
-   /**
-    * This method attempts to step the index n points. If the offset is within the valid data set the
-    * function returns false and the index is set to index+n. Otherwise the index is forced to the
-    * inPoint or the outPoint depending on which is more appropriate.
-    *
-    * @param n Number of steps to shift the index, this value can be negative.
-    * @return Indicates whether or not the index was forced to one of the ends.
-    */
+   /** {@inheritDoc} */
    @Override
    public boolean tickAndReadFromBuffer(int stepSize)
    {
@@ -497,8 +477,15 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
       return rolledOver;
    }
 
+   /**
+    * Increments the current buffer index and write the values of the variables into the buffer at the
+    * new index.
+    */
    public void tickAndWriteIntoBuffer()
    {
+      if (lockIndex)
+         return;
+
       currentIndex = currentIndex + 1;
 
       if (currentIndex >= bufferSize || currentIndex < 0)
@@ -520,16 +507,331 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
       notifyIndexChangedListeners();
    }
 
-   public void attachIndexChangedListener(YoBufferIndexChangedListener indexChangedListener)
+   /**
+    * Fills the buffer with the current values of the variables.
+    */
+   public void fillBuffer()
    {
-      indexChangedListeners.add(indexChangedListener);
+      for (int i = 0; i < entries.size(); i++)
+      {
+         entries.get(i).fillBuffer();
+      }
    }
 
-   public boolean detachIndexChangedListener(YoBufferIndexChangedListener indexChangedListener)
+   /**
+    * Shifts the data in the buffer such that the in-point is at {@code 0}.
+    */
+   public void shiftBuffer()
    {
-      return indexChangedListeners.remove(indexChangedListener);
+      shiftBuffer(inPoint);
    }
 
+   /**
+    * Shifts the data in the buffer such that the given index ends up at {@code 0}.
+    * 
+    * @param shiftIndex the shift is achieved such that the index ends at {@code 0} when the operation
+    *                   is done. If the index is already at {@code 0}, nothing happens. If the index is
+    *                   outside the buffer, nothing happens.
+    */
+   public void shiftBuffer(int shiftIndex)
+   {
+      if (shiftIndex == 0)
+         return;
+
+      // If the start point is outside of the buffer abort.
+      if (shiftIndex <= 0 || shiftIndex >= bufferSize)
+         return;
+
+      // Shift the data in each entry to begin with start.
+      for (int i = 0; i < entries.size(); i++)
+         entries.get(i).shiftBuffer(shiftIndex);
+
+      // Move the current index to its relative position in the new data set, if the index is outside of the buffer move to zero
+      currentIndex = (currentIndex - shiftIndex + bufferSize) % bufferSize;
+
+      if (currentIndex < 0)
+         currentIndex = 0;
+
+      // Move the inPoint to the new beginning and the outPoint to the end
+      inPoint = 0; // this.inPoint - start;
+      outPoint = (outPoint - shiftIndex + bufferSize) % bufferSize;
+
+      // Move to the first tick
+      tickAndReadFromBuffer(0);
+   }
+
+   /**
+    * Crops the buffer to retain only the part that is in the interval [{@code inPoint},
+    * {@code outPoint}].
+    */
+   public void cropBuffer()
+   {
+      if (inPoint != outPoint)
+         cropBuffer(inPoint, outPoint);
+      else
+         cropBuffer(inPoint, inPoint + 1);
+   }
+
+   /**
+    * Crops the buffer to retain only the part that is in the interval [{@code start}, {@code end}].
+    * 
+    * @param start the first index of the interval to retain.
+    * @param end   the last index of the interval to retain.
+    */
+   public void cropBuffer(int start, int end)
+   {
+      // Abort if the start or end point is unreasonable
+      if (start < 0 || end > bufferSize)
+         return;
+
+      bufferSize = YoBufferVariableEntry.computeBufferSizeAfterCrop(start, end, bufferSize);
+
+      // Step through the entries cropping and resizing the data set for each
+      for (int i = 0; i < entries.size(); i++)
+      {
+         entries.get(i).cropBuffer(start, end);
+      }
+
+      // Move the current index to its relative position after the resize
+      currentIndex = (currentIndex - start + bufferSize) % bufferSize;
+
+      // If the index is out of bounds move it to the beginning
+      if (currentIndex < 0 || currentIndex >= bufferSize)
+         currentIndex = 0;
+
+      // Set the in point to the beginning and the out point to the end
+      inPoint = 0;
+      outPoint = bufferSize - 1;
+
+      // Move to the first tick
+      gotoInPoint();
+   }
+
+   /**
+    * Cuts the buffer, removing the part that is in the interval [{@code inPoint}, {@code outPoint}].
+    */
+   public void cutBuffer()
+   {
+      if (inPoint <= outPoint)
+      {
+         cutBuffer(inPoint, outPoint);
+      }
+   }
+
+   /**
+    * Cuts the buffer, removing the part that is in the interval [{@code start}, {@code end}].
+    * 
+    * @param start the first index of the interval to remove.
+    * @param end   the last index of the interval to remove.
+    */
+   public void cutBuffer(int start, int end)
+   {
+      // Abort if the start or end point is unreasonable
+      if (start < 0 || end > bufferSize)
+      {
+         return;
+      }
+
+      bufferSize = YoBufferVariableEntry.computeBufferSizeAfterCut(start, end, bufferSize);
+
+      // Step through the entries cutting and resizing the data set for each
+      for (int i = 0; i < entries.size(); i++)
+      {
+         YoBufferVariableEntry entry = entries.get(i);
+         entry.cutData(start, end);
+      }
+
+      // Move the current index to its relative position after the resize
+      currentIndex = (currentIndex - start + bufferSize) % bufferSize;
+
+      // If the index is out of bounds move it to the beginning
+      if (currentIndex < 0 || currentIndex >= bufferSize)
+         currentIndex = 0;
+
+      // Set the in point to the beginning and the out point to the end
+      inPoint = 0;
+      outPoint = start - 1;
+
+      // Move to the first tick
+      gotoOutPoint();
+   }
+
+   /**
+    * Prunes data and reduces buffer size by removing points and only keeping every {@code n} points.
+    * The size of this buffer is essentially being divided by {@code n}.
+    * 
+    * @param n the spacing between data points to preserve.
+    */
+   public void thinData(int n)
+   {
+      shiftBuffer();
+
+      inPoint = 0;
+      currentIndex = 0;
+
+      if (bufferSize <= 2 * n)
+         return;
+
+      // Step through the entries cutting and resizing the data set for each
+      for (int i = 0; i < entries.size(); i++)
+      {
+         YoBufferVariableEntry entry = entries.get(i);
+         int newBufferSize = entry.thinData(n);
+
+         // If the result is a positive number store the new buffer size otherwise keep the original size
+         if (newBufferSize >= 0)
+         {
+            bufferSize = newBufferSize;
+         }
+      }
+
+      outPoint = bufferSize - 1;
+
+      gotoInPoint();
+   }
+
+   /**
+    * Computes and returns the average value for the given variable over its entire buffer.
+    * 
+    * @param variable the variable to compute the average of.
+    * @return the variable's average.
+    */
+   public double computeAverage(YoVariable variable)
+   {
+      YoBufferVariableEntry entry = getEntry(variable);
+      if (entry == null)
+         return Double.NaN;
+      else
+         return entry.computeAverage();
+   }
+
+   /**
+    * Applies a processor throughout the buffer to read and or modify this buffer.
+    * 
+    * @param processor the processor to applied to this buffer data.
+    * @see YoBufferProcessor
+    */
+   public void applyProcessor(YoBufferProcessor processor)
+   {
+      processor.initialize(this);
+
+      if (processor.goForward())
+      {
+         gotoInPoint();
+
+         while (!isAtOutPoint())
+         {
+            processor.process(inPoint, outPoint, currentIndex);
+            writeIntoBuffer();
+            tickAndReadFromBuffer(1);
+         }
+
+         processor.process(inPoint, outPoint, currentIndex);
+         writeIntoBuffer();
+         tickAndReadFromBuffer(1);
+      }
+      else
+      {
+         gotoOutPoint();
+
+         while (!isAtInPoint())
+         {
+            processor.process(outPoint, inPoint, currentIndex);
+            writeIntoBuffer();
+            tickAndReadFromBuffer(-1);
+         }
+
+         processor.process(outPoint, inPoint, currentIndex);
+         writeIntoBuffer();
+         tickAndReadFromBuffer(-1);
+      }
+   }
+
+   /** {@inheritDoc} */
+   @Override
+   public int getInPoint()
+   {
+      return inPoint;
+   }
+
+   /** {@inheritDoc} */
+   @Override
+   public int getOutPoint()
+   {
+      return outPoint;
+   }
+
+   /** {@inheritDoc} */
+   @Override
+   public int getBufferSize()
+   {
+      return bufferSize;
+   }
+
+   /** {@inheritDoc} */
+   @Override
+   public YoBufferVariableEntry getEntry(YoVariable variable)
+   {
+      for (YoBufferVariableEntry entry : entries)
+      {
+         if (entry.getVariable() == variable)
+         {
+            return entry;
+         }
+      }
+
+      return null;
+   }
+
+   /**
+    * Returns all the variable entries that are managed by this buffer.
+    * 
+    * @return the buffer variable entries.
+    */
+   public List<YoBufferVariableEntry> getEntries()
+   {
+      return entries;
+   }
+
+   /** {@inheritDoc} */
+   @Override
+   public List<YoVariable> getVariables()
+   {
+      return entries.stream().map(YoBufferVariableEntry::getVariable).collect(Collectors.toList());
+   }
+
+   /**
+    * Adds a listener to this buffer.
+    *
+    * @param listener the listener for listening to changes done to the current index.
+    */
+   public void addListener(YoBufferIndexChangedListener listener)
+   {
+      indexChangedListeners.add(listener);
+   }
+
+   /**
+    * Removes all listeners previously added to this buffer.
+    */
+   public void removeListeners()
+   {
+      indexChangedListeners.clear();
+   }
+
+   /**
+    * Tries to remove a listener from this buffer. If the listener could not be found and removed,
+    * nothing happens.
+    *
+    * @param listener the listener to remove.
+    * @return {@code true} if the listener was removed, {@code false} if the listener was not found and
+    *         nothing happened.
+    */
+   public boolean removeListener(YoBufferIndexChangedListener listener)
+   {
+      return indexChangedListeners.remove(listener);
+   }
+
+   /** {@inheritDoc} */
    @Override
    public int getCurrentIndex()
    {
@@ -544,72 +846,26 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
       }
    }
 
-   public void applyProcessor(YoBufferProcessor processor)
+   public boolean epsilonEquals(YoBuffer other, double epsilon)
    {
-      processor.initialize(this);
+      List<YoBufferVariableEntry> thisEntries = entries;
+      List<YoBufferVariableEntry> otherEntries = other.entries;
 
-      if (processor.goForward())
+      if (thisEntries.size() != otherEntries.size())
       {
-         gotoInPoint();
-
-         while (!atOutPoint())
-         {
-            processor.process(inPoint, outPoint, currentIndex);
-            writeIntoBuffer();
-            tickAndReadFromBuffer(1);
-         }
-         
-         processor.process(inPoint, outPoint, currentIndex);
-         writeIntoBuffer();
-         tickAndReadFromBuffer(1);
-      }
-      else
-      {
-         gotoOutPoint();
-         
-         while (!atInPoint())
-         {
-            processor.process(outPoint, inPoint, currentIndex);
-            writeIntoBuffer();
-            tickAndReadFromBuffer(-1);
-         }
-         
-         processor.process(outPoint, inPoint, currentIndex);
-         writeIntoBuffer();
-         tickAndReadFromBuffer(-1);
-      }
-   }
-
-   public boolean checkIfDataIsEqual(YoBuffer dataBuffer, double epsilon)
-   {
-      ArrayList<YoBufferVariableEntry> thisEntries = entries;
-      ArrayList<YoBufferVariableEntry> entries = dataBuffer.entries;
-
-      if (thisEntries.size() != entries.size())
-      {
-         System.out.println("Sizes don't match! thisEntries.size() = " + thisEntries.size() + ", entries.size() = " + entries.size());
-
          return false;
       }
 
-      for (YoBufferVariableEntry entry : entries)
+      for (YoBufferVariableEntry otherEntry : otherEntries)
       {
-         YoVariable variable = entry.getVariable();
-         YoBufferVariableEntry entry2 = findVariableEntry(variable.getName());
+         YoVariable variable = otherEntry.getVariable();
+         YoBufferVariableEntry thisEntry = findVariableEntry(variable.getName());
 
-         if (entry2 == null)
-         {
-            System.out.println("Dont' have the same variables! Can't find " + variable.getName());
-
+         if (thisEntry == null)
             return false;
-         }
 
-         if (!entry.checkIfDataIsEqual(entry2, inPoint, outPoint, epsilon))
-         {
-            System.out.println("Data in entries are different!");
-
+         if (!otherEntry.epsilonEquals(thisEntry, inPoint, outPoint, epsilon))
             return false;
-         }
       }
 
       return true;

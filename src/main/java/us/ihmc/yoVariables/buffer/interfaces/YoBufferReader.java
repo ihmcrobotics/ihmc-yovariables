@@ -14,7 +14,7 @@ public interface YoBufferReader
     * Returns the index of the current buffer's in-point.
     * <p>
     * The buffer has a sub-interval to highlight part of interest in the buffer, or the part were
-    * actual data was written. This sub-interval is defined by []{@code inPoint}, {@code outPoint}.
+    * actual data was written. This sub-interval is defined by [{@code inPoint}, {@code outPoint}].
     * When filled up, the buffer automatically wraps the reading/writing index, such that it is
     * possible that {@code inPoint > outPoint} indicating that the sub-interval starts towards the end
     * of the buffer to end at the beginning.
@@ -72,6 +72,19 @@ public interface YoBufferReader
     *         {@code false} otherwise.
     */
    boolean tickAndReadFromBuffer(int stepSize);
+
+   /**
+    * Computes and returns the length of [{@code inPoint}, {@code outPoint}].
+    * 
+    * @return the length of the sub-interval [{@code inPoint}, {@code outPoint}].
+    */
+   default int getBufferInOutLength()
+   {
+      if (getOutPoint() > getInPoint())
+         return getOutPoint() - getInPoint() + 1;
+      else
+         return getBufferSize() - (getInPoint() - getOutPoint()) + 1;
+   }
 
    /**
     * Tests whether the given index is located in the sub-interval [{@code inPoint}, {@code outPoint}].

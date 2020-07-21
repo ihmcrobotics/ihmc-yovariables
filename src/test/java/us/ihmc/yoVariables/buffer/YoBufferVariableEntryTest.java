@@ -121,7 +121,7 @@ public class YoBufferVariableEntryTest
          entry2.writeIntoBufferAt(i);
       }
 
-      assertTrue(dataBufferEntry.checkIfDataIsEqual(entry2, 0, nPoints - 1, epsilon));
+      assertTrue(dataBufferEntry.epsilonEquals(entry2, 0, nPoints - 1, epsilon));
 
       dataBufferEntry = entry2 = null;
 
@@ -139,9 +139,9 @@ public class YoBufferVariableEntryTest
          entry2.writeIntoBufferAt(i);
       }
 
-      assertFalse(dataBufferEntry.checkIfDataIsEqual(entry2, 0, nPoints - 1, epsilon));
-      assertFalse(dataBufferEntry.checkIfDataIsEqual(entry2, 0, nPoints, epsilon)); // outPoint out of bounds
-      assertFalse(dataBufferEntry.checkIfDataIsEqual(entry2, nPoints, nPoints - 1, epsilon)); //inPoint out of bounds
+      assertFalse(dataBufferEntry.epsilonEquals(entry2, 0, nPoints - 1, epsilon));
+      assertFalse(dataBufferEntry.epsilonEquals(entry2, 0, nPoints, epsilon)); // outPoint out of bounds
+      assertFalse(dataBufferEntry.epsilonEquals(entry2, nPoints, nPoints - 1, epsilon)); //inPoint out of bounds
    }
 
    @Test // timeout=300000
@@ -171,7 +171,7 @@ public class YoBufferVariableEntryTest
       double tempDouble = random.nextDouble();
       yoDouble.set(tempDouble);
       dataBufferEntry.writeIntoBufferAt(0);
-      dataBufferEntry.copyValueThrough();
+      dataBufferEntry.fillBuffer();
 
       for (int i = 0; i < nPoints; i++)
       {
@@ -218,13 +218,13 @@ public class YoBufferVariableEntryTest
       }
 
       // Test Failure Conditions; data remains unchanged so only examine lengths
-      assertEquals(-1, dataBufferEntry.cropData(-1, nPoints));
+      assertEquals(-1, dataBufferEntry.cropBuffer(-1, nPoints));
       assertEquals(nPoints, dataBufferEntry.getBuffer().length);
-      assertEquals(-1, dataBufferEntry.cropData(0, nPoints + 1));
+      assertEquals(-1, dataBufferEntry.cropBuffer(0, nPoints + 1));
       assertEquals(nPoints, dataBufferEntry.getBuffer().length);
 
       // Test unchanged size
-      assertEquals(nPoints, dataBufferEntry.cropData(0, nPoints - 1));
+      assertEquals(nPoints, dataBufferEntry.cropBuffer(0, nPoints - 1));
       assertEquals(nPoints, dataBufferEntry.getBuffer().length);
 
       // Verify data integrity
@@ -234,7 +234,7 @@ public class YoBufferVariableEntryTest
       }
 
       // Test cropping from end
-      assertEquals(nPoints - 100, dataBufferEntry.cropData(0, nPoints - 101));
+      assertEquals(nPoints - 100, dataBufferEntry.cropBuffer(0, nPoints - 101));
 
       // Verify data integrity
       for (int i = 0; i < nPoints - 100; i++)
@@ -251,7 +251,7 @@ public class YoBufferVariableEntryTest
       }
 
       // Test cropping from beginning
-      assertEquals(nPoints - 100, dataBufferEntry.cropData(100, nPoints - 1));
+      assertEquals(nPoints - 100, dataBufferEntry.cropBuffer(100, nPoints - 1));
 
       // Verify data integrity
       for (int i = 0; i < dataBufferEntry.getBuffer().length; i++)
@@ -275,9 +275,9 @@ public class YoBufferVariableEntryTest
       }
 
       // Test Failure Conditions; data remains unchanged so only examine lengths
-      assertEquals(-1, dataBufferEntry.cropData(-1, nPoints));
+      assertEquals(-1, dataBufferEntry.cropBuffer(-1, nPoints));
       assertEquals(nPoints, dataBufferEntry.getBuffer().length);
-      assertEquals(-1, dataBufferEntry.cropData(0, nPoints + 1));
+      assertEquals(-1, dataBufferEntry.cropBuffer(0, nPoints + 1));
       assertEquals(nPoints, dataBufferEntry.getBuffer().length);
 
       // Test unchanged size
@@ -359,20 +359,20 @@ public class YoBufferVariableEntryTest
       }
 
       // Test Bad Start Index, data should be unchanged
-      dataBufferEntry.packData(-1);
+      dataBufferEntry.shiftBuffer(-1);
       for (int i = 0; i < nPoints - 100; i++)
       {
          assertEquals(tempData[i], dataBufferEntry.getBuffer()[i], 0);
       }
 
-      dataBufferEntry.packData(nPoints + 10);
+      dataBufferEntry.shiftBuffer(nPoints + 10);
       for (int i = 0; i < nPoints - 100; i++)
       {
          assertEquals(tempData[i], dataBufferEntry.getBuffer()[i], 0);
       }
 
       // Test packing
-      dataBufferEntry.packData(newStartIndex);
+      dataBufferEntry.shiftBuffer(newStartIndex);
 
       for (int i = 0; i < nPoints - 1 - newStartIndex; i++)
       {

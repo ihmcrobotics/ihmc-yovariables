@@ -352,7 +352,7 @@ public class YoBufferTest
       assertTrue(dataBuffer.isIndexBetweenBounds(dataBuffer.getOutPoint()));
       assertFalse(dataBuffer.isIndexBetweenBounds(dataBuffer.getOutPoint() + 1));
 
-      dataBuffer.cropData();
+      dataBuffer.cropBuffer();
       dataBuffer.gotoOutPoint();
 
       assertEquals(dataBuffer.getOutPoint(), dataBuffer.getCurrentIndex());
@@ -474,7 +474,7 @@ public class YoBufferTest
 
       // method being tested: replace each data point in each DataBufferEntry with the current value of the
       // YoVariable assigned to that DataBufferEntry
-      dataBuffer.copyValuesThrough();
+      dataBuffer.fillBuffer();
 
       // each point for each entry should now equal the current value of the entry's YoVariable
       for (int i = 0; i < entries.size(); i++)
@@ -500,11 +500,11 @@ public class YoBufferTest
       assertTrue(dataBuffer.getOutPoint() == testBufferSize - 1);
 
       // assert in/outPoint don't chnage if start point is outside buffer range
-      dataBuffer.packData(-1);
+      dataBuffer.shiftBuffer(-1);
       assertTrue(dataBuffer.getInPoint() == 0);
       assertTrue(dataBuffer.getOutPoint() == testBufferSize - 1);
 
-      dataBuffer.packData(testBufferSize);
+      dataBuffer.shiftBuffer(testBufferSize);
       assertTrue(dataBuffer.getInPoint() == 0);
       assertTrue(dataBuffer.getOutPoint() == testBufferSize - 1);
    }
@@ -528,7 +528,7 @@ public class YoBufferTest
          int newIndex = random.nextInt(testBufferSize);
          dataBuffer.setCurrentIndex(newIndex);
          int newStartLocation = random.nextInt(testBufferSize);
-         dataBuffer.packData(newStartLocation);
+         dataBuffer.shiftBuffer(newStartLocation);
 
          List<YoBufferVariableEntry> entries = dataBuffer.getEntries();
          List<YoBufferVariableEntry> entriesClone = dataBufferClone.getEntries();
@@ -582,21 +582,21 @@ public class YoBufferTest
       YoBuffer dataBuffer = new YoBuffer(0);
       YoBuffer otherDataBuffer = new YoBuffer(0);
 
-      assertTrue(dataBuffer.checkIfDataIsEqual(otherDataBuffer, 1e-6));
+      assertTrue(dataBuffer.epsilonEquals(otherDataBuffer, 1e-6));
 
       YoRegistry dataBufferRegistry = new YoRegistry("dataBufferRegistry");
       YoDouble dataBufferYoDouble = new YoDouble("dataBufferYoDouble", dataBufferRegistry);
       YoBufferVariableEntry dataBufferEntry = new YoBufferVariableEntry(dataBufferYoDouble, 0);
       dataBuffer.addEntry(dataBufferEntry);
 
-      assertFalse(dataBuffer.checkIfDataIsEqual(otherDataBuffer, 1));
+      assertFalse(dataBuffer.epsilonEquals(otherDataBuffer, 1));
 
       YoRegistry otherDataBufferRegistry = new YoRegistry("otherDataBufferRegistry");
       YoDouble otherDataBufferYoDouble = new YoDouble("otherDataBufferYoDouble", otherDataBufferRegistry);
       YoBufferVariableEntry otherDataBufferEntry = new YoBufferVariableEntry(otherDataBufferYoDouble, 0);
       otherDataBuffer.addEntry(otherDataBufferEntry);
 
-      assertFalse(dataBuffer.checkIfDataIsEqual(otherDataBuffer, 1e-6));
+      assertFalse(dataBuffer.epsilonEquals(otherDataBuffer, 1e-6));
 
       dataBuffer = new YoBuffer(testBufferSize);
       otherDataBuffer = new YoBuffer(testBufferSize);
@@ -614,7 +614,7 @@ public class YoBufferTest
          otherDataBuffer.tickAndWriteIntoBuffer();
       }
 
-      assertFalse(dataBuffer.checkIfDataIsEqual(otherDataBuffer, 1e-6));
+      assertFalse(dataBuffer.epsilonEquals(otherDataBuffer, 1e-6));
    }
 
    @Test // timeout = 30000
@@ -624,7 +624,7 @@ public class YoBufferTest
       fillDataBufferWithRandomData(random);
       YoBuffer dataBufferClone = new YoBuffer(dataBuffer);
 
-      assertTrue(dataBuffer.checkIfDataIsEqual(dataBufferClone, 1e-6));
+      assertTrue(dataBuffer.epsilonEquals(dataBufferClone, 1e-6));
    }
 
    @Test // timeout = 30000
@@ -638,7 +638,7 @@ public class YoBufferTest
       assertTrue(dataBuffer.getOutPoint() == testBufferSize - 1);
 
       // attempt to cut data with unreasonable start point
-      dataBuffer.cutData(-1, testBufferSize / 2);
+      dataBuffer.cutBuffer(-1, testBufferSize / 2);
 
       // assert nothing changed
       assertTrue(dataBuffer.getCurrentIndex() == 0);
@@ -646,7 +646,7 @@ public class YoBufferTest
       assertTrue(dataBuffer.getOutPoint() == testBufferSize - 1);
 
       // attempt to cut data with unreasonable end point
-      dataBuffer.cutData(testBufferSize / 2, testBufferSize + 1);
+      dataBuffer.cutBuffer(testBufferSize / 2, testBufferSize + 1);
 
       // assert nothing changed
       assertTrue(dataBuffer.getCurrentIndex() == 0);
@@ -666,7 +666,7 @@ public class YoBufferTest
 
       // the no-arg constructor should use the in/out points for the start and end of the region to cut
       // this should cut the entire buffer and effectively erase all of its data
-      dataBuffer.cutData();
+      dataBuffer.cutBuffer();
 
       // assert that the length of the buffer didn't change
       // this is true when the entire buffer is cut
@@ -700,7 +700,7 @@ public class YoBufferTest
          int start = random.nextInt(testBufferSize);
          int end = random.nextInt(testBufferSize);
 
-         dataBuffer.cutData(start, end);
+         dataBuffer.cutBuffer(start, end);
 
          for (int j = 0; j < dataBuffer.getEntries().size(); j++)
          {
@@ -800,7 +800,7 @@ public class YoBufferTest
 
       YoBufferIndexChangedListener indexChangedListener = (int newIndex) -> listenerNotified[0] = true;
 
-      dataBuffer.attachIndexChangedListener(indexChangedListener);
+      dataBuffer.addListener(indexChangedListener);
 
       assertFalse(listenerNotified[0]);
       assertFalse(listenerNotified[1]);

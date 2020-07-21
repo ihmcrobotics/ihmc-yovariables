@@ -31,6 +31,15 @@ public class KeyPointsHandler implements KeyPointsHolder
    private final List<KeyPointsChangedListener> listeners = new ArrayList<>();
 
    /**
+    * Clears all the key points and removes all the listeners.
+    */
+   public void clear()
+   {
+      keyPoints.clear();
+      listeners.clear();
+   }
+
+   /**
     * Adds a listener to this key points handler.
     *
     * @param listener the listener for listening to changes done on the key points.
