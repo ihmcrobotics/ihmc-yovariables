@@ -12,6 +12,10 @@ import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.tools.YoFrameVariableNameTools;
 import us.ihmc.yoVariables.variable.YoDouble;
 
+/**
+ * {@code FramePose3DBasics} implementation which position and orientation backed with
+ * {@code YoVariable}s.
+ */
 public class YoMutableFramePose3D extends YoMutableFrameObject implements FramePose3DBasics
 {
    /** The position part of this pose 3D. */
@@ -20,12 +24,15 @@ public class YoMutableFramePose3D extends YoMutableFrameObject implements FrameP
    private final YoMutableFrameQuaternion orientation;
 
    /**
-    * Creates a pose using the provided YoVariables. If holding on to the position and orientation
-    * outside this class make sure to always keep their frames consistent or operations on this pose
-    * will fail with a {@link ReferenceFrameMismatchException}.
+    * Creates a pose using the provided YoVariables.
+    * <p>
+    * If holding on to the position and orientation outside this class make sure to always keep their
+    * frames consistent or operations on this pose will fail with a
+    * {@link ReferenceFrameMismatchException}.
+    * </p>
     *
-    * @param position    part of this pose 3D.
-    * @param orientation part of this pose 3D.
+    * @param position    the {@code YoMutableFramePoint3D} to use internally for the position.
+    * @param orientation the {@code YoMutableFrameQuaternion} to use internally for the orientation.
     */
    public YoMutableFramePose3D(YoMutableFramePoint3D position, YoMutableFrameQuaternion orientation)
    {
@@ -38,9 +45,9 @@ public class YoMutableFramePose3D extends YoMutableFrameObject implements FrameP
    /**
     * Creates a new pose and YoVariables in the provided registry.
     *
-    * @param namePrefix the prefix given to all YoVariables
-    * @param nameSuffix the suffix given to all YoVariables
-    * @param registry   is where the Yovariables backing this object are created.
+    * @param namePrefix a unique name string to use as the prefix for child variable names.
+    * @param nameSuffix a string to use as the suffix for child variable names.
+    * @param registry   the registry to register child variables to.
     */
    public YoMutableFramePose3D(String namePrefix, String nameSuffix, YoRegistry registry)
    {
@@ -59,6 +66,7 @@ public class YoMutableFramePose3D extends YoMutableFrameObject implements FrameP
       setReferenceFrame(ReferenceFrame.getWorldFrame());
    }
 
+   /** {@inheritDoc} */
    @Override
    public FixedFramePoint3DBasics getPosition()
    {
@@ -66,6 +74,7 @@ public class YoMutableFramePose3D extends YoMutableFrameObject implements FrameP
       return position;
    }
 
+   /** {@inheritDoc} */
    @Override
    public FixedFrameQuaternionBasics getOrientation()
    {
@@ -73,6 +82,7 @@ public class YoMutableFramePose3D extends YoMutableFrameObject implements FrameP
       return orientation;
    }
 
+   /** {@inheritDoc} */
    @Override
    public ReferenceFrame getReferenceFrame()
    {
@@ -80,6 +90,7 @@ public class YoMutableFramePose3D extends YoMutableFrameObject implements FrameP
       return super.getReferenceFrame();
    }
 
+   /** {@inheritDoc} */
    @Override
    public void setReferenceFrame(ReferenceFrame referenceFrame)
    {
@@ -89,11 +100,13 @@ public class YoMutableFramePose3D extends YoMutableFrameObject implements FrameP
    }
 
    /**
-    * This is a check that should be called every time this object is interacted with. If this failes
-    * it likely means that you created this pose using
+    * This is a check that should be called every time this object is interacted with.
+    * <p>
+    * If this fails it likely means that you created this pose using
     * {@link #YoMutableFramePose3D(YoMutableFramePoint3D, YoMutableFrameQuaternion)} and changed the
     * reference frame of one of the passed objects without modifying the other one from outside this
     * class. This will make the data structure in here inconsistent.
+    * </p>
     */
    private void checkFrameConsistency()
    {

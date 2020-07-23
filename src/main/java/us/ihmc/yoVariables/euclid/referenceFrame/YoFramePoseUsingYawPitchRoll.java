@@ -10,11 +10,9 @@ import us.ihmc.euclid.orientation.interfaces.Orientation3DReadOnly;
 import us.ihmc.euclid.referenceFrame.FrameQuaternion;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.exceptions.ReferenceFrameMismatchException;
-import us.ihmc.euclid.referenceFrame.interfaces.FixedFramePose3DBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameOrientation2DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameOrientation3DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FramePose2DReadOnly;
-import us.ihmc.euclid.referenceFrame.interfaces.FramePose3DBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FramePose3DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameQuaternionReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple2DReadOnly;
@@ -23,7 +21,6 @@ import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.tools.RotationMatrixTools;
 import us.ihmc.euclid.tools.YawPitchRollTools;
-import us.ihmc.euclid.transform.interfaces.RigidBodyTransformBasics;
 import us.ihmc.euclid.transform.interfaces.RigidBodyTransformReadOnly;
 import us.ihmc.euclid.transform.interfaces.Transform;
 import us.ihmc.euclid.tuple2D.interfaces.Tuple2DReadOnly;
@@ -46,6 +43,15 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
 
    private final FrameQuaternion frameQuaternion = new FrameQuaternion();
 
+   /**
+    * Creates a new {@code YoFramePoseUsingYawPitchRoll} using the given {@code position} and
+    * {@code orientation}.
+    *
+    * @param position    the {@code YoFramePoint3D} to use internally for the position.
+    * @param orientation the {@code YoFrameYawPitchRoll} to use internally for the orientation.
+    * @throws ReferenceFrameMismatchException if {@code position} and {@code orientation} are not
+    *                                         expressed in the same reference frame.
+    */
    public YoFramePoseUsingYawPitchRoll(YoFramePoint3D position, YoFrameYawPitchRoll orientation)
    {
       position.checkReferenceFrameMatch(orientation);
@@ -53,23 +59,40 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
       yawPitchRoll = orientation;
    }
 
-   public YoFramePoseUsingYawPitchRoll(String prefix, ReferenceFrame frame, YoRegistry registry)
+   /**
+    * Creates a new {@code YoFramePoseUsingYawPitchRoll}.
+    *
+    * @param namePrefix     a unique name string to use as the prefix for child variable names.
+    * @param referenceFrame the reference frame for this pose.
+    * @param registry       the registry to register child variables to.
+    */
+   public YoFramePoseUsingYawPitchRoll(String namePrefix, ReferenceFrame referenceFrame, YoRegistry registry)
    {
-      this(prefix, "", frame, registry);
+      this(namePrefix, "", referenceFrame, registry);
    }
 
-   public YoFramePoseUsingYawPitchRoll(String prefix, String suffix, ReferenceFrame frame, YoRegistry registry)
+   /**
+    * Creates a new {@code YoFramePoseUsingYawPitchRoll}.
+    *
+    * @param namePrefix     a unique name string to use as the prefix for child variable names.
+    * @param nameSuffix     a string to use as the suffix for child variable names.
+    * @param referenceFrame the reference frame for this pose.
+    * @param registry       the registry to register child variables to.
+    */
+   public YoFramePoseUsingYawPitchRoll(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoRegistry registry)
    {
-      position = new YoFramePoint3D(prefix, suffix, frame, registry);
-      yawPitchRoll = new YoFrameYawPitchRoll(prefix, suffix, frame, registry);
+      position = new YoFramePoint3D(namePrefix, nameSuffix, referenceFrame, registry);
+      yawPitchRoll = new YoFrameYawPitchRoll(namePrefix, nameSuffix, referenceFrame, registry);
    }
 
+   /** {@inheritDoc} */
    @Override
    public YoFramePoint3D getPosition()
    {
       return position;
    }
 
+   /** {@inheritDoc} */
    @Override
    public FrameQuaternionReadOnly getOrientation()
    {
@@ -77,6 +100,11 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
       return frameQuaternion;
    }
 
+   /**
+    * Returns the reference to the internal orientation part of this pose.
+    * 
+    * @return the orientation part of this pose.
+    */
    public YoFrameYawPitchRoll getYawPitchRoll()
    {
       return yawPitchRoll;
@@ -894,44 +922,50 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
    }
 
    /**
-    * Use {@code framePoseToPack.set(this)} instead.
+    * Sets this frame pose 3D to the {@code other} frame pose 3D.
+    *
+    * @param other the other frame pose 3D. Not modified.
+    * @throws ReferenceFrameMismatchException if {@code this} and {@code other} are not expressed in
+    *                                         the same reference frame.
     */
-   @Deprecated
-   public void getFramePose(FixedFramePose3DBasics framePoseToPack)
-   {
-      framePoseToPack.getPosition().set(position);
-      framePoseToPack.getOrientation().set(yawPitchRoll);
-   }
-
-   /**
-    * Use {@code framePoseToPack.setIncludingFrame(this)} instead.
-    */
-   @Deprecated
-   public void getFramePoseIncludingFrame(FramePose3DBasics framePoseToPack)
-   {
-      framePoseToPack.setToZero(getReferenceFrame());
-      getFramePose(framePoseToPack);
-   }
-
-   /**
-    * Use {@link #get(RigidBodyTransformBasics)} instead.
-    */
-   @Deprecated
-   public void getPose(RigidBodyTransformBasics rigidBodyTransformToPack)
-   {
-      get(rigidBodyTransformToPack);
-   }
-
    public void set(YoFramePoseUsingYawPitchRoll other)
    {
       set(other.position, other.yawPitchRoll);
    }
 
+   /**
+    * Sets this pose 3D to be the same as the given one expressed in the reference frame of this.
+    * <p>
+    * If {@code other} is expressed in the frame as {@code this}, then this method is equivalent to
+    * {@link #set(YoFramePoseUsingYawPitchRoll)}.
+    * </p>
+    * <p>
+    * If {@code other} is expressed in a different frame than {@code this}, then {@code this} is set to
+    * {@code other} and then transformed to be expressed in {@code this.getReferenceFrame()}.
+    * </p>
+    *
+    * @param other the other frame pose 3D to set this to. Not modified.
+    */
    public void setMatchingFrame(YoFramePoseUsingYawPitchRoll other)
    {
       setMatchingFrame(other.position, other.yawPitchRoll);
    }
 
+   /**
+    * Sets this pose 3D to the given {@code position} and {@code orientation} expressed in the
+    * reference frame of this.
+    * <p>
+    * If the arguments are expressed in the frame as {@code this}, then this method is equivalent to
+    * {@link #set(FrameTuple3DReadOnly, FrameOrientation3DReadOnly)}.
+    * </p>
+    * <p>
+    * If the arguments are expressed in a different frame than {@code this}, then {@code this} is set
+    * and then transformed to be expressed in {@code this.getReferenceFrame()}.
+    * </p>
+    *
+    * @param position    the tuple with the new position coordinates. Not modified.
+    * @param orientation the new orientation. Not modified.
+    */
    public void setMatchingFrame(FrameTuple3DReadOnly position, FrameOrientation3DReadOnly orientation)
    {
       this.position.setMatchingFrame(position);
@@ -939,169 +973,194 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
    }
 
    /**
-    * Use {@link #setPosition(double, double, double)} instead.
+    * Adds the components of {@code other} to this components.
+    * 
+    * @param other the other pose to add the components to {@code this}. Not modified.
     */
-   @Deprecated
-   public void setXYZ(double x, double y, double z)
+   public void add(YoFramePoseUsingYawPitchRoll other)
    {
-      setPosition(x, y, z);
+      position.add(other.position);
+      yawPitchRoll.add(other.yawPitchRoll);
    }
 
    /**
-    * Use {@link #setPosition(double, double, double)} instead.
+    * Sets the yaw angle of the orientation part.
+    *
+    * @param yaw the new yaw angle.
     */
-   @Deprecated
-   public void setXYZ(double[] pos)
-   {
-      setXYZ(pos[0], pos[1], pos[2]);
-   }
-
-   /**
-    * Use {@link #setOrientationYawPitchRoll(double, double, double)} instead.
-    */
-   @Deprecated
-   public void setYawPitchRoll(double yaw, double pitch, double roll)
-   {
-      yawPitchRoll.setYawPitchRoll(yaw, pitch, roll);
-   }
-
    public void setYaw(double yaw)
    {
       yawPitchRoll.setYaw(yaw);
    }
 
+   /**
+    * Sets the pitch angle of the orientation part.
+    *
+    * @param pitch the new pitch angle.
+    */
    public void setPitch(double pitch)
    {
       yawPitchRoll.setPitch(pitch);
    }
 
+   /**
+    * Sets the roll angle of the orientation part.
+    *
+    * @param roll the new roll angle.
+    */
    public void setRoll(double roll)
    {
       yawPitchRoll.setRoll(roll);
    }
 
    /**
-    * Use {@link #setOrientationYawPitchRoll(double, double, double)} instead.
+    * Sets the x-coordinate of the position part.
+    * 
+    * @param x the position along the x-axis.
     */
-   @Deprecated
-   public void setYawPitchRoll(double[] yawPitchRoll)
+   public void setX(double x)
    {
-      this.yawPitchRoll.setYawPitchRoll(yawPitchRoll[0], yawPitchRoll[1], yawPitchRoll[2]);
+      position.setX(x);
    }
 
-   @Deprecated
-   public void setXYZYawPitchRoll(double[] pose)
+   /**
+    * Sets the y-coordinate of the position part.
+    * 
+    * @param y the position along the y-axis.
+    */
+   public void setY(double y)
    {
-      setXYZ(pose[0], pose[1], pose[2]);
-      setYawPitchRoll(pose[3], pose[4], pose[5]);
+      position.setY(y);
    }
 
+   /**
+    * Sets the z-coordinate of the position part.
+    * 
+    * @param z the position along the z-axis.
+    */
+   public void setZ(double z)
+   {
+      position.setZ(z);
+   }
+
+   /** {@inheritDoc} */
    @Override
    public ReferenceFrame getReferenceFrame()
    {
       return position.getReferenceFrame();
    }
 
+   /**
+    * Attaches a listener to {@code this} that is to be triggered when this pose components change.
+    *
+    * @param variableChangedListener the listener to be attached.
+    */
    public void attachVariableChangedListener(YoVariableChangedListener variableChangedListener)
    {
       position.attachVariableChangedListener(variableChangedListener);
       yawPitchRoll.attachVariableChangedListener(variableChangedListener);
    }
 
-   /**
-    * Use {@link #getPositionDistance(FramePose3DReadOnly)} instead.
-    */
-   @Deprecated
-   public double getDistance(YoFramePoseUsingYawPitchRoll goalYoPose)
-   {
-      return position.distance(goalYoPose.position);
-   }
-
-   public void setX(double x)
-   {
-      position.setX(x);
-   }
-
-   public void setY(double y)
-   {
-      position.setY(y);
-   }
-
-   public void setZ(double z)
-   {
-      position.setZ(z);
-   }
-
+   /** {@inheritDoc} */
    @Override
    public double getX()
    {
       return position.getX();
    }
 
+   /** {@inheritDoc} */
    @Override
    public double getY()
    {
       return position.getY();
    }
 
+   /** {@inheritDoc} */
    @Override
    public double getZ()
    {
       return position.getZ();
    }
 
+   /** {@inheritDoc} */
    @Override
    public double getRoll()
    {
       return yawPitchRoll.getRoll();
    }
 
+   /** {@inheritDoc} */
    @Override
    public double getPitch()
    {
       return yawPitchRoll.getPitch();
    }
 
+   /** {@inheritDoc} */
    @Override
    public double getYaw()
    {
       return yawPitchRoll.getYaw();
    }
 
-   public void add(YoFramePoseUsingYawPitchRoll yoFramePose)
-   {
-      position.add(yoFramePose.position);
-      yawPitchRoll.add(yoFramePose.yawPitchRoll);
-   }
-
+   /**
+    * Gets the internal reference to the x-coordinate used for the position of this pose.
+    *
+    * @return the position x-coordinate as {@code YoVariable}.
+    */
    public YoDouble getYoX()
    {
       return position.getYoX();
    }
 
+   /**
+    * Gets the internal reference to the y-coordinate used for the position of this pose.
+    *
+    * @return the position y-coordinate as {@code YoVariable}.
+    */
    public YoDouble getYoY()
    {
       return position.getYoY();
    }
 
+   /**
+    * Gets the internal reference to the z-coordinate used for the position of this pose.
+    *
+    * @return the position z-coordinate as {@code YoVariable}.
+    */
    public YoDouble getYoZ()
    {
       return position.getYoZ();
    }
 
+   /**
+    * Gets the internal reference to the yaw angle used for the orientation of this pose.
+    *
+    * @return the angle around the z-axis as {@code YoVariable}.
+    */
+   public YoDouble getYoYaw()
+   {
+      return yawPitchRoll.getYoYaw();
+   }
+
+   /**
+    * Gets the internal reference to the pitch angle used for the orientation of this pose.
+    *
+    * @return the angle around the y-axis as {@code YoVariable}.
+    */
    public YoDouble getYoPitch()
    {
       return yawPitchRoll.getYoPitch();
    }
 
+   /**
+    * Gets the internal reference to the roll angle used for the orientation of this pose.
+    *
+    * @return the angle around the x-axis as {@code YoVariable}.
+    */
    public YoDouble getYoRoll()
    {
       return yawPitchRoll.getYoRoll();
-   }
-
-   public YoDouble getYoYaw()
-   {
-      return yawPitchRoll.getYoYaw();
    }
 
    /**
@@ -1121,6 +1180,16 @@ public class YoFramePoseUsingYawPitchRoll implements FramePose3DReadOnly, Cleara
       return new YoFramePoseUsingYawPitchRoll(position.duplicate(newRegistry), yawPitchRoll.duplicate(newRegistry));
    }
 
+   /**
+    * Tests if this pose is exactly equal to {@code other}.
+    * <p>
+    * If the two poses have different frames, this method returns {@code false}.
+    * </p>
+    *
+    * @param other the other pose to compare against this. Not modified.
+    * @return {@code true} if the two poses are exactly equal and are expressed in the same reference
+    *         frame, {@code false} otherwise.
+    */
    public boolean equals(YoFramePoseUsingYawPitchRoll other)
    {
       if (other == null)

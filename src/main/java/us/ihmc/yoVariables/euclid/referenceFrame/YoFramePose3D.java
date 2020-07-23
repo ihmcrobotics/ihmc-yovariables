@@ -3,9 +3,8 @@ package us.ihmc.yoVariables.euclid.referenceFrame;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.exceptions.ReferenceFrameMismatchException;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFramePose3DBasics;
-import us.ihmc.euclid.referenceFrame.interfaces.FramePoint3DReadOnly;
+import us.ihmc.euclid.referenceFrame.interfaces.FrameOrientation3DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FramePose3DReadOnly;
-import us.ihmc.euclid.referenceFrame.interfaces.FrameQuaternionReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple3DReadOnly;
 import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
@@ -98,7 +97,7 @@ public class YoFramePose3D implements FixedFramePose3DBasics
     * Sets this frame pose to {@code other}.
     * <p>
     * If the arguments are expressed in the frame as {@code this}, then this method is equivalent to
-    * {@link #set(FrameTuple3DReadOnly, FrameQuaternionReadOnly)}.
+    * {@link #set(FrameTuple3DReadOnly, FrameOrientation3DReadOnly)}.
     * </p>
     * <p>
     * If the arguments are expressed in a different frame than {@code this}, then {@code this} is set
@@ -109,7 +108,7 @@ public class YoFramePose3D implements FixedFramePose3DBasics
     * @param position    the frame point used to set this position to. Not modified.
     * @param orientation the frame quaternion to set this orientation to. Not modified.
     */
-   public void setMatchingFrame(FramePoint3DReadOnly position, FrameQuaternionReadOnly orientation)
+   public void setMatchingFrame(FrameTuple3DReadOnly position, FrameOrientation3DReadOnly orientation)
    {
       this.position.setMatchingFrame(position);
       this.orientation.setMatchingFrame(orientation);

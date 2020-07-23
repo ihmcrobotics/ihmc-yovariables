@@ -12,8 +12,8 @@ import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameConvexPolygon2DBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFramePoint2DBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameConvexPolygon2DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FramePoint2DReadOnly;
+import us.ihmc.euclid.referenceFrame.tools.EuclidFrameFactories;
 import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
-import us.ihmc.euclid.tools.EuclidCoreIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.transform.RigidBodyTransform;
 import us.ihmc.euclid.tuple2D.interfaces.Point2DReadOnly;
@@ -57,46 +57,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
     * {@link #update()}.
     * </p>
     */
-   private final FixedFramePoint2DBasics centroid = new FixedFramePoint2DBasics()
-   {
-      private double x, y;
-
-      @Override
-      public void setX(double x)
-      {
-         this.x = x;
-      };
-
-      @Override
-      public void setY(double y)
-      {
-         this.y = y;
-      }
-
-      @Override
-      public double getX()
-      {
-         return x;
-      }
-
-      @Override
-      public double getY()
-      {
-         return y;
-      }
-
-      @Override
-      public ReferenceFrame getReferenceFrame()
-      {
-         return referenceFrame;
-      }
-
-      @Override
-      public String toString()
-      {
-         return EuclidCoreIOTools.getTuple2DString(this) + "-" + referenceFrame;
-      }
-   };
+   private final FixedFramePoint2DBasics centroid = EuclidFrameFactories.newFixedFramePoint2DBasics(this);
    /**
     * The area of this convex polygon.
     * <p>

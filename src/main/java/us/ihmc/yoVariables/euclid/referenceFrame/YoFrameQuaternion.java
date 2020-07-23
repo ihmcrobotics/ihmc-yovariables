@@ -68,7 +68,7 @@ public class YoFrameQuaternion implements FixedFrameQuaternionBasics
     *                       {@code YoFrameQuaternion}.
     * @param qzVariable     an existing variable representing the z value of this
     *                       {@code YoFrameQuaternion}.
-    * @param qsVariable     an existing variable representing the z value of this
+    * @param qsVariable     an existing variable representing the s value of this
     *                       {@code YoFrameQuaternion}.
     * @param referenceFrame the reference frame for this {@code YoFrameQuaternion}.
     */
