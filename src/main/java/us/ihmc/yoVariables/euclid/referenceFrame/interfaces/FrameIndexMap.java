@@ -17,25 +17,65 @@ import us.ihmc.yoVariables.euclid.referenceFrame.YoMutableFrameObject;
  * A map used by the {@link YoMutableFrameObject} to map between frames and frame indices.
  * <p>
  * Several default implementations are provided in this interface.
+ * </p>
+ * <p>
+ * Implementations provided here, relies on {@link ReferenceFrame#getFrameIndex()} to compute a
+ * unique index per reference frame. Other implementation may also use
+ * {@link ReferenceFrame#hashCode()} instead.
+ * </p>
  *
  * @author Georg Wiedebach
  */
 public interface FrameIndexMap
 {
+   /** Key value referencing to the {@code null} value. */
    static final long NO_ENTRY_KEY = -1;
 
+   /**
+    * Registers a new reference frame to this map for later use.
+    * <p>
+    * If the reference frame was already registered, nothing happens.
+    * </p>
+    * 
+    * @param referenceFrame the new reference frame to register.
+    */
    public void put(ReferenceFrame referenceFrame);
 
+   /**
+    * Retrieves a reference frame previously registered which index correspond
+    * 
+    * @param frameIndex the index of the reference frame to retrieve. The index is typically obtained
+    *                   from {@link ReferenceFrame#getFrameIndex()}.
+    * @return the reference frame.
+    */
    public ReferenceFrame getReferenceFrame(long frameIndex);
 
+   /**
+    * Returns the index for the given reference frame.
+    * 
+    * @param referenceFrame the reference frame to get the index of.
+    * @return the reference frame index value.
+    */
    public long getFrameIndex(ReferenceFrame referenceFrame);
 
-   public default void putAll(Collection<ReferenceFrame> referenceFrames)
+   /**
+    * Registers all the given reference frames.
+    * 
+    * @param referenceFrames the collection of reference frames to register.
+    * @see #put(ReferenceFrame)
+    */
+   public default void putAll(Collection<? extends ReferenceFrame> referenceFrames)
    {
       referenceFrames.forEach(referenceFrame -> put(referenceFrame));
    }
 
-   public default void putAll(List<ReferenceFrame> referenceFrames)
+   /**
+    * Registers all the given reference frames.
+    * 
+    * @param referenceFrames the list of reference frames to register.
+    * @see #put(ReferenceFrame)
+    */
+   public default void putAll(List<? extends ReferenceFrame> referenceFrames)
    {
       for (int i = 0; i < referenceFrames.size(); i++)
       {
@@ -43,6 +83,12 @@ public interface FrameIndexMap
       }
    }
 
+   /**
+    * Registers all the given reference frames.
+    * 
+    * @param referenceFrames the array of reference frames to register.
+    * @see #put(ReferenceFrame)
+    */
    public default void putAll(ReferenceFrame[] referenceFrames)
    {
       for (int i = 0; i < referenceFrames.length; i++)
@@ -51,6 +97,22 @@ public interface FrameIndexMap
       }
    }
 
+   /**
+    * Implementation of {@code FrameIndexMap} which uses a map internally to store and quickly retrieve
+    * reference frames.
+    * <p>
+    * This implementation is adapted to environments where garbage generation is problematic. Memory is
+    * only allocated when registering a reference frame for the first time, and the retrieval is fast
+    * and garbage-free.
+    * </p>
+    * <p>
+    * The main restrictions of this implementation are:
+    * <ul>
+    * <li>it currently does not handle properly removal of a reference frame from its tree;
+    * <li>a reference frame must be registered before it can be retrieved.
+    * </ul>
+    * </p>
+    */
    public class FrameIndexHashMap implements FrameIndexMap
    {
       private final TLongObjectMap<ReferenceFrame> frameIndexMap = new TLongObjectHashMap<>(DEFAULT_CAPACITY, DEFAULT_LOAD_FACTOR, NO_ENTRY_KEY);
@@ -94,13 +156,34 @@ public interface FrameIndexMap
       }
    }
 
+   /**
+    * Implementation of {@code FrameIndexMap} which only relies on the reference frame that it was
+    * given at construction.
+    * <p>
+    * This implementation is adapted to environments where there is no restriction on garbage
+    * generation. Once created, any reference frame that is a descendant of the root frame (given at
+    * construction) can be retrieved. However, any reference frame that is not part of the root frame
+    * subtree cannot be retrieved nor registered.
+    * </p>
+    * <p>
+    * The main advantage of this implementation is that it is robust to a dynamically changing
+    * reference frame tree. However, reference frame retrieval generates garbage and is less efficient
+    * than with {@link FrameIndexHashMap}.
+    * </p>
+    */
    public class FrameIndexFinder implements FrameIndexMap
    {
       private final ReferenceFrame rootFrame;
 
-      public FrameIndexFinder(ReferenceFrame frame)
+      /**
+       * Creates a new frame index finder that supports the entire subtree of the given frame and that is
+       * ready to use.
+       * 
+       * @param rootFrame the root frame which tree is to be supported by {@code this}.
+       */
+      public FrameIndexFinder(ReferenceFrame rootFrame)
       {
-         rootFrame = frame.getRootFrame();
+         this.rootFrame = rootFrame.getRootFrame();
       }
 
       @Override

@@ -10,7 +10,7 @@ import us.ihmc.euclid.tuple2D.interfaces.Point2DBasics;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
- * {@code Pose2DBasics} implementation which position and orientation baked with
+ * {@code Pose2DBasics} implementation which position and orientation backed with
  * {@code YoVariable}s.
  */
 public class YoPose2D implements Pose2DBasics, GeometryObject<YoPose2D>

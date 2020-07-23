@@ -12,7 +12,7 @@ import us.ihmc.yoVariables.tools.YoFrameVariableNameTools;
 import us.ihmc.yoVariables.variable.YoDouble;
 
 /**
- * {@code Orientation2DBasics} implementation which position and orientation baked with
+ * {@code Orientation2DBasics} implementation which position and orientation backed with
  * {@code YoVariable}s.
  */
 public class YoOrientation2D implements Orientation2DBasics, GeometryObject<YoOrientation2D>

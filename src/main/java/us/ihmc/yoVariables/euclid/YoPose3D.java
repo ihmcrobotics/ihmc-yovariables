@@ -10,7 +10,7 @@ import us.ihmc.euclid.tuple4D.interfaces.QuaternionBasics;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
- * {@code Pose3DBasics} implementation which position and orientation baked with
+ * {@code Pose3DBasics} implementation which position and orientation backed with
  * {@code YoVariable}s.
  */
 public class YoPose3D implements Pose3DBasics, GeometryObject<YoPose3D>
