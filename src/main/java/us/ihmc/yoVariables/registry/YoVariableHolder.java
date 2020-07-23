@@ -59,7 +59,7 @@ public interface YoVariableHolder
    }
 
    /**
-    * Returns the first discovered instance of a variable matching the given name.
+    * Returns the first discovered instance of a variable matching the given name and namespace.
     *
     * @param nameSpaceEnding (optional) the namespace of the registry in which the variable was
     *                        registered. The namespace does not need to be complete, i.e. it does not

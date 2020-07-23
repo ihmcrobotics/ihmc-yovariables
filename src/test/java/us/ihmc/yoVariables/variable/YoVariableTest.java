@@ -386,36 +386,15 @@ public class YoVariableTest
    @Test // timeout=300000
    public void testRemoveObserverNonExistent1()
    {
-      // make sure removing an observer that wasn't added throws an exception.
-      try
-      {
-         yoVariable.removeListener(new TestVariableChangedListener());
-         fail();
-      }
-      catch (NoSuchElementException e)
-      {
-         // pass.
-      }
+      assertFalse(yoVariable.removeListener(new TestVariableChangedListener()));
    }
 
    @Test // timeout=300000,expected = NoSuchElementException.class
    public void testRemoveObserverNonExistent2()
    {
-      Assertions.assertThrows(NoSuchElementException.class, () ->
-      {
-         // make sure removing an observer that wasn't added throws an exception.
-         //      try
-         {
-            createVariableChangeListeners(5);
-            addAllListenersToYoVariable();
-            yoVariable.removeListener(new TestVariableChangedListener());
-            //fail();
-         }
-         //      catch (NoSuchElementException e)
-         {
-            // pass.
-         }
-      });
+      createVariableChangeListeners(5);
+      addAllListenersToYoVariable();
+      assertFalse(yoVariable.removeListener(new TestVariableChangedListener()));
    }
 
    @Test // timeout=300000

@@ -160,7 +160,7 @@ public class YoVariableList implements YoVariableHolder
          {
             YoVariable candidate = variableList.get(i);
 
-            if (candidate.getNameSpace().endsWith(nameSpaceEnding, true))
+            if (candidate.getNameSpace().endsWith(nameSpaceEnding))
                return candidate;
          }
       }
@@ -189,7 +189,7 @@ public class YoVariableList implements YoVariableHolder
 
       for (int i = 0; i < variableList.size(); i++)
       {
-         if (variableList.get(i).getNameSpace().endsWith(parentNameSpace, true))
+         if (variableList.get(i).getNameSpace().endsWith(parentNameSpace))
             count++;
       }
       return count;
@@ -216,7 +216,7 @@ public class YoVariableList implements YoVariableHolder
          {
             YoVariable candidate = variableList.get(i);
 
-            if (candidate.getNameSpace().endsWith(nameSpaceEnding, true))
+            if (candidate.getNameSpace().endsWith(nameSpaceEnding))
                result.add(candidate);
          }
       }

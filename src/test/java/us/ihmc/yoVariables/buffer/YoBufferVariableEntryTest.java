@@ -121,7 +121,7 @@ public class YoBufferVariableEntryTest
          entry2.writeIntoBufferAt(i);
       }
 
-      assertTrue(dataBufferEntry.epsilonEquals(entry2, 0, nPoints - 1, epsilon));
+      assertTrue(dataBufferEntry.epsilonEquals(entry2, epsilon));
 
       dataBufferEntry = entry2 = null;
 
@@ -139,9 +139,7 @@ public class YoBufferVariableEntryTest
          entry2.writeIntoBufferAt(i);
       }
 
-      assertFalse(dataBufferEntry.epsilonEquals(entry2, 0, nPoints - 1, epsilon));
-      assertFalse(dataBufferEntry.epsilonEquals(entry2, 0, nPoints, epsilon)); // outPoint out of bounds
-      assertFalse(dataBufferEntry.epsilonEquals(entry2, nPoints, nPoints - 1, epsilon)); //inPoint out of bounds
+      assertFalse(dataBufferEntry.epsilonEquals(entry2, epsilon));
    }
 
    @Test // timeout=300000
@@ -281,7 +279,7 @@ public class YoBufferVariableEntryTest
       assertEquals(nPoints, dataBufferEntry.getBuffer().length);
 
       // Test unchanged size
-      assertEquals(-1, dataBufferEntry.cutData(nPoints / 2 + 1, nPoints / 2 - 1));
+      assertEquals(-1, dataBufferEntry.cutBuffer(nPoints / 2 + 1, nPoints / 2 - 1));
       assertEquals(nPoints, dataBufferEntry.getBuffer().length);
 
       // Verify data integrity
@@ -292,7 +290,7 @@ public class YoBufferVariableEntryTest
 
       // Test cut one point in the middle:
       int cutPoint = nPoints / 2;
-      int sizeAfterCut = dataBufferEntry.cutData(cutPoint, cutPoint);
+      int sizeAfterCut = dataBufferEntry.cutBuffer(cutPoint, cutPoint);
       assertEquals(nPoints - 1, sizeAfterCut);
       assertEquals(nPoints - 1, dataBufferEntry.getBuffer().length);
 
@@ -316,7 +314,7 @@ public class YoBufferVariableEntryTest
       }
 
       // Test cutting at beginning
-      sizeAfterCut = dataBufferEntry.cutData(0, 2);
+      sizeAfterCut = dataBufferEntry.cutBuffer(0, 2);
       assertEquals(nPoints - 3, sizeAfterCut);
 
       // Verify data integrity
@@ -334,7 +332,7 @@ public class YoBufferVariableEntryTest
       }
 
       // Test cutting at end
-      sizeAfterCut = dataBufferEntry.cutData(nPoints - 3, nPoints - 1);
+      sizeAfterCut = dataBufferEntry.cutBuffer(nPoints - 3, nPoints - 1);
       assertEquals(nPoints - 3, sizeAfterCut);
 
       // Verify data integrity
@@ -461,7 +459,7 @@ public class YoBufferVariableEntryTest
 
       double tempDouble = (double) random.nextInt(20000) / (double) random.nextInt(30);
       int randomIndex = random.nextInt(nPoints);
-      dataBufferEntry.setBufferValueAt(tempDouble, randomIndex);
+      dataBufferEntry.writeBufferAt(tempDouble, randomIndex);
 
       assertEquals(tempDouble, dataBufferEntry.getBuffer()[randomIndex], 0);
    }
@@ -517,8 +515,8 @@ public class YoBufferVariableEntryTest
       double oldMax = dataBufferEntry.getUpperBound();
       double newMax = oldMax + 100;
 
-      dataBufferEntry.setBufferValueAt(newMax, 200);
-      dataBufferEntry.setBufferValueAt(oldMax, 400);
+      dataBufferEntry.writeBufferAt(newMax, 200);
+      dataBufferEntry.writeBufferAt(oldMax, 400);
 
       assertEquals(newMax, dataBufferEntry.getWindowUpperBound(150, 250), 0);
       assertEquals(oldMax, dataBufferEntry.getWindowUpperBound(350, 450), 0);
@@ -538,8 +536,8 @@ public class YoBufferVariableEntryTest
       double oldMin = dataBufferEntry.getBounds().getLowerBound();
       double newMin = oldMin - 100;
 
-      dataBufferEntry.setBufferValueAt(newMin, 200);
-      dataBufferEntry.setBufferValueAt(oldMin, 400);
+      dataBufferEntry.writeBufferAt(newMin, 200);
+      dataBufferEntry.writeBufferAt(oldMin, 400);
 
       assertEquals(newMin, dataBufferEntry.getWindowLowerBound(150, 250), 0);
       assertEquals(oldMin, dataBufferEntry.getWindowLowerBound(350, 450), 0);

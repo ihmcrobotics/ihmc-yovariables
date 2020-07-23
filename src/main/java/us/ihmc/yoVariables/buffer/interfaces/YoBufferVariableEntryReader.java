@@ -54,7 +54,7 @@ public interface YoBufferVariableEntryReader
     * @param index the index to read the buffer at.
     * @return the value stored in the buffer at the given index.
     */
-   double getBufferValueAt(int index);
+   double readBufferAt(int index);
 
    /**
     * Returns a copy of this entire buffer.

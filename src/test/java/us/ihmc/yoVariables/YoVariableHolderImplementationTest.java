@@ -122,29 +122,11 @@ public class YoVariableHolderImplementationTest
       assertEquals(variable.getName(), "variableTwo");
       assertEquals(variable.getFullNameString(), "robot.registryB.variableTwo");
 
-      boolean testPassed = true;
+      variable = yoVariableHolderImplementation.findVariable("registryC", "variableOne");
+      assertEquals(variable.getFullNameString(), "robot.registryC.variableOne");
 
-      try
-      {
-         variable = yoVariableHolderImplementation.findVariable("registryC", "variableOne");
-         testPassed = false;
-      }
-      catch (Exception e)
-      {
-      }
-
-      assert testPassed;
-
-      try
-      {
-         variable = yoVariableHolderImplementation.findVariable("registryC", "variableTwo");
-         testPassed = false;
-      }
-      catch (Exception e)
-      {
-      }
-
-      assert testPassed;
+      variable = yoVariableHolderImplementation.findVariable("registryC", "variableTwo");
+      assertEquals(variable.getFullNameString(), "robot.registryC.variableTwo");
    }
 
    @Test // timeout=300000

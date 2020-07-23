@@ -8,12 +8,14 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import us.ihmc.euclid.tools.EuclidCoreTools;
 import us.ihmc.log.LogTools;
 import us.ihmc.yoVariables.buffer.interfaces.YoBufferIndexChangedListener;
 import us.ihmc.yoVariables.buffer.interfaces.YoBufferProcessor;
 import us.ihmc.yoVariables.buffer.interfaces.YoBufferReader;
 import us.ihmc.yoVariables.buffer.interfaces.YoBufferVariableEntryHolder;
 import us.ihmc.yoVariables.buffer.interfaces.YoTimeBufferHolder;
+import us.ihmc.yoVariables.exceptions.IllegalNameException;
 import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoVariableHolder;
 import us.ihmc.yoVariables.tools.YoTools;
@@ -364,6 +366,17 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
    }
 
    /**
+    * Toggle a key point at the current index.
+    * <p>
+    * If no key point was present, it is created. If there was a key point, it is removed.
+    * </p>
+    */
+   public void toggleKeyPoint()
+   {
+      keyPointsHandler.toggleKeyPoint(currentIndex);
+   }
+
+   /**
     * Tests if the current index is at the in-point.
     * 
     * @return {@code true} if the current index is at the in-point.
@@ -381,17 +394,6 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
    public boolean isAtOutPoint()
    {
       return currentIndex == outPoint;
-   }
-
-   /**
-    * Toggle a key point at the current index.
-    * <p>
-    * If no key point was present, it is created. If there was a key point, it is removed.
-    * </p>
-    */
-   public void toggleKeyPoint()
-   {
-      keyPointsHandler.toggleKeyPoint(currentIndex);
    }
 
    /**
@@ -505,6 +507,14 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
       keyPointsHandler.removeKeyPoint(currentIndex);
       writeIntoBuffer();
       notifyIndexChangedListeners();
+   }
+
+   private void notifyIndexChangedListeners()
+   {
+      for (int i = 0; i < indexChangedListeners.size(); i++)
+      {
+         indexChangedListeners.get(i).indexChanged(currentIndex);
+      }
    }
 
    /**
@@ -627,10 +637,8 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
    public void cutBuffer(int start, int end)
    {
       // Abort if the start or end point is unreasonable
-      if (start < 0 || end > bufferSize)
-      {
+      if (start < 0 || end > bufferSize || start > end)
          return;
-      }
 
       bufferSize = YoBufferVariableEntry.computeBufferSizeAfterCut(start, end, bufferSize);
 
@@ -638,7 +646,9 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
       for (int i = 0; i < entries.size(); i++)
       {
          YoBufferVariableEntry entry = entries.get(i);
-         entry.cutData(start, end);
+         int actualBufferSize = entry.cutBuffer(start, end);
+         if (actualBufferSize >= 0)
+            bufferSize = actualBufferSize;
       }
 
       // Move the current index to its relative position after the resize
@@ -761,6 +771,28 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
       return outPoint;
    }
 
+   /**
+    * Retrieves the next key point index the closest to the current buffer index.
+    * 
+    * @return the index of the next key point.
+    * @see KeyPointsHandler#getNextKeyPoint(int)
+    */
+   public int getNextKeyPoint()
+   {
+      return keyPointsHandler.getNextKeyPoint(currentIndex);
+   }
+
+   /**
+    * Retrieves the previous key point index the closest to the current buffer index.
+    * 
+    * @return the index of the previous key point.
+    * @see KeyPointsHandler#getPreviousKeyPoint(int)
+    */
+   public int getPreviousKeyPoint()
+   {
+      return keyPointsHandler.getPreviousKeyPoint(currentIndex);
+   }
+
    /** {@inheritDoc} */
    @Override
    public int getBufferSize()
@@ -838,77 +870,116 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
       return currentIndex;
    }
 
-   private void notifyIndexChangedListeners()
-   {
-      for (int i = 0; i < indexChangedListeners.size(); i++)
-      {
-         indexChangedListeners.get(i).indexChanged(currentIndex);
-      }
-   }
-
+   /**
+    * Tests whether this buffer and {@code other} are equal to an {@code epsilon}.
+    * <p>
+    * The two buffers are considered equals if all the following conditions are met:
+    * <ul>
+    * <li>the length of the interval [{@code inPoint}, {@code outPoint}] is the same for the two
+    * buffers;
+    * <li>the two buffers manage the same number of variables and there is a one-to-one map between the
+    * buffers' variables through their full-name;
+    * <li>the entries of the two buffers are paired using variable full-name and the data between the
+    * two entry of one pair is compared inside the respective [{@code inPoint}, {@code outPoint}]
+    * interval of each buffer.
+    * </ul>
+    * </p>
+    * 
+    * @param other   the other buffer to compare against {@code this}. Not modified.
+    * @param epsilon the tolerance used when comparing the data of the two buffers.
+    * @return {@code true} if the two buffers are considered equal, {@code false} otherwise.
+    */
    public boolean epsilonEquals(YoBuffer other, double epsilon)
    {
       List<YoBufferVariableEntry> thisEntries = entries;
       List<YoBufferVariableEntry> otherEntries = other.entries;
 
       if (thisEntries.size() != otherEntries.size())
-      {
          return false;
-      }
+
+      if (getBufferInOutLength() != other.getBufferInOutLength())
+         return false;
+
+      int length = getBufferInOutLength();
 
       for (YoBufferVariableEntry otherEntry : otherEntries)
       {
          YoVariable variable = otherEntry.getVariable();
-         YoBufferVariableEntry thisEntry = findVariableEntry(variable.getName());
+         YoBufferVariableEntry thisEntry = findVariableEntry(variable.getFullNameString());
 
          if (thisEntry == null)
             return false;
 
-         if (!otherEntry.epsilonEquals(thisEntry, inPoint, outPoint, epsilon))
-            return false;
+         int count = 0;
+         int thisIndex = getInPoint();
+         int otherIndex = other.getInPoint();
+
+         while (count < length)
+         {
+            double thisDataPoint = thisEntry.readBufferAt(thisIndex);
+            double otherDataPoint = otherEntry.readBufferAt(otherIndex);
+
+            if (Double.compare(thisDataPoint, otherDataPoint) != 0 && !EuclidCoreTools.epsilonEquals(thisDataPoint, otherDataPoint, epsilon))
+               return false;
+
+            count++;
+            thisIndex++;
+            otherIndex++;
+
+            if (thisIndex >= getBufferSize())
+               thisIndex = 0;
+            if (otherIndex >= other.getBufferSize())
+               otherIndex = 0;
+         }
       }
 
       return true;
    }
 
+   /**
+    * Sets the name of a variable that represents time.
+    * 
+    * @param timeVariableName the name of the time variable to store. If the name contains
+    *                         {@link YoTools#NAMESPACE_SEPERATOR_STRING}, it is split at the last
+    *                         occurrence to extract a namespace and the actual variable name.
+    */
+   public void setTimeVariableName(String timeVariableName)
+   {
+      if (findVariableEntry(timeVariableName) == null)
+         LogTools.error("The requested timeVariableName does not exist, change not successful");
+      else
+         this.timeVariableName = timeVariableName;
+   }
+
+   /**
+    * Returns the current name stored for retrieving a time variable.
+    * 
+    * @return the name of the time variable.
+    */
    public String getTimeVariableName()
    {
       return timeVariableName;
    }
 
-   public void setTimeVariableName(String timeVariableName)
-   {
-      if (findVariableEntry(timeVariableName) == null)
-      {
-         LogTools.error("The requested timeVariableName does not exist, change not successful");
-      }
-      else
-      {
-         this.timeVariableName = timeVariableName;
-      }
-   }
-
+   /**
+    * Returns the internal manager for key points.
+    * 
+    * @return the key points handler
+    * @see KeyPointsHandler
+    */
    public KeyPointsHandler getKeyPointsHandler()
    {
       return keyPointsHandler;
    }
 
-   public int getNextKeyPoint()
-   {
-      return keyPointsHandler.getNextKeyPoint(currentIndex);
-   }
-
-   public int getPreviousKeyPoint()
-   {
-      return keyPointsHandler.getPreviousKeyPoint(currentIndex);
-   }
-
+   /** {@inheritDoc} */
    @Override
    public double[] getTimeBuffer()
    {
       return findVariableEntry(timeVariableName).getBuffer();
    }
 
+   /** {@inheritDoc} */
    @Override
    public YoVariable findVariable(String nameSpaceEnding, String name)
    {
@@ -916,6 +987,17 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
       return entry == null ? null : entry.getVariable();
    }
 
+   /**
+    * Returns the first discovered instance of a buffer entry which variable it manages matches the
+    * given name.
+    *
+    * @param name the name of the variable to retrieve its buffer entry. If the name contains
+    *             {@link YoTools#NAMESPACE_SEPERATOR_STRING}, it is split at the last occurrence to
+    *             extract a namespace and the actual variable name.
+    * @return the variable buffer entry corresponding to the search criteria, or {@code null} if it
+    *         could not be found.
+    * @see #findVariable(String, String)
+    */
    public YoBufferVariableEntry findVariableEntry(String name)
    {
       int separatorIndex = name.lastIndexOf(YoTools.NAMESPACE_SEPERATOR_STRING);
@@ -926,6 +1008,19 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
          return findVariableEntry(name.substring(0, separatorIndex), name.substring(separatorIndex + 1));
    }
 
+   /**
+    * Returns the first discovered instance of a buffer entry which variable it manages matches the
+    * given name.
+    *
+    * @param nameSpaceEnding (optional) the namespace of the registry in which the variable was
+    *                        registered. The namespace does not need to be complete, i.e. it does not
+    *                        need to contain the name of the registries closest to the root registry.
+    *                        If {@code null}, the search is for the variable name only.
+    * @param name            the name of the variable to retrieve its buffer entry.
+    * @return the variable buffer entry corresponding to the search criteria, or {@code null} if it
+    *         could not be found.
+    * @throws IllegalNameException if {@code name} contains "{@value YoTools#NAMESPACE_SEPERATOR}".
+    */
    public YoBufferVariableEntry findVariableEntry(String nameSpaceEnding, String name)
    {
       YoTools.checkNameDoesNotContainSeparator(name);
@@ -952,12 +1047,44 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
       return null;
    }
 
+   /** {@inheritDoc} */
    @Override
    public List<YoVariable> findVariables(String nameSpaceEnding, String name)
    {
       return findVariableEntries(nameSpaceEnding, name).stream().map(YoBufferVariableEntry::getVariable).collect(Collectors.toList());
    }
 
+   /**
+    * Returns the all the buffer entries which variables they manage match the given name.
+    *
+    * @param name the name of the variables to retrieve their buffer entry. If the name contains
+    *             {@link YoTools#NAMESPACE_SEPERATOR_STRING}, it is split at the last occurrence to
+    *             extract a namespace and the actual variable name.
+    * @return list of all the variable buffer entries corresponding to the search criteria.
+    * @throws IllegalNameException if {@code name} contains "{@value YoTools#NAMESPACE_SEPERATOR}".
+    */
+   public List<YoBufferVariableEntry> findVariableEntries(String name)
+   {
+      int separatorIndex = name.lastIndexOf(YoTools.NAMESPACE_SEPERATOR_STRING);
+
+      if (separatorIndex == -1)
+         return findVariableEntries(null, name);
+      else
+         return findVariableEntries(name.substring(0, separatorIndex), name.substring(separatorIndex + 1));
+   }
+
+   /**
+    * Returns the all the buffer entries which variables they manage match the given name and
+    * namespace.
+    *
+    * @param nameSpaceEnding (optional) the namespace of the registry in which the variable was
+    *                        registered. The namespace does not need to be complete, i.e. it does not
+    *                        need to contain the name of the registries closest to the root registry.
+    *                        If {@code null}, the search for the variable name only.
+    * @param name            the name of the variables to retrieve their buffer entries.
+    * @return list of all the variable buffer entries corresponding to the search criteria.
+    * @throws IllegalNameException if {@code name} contains "{@value YoTools#NAMESPACE_SEPERATOR}".
+    */
    public List<YoBufferVariableEntry> findVariableEntries(String nameSpaceEnding, String name)
    {
       YoTools.checkNameDoesNotContainSeparator(name);
@@ -986,12 +1113,19 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
       return result;
    }
 
+   /** {@inheritDoc} */
    @Override
    public List<YoVariable> findVariables(NameSpace nameSpace)
    {
       return findVariableEntries(nameSpace).stream().map(YoBufferVariableEntry::getVariable).collect(Collectors.toList());
    }
 
+   /**
+    * Searches for all the buffer entries which variables' namespace match the given one.
+    *
+    * @param nameSpace the full namespace of the registry of interest.
+    * @return the buffer entries which variables that were registered at the given namespace.
+    */
    public List<YoBufferVariableEntry> findVariableEntries(NameSpace nameSpace)
    {
       List<YoBufferVariableEntry> result = new ArrayList<>();
@@ -1007,12 +1141,20 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
       return result;
    }
 
+   /** {@inheritDoc} */
    @Override
    public List<YoVariable> filterVariables(Predicate<YoVariable> filter)
    {
       return filterVariableEntries(filter).stream().map(YoBufferVariableEntry::getVariable).collect(Collectors.toList());
    }
 
+   /**
+    * Returns all the buffer entries for which the given filter returns {@code true} for their
+    * variables.
+    * 
+    * @param filter the filter used to select the buffer entries to return.
+    * @return the filtered buffer entries.
+    */
    public List<YoBufferVariableEntry> filterVariableEntries(Predicate<YoVariable> filter)
    {
       List<YoBufferVariableEntry> result = new ArrayList<>();
@@ -1025,6 +1167,7 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
       return result;
    }
 
+   /** {@inheritDoc} */
    @Override
    public boolean hasUniqueVariable(String nameSpaceEnding, String name)
    {
@@ -1050,5 +1193,11 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
             count++;
       }
       return count;
+   }
+
+   @Override
+   public String toString()
+   {
+      return "Number of variables: " + entries.size() + ", buffer size: " + getBufferSize() + ", in-point: " + inPoint + ", out-point: " + outPoint;
    }
 }

@@ -384,16 +384,16 @@ public class YoBufferTest
    }
 
    @Test // timeout = 300000
-   public void testSetSafeToChangeIndex() //Luke Morris
+   public void testSetLockIndex() //Luke Morris
    {
       boolean isSafe = dataBuffer.isIndexLocked();
-      assertTrue(isSafe);
-      dataBuffer.setLockIndex(false);
-      boolean isNowSafe = dataBuffer.isIndexLocked();
-      assertFalse(isNowSafe);
+      assertFalse(isSafe);
       dataBuffer.setLockIndex(true);
       boolean isFinallySafe = dataBuffer.isIndexLocked();
       assertTrue(isFinallySafe);
+      dataBuffer.setLockIndex(false);
+      boolean isNowSafe = dataBuffer.isIndexLocked();
+      assertFalse(isNowSafe);
    }
 
    @Test // timeout = 300000
@@ -448,8 +448,8 @@ public class YoBufferTest
       dataBuffer.addEntry(cBuffer);
       assertTrue(dataBuffer.getEntries().size() == 3);
       dataBuffer.clear();
-      assertTrue(dataBuffer.getEntries() == null);
-      assertTrue(dataBuffer.getCurrentIndex() == -1);
+      assertTrue(dataBuffer.getEntries().isEmpty());
+      assertTrue(dataBuffer.getCurrentIndex() == 0);
    }
 
    @Test // timeout = 30000
@@ -721,26 +721,23 @@ public class YoBufferTest
                   // Check that only data outside of the cut-range remains in the buffer
                   assertTrue(dataFromCutEntry == dataFromUnmodifiedEntry);
                }
+               else if (start > end)
+               {
+                  // This is considered an invalid cut. DataBuffer should be unchanged
+                  assertTrue(dataBuffer.getBufferSize() == testBufferSize);
+                  assertTrue(cutEntry.getBuffer()[k] == unmodifiedEntry.getBuffer()[k]);
+               }
                else
                {
-                  if (start > end)
-                  {
-                     // This is considered an invalid cut. DataBuffer should be unchanged
-                     assertTrue(dataBuffer.getBufferSize() == testBufferSize);
-                     assertTrue(cutEntry.getBuffer()[k] == unmodifiedEntry.getBuffer()[k]);
-                  }
-                  else
-                  {
-                     // Here start = end. Only cut the single data-point
-                     assertTrue(dataBuffer.getBufferSize() == testBufferSize - 1);
-                     double dataFromCutEntry = cutEntry.getBuffer()[k];
+                  // Here start = end. Only cut the single data-point
+                  assertTrue(dataBuffer.getBufferSize() == testBufferSize - 1);
+                  double dataFromCutEntry = cutEntry.getBuffer()[k];
 
-                     int indexInUnmodifiedEntry = k < start ? k : k + 1;
-                     double dataFromUnmodifiedEntry = unmodifiedEntry.getBuffer()[indexInUnmodifiedEntry];
+                  int indexInUnmodifiedEntry = k < start ? k : k + 1;
+                  double dataFromUnmodifiedEntry = unmodifiedEntry.getBuffer()[indexInUnmodifiedEntry];
 
-                     // Check that only data outside of the cut-range remains in the buffer
-                     assertTrue(dataFromCutEntry == dataFromUnmodifiedEntry);
-                  }
+                  // Check that only data outside of the cut-range remains in the buffer
+                  assertTrue(dataFromCutEntry == dataFromUnmodifiedEntry);
                }
             }
          }
@@ -847,6 +844,7 @@ public class YoBufferTest
          {
             return false;
          }
+
          @Override
          public void process(int startIndex, int endIndex, int currentIndex)
          {

@@ -735,8 +735,8 @@ public class YoRegistryTest
 
       assertEquals(testRegistry, testRegistry.findRegistry(new NameSpace("robot.controller.testRegistry")));
 
-      assertTrue(testRegistry != robotRegistry.findRegistry(new NameSpace("testRegistry")));
-      assertTrue(testRegistry != robotRegistry.findRegistry(new NameSpace("controller.testRegistry")));
+      assertTrue(testRegistry == robotRegistry.findRegistry(new NameSpace("testRegistry")));
+      assertTrue(testRegistry == robotRegistry.findRegistry(new NameSpace("controller.testRegistry")));
 
       assertTrue(robotRegistry != controllerRegistry.findRegistry(new NameSpace("robot")));
 

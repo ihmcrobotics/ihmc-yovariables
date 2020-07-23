@@ -6,25 +6,49 @@ import us.ihmc.euclid.tools.EuclidCoreTools;
 import us.ihmc.yoVariables.buffer.interfaces.YoBufferVariableEntryReader;
 import us.ihmc.yoVariables.variable.YoVariable;
 
+/**
+ * {@code YoBufferVariableEntry} manages the buffer to store history for a single
+ * {@code YoVariable}.
+ */
 public class YoBufferVariableEntry implements YoBufferVariableEntryReader
 {
+   /** The variable this buffer is managing. */
    private final YoVariable variable;
+   /** The buffer in which the history of the variable's values are stored. */
    private double[] bufferData;
-
+   /** The latest computed bounds on the variable values. */
    private final YoBufferBounds currentBounds = new YoBufferBounds();
+   /** Flag for user convenience to keep track of when bounds have been modified. */
    private boolean boundsChanged = true;
+   /**
+    * Internal used to indicate whether {@link #currentBounds} should be updated when the user calls
+    * {@link #getBounds()}.
+    */
    private boolean boundsDirty = true;
+   /** Flag for user convenience. */
    private boolean useCustomBounds = false;
+   /** User-defined bounds. */
    private final YoBufferBounds customBounds = new YoBufferBounds();
-
+   /** Flag for user convenience. */
    private boolean inverted = false;
 
+   /**
+    * Creates a new buffer of the given size for the given variable.
+    * 
+    * @param variable   the variable this buffer is dedicated to.
+    * @param bufferSize the initial size of this buffer.
+    */
    public YoBufferVariableEntry(YoVariable variable, int bufferSize)
    {
       this.variable = variable;
       clearBuffer(bufferSize);
    }
 
+   /**
+    * Clone constructor.
+    * 
+    * @param other the other buffer to copy. Not modified.
+    */
    public YoBufferVariableEntry(YoBufferVariableEntry other)
    {
       variable = other.getVariable();
@@ -44,57 +68,79 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
       boundsDirty = true;
    }
 
+   /** {@inheritDoc} */
    @Override
    public void setInverted(boolean inverted)
    {
       this.inverted = inverted;
    }
 
+   /** {@inheritDoc} */
    @Override
    public boolean getInverted()
    {
       return inverted;
    }
 
+   /** {@inheritDoc} */
    @Override
    public int getBufferSize()
    {
       return bufferData.length;
    }
 
+   /**
+    * Writes the current variable value into the buffer at the given index.
+    * 
+    * @param index the index to write in the buffer.
+    */
    public synchronized void writeIntoBufferAt(int index)
    {
-      setBufferValueAt(variable.getValueAsDouble(), index);
+      writeBufferAt(variable.getValueAsDouble(), index);
    }
 
-   public void setBufferValueAt(double data, int index)
+   /**
+    * Writes the given value into this buffer at the given index.
+    * 
+    * @param value the value to write in this buffer.
+    * @param index the index to write in the buffer.
+    */
+   public void writeBufferAt(double value, int index)
    {
-      if (bufferData[index] == data)
+      if (bufferData[index] == value)
          return;
 
-      bufferData[index] = data;
+      bufferData[index] = value;
 
-      if (currentBounds.update(data))
+      if (currentBounds.update(value))
          boundsChanged = true;
    }
 
+   /**
+    * Reads the buffer at the given index and updates the variable current value.
+    * 
+    * @param index the index read the buffer at.
+    */
    protected void readFromBufferAt(int index)
    {
       variable.setValueFromDouble(bufferData[index]);
    }
 
+   /** {@inheritDoc} */
    @Override
-   public double getBufferValueAt(int index)
+   public double readBufferAt(int index)
    {
       return bufferData[index];
    }
 
+   /** {@inheritDoc} */
    @Override
    public double[] getBuffer()
    {
       return getBufferWindow(0, bufferData.length);
    }
 
+   /** {@inheritDoc} */
    @Override
    public double[] getBufferWindow(int startIndex, int length)
    {
@@ -112,18 +158,21 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
       return sample;
    }
 
+   /** {@inheritDoc} */
    @Override
    public void useCustomBounds(boolean autoScale)
    {
       useCustomBounds = !autoScale;
    }
 
+   /** {@inheritDoc} */
    @Override
    public boolean isUsingCustomBounds()
    {
       return !useCustomBounds;
    }
 
+   /** {@inheritDoc} */
    @Override
    public YoVariable getVariable()
    {
@@ -158,14 +207,6 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
       boundsDirty = true;
    }
 
-   /**
-    * Crop the data stored for this variable using the two specified endpoints. Cropping must reduce or
-    * maintain the size of the data set, it cannot be increased.
-    *
-    * @param start Index of the new start point in the current data
-    * @param end   Index of the new end point in the current data
-    * @return Overall length of the new data set.
-    */
    protected int cropBuffer(int start, int end)
    {
       // If the endpoints are unreasonable indicate failure
@@ -196,7 +237,7 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
       return bufferData.length;
    }
 
-   public int cutData(int start, int end)
+   protected int cutBuffer(int start, int end)
    {
       if (start > end)
          return -1;
@@ -235,7 +276,7 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
       return bufferData.length;
    }
 
-   public int thinData(int keepEveryNthPoint)
+   protected int thinData(int keepEveryNthPoint)
    {
       double[] oldData = bufferData;
       int oldNPoints = oldData.length;
@@ -264,12 +305,6 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
       return previousBufferSize - (end - start + 1);
    }
 
-   /**
-    * Packs the data based on a new start point. Data is shifted in the array such that the index start
-    * is the beginning. Once the data is shifted the min and max values are relocated.
-    *
-    * @param shiftIndex Index of the data point to become the beginning.
-    */
    protected void shiftBuffer(int shiftIndex)
    {
       // If the start point is outside of the data set abort
@@ -290,12 +325,14 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
       boundsDirty = true;
    }
 
+   /** {@inheritDoc} */
    @Override
    public synchronized void resetBoundsChangedFlag()
    {
       boundsChanged = false;
    }
 
+   /** {@inheritDoc} */
    @Override
    public synchronized boolean haveBoundsChanged()
    {
@@ -315,6 +352,7 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
       return boundsChanged;
    }
 
+   /** {@inheritDoc} */
    @Override
    public YoBufferBounds getBounds()
    {
@@ -324,6 +362,7 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
       return currentBounds;
    }
 
+   /** {@inheritDoc} */
    @Override
    public YoBufferBounds getCustomBounds()
    {
@@ -332,19 +371,50 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
       return customBounds;
    }
 
+   /**
+    * Calculates and returns the value average of the variable over the entire buffer.
+    * 
+    * @return the average value.
+    */
    public double computeAverage()
    {
-      double total = 0.0;
+      return computeAverage(0, getBufferSize());
+   }
 
-      int length = bufferData.length;
-      for (int i = 0; i < length; i++)
+   /**
+    * Calculates and returns the value average of the variable over a portion of the buffer.
+    * 
+    * @param start  the first buffer index to include in the calculation of the average. Should be in
+    *               [0, {@code this.getBufferSize()}[.
+    * @param length the number of elements to include in the calculation of the average. Should be in
+    *               ]0, {@code this.getBufferSize()}].
+    * @return the average value.
+    */
+   public double computeAverage(int start, int length)
+   {
+      if (start < 0 || start >= getBufferSize())
+         throw new IndexOutOfBoundsException("start should be in [0, " + getBufferSize() + "[, but was: " + length);
+      if (length <= 0 || length > getBufferSize())
+         throw new IndexOutOfBoundsException("length should be in ]0, " + getBufferSize() + "], but was: " + length);
+
+      double total = 0.0;
+      int count = 0;
+      int index = 0;
+
+      while (count < length)
       {
-         total = total + bufferData[i];
+         total += bufferData[index];
+
+         count++;
+         index++;
+         if (index >= getBufferSize())
+            index = 0;
       }
 
       return total / length;
    }
 
+   /** {@inheritDoc} */
    @Override
    public YoBufferBounds getWindowBounds(int startIndex, int endIndex)
    {
@@ -360,47 +430,36 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
       return currentBounds;
    }
 
+   /**
+    * Tests whether this buffer and {@code other} are equal to an {@code epsilon}.
+    * <p>
+    * The two buffers are considered equals if all the following conditions are met:
+    * <ul>
+    * <li>the length of the two buffer are of same size;
+    * <li>the two buffers manage variables sharing the same full name;
+    * <li>the data of the two buffers are equal to an {@code epsilon}.
+    * </ul>
+    * </p>
+    * 
+    * @param other   the other buffer to compare against {@code this}. Not modified.
+    * @param epsilon the tolerance used when comparing the data of the two buffers.
+    * @return {@code true} if the two buffers are considered equal, {@code false} otherwise.
+    */
    public boolean epsilonEquals(YoBufferVariableEntry other, double epsilon)
    {
-      return epsilonEquals(other, 0, getBufferSize() - 1, epsilon);
-   }
-
-   public boolean epsilonEquals(YoBufferVariableEntry other, int inPoint, int outPoint, double epsilon)
-   {
-      if (inPoint >= getBufferSize() || inPoint >= other.getBufferSize())
+      if (getBufferSize() != other.getBufferSize())
          return false;
-      if (outPoint >= getBufferSize() || outPoint >= other.getBufferSize())
+      if (!getVariableFullNameString().equals(other.getVariableFullNameString()))
          return false;
 
-      if (inPoint <= outPoint)
+      for (int i = 0; i < getBufferSize(); i++)
       {
-         for (int i = inPoint; i < outPoint; i++)
+         double thisDataPoint = bufferData[i];
+         double otherDataPoint = other.bufferData[i];
+
+         if (Double.compare(thisDataPoint, otherDataPoint) != 0 && !EuclidCoreTools.epsilonEquals(thisDataPoint, otherDataPoint, epsilon))
          {
-            if (!EuclidCoreTools.epsilonEquals(bufferData[i], other.bufferData[i], epsilon))
-            {
-               return false;
-            }
-         }
-      }
-      else
-      {
-         if (getBufferSize() != other.getBufferSize())
             return false;
-
-         for (int i = inPoint; i < getBufferSize(); i++)
-         {
-            if (!EuclidCoreTools.epsilonEquals(bufferData[i], other.bufferData[i], epsilon))
-            {
-               return false;
-            }
-         }
-
-         for (int i = 0; i < outPoint; i++)
-         {
-            if (!EuclidCoreTools.epsilonEquals(bufferData[i], other.bufferData[i], epsilon))
-            {
-               return false;
-            }
          }
       }
 
