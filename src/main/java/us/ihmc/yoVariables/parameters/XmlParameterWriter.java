@@ -1,11 +1,17 @@
 /*
- * Copyright 2017 Florida Institute for Human and Machine Cognition (IHMC) Licensed under the Apache
- * License, Version 2.0 (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Copyright 2017 Florida Institute for Human and Machine Cognition (IHMC)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package us.ihmc.yoVariables.parameters;
 
@@ -22,13 +28,25 @@ import us.ihmc.yoVariables.parameters.xml.Parameter;
 import us.ihmc.yoVariables.parameters.xml.Parameters;
 import us.ihmc.yoVariables.parameters.xml.Registry;
 import us.ihmc.yoVariables.registry.NameSpace;
-import us.ihmc.yoVariables.tools.YoTools;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
+/**
+ * A parameter writer which manages parameter export to a XML file.
+ */
 public class XmlParameterWriter extends AbstractParameterWriter
 {
    private final HashMap<String, Registry> registries = new HashMap<>();
    private final Parameters parameterRoot = new Parameters();
 
+   /**
+    * Creates a new writer.
+    * <p>
+    * Before writing parameters into a XML file, it needs to be initialized with the parameters to be
+    * exported using {@link #addParameters(YoRegistry)}. This action can be performed on multiple
+    * distinct registries which parameters are to be exported. The export can then be finalized with
+    * {@link #write(OutputStream)}.
+    * </p>
+    */
    public XmlParameterWriter()
    {
       parameterRoot.setRegistries(new ArrayList<>());
@@ -36,7 +54,7 @@ public class XmlParameterWriter extends AbstractParameterWriter
 
    private void addNamespace(NameSpace namespace)
    {
-      Registry newRegistry = new Registry(YoTools.toShortName(namespace.getName()));
+      Registry newRegistry = new Registry(namespace.getShortName());
 
       if (namespace.isRoot())
       {
@@ -81,13 +99,12 @@ public class XmlParameterWriter extends AbstractParameterWriter
    }
 
    /**
-    * Write the current parameter tree to an OutputStream This function can be called as multiple times
-    * without affecting the output.
+    * Write the current parameter tree previously initialized via {@link #addParameters(YoRegistry)}.
     *
-    * @param os OutputStream to use
-    * @throws IOException
+    * @param outputStream the stream to use for exporting the parameters.
+    * @throws IOException if something went wrong during the export process.
     */
-   public void write(OutputStream os) throws IOException
+   public void write(OutputStream outputStream) throws IOException
    {
       try
       {
@@ -96,13 +113,11 @@ public class XmlParameterWriter extends AbstractParameterWriter
 
          jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-         jaxbMarshaller.marshal(parameterRoot, os);
+         jaxbMarshaller.marshal(parameterRoot, outputStream);
       }
       catch (JAXBException e)
       {
          throw new IOException(e);
       }
-
    }
-
 }

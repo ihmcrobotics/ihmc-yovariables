@@ -84,7 +84,7 @@ public class XMLParameterIOTest
       ByteArrayOutputStream os = new ByteArrayOutputStream();
 
       XmlParameterWriter writer = new XmlParameterWriter();
-      writer.writeParametersInRegistry(source);
+      writer.addParameters(source);
       writer.write(os);
 
       XmlParameterReader reader = new XmlParameterReader(new ByteArrayInputStream(os.toByteArray()));

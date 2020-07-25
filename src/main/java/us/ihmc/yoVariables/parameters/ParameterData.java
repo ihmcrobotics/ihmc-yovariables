@@ -1,11 +1,21 @@
 package us.ihmc.yoVariables.parameters;
 
+/**
+ * Minimalist data structure used in parameter reader.
+ */
 public class ParameterData
 {
    private final String value;
    private final double min;
    private final double max;
 
+   /**
+    * Creates and initializes a new parameter data.
+    * 
+    * @param value the {@code String} representation of the parameter's value.
+    * @param min   the lower bound associated to the parameter.
+    * @param max   the upper bound associated to the parameter.
+    */
    public ParameterData(String value, String min, String max)
    {
       this.value = value;
@@ -21,6 +31,14 @@ public class ParameterData
       }
    }
 
+   /**
+    * Creates and initializes a new parameter data.
+    * <p>
+    * Initializes the min and max field to {@code 0} and {@code 1} respectively.
+    * </p>
+    * 
+    * @param value the {@code String} representation of the parameter's value.
+    */
    public ParameterData(String value)
    {
       this.value = value;
@@ -28,6 +46,11 @@ public class ParameterData
       max = 1.0;
    }
 
+   /**
+    * Initializes the given parameter with the data in {@code this}.
+    * 
+    * @param parameter the parameter to initialize. Modified.
+    */
    public void setParameterFromThis(YoParameter parameter)
    {
       parameter.load(value);

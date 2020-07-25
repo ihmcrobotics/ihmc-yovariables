@@ -20,9 +20,24 @@ import java.util.List;
 import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
+/**
+ * Base class for parameter writers.
+ * <p>
+ * A parameter writer is used to export parameters to some external destination, for instance a XML
+ * file when using {@link XmlParameterWriter}.
+ * </p>
+ *
+ * @author Jesper Smith
+ */
 public abstract class AbstractParameterWriter
 {
-   public void writeParametersInRegistry(YoRegistry registry)
+   /**
+    * Recurses starting from the given registry, finds all parameters, and calls for each
+    * {@link #setValue(NameSpace, String, String, String, String, String, String)}.
+    * 
+    * @param registry with parameters that need to be exported.
+    */
+   public void addParameters(YoRegistry registry)
    {
       List<YoParameter> parameters = registry.subtreeParameters();
 
@@ -40,6 +55,8 @@ public abstract class AbstractParameterWriter
       }
    }
 
+   /**
+    * Exports the data for a parameter.
+    */
    protected abstract void setValue(NameSpace namespace, String name, String description, String type, String value, String min, String max);
-
 }

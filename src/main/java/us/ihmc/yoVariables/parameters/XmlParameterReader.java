@@ -29,6 +29,9 @@ import us.ihmc.yoVariables.parameters.xml.Parameter;
 import us.ihmc.yoVariables.parameters.xml.Parameters;
 import us.ihmc.yoVariables.parameters.xml.Registry;
 
+/**
+ * A parameter reader which manages parameter initialization using a XML file.
+ */
 public class XmlParameterReader extends AbstractParameterReader
 {
    private static final String prefix = "[" + XmlParameterReader.class.getSimpleName() + "]:";
@@ -40,12 +43,14 @@ public class XmlParameterReader extends AbstractParameterReader
    private final String rootNamespace;
 
    /**
-    * Creates a parameter reader that will read the provided data streams. If more than one data stream
-    * is passed to the reader multiple occurrences of the same parameter will cause the parameter value
-    * to be overwritten with the new value.
+    * Creates a parameter reader that will read the provided data streams.
+    * <p>
+    * If more than one data stream is passed to the reader multiple occurrences of the same parameter
+    * will cause the parameter value to be overwritten with the new value.
+    * </p>
     *
-    * @param dataStreams
-    * @throws IOException
+    * @param dataStreams the input streams from which the parameters' value can be read.
+    * @throws IOException if something went wrong during parsing.
     */
    public XmlParameterReader(InputStream... dataStreams) throws IOException
    {
@@ -53,15 +58,17 @@ public class XmlParameterReader extends AbstractParameterReader
    }
 
    /**
-    * Creates a parameter reader that will read the provided data streams. If more than one data stream
-    * is passed to the reader multiple occurrences of the same parameter will cause the parameter value
-    * to be overwritten with the new value.
+    * Creates a parameter reader that will read the provided data streams.
+    * <p>
+    * If more than one data stream is passed to the reader multiple occurrences of the same parameter
+    * will cause the parameter value to be overwritten with the new value.
+    * </p>
     *
     * @param rootNamespace allows filtering the data in the data stream this is useful if the provided
     *                      data stream comes from a file that is used to load parameters in multiple
-    *                      registries (e.g. controller and estimator)
-    * @param dataStreams
-    * @throws IOException
+    *                      registries (e.g. controller and estimator).
+    * @param dataStreams   the input streams from which the parameters' value can be read.
+    * @throws IOException if something went wrong during parsing.
     */
    public XmlParameterReader(String rootNamespace, InputStream... dataStreams) throws IOException
    {
@@ -69,13 +76,15 @@ public class XmlParameterReader extends AbstractParameterReader
    }
 
    /**
-    * Creates a parameter reader that will read the provided data streams. If more than one data stream
-    * is passed to the reader multiple occurrences of the same parameter will cause the parameter value
-    * to be overwritten with the new value.
+    * Creates a parameter reader that will read the provided data streams.
+    * <p>
+    * If more than one data stream is passed to the reader multiple occurrences of the same parameter
+    * will cause the parameter value to be overwritten with the new value.
+    * </p>
     *
-    * @param debug       specifies whether to print additional information
-    * @param dataStreams
-    * @throws IOException
+    * @param debug       specifies whether to print additional information.
+    * @param dataStreams the input streams from which the parameters' value can be read.
+    * @throws IOException if something went wrong during parsing.
     */
    public XmlParameterReader(boolean debug, InputStream... dataStreams) throws IOException
    {
@@ -83,16 +92,18 @@ public class XmlParameterReader extends AbstractParameterReader
    }
 
    /**
-    * Creates a parameter reader that will read the provided data streams. If more than one data stream
-    * is passed to the reader multiple occurrences of the same parameter will cause the parameter value
-    * to be overwritten with the new value.
+    * Creates a parameter reader that will read the provided data streams.
+    * <p>
+    * If more than one data stream is passed to the reader multiple occurrences of the same parameter
+    * will cause the parameter value to be overwritten with the new value.
+    * </p>
     *
-    * @param debug         specifies whether to print additional information
+    * @param debug         specifies whether to print additional information.
     * @param rootNamespace allows filtering the data in the data stream this is useful if the provided
     *                      data stream comes from a file that is used to load parameters in multiple
-    *                      registries (e.g. controller and estimator)
-    * @param dataStreams
-    * @throws IOException
+    *                      registries (e.g. controller and estimator).
+    * @param dataStreams   the input streams from which the parameters' value can be read.
+    * @throws IOException if something went wrong during parsing.
     */
    public XmlParameterReader(boolean debug, String rootNamespace, InputStream... dataStreams) throws IOException
    {
@@ -110,8 +121,9 @@ public class XmlParameterReader extends AbstractParameterReader
     * streams. This method will throw a {@link RuntimeException} if any parameter that needs to be
     * overwritten does not exist.
     *
-    * @param overwriteParameters
-    * @throws IOException
+    * @param overwriteParameters the input streams from which the parameters' value to override can be
+    *                            read.
+    * @throws IOException if something went wrong during parsing.
     */
    public void overwrite(InputStream... overwriteParameters) throws IOException
    {
@@ -144,7 +156,6 @@ public class XmlParameterReader extends AbstractParameterReader
       {
          throw new IOException(e);
       }
-
    }
 
    private void addRegistry(String path, Registry registry, boolean forceOverwrite)
@@ -184,5 +195,4 @@ public class XmlParameterReader extends AbstractParameterReader
    {
       return Collections.unmodifiableMap(parameterValues);
    }
-
 }
