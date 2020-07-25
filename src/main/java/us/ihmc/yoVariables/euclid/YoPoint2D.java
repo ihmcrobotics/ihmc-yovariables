@@ -1,11 +1,14 @@
 package us.ihmc.yoVariables.euclid;
 
-import us.ihmc.euclid.interfaces.GeometryObject;
 import us.ihmc.euclid.tuple2D.interfaces.Point2DBasics;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
 
-public class YoPoint2D extends YoTuple2D implements Point2DBasics, GeometryObject<YoPoint2D>
+/**
+ * {@code Point2DBasics} implementation which coordinates {@code x}, {@code y} are backed with
+ * {@code YoDouble}s.
+ */
+public class YoPoint2D extends YoTuple2D implements Point2DBasics
 {
    /**
     * Creates a new yo point using the given variables.
@@ -41,26 +44,5 @@ public class YoPoint2D extends YoTuple2D implements Point2DBasics, GeometryObjec
    public YoPoint2D(String namePrefix, String nameSuffix, YoRegistry registry)
    {
       super(namePrefix, nameSuffix, registry);
-   }
-
-   /** {@inheritDoc} */
-   @Override
-   public boolean epsilonEquals(YoPoint2D other, double epsilon)
-   {
-      return Point2DBasics.super.epsilonEquals(other, epsilon);
-   }
-
-   /** {@inheritDoc} */
-   @Override
-   public boolean geometricallyEquals(YoPoint2D other, double epsilon)
-   {
-      return Point2DBasics.super.geometricallyEquals(other, epsilon);
-   }
-
-   /** {@inheritDoc} */
-   @Override
-   public void set(YoPoint2D other)
-   {
-      Point2DBasics.super.set(other);
    }
 }

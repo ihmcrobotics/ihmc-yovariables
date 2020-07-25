@@ -2,6 +2,7 @@ package us.ihmc.yoVariables.variable.frameObjects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static us.ihmc.euclid.EuclidTestConstants.ITERATIONS;
@@ -9,6 +10,7 @@ import static us.ihmc.euclid.EuclidTestConstants.ITERATIONS;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
@@ -49,7 +51,12 @@ import us.ihmc.euclid.tuple4D.QuaternionBasicsTest;
 import us.ihmc.euclid.tuple4D.interfaces.QuaternionBasics;
 import us.ihmc.euclid.tuple4D.interfaces.QuaternionReadOnly;
 import us.ihmc.euclid.tuple4D.interfaces.Tuple4DReadOnly;
+import us.ihmc.yoVariables.euclid.referenceFrame.YoMutableFrameObject;
 import us.ihmc.yoVariables.euclid.referenceFrame.YoMutableFrameQuaternion;
+import us.ihmc.yoVariables.euclid.referenceFrame.interfaces.FrameIndexMap;
+import us.ihmc.yoVariables.registry.YoRegistry;
+import us.ihmc.yoVariables.tools.YoFrameVariableNameTools;
+import us.ihmc.yoVariables.variable.YoVariable;
 
 public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyTest<YoMutableFrameQuaternion>
 {
@@ -71,6 +78,36 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
       Quaternion quaternion = new Quaternion();
       quaternion.setUnsafe(x, y, z, s);
       return new YoMutableFrameQuaternion("", "", null, referenceFrame, quaternion);
+   }
+
+   @Test
+   public void testMutableFrameObject()
+   {
+      YoRegistry registry = new YoRegistry("TestRegistry");
+      Random random = new Random(4290L);
+
+      List<ReferenceFrame> frames = new ArrayList<>();
+      frames.addAll(Arrays.asList(EuclidFrameRandomTools.nextReferenceFrameTree(random)));
+      frames.add(null);
+
+      YoMutableFrameObject mutableFrameObject = new YoMutableFrameQuaternion("", "", registry);
+      YoVariable frameIndex = registry.findVariable(YoFrameVariableNameTools.createName("", "frame", ""));
+      assertNotNull(frameIndex);
+
+      for (int i = 0; i < 1000; i++)
+      {
+         ReferenceFrame frame = frames.get(random.nextInt(frames.size()));
+         mutableFrameObject.setReferenceFrame(frame);
+         assertTrue(frame == mutableFrameObject.getReferenceFrame());
+         if (frame == null)
+         {
+            assertEquals(FrameIndexMap.NO_ENTRY_KEY, frameIndex.getValueAsLongBits());
+         }
+         else
+         {
+            assertEquals(frame.getFrameIndex(), frameIndex.getValueAsLongBits());
+         }
+      }
    }
 
    @Test

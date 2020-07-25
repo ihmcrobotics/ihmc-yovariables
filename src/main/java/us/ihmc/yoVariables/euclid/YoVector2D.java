@@ -1,11 +1,14 @@
 package us.ihmc.yoVariables.euclid;
 
-import us.ihmc.euclid.interfaces.GeometryObject;
 import us.ihmc.euclid.tuple2D.interfaces.Vector2DBasics;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
 
-public class YoVector2D extends YoTuple2D implements Vector2DBasics, GeometryObject<YoVector2D>
+/**
+ * {@code YoVector2D} implementation which components {@code x}, {@code y} are backed with
+ * {@code YoDouble}s.
+ */
+public class YoVector2D extends YoTuple2D implements Vector2DBasics
 {
    /**
     * Creates a new yo vector using the given variables.
@@ -41,26 +44,5 @@ public class YoVector2D extends YoTuple2D implements Vector2DBasics, GeometryObj
    public YoVector2D(String namePrefix, String nameSuffix, YoRegistry registry)
    {
       super(namePrefix, nameSuffix, registry);
-   }
-
-   /** {@inheritDoc} */
-   @Override
-   public void set(YoVector2D other)
-   {
-      Vector2DBasics.super.set(other);
-   }
-
-   /** {@inheritDoc} */
-   @Override
-   public boolean epsilonEquals(YoVector2D other, double epsilon)
-   {
-      return Vector2DBasics.super.epsilonEquals(other, epsilon);
-   }
-
-   /** {@inheritDoc} */
-   @Override
-   public boolean geometricallyEquals(YoVector2D other, double epsilon)
-   {
-      return Vector2DBasics.super.geometricallyEquals(other, epsilon);
    }
 }

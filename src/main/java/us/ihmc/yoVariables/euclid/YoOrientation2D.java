@@ -1,6 +1,5 @@
 package us.ihmc.yoVariables.euclid;
 
-import us.ihmc.euclid.interfaces.GeometryObject;
 import us.ihmc.euclid.orientation.Orientation2D;
 import us.ihmc.euclid.orientation.interfaces.Orientation2DBasics;
 import us.ihmc.euclid.orientation.interfaces.Orientation2DReadOnly;
@@ -15,7 +14,7 @@ import us.ihmc.yoVariables.variable.YoDouble;
  * {@code Orientation2DBasics} implementation which position and orientation backed with
  * {@code YoVariable}s.
  */
-public class YoOrientation2D implements Orientation2DBasics, GeometryObject<YoOrientation2D>
+public class YoOrientation2D implements Orientation2DBasics
 {
    /** The angle in radians about the z-axis. */
    private final YoDouble yaw;
@@ -48,13 +47,6 @@ public class YoOrientation2D implements Orientation2DBasics, GeometryObject<YoOr
 
    /** {@inheritDoc} */
    @Override
-   public void set(YoOrientation2D other)
-   {
-      Orientation2DBasics.super.set(other);
-   }
-
-   /** {@inheritDoc} */
-   @Override
    public void setYaw(double yaw)
    {
       this.yaw.set(yaw);
@@ -65,20 +57,6 @@ public class YoOrientation2D implements Orientation2DBasics, GeometryObject<YoOr
    public double getYaw()
    {
       return yaw.getDoubleValue();
-   }
-
-   /** {@inheritDoc} */
-   @Override
-   public boolean epsilonEquals(YoOrientation2D other, double epsilon)
-   {
-      return Orientation2DBasics.super.epsilonEquals(other, epsilon);
-   }
-
-   /** {@inheritDoc} */
-   @Override
-   public boolean geometricallyEquals(YoOrientation2D other, double epsilon)
-   {
-      return Orientation2DBasics.super.geometricallyEquals(other, epsilon);
    }
 
    /** {@inheritDoc} */

@@ -8,20 +8,25 @@ import us.ihmc.euclid.referenceFrame.interfaces.FramePose3DBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FramePose3DReadOnly;
 import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
+import us.ihmc.yoVariables.euclid.referenceFrame.interfaces.FrameIndexMap;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.tools.YoFrameVariableNameTools;
 import us.ihmc.yoVariables.variable.YoDouble;
+import us.ihmc.yoVariables.variable.YoLong;
 
 /**
  * {@code FramePose3DBasics} implementation which position and orientation backed with
  * {@code YoVariable}s.
  */
-public class YoMutableFramePose3D extends YoMutableFrameObject implements FramePose3DBasics
+public class YoMutableFramePose3D implements FramePose3DBasics, YoMutableFrameObject
 {
    /** The position part of this pose 3D. */
    private final YoMutableFramePoint3D position;
    /** The orientation part of this pose 3D. */
    private final YoMutableFrameQuaternion orientation;
+
+   private final YoLong frameId;
+   private final FrameIndexMap frameIndexMap;
 
    /**
     * Creates a pose using the provided YoVariables.
@@ -36,9 +41,10 @@ public class YoMutableFramePose3D extends YoMutableFrameObject implements FrameP
     */
    public YoMutableFramePose3D(YoMutableFramePoint3D position, YoMutableFrameQuaternion orientation)
    {
-      super(position.getYoFrameIndex(), position.getFrameIndexMap());
       this.position = position;
       this.orientation = orientation;
+      this.frameId = position.getYoFrameIndex();
+      this.frameIndexMap = position.getFrameIndexMap();
       checkFrameConsistency();
    }
 
@@ -51,7 +57,8 @@ public class YoMutableFramePose3D extends YoMutableFrameObject implements FrameP
     */
    public YoMutableFramePose3D(String namePrefix, String nameSuffix, YoRegistry registry)
    {
-      super(namePrefix, nameSuffix, registry);
+      frameId = new YoLong(YoFrameVariableNameTools.createName(namePrefix, "frame", nameSuffix), registry);
+      frameIndexMap = new FrameIndexMap.FrameIndexHashMap();
 
       YoDouble x = new YoDouble(YoFrameVariableNameTools.createXName(namePrefix, nameSuffix), registry);
       YoDouble y = new YoDouble(YoFrameVariableNameTools.createYName(namePrefix, nameSuffix), registry);
@@ -87,14 +94,28 @@ public class YoMutableFramePose3D extends YoMutableFrameObject implements FrameP
    public ReferenceFrame getReferenceFrame()
    {
       checkFrameConsistency();
-      return super.getReferenceFrame();
+      return YoMutableFrameObject.super.getReferenceFrame();
+   }
+
+   /** {@inheritDoc} */
+   @Override
+   public YoLong getYoFrameIndex()
+   {
+      return frameId;
+   }
+
+   /** {@inheritDoc} */
+   @Override
+   public FrameIndexMap getFrameIndexMap()
+   {
+      return frameIndexMap;
    }
 
    /** {@inheritDoc} */
    @Override
    public void setReferenceFrame(ReferenceFrame referenceFrame)
    {
-      super.setReferenceFrame(referenceFrame);
+      YoMutableFrameObject.super.setReferenceFrame(referenceFrame);
       // When constructing this with two YoMutableFramePoint3D objects the position part is updated only by the super implementation.
       orientation.setReferenceFrame(referenceFrame);
    }
@@ -110,7 +131,15 @@ public class YoMutableFramePose3D extends YoMutableFrameObject implements FrameP
     */
    private void checkFrameConsistency()
    {
-      position.checkReferenceFrameMatch(orientation);
+      if (position.getReferenceFrame() == null)
+      {
+         if (orientation.getReferenceFrame() != null)
+            orientation.getReferenceFrame().checkReferenceFrameMatch(position.getReferenceFrame());
+      }
+      else
+      {
+         position.checkReferenceFrameMatch(orientation);
+      }
    }
 
    @Override

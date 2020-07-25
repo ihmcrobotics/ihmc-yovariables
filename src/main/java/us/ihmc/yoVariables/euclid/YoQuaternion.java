@@ -1,20 +1,23 @@
 package us.ihmc.yoVariables.euclid;
 
-import us.ihmc.euclid.interfaces.GeometryObject;
 import us.ihmc.euclid.tools.EuclidCoreIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.tuple4D.interfaces.QuaternionBasics;
 import us.ihmc.euclid.tuple4D.interfaces.Tuple4DReadOnly;
+import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.tools.YoFrameVariableNameTools;
 import us.ihmc.yoVariables.variable.YoDouble;
 
-public class YoQuaternion implements QuaternionBasics, GeometryObject<YoQuaternion>
+/**
+ * {@code YoQuaternion} implementation which components {@code x}, {@code y}, {@code z}, {@code s}
+ * are backed with {@code YoDouble}s.
+ */
+public class YoQuaternion implements QuaternionBasics
 {
-   private final YoDouble x;
-   private final YoDouble y;
-   private final YoDouble z;
-   private final YoDouble s;
+   private final String namePrefix;
+   private final String nameSuffix;
+   private final YoDouble x, y, z, s;
 
    /**
     * Creates a new yo quaternion using the given variables.
@@ -26,6 +29,9 @@ public class YoQuaternion implements QuaternionBasics, GeometryObject<YoQuaterni
     */
    public YoQuaternion(YoDouble qxVariable, YoDouble qyVariable, YoDouble qzVariable, YoDouble qsVariable)
    {
+      namePrefix = YoFrameVariableNameTools.getCommonPrefix(qxVariable.getName(), qyVariable.getName(), qzVariable.getName(), qsVariable.getName());
+      nameSuffix = YoFrameVariableNameTools.getCommonSuffix(qxVariable.getName(), qyVariable.getName(), qzVariable.getName(), qsVariable.getName());
+
       x = qxVariable;
       y = qyVariable;
       z = qzVariable;
@@ -54,6 +60,9 @@ public class YoQuaternion implements QuaternionBasics, GeometryObject<YoQuaterni
     */
    public YoQuaternion(String namePrefix, String nameSuffix, YoRegistry registry)
    {
+      this.namePrefix = namePrefix;
+      this.nameSuffix = nameSuffix;
+
       x = new YoDouble(YoFrameVariableNameTools.createQxName(namePrefix, nameSuffix), registry);
       y = new YoDouble(YoFrameVariableNameTools.createQyName(namePrefix, nameSuffix), registry);
       z = new YoDouble(YoFrameVariableNameTools.createQzName(namePrefix, nameSuffix), registry);
@@ -69,13 +78,6 @@ public class YoQuaternion implements QuaternionBasics, GeometryObject<YoQuaterni
       y.set(qy);
       z.set(qz);
       s.set(qs);
-   }
-
-   /** {@inheritDoc} */
-   @Override
-   public void set(YoQuaternion other)
-   {
-      QuaternionBasics.super.set(other);
    }
 
    /** {@inheritDoc} */
@@ -106,18 +108,99 @@ public class YoQuaternion implements QuaternionBasics, GeometryObject<YoQuaterni
       return s.getDoubleValue();
    }
 
-   /** {@inheritDoc} */
-   @Override
-   public boolean epsilonEquals(YoQuaternion other, double epsilon)
+   /**
+    * Gets the internal reference to the x-component used for this quaternion.
+    *
+    * @return the x-component as {@code YoVariable}.
+    */
+   public YoDouble getYoQx()
    {
-      return QuaternionBasics.super.epsilonEquals(other, epsilon);
+      return x;
    }
 
-   /** {@inheritDoc} */
-   @Override
-   public boolean geometricallyEquals(YoQuaternion other, double epsilon)
+   /**
+    * Gets the internal reference to the y-component used for this quaternion.
+    *
+    * @return the y-component as {@code YoVariable}.
+    */
+   public YoDouble getYoQy()
    {
-      return QuaternionBasics.super.geometricallyEquals(other, epsilon);
+      return y;
+   }
+
+   /**
+    * Gets the internal reference to the z-component used for this quaternion.
+    *
+    * @return the z-component as {@code YoVariable}.
+    */
+   public YoDouble getYoQz()
+   {
+      return z;
+   }
+
+   /**
+    * Gets the internal reference to the s-component used for this quaternion.
+    *
+    * @return the s-component as {@code YoVariable}.
+    */
+   public YoDouble getYoQs()
+   {
+      return s;
+   }
+
+   /**
+    * The name prefix used at creation of this {@code this}.
+    *
+    * @return the name prefix {@code String}.
+    */
+   public String getNamePrefix()
+   {
+      return namePrefix;
+   }
+
+   /**
+    * The name suffix used at creation of this {@code this}.
+    *
+    * @return the name suffix {@code String}.
+    */
+   public String getNameSuffix()
+   {
+      return nameSuffix;
+   }
+
+   /**
+    * Attaches a listener to {@code this} that is to be triggered when this quaternion components
+    * change.
+    *
+    * @param variableChangedListener the listener to be attached.
+    */
+   public void attachVariableChangedListener(YoVariableChangedListener variableChangedListener)
+   {
+      x.addListener(variableChangedListener);
+      y.addListener(variableChangedListener);
+      z.addListener(variableChangedListener);
+      s.addListener(variableChangedListener);
+   }
+
+   /**
+    * Creates a copy of {@code this} by finding the duplicated {@code YoVariable}s in the given
+    * {@link YoRegistry}.
+    * <p>
+    * This method does not duplicate {@code YoVariable}s. Assuming the given registry is a duplicate of
+    * the registry that was used to create {@code this}, this method searches for the duplicated
+    * {@code YoVariable}s and use them to duplicate {@code this}.
+    * </p>
+    *
+    * @param newRegistry YoRegistry to duplicate {@code this} to.
+    * @return the duplicate of {@code this}.
+    */
+   public YoQuaternion duplicate(YoRegistry newRegistry)
+   {
+      YoDouble x = (YoDouble) newRegistry.findVariable(getYoQx().getFullNameString());
+      YoDouble y = (YoDouble) newRegistry.findVariable(getYoQy().getFullNameString());
+      YoDouble z = (YoDouble) newRegistry.findVariable(getYoQz().getFullNameString());
+      YoDouble s = (YoDouble) newRegistry.findVariable(getYoQs().getFullNameString());
+      return new YoQuaternion(x, y, z, s);
    }
 
    @Override

@@ -1,11 +1,14 @@
 package us.ihmc.yoVariables.euclid;
 
-import us.ihmc.euclid.interfaces.GeometryObject;
 import us.ihmc.euclid.tuple3D.interfaces.Point3DBasics;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
 
-public class YoPoint3D extends YoTuple3D implements Point3DBasics, GeometryObject<YoPoint3D>
+/**
+ * {@code Point3DBasics} implementation which coordinates {@code x}, {@code y}, {@code z} are backed
+ * with {@code YoDouble}s.
+ */
+public class YoPoint3D extends YoTuple3D implements Point3DBasics
 {
    /**
     * Creates a new yo point using the given variables.
@@ -42,26 +45,5 @@ public class YoPoint3D extends YoTuple3D implements Point3DBasics, GeometryObjec
    public YoPoint3D(String namePrefix, String nameSuffix, YoRegistry registry)
    {
       super(namePrefix, nameSuffix, registry);
-   }
-
-   /** {@inheritDoc} */
-   @Override
-   public void set(YoPoint3D other)
-   {
-      Point3DBasics.super.set(other);
-   }
-
-   /** {@inheritDoc} */
-   @Override
-   public boolean epsilonEquals(YoPoint3D other, double epsilon)
-   {
-      return Point3DBasics.super.epsilonEquals(other, epsilon);
-   }
-
-   /** {@inheritDoc} */
-   @Override
-   public boolean geometricallyEquals(YoPoint3D other, double epsilon)
-   {
-      return Point3DBasics.super.geometricallyEquals(other, epsilon);
    }
 }

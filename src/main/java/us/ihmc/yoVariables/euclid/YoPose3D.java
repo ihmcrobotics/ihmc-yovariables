@@ -3,7 +3,6 @@ package us.ihmc.yoVariables.euclid;
 import us.ihmc.euclid.geometry.interfaces.Pose3DBasics;
 import us.ihmc.euclid.geometry.interfaces.Pose3DReadOnly;
 import us.ihmc.euclid.geometry.tools.EuclidGeometryIOTools;
-import us.ihmc.euclid.interfaces.GeometryObject;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.tuple3D.interfaces.Point3DBasics;
 import us.ihmc.euclid.tuple4D.interfaces.QuaternionBasics;
@@ -13,7 +12,7 @@ import us.ihmc.yoVariables.registry.YoRegistry;
  * {@code Pose3DBasics} implementation which position and orientation backed with
  * {@code YoVariable}s.
  */
-public class YoPose3D implements Pose3DBasics, GeometryObject<YoPose3D>
+public class YoPose3D implements Pose3DBasics
 {
    /** The position part of this pose 3D. */
    private final YoPoint3D position;
@@ -44,10 +43,16 @@ public class YoPose3D implements Pose3DBasics, GeometryObject<YoPose3D>
       orientation = new YoQuaternion(namePrefix, nameSuffix, registry);
    }
 
-   @Override
-   public void set(YoPose3D other)
+   /**
+    * Creates a new {@code YoPose3D} using the given {@code position} and {@code orientation}.
+    *
+    * @param position    the {@code YoFramePoint3D} to use internally for the position.
+    * @param orientation the {@code YoFrameQuaternion} to use internally for the orientation.
+    */
+   public YoPose3D(YoPoint3D position, YoQuaternion orientation)
    {
-      Pose3DBasics.super.set(other);
+      this.position = position;
+      this.orientation = orientation;
    }
 
    @Override
@@ -123,18 +128,6 @@ public class YoPose3D implements Pose3DBasics, GeometryObject<YoPose3D>
          return equals((Pose3DReadOnly) object);
       else
          return false;
-   }
-
-   @Override
-   public boolean epsilonEquals(YoPose3D other, double epsilon)
-   {
-      return Pose3DBasics.super.epsilonEquals(other, epsilon);
-   }
-
-   @Override
-   public boolean geometricallyEquals(YoPose3D other, double epsilon)
-   {
-      return Pose3DBasics.super.geometricallyEquals(other, epsilon);
    }
 
    @Override

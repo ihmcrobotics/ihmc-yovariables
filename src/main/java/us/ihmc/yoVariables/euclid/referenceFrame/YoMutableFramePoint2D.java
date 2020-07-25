@@ -130,8 +130,8 @@ public class YoMutableFramePoint2D extends YoMutableFrameTuple2D implements Fram
    }
 
    /**
-    * Creates a new {@code YoFramePoint2D} using the given {@code YoVariable}s and sets its reference
-    * frame to {@code referenceFrame}.
+    * Creates a new {@code YoMutableFramePoint2D} using the given {@code YoVariable}s and sets its
+    * reference frame to {@code referenceFrame}.
     *
     * @param x             the variable to use for the x-coordinate.
     * @param y             the variable to use for the y-coordinate.

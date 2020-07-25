@@ -2,12 +2,14 @@ package us.ihmc.yoVariables.variable.frameObjects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static us.ihmc.euclid.EuclidTestConstants.ITERATIONS;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
@@ -32,7 +34,12 @@ import us.ihmc.euclid.transform.RigidBodyTransform;
 import us.ihmc.euclid.tuple2D.Vector2D;
 import us.ihmc.euclid.tuple2D.interfaces.Tuple2DBasics;
 import us.ihmc.euclid.tuple3D.Vector3D;
+import us.ihmc.yoVariables.euclid.referenceFrame.YoMutableFrameObject;
 import us.ihmc.yoVariables.euclid.referenceFrame.YoMutableFrameVector2D;
+import us.ihmc.yoVariables.euclid.referenceFrame.interfaces.FrameIndexMap;
+import us.ihmc.yoVariables.registry.YoRegistry;
+import us.ihmc.yoVariables.tools.YoFrameVariableNameTools;
+import us.ihmc.yoVariables.variable.YoVariable;
 
 public class YoMutableFrameVector2DTest extends FrameTuple2DBasicsTest<YoMutableFrameVector2D>
 {
@@ -48,6 +55,36 @@ public class YoMutableFrameVector2DTest extends FrameTuple2DBasicsTest<YoMutable
    public YoMutableFrameVector2D createFrameTuple(ReferenceFrame referenceFrame, double x, double y)
    {
       return new YoMutableFrameVector2D("", "", null, referenceFrame, x, y);
+   }
+
+   @Test
+   public void testMutableFrameObject()
+   {
+      YoRegistry registry = new YoRegistry("TestRegistry");
+      Random random = new Random(4290L);
+
+      List<ReferenceFrame> frames = new ArrayList<>();
+      frames.addAll(Arrays.asList(EuclidFrameRandomTools.nextReferenceFrameTree(random)));
+      frames.add(null);
+
+      YoMutableFrameObject mutableFrameObject = new YoMutableFrameVector2D("", "", registry);
+      YoVariable frameIndex = registry.findVariable(YoFrameVariableNameTools.createName("", "frame", ""));
+      assertNotNull(frameIndex);
+
+      for (int i = 0; i < 1000; i++)
+      {
+         ReferenceFrame frame = frames.get(random.nextInt(frames.size()));
+         mutableFrameObject.setReferenceFrame(frame);
+         assertTrue(frame == mutableFrameObject.getReferenceFrame());
+         if (frame == null)
+         {
+            assertEquals(FrameIndexMap.NO_ENTRY_KEY, frameIndex.getValueAsLongBits());
+         }
+         else
+         {
+            assertEquals(frame.getFrameIndex(), frameIndex.getValueAsLongBits());
+         }
+      }
    }
 
    @Test

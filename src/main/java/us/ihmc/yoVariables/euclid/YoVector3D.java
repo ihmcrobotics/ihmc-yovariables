@@ -1,11 +1,14 @@
 package us.ihmc.yoVariables.euclid;
 
-import us.ihmc.euclid.interfaces.GeometryObject;
 import us.ihmc.euclid.tuple3D.interfaces.Vector3DBasics;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
 
-public class YoVector3D extends YoTuple3D implements Vector3DBasics, GeometryObject<YoVector3D>
+/**
+ * {@code YoVector3D} implementation which components {@code x}, {@code y}, {@code z} are backed
+ * with {@code YoDouble}s.
+ */
+public class YoVector3D extends YoTuple3D implements Vector3DBasics
 {
    /**
     * Creates a new yo vector using the given variables.
@@ -42,26 +45,5 @@ public class YoVector3D extends YoTuple3D implements Vector3DBasics, GeometryObj
    public YoVector3D(String namePrefix, String nameSuffix, YoRegistry registry)
    {
       super(namePrefix, nameSuffix, registry);
-   }
-
-   /** {@inheritDoc} */
-   @Override
-   public boolean epsilonEquals(YoVector3D other, double epsilon)
-   {
-      return Vector3DBasics.super.epsilonEquals(other, epsilon);
-   }
-
-   /** {@inheritDoc} */
-   @Override
-   public boolean geometricallyEquals(YoVector3D other, double epsilon)
-   {
-      return Vector3DBasics.super.geometricallyEquals(other, epsilon);
-   }
-
-   /** {@inheritDoc} */
-   @Override
-   public void set(YoVector3D other)
-   {
-      Vector3DBasics.super.set(other);
    }
 }

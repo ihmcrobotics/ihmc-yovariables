@@ -131,7 +131,7 @@ public class YoMutableFramePoint3D extends YoMutableFrameTuple3D implements Fram
    }
 
    /**
-    * Creates a new {@code YoFramePoint2D} using the given {@code YoVariable}s and sets its reference
+    * Creates a new {@code YoMutableFramePoint3D} using the given {@code YoVariable}s and sets its reference
     * frame to {@code referenceFrame}.
     *
     * @param x             the variable to use for the x-coordinate.

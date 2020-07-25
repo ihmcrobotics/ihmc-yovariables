@@ -3,7 +3,6 @@ package us.ihmc.yoVariables.euclid;
 import us.ihmc.euclid.geometry.interfaces.Pose2DBasics;
 import us.ihmc.euclid.geometry.interfaces.Pose2DReadOnly;
 import us.ihmc.euclid.geometry.tools.EuclidGeometryIOTools;
-import us.ihmc.euclid.interfaces.GeometryObject;
 import us.ihmc.euclid.orientation.interfaces.Orientation2DBasics;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.tuple2D.interfaces.Point2DBasics;
@@ -13,7 +12,7 @@ import us.ihmc.yoVariables.registry.YoRegistry;
  * {@code Pose2DBasics} implementation which position and orientation backed with
  * {@code YoVariable}s.
  */
-public class YoPose2D implements Pose2DBasics, GeometryObject<YoPose2D>
+public class YoPose2D implements Pose2DBasics
 {
    /** The position part of this pose 2D. */
    private final YoPoint2D position;
@@ -42,12 +41,6 @@ public class YoPose2D implements Pose2DBasics, GeometryObject<YoPose2D>
    {
       position = new YoPoint2D(namePrefix, nameSuffix, registry);
       orientation = new YoOrientation2D(namePrefix, nameSuffix, registry);
-   }
-
-   @Override
-   public void set(YoPose2D other)
-   {
-      Pose2DBasics.super.set(other);
    }
 
    @Override
@@ -105,18 +98,6 @@ public class YoPose2D implements Pose2DBasics, GeometryObject<YoPose2D>
          return equals((Pose2DReadOnly) object);
       else
          return false;
-   }
-
-   @Override
-   public boolean epsilonEquals(YoPose2D other, double epsilon)
-   {
-      return Pose2DBasics.super.epsilonEquals(other, epsilon);
-   }
-
-   @Override
-   public boolean geometricallyEquals(YoPose2D other, double epsilon)
-   {
-      return Pose2DBasics.super.geometricallyEquals(other, epsilon);
    }
 
    @Override
