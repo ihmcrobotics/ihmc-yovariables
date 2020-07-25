@@ -23,23 +23,48 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
+import us.ihmc.yoVariables.parameters.XmlParameterReader;
+import us.ihmc.yoVariables.parameters.XmlParameterWriter;
+import us.ihmc.yoVariables.parameters.YoParameter;
+
+/**
+ * This class represents a XML token used together with {@link XmlParameterReader} and
+ * {@link XmlParameterWriter} to export and import {@link YoParameter} with their values to and from
+ * XML files.
+ * <p>
+ * This XML token represents a registry which can have sub-registries and parameters.
+ * </p>
+ */
 @XmlAccessorType(XmlAccessType.NONE)
 public class Registry
 {
+   /** The name of this registry. */
    @XmlAttribute
    private String name;
 
+   /** The children of this registry. */
    @XmlElement(name = "registry")
    private List<Registry> registries;
 
+   /** The parameters in this registry. */
    @XmlElement(name = "parameter")
    private List<Parameter> parameters;
 
+   /**
+    * Creates a new registry XML token which fields have to be initialized afterwards.
+    */
    public Registry()
    {
-
    }
 
+   /**
+    * Creates and initializes a new parameter XML token.
+    * <p>
+    * The children and parameters are initialized to an empty {@code ArrayList}.
+    * </p>
+    *
+    * @param name the name of this registry.
+    */
    public Registry(String name)
    {
       this.name = name;
@@ -47,34 +72,63 @@ public class Registry
       parameters = new ArrayList<>();
    }
 
+   /**
+    * Returns the name of this registry.
+    *
+    * @return the name of this registry.
+    */
    public String getName()
    {
       return name;
    }
 
+   /**
+    * Sets the name of this registry.
+    *
+    * @param name the name of this registry.
+    */
    public void setName(String name)
    {
       this.name = name;
    }
 
+   /**
+    * Returns the children of this registry.
+    *
+    * @return the children.
+    */
    public List<Registry> getRegistries()
    {
       return registries;
    }
 
+   /**
+    * Sets the children of this registry.
+    *
+    * @param registries the children.
+    */
    public void setRegistries(List<Registry> registries)
    {
       this.registries = registries;
    }
 
+   /**
+    * Returns the parameters in this registry.
+    *
+    * @return this registry's parameters.
+    */
    public List<Parameter> getParameters()
    {
       return parameters;
    }
 
+   /**
+    * Sets the parameters in this registry.
+    *
+    * @param parameters this registry's parameters.
+    */
    public void setParameters(List<Parameter> parameters)
    {
       this.parameters = parameters;
    }
-
 }

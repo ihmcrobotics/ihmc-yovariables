@@ -22,21 +22,40 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import us.ihmc.yoVariables.parameters.XmlParameterReader;
+import us.ihmc.yoVariables.parameters.XmlParameterWriter;
+import us.ihmc.yoVariables.parameters.YoParameter;
+
+/**
+ * The class represents a XML root token used together with {@link XmlParameterReader} and
+ * {@link XmlParameterWriter} to export and import {@link YoParameter} with their values to and from
+ * XML files.
+ */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class Parameters
 {
+   /** The list of registries associated to this XML root token. */
    @XmlElement(name = "registry")
    private List<Registry> registries;
 
+   /**
+    * Returns the list of registries associated to this XML root token.
+    * 
+    * @return the list of registries.
+    */
    public List<Registry> getRegistries()
    {
       return registries;
    }
 
+   /**
+    * Sets the list of registries associated to this XML root token.
+    * 
+    * @param registries the list of registries.
+    */
    public void setRegistries(List<Registry> registries)
    {
       this.registries = registries;
    }
-
 }
