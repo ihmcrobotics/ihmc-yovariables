@@ -200,6 +200,7 @@ public class YoLong extends YoVariable implements LongProvider
     * Sets this variable's value from the other variable once casted to {@code YoLong}.
     *
     * @param other the other {@code YoLong} used to update this variable's value.
+    * @throws ClassCastException if {@code other} cannot be casted as a {@code YoLong}.
     */
    @Override
    public boolean setValue(YoVariable other, boolean notifyListeners)

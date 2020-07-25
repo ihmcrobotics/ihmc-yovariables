@@ -192,6 +192,7 @@ public class YoInteger extends YoVariable implements IntegerProvider
     * Sets this variable's value from the other variable once casted to {@code YoInteger}.
     * 
     * @param other the other {@code YoInteger} used to update this variable's value.
+    * @throws ClassCastException if {@code other} cannot be casted as a {@code YoInteger}.
     */
    @Override
    public boolean setValue(YoVariable other, boolean notifyListeners)

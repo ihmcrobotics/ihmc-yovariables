@@ -157,6 +157,7 @@ public class YoBoolean extends YoVariable implements BooleanProvider
     * Sets this variable's value from the other variable once casted to {@code YoBoolean}.
     * 
     * @param other the other {@code YoBoolean} used to update this variable's value.
+    * @throws ClassCastException if {@code other} cannot be casted as a {@code YoBoolean}.
     */
    @Override
    public boolean setValue(YoVariable other, boolean notifyListeners)

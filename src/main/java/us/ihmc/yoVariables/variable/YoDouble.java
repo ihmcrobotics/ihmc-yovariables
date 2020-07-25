@@ -233,6 +233,7 @@ public class YoDouble extends YoVariable implements DoubleProvider
     * Sets this variable's value from the other variable once casted to {@code YoDouble}.
     * 
     * @param other the other {@code YoDouble} used to update this variable's value.
+    * @throws ClassCastException if {@code other} cannot be casted as a {@code YoDouble}.
     */
    @Override
    public boolean setValue(YoVariable other, boolean notifyListeners)

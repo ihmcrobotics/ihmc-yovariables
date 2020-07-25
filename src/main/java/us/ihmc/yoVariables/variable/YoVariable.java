@@ -373,6 +373,7 @@ public abstract class YoVariable
     * @param notifyListeners whether or not to notify this variable's listeners in the case this
     *                        variable's value changed.
     * @return {@code true} if this variable's value changed, {@code false} otherwise.
+    * @throws ClassCastException if {@code other} cannot be casted to this variable's type.
     */
    public abstract boolean setValue(YoVariable other, boolean notifyListeners);
 

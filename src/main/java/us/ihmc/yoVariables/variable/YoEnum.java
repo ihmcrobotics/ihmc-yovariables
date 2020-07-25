@@ -470,6 +470,12 @@ public class YoEnum<E extends Enum<E>> extends YoVariable implements EnumProvide
       return set((int) value, notifyListeners);
    }
 
+   /**
+    * Sets this variable's value from the other variable once casted to {@code YoEnum}.
+    * 
+    * @param other the other {@code YoEnum} used to update this variable's value.
+    * @throws ClassCastException if {@code other} cannot be casted as a {@code YoEnum}.
+    */
    @Override
    public boolean setValue(YoVariable other, boolean notifyListeners)
    {
