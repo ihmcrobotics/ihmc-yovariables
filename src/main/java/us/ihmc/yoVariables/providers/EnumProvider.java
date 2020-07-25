@@ -16,9 +16,10 @@
 package us.ihmc.yoVariables.providers;
 
 /**
- * Interface for providing Enums
+ * Interface for providing enums.
  *
  * @author Jesper Smith
+ * @param <T> The final type of the enum.
  */
 public interface EnumProvider<T extends Enum<T>>
 {
