@@ -227,8 +227,8 @@ public class XMLParameterIOTest
       XmlParameterReader parameterReader = new XmlParameterReader(target.getName(), stream1);
       parameterReader.readParametersInRegistry(target);
       assertEquals(parameter.getLoadStatus(), ParameterLoadStatus.LOADED);
-      assertEquals(min, parameter.getManualScalingMin(), Double.MIN_VALUE);
-      assertEquals(max, parameter.getManualScalingMax(), Double.MIN_VALUE);
+      assertEquals(min, parameter.getLowerBound(), Double.MIN_VALUE);
+      assertEquals(max, parameter.getUpperBound(), Double.MIN_VALUE);
    }
 
    @Test // timeout = 30000

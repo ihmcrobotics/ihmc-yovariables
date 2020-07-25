@@ -31,6 +31,6 @@ public class ParameterData
    public void setParameterFromThis(YoParameter parameter)
    {
       parameter.load(value);
-      parameter.setSuggestedRange(min, max);
+      parameter.setParameterBounds(min, max);
    }
 }

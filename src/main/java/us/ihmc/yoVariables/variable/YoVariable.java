@@ -93,9 +93,9 @@ public abstract class YoVariable
    }
 
    /**
-    * Retrieves the name of this YoVariable.
+    * Retrieves the name of this variable.
     *
-    * @return the full name of this variable
+    * @return the name of this variable.
     */
    public String getName()
    {
@@ -103,9 +103,9 @@ public abstract class YoVariable
    }
 
    /**
-    * Retrieve the description of this variable, "" if not specified.
+    * Retrieve the description of this variable purpose, "" if not specified.
     *
-    * @return the description of this variable
+    * @return the description of this variable.
     */
    public String getDescription()
    {
@@ -113,8 +113,8 @@ public abstract class YoVariable
    }
 
    /**
-    * Retrieves this variable's full name, i.e. this variable prepended with its parent's namespace if
-    * applicable, and returns the full name as a namespace.
+    * Retrieves this variable's full name, i.e. this variable name prepended with its parent's
+    * namespace if applicable, and returns the full name as a namespace.
     *
     * @return this variable's full name as a namespace.
     */
@@ -166,8 +166,8 @@ public abstract class YoVariable
     * the bounds' owner.
     * </p>
     *
-    * @param lowerBound double value representing the lower bound for this variable.
-    * @param upperBound double value representing the upper bound for this variable.
+    * @param lowerBound double value representing the lower bound for this variable. Not enforced.
+    * @param upperBound double value representing the upper bound for this variable. Not enforced.
     */
    public void setVariableBounds(double lowerBound, double upperBound)
    {
@@ -378,10 +378,10 @@ public abstract class YoVariable
    public abstract boolean setValue(YoVariable other, boolean notifyListeners);
 
    /**
-    * Returns the value of this variable as a string.
+    * Returns the value of this variable as a {@code String}.
     * <p>
-    * The returned string is expected to not be following any specific formatting, for instance for a
-    * {@code YoDouble} this relies on {@link Double#toString(double)}.
+    * The returned {@code String} depends on the type, numeric types will return a numeric
+    * representation while enum's will return the enum value string.
     * </p>
     * 
     * @return the string representation of this variable's current value.

@@ -15,29 +15,32 @@
  */
 package us.ihmc.yoVariables.parameters;
 
+import us.ihmc.yoVariables.exceptions.IllegalOperationException;
 import us.ihmc.yoVariables.providers.IntegerProvider;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoInteger;
-import us.ihmc.yoVariables.variable.YoVariable;
 
 /**
- * Integer parameter
+ * Integer parameter.
  *
  * @author Jesper Smith
+ * @see YoParameter
  */
 public class IntegerParameter extends YoParameter implements IntegerProvider
 {
    private static final int DefaultSuggestedMinimum = -10;
    private static final int DefaultSuggestedMaximum = 10;
 
+   /** The variable backing this parameter. */
    private final YoInteger value;
+   /** Optional default value used for initializing this parameter. */
    private final int initialValue;
 
    /**
-    * Create a new Integer parameter, registered to the namespace of the registry.
+    * Creates a new integer parameter and registers it to the given registry.
     *
-    * @param name     Desired name. Must be unique in the registry
-    * @param registry YoRegistry to store under
+    * @param name     the parameter's name. Must be unique in the registry.
+    * @param registry initial parent registry for this parameter.
     */
    public IntegerParameter(String name, YoRegistry registry)
    {
@@ -45,49 +48,69 @@ public class IntegerParameter extends YoParameter implements IntegerProvider
    }
 
    /**
-    * Create a new Integer parameter, registered to the namespace of the registry.
+    * Creates a new integer parameter and registers it to the given registry.
+    * <p>
+    * Parameter bounds are typically used when interacting with the parameter via a GUI. For instance,
+    * the parameter bounds can be used to set the bounds of control slider or set the range when
+    * plotting this variable.
+    * </p>
+    * <p>
+    * Note that nothing in the implementation of a {@code YoParameter} enforces the value to remain
+    * within its current bounds, it is only for facilitating the definition of bounds and tracking to
+    * the bounds' owner.
+    * </p>
     *
-    * @param name             Desired name. Must be unique in the registry
-    * @param registry         YoRegistry to store under
-    * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
-    * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
+    * @param name       the parameter's name. Must be unique in the registry.
+    * @param registry   initial parent registry for this parameter.
+    * @param lowerBound double value representing the lower bound for this parameter. Not enforced.
+    * @param upperBound double value representing the upper bound for this parameter. Not enforced.
     */
-   public IntegerParameter(String name, YoRegistry registry, int suggestedMinimum, int suggestedMaximum)
+   public IntegerParameter(String name, YoRegistry registry, int lowerBound, int upperBound)
    {
-      this(name, "", registry, suggestedMinimum, suggestedMaximum);
+      this(name, "", registry, lowerBound, upperBound);
    }
 
    /**
-    * Create a new Integer parameter, registered to the namespace of the registry.
+    * Creates a new integer parameter and registers it to the given registry.
     *
-    * @param name        Desired name. Must be unique in the registry
-    * @param description User readable description that describes the purpose of this parameter
-    * @param registry    YoRegistry to store under
+    * @param name        the parameter's name. Must be unique in the registry.
+    * @param description description of this parameter's purpose.
+    * @param registry    initial parent registry for this parameter.
     */
    public IntegerParameter(String name, String description, YoRegistry registry)
    {
-      this(name, "", registry, 0);
+      this(name, description, registry, 0);
    }
 
    /**
-    * Create a new Integer parameter, registered to the namespace of the registry.
+    * Creates a new integer parameter and registers it to the given registry.
+    * <p>
+    * Parameter bounds are typically used when interacting with the parameter via a GUI. For instance,
+    * the parameter bounds can be used to set the bounds of control slider or set the range when
+    * plotting this variable.
+    * </p>
+    * <p>
+    * Note that nothing in the implementation of a {@code YoParameter} enforces the value to remain
+    * within its current bounds, it is only for facilitating the definition of bounds and tracking to
+    * the bounds' owner.
+    * </p>
     *
-    * @param name             Desired name. Must be unique in the registry
-    * @param description      User readable description that describes the purpose of this parameter
-    * @param registry         YoRegistry to store under
-    * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
-    * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
+    * @param name        the parameter's name. Must be unique in the registry.
+    * @param description description of this parameter's purpose.
+    * @param registry    initial parent registry for this parameter.
+    * @param lowerBound  double value representing the lower bound for this parameter. Not enforced.
+    * @param upperBound  double value representing the upper bound for this parameter. Not enforced.
     */
-   public IntegerParameter(String name, String description, YoRegistry registry, int suggestedMinimum, int suggestedMaximum)
+   public IntegerParameter(String name, String description, YoRegistry registry, int lowerBound, int upperBound)
    {
-      this(name, "", registry, 0, suggestedMinimum, suggestedMaximum);
+      this(name, description, registry, 0, lowerBound, upperBound);
    }
 
    /**
-    * Create a new Integer parameter, registered to the namespace of the registry.
+    * Creates a new integer parameter and registers it to the given registry.
     *
-    * @param name         Desired name. Must be unique in the registry
-    * @param registry     YoRegistry to store under
+    * @param name         the parameter's name. Must be unique in the registry.
+    * @param registry     initial parent registry for this parameter.
     * @param initialValue Value to set to when no value can be found in the user provided
     *                     parameterLoader
     */
@@ -97,28 +120,38 @@ public class IntegerParameter extends YoParameter implements IntegerProvider
    }
 
    /**
-    * Create a new Integer parameter, registered to the namespace of the registry.
+    * Creates a new integer parameter and registers it to the given registry.
+    * <p>
+    * Parameter bounds are typically used when interacting with the parameter via a GUI. For instance,
+    * the parameter bounds can be used to set the bounds of control slider or set the range when
+    * plotting this variable.
+    * </p>
+    * <p>
+    * Note that nothing in the implementation of a {@code YoParameter} enforces the value to remain
+    * within its current bounds, it is only for facilitating the definition of bounds and tracking to
+    * the bounds' owner.
+    * </p>
     *
-    * @param name             Desired name. Must be unique in the registry
-    * @param registry         YoRegistry to store under
-    * @param initialValue     Value to set to when no value can be found in the user provided
-    *                         parameterLoader
-    * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
-    * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
+    * @param name         the parameter's name. Must be unique in the registry.
+    * @param registry     initial parent registry for this parameter.
+    * @param initialValue value to set to when no value can be found in the user provided parameter
+    *                     loader.
+    * @param lowerBound   double value representing the lower bound for this parameter. Not enforced.
+    * @param upperBound   double value representing the upper bound for this parameter. Not enforced.
     */
-   public IntegerParameter(String name, YoRegistry registry, int initialValue, int suggestedMinimum, int suggestedMaximum)
+   public IntegerParameter(String name, YoRegistry registry, int initialValue, int lowerBound, int upperBound)
    {
-      this(name, "", registry, initialValue, suggestedMinimum, suggestedMaximum);
+      this(name, "", registry, initialValue, lowerBound, upperBound);
    }
 
    /**
-    * Create a new Integer parameter, registered to the namespace of the registry.
+    * Creates a new integer parameter and registers it to the given registry.
     *
-    * @param name         Desired name. Must be unique in the registry
-    * @param description  User readable description that describes the purpose of this parameter
-    * @param registry     YoRegistry to store under
-    * @param initialValue Value to set to when no value can be found in the user provided
-    *                     parameterLoader
+    * @param name         the parameter's name. Must be unique in the registry.
+    * @param description  description of this parameter's purpose.
+    * @param registry     initial parent registry for this parameter.
+    * @param initialValue value to set to when no value can be found in the user provided parameter
+    *                     loader.
     */
    public IntegerParameter(String name, String description, YoRegistry registry, int initialValue)
    {
@@ -126,31 +159,39 @@ public class IntegerParameter extends YoParameter implements IntegerProvider
    }
 
    /**
-    * Create a new Integer parameter, registered to the namespace of the registry.
+    * Creates a new integer parameter and registers it to the given registry.
+    * <p>
+    * Parameter bounds are typically used when interacting with the parameter via a GUI. For instance,
+    * the parameter bounds can be used to set the bounds of control slider or set the range when
+    * plotting this variable.
+    * </p>
+    * <p>
+    * Note that nothing in the implementation of a {@code YoParameter} enforces the value to remain
+    * within its current bounds, it is only for facilitating the definition of bounds and tracking to
+    * the bounds' owner.
+    * </p>
     *
-    * @param name             Desired name. Must be unique in the registry
-    * @param description      User readable description that describes the purpose of this parameter
-    * @param registry         YoRegistry to store under
-    * @param initialValue     Value to set to when no value can be found in the user provided
-    *                         parameterLoader
-    * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
-    * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
+    * @param name         the parameter's name. Must be unique in the registry.
+    * @param description  description of this parameter's purpose.
+    * @param registry     initial parent registry for this parameter.
+    * @param initialValue value to set to when no value can be found in the user provided parameter
+    *                     loader.
+    * @param lowerBound   double value representing the lower bound for this parameter. Not enforced.
+    * @param upperBound   double value representing the upper bound for this parameter. Not enforced.
     */
-   public IntegerParameter(String name, String description, YoRegistry registry, int initialValue, int suggestedMinimum, int suggestedMaximum)
+   public IntegerParameter(String name, String description, YoRegistry registry, int initialValue, int lowerBound, int upperBound)
    {
-      super(name, description);
-
       value = new YoIntegerParameter(name, description, registry);
       this.initialValue = initialValue;
 
-      setSuggestedRange(suggestedMinimum, suggestedMaximum);
+      setParameterBounds(lowerBound, upperBound);
    }
 
    /**
     * Get the current value.
     *
-    * @return value for this parameter
-    * @throws RuntimeException if the parameter is not loaded yet.
+    * @return value for this parameter.
+    * @throws IllegalOperationException if the parameter is not loaded yet.
     */
    @Override
    public int getValue()
@@ -160,35 +201,34 @@ public class IntegerParameter extends YoParameter implements IntegerProvider
    }
 
    /**
-    * Sets the suggested range for tuning purposes. The minimum and maximum will not be enforced and
-    * the parameter can be set to any value. This is just a suggestion to the user.
+    * Sets the bounds for this parameter's range of values.
+    * <p>
+    * Parameter bounds are typically used when interacting with the parameter via a GUI. For instance,
+    * the parameter bounds can be used to set the bounds of control slider or set the range when
+    * plotting this variable.
+    * </p>
+    * <p>
+    * Note that nothing in the implementation of a {@code YoParameter} enforces the value to remain
+    * within its current bounds, it is only for facilitating the definition of bounds and tracking to
+    * the bounds' owner.
+    * </p>
     *
-    * @param min Lower end of the suggested range for this parameter.
-    * @param max Upper end of the suggested range for this parameter.
+    * @param lowerBound double value representing the lower bound for this parameter. Not enforced.
+    * @param upperBound double value representing the upper bound for this parameter. Not enforced.
     */
-   public void setSuggestedRange(int min, int max)
+   public void setParameterBounds(int lowerBound, int upperBound)
    {
-      super.setSuggestedRange(min, max);
+      super.setParameterBounds(lowerBound, upperBound);
    }
 
+   /** {@inheritDoc} */
    @Override
-   public String getValueAsString()
-   {
-      return String.valueOf(getValue());
-   }
-
-   @Override
-   YoVariable getVariable()
+   YoInteger getVariable()
    {
       return value;
    }
 
-   @Override
-   void setToString(String valueString)
-   {
-      value.set(Integer.parseInt(valueString));
-   }
-
+   /** {@inheritDoc} */
    @Override
    void setToDefault()
    {
@@ -196,7 +236,7 @@ public class IntegerParameter extends YoParameter implements IntegerProvider
    }
 
    /**
-    * Internal class to set parameter settings for YoInteger
+    * Internal class to set parameter settings for {@code YoInteger}.
     *
     * @author Jesper Smith
     */

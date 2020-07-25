@@ -27,8 +27,77 @@ public class YoEnum<E extends Enum<E>> extends YoVariable implements EnumProvide
    private int valueOrdinal;
 
    /**
+    * Create a new {@code YoEnum} and initializes to the first enum constant.
+    *
+    * @param name     the name for this variable that can be used to retrieve it from a
+    *                 {@link YoRegistry}.
+    * @param registry initial parent registry for this variable.
+    * @param enumType the class representing the type of the enum.
+    */
+   public YoEnum(String name, YoRegistry registry, Class<E> enumType)
+   {
+      this(name, "", registry, enumType, false);
+   }
+
+   /**
+    * Create a new {@code YoEnum} and initializes to the first enum constant.
+    *
+    * @param name           the name for this variable that can be used to retrieve it from a
+    *                       {@link YoRegistry}.
+    * @param registry       initial parent registry for this variable.
+    * @param enumType       the class representing the type of the enum.
+    * @param allowNullValue whether this variable should support the {@code null} value or not.
+    */
+   public YoEnum(String name, YoRegistry registry, Class<E> enumType, boolean allowNullValue)
+   {
+      this(name, "", registry, enumType, allowNullValue);
+   }
+
+   /**
+    * Create a new {@code YoEnum} and initializes to the first enum constant or {@code null} if
+    * allowed.
+    *
+    * @param name           the name for this variable that can be used to retrieve it from a
+    *                       {@link YoRegistry}.
+    * @param description    description of this variable's purpose.
+    * @param registry       initial parent registry for this variable.
+    * @param enumType       the class representing the type of the enum.
+    * @param allowNullValue whether this variable should support the {@code null} value or not.
+    */
+   public YoEnum(String name, String description, YoRegistry registry, Class<E> enumType, boolean allowNullValue)
+   {
+      super(YoVariableType.ENUM, name, description, registry);
+
+      this.enumType = enumType;
+      this.allowNullValue = allowNullValue;
+      this.enumValues = enumType.getEnumConstants();
+
+      enumValuesAsString = new String[enumValues.length];
+
+      for (int i = 0; i < enumValues.length; i++)
+      {
+         String enumValueAsString = enumValues[i].toString();
+
+         if (enumValueAsString.equalsIgnoreCase(NULL_VALUE_STRING))
+            throw new IllegalArgumentException(enumValueAsString + " is a restricted keyword. No enum constants named \"null\"(case insensitive) are allowed.");
+
+         enumValuesAsString[i] = enumValueAsString;
+      }
+
+      if (!allowNullValue && enumValues.length == 0)
+         throw new IllegalArgumentException("Cannot initialize an enum variable with zero elements if allowNullValue is false.");
+
+      if (allowNullValue || enumValues.length == 0)
+         set(NULL_VALUE);
+      else
+         set(0);
+
+      setVariableBounds(allowNullValue ? NULL_VALUE : 0, enumValues.length - 1);
+   }
+
+   /**
     * Create a new {@code YoEnum} based on the {@code String} representation of each of the enum
-    * constants and initializes to the first enum constant.
+    * constants and initializes to the first enum constant or {@code null} if allowed.
     * <p>
     * This constructor is expected to be used only under peculiar circumstances and is not meant for
     * general use. It can be found useful when deserializing data which only allows to retrieve
@@ -59,97 +128,22 @@ public class YoEnum<E extends Enum<E>> extends YoVariable implements EnumProvide
       for (String constant : constants)
       {
          if (constant == null)
-         {
             throw new IllegalArgumentException("One of the enum constants is null.");
-         }
+         if (constant.equalsIgnoreCase(NULL_VALUE_STRING))
+            throw new IllegalArgumentException(constant + " is a restricted keyword. No enum constants named \"null\"(case insensitive) are allowed.");
       }
 
       enumValuesAsString = Arrays.copyOf(constants, constants.length);
 
-      if (constants.length > 0)
-      {
+      if (!allowNullValue && constants.length == 0)
+         throw new IllegalArgumentException("Cannot initialize an enum variable with zero elements if allowNullValue is false.");
+
+      if (allowNullValue || constants.length == 0)
+         set(NULL_VALUE);
+      else
          set(0);
-      }
-      else
-      {
-         if (allowNullValue)
-         {
-            set(NULL_VALUE);
-         }
-         else
-         {
-            throw new IllegalArgumentException("Cannot initialize an enum variable with zero elements if allowNullValue is false.");
-         }
-      }
-   }
 
-   /**
-    * Create a new {@code YoEnum} and initializes to the first enum constant.
-    *
-    * @param name     the name for this variable that can be used to retrieve it from a
-    *                 {@link YoRegistry}.
-    * @param registry initial parent registry for this variable.
-    * @param enumType the class representing the type of the enum.
-    */
-   public YoEnum(String name, YoRegistry registry, Class<E> enumType)
-   {
-      this(name, "", registry, enumType, false);
-   }
-
-   /**
-    * Create a new {@code YoEnum} and initializes to the first enum constant.
-    *
-    * @param name           the name for this variable that can be used to retrieve it from a
-    *                       {@link YoRegistry}.
-    * @param registry       initial parent registry for this variable.
-    * @param enumType       the class representing the type of the enum.
-    * @param allowNullValue whether this variable should support the {@code null} value or not.
-    */
-   public YoEnum(String name, YoRegistry registry, Class<E> enumType, boolean allowNullValue)
-   {
-      this(name, "", registry, enumType, allowNullValue);
-   }
-
-   /**
-    * Create a new {@code YoEnum} and initializes to the first enum constant.
-    *
-    * @param name           the name for this variable that can be used to retrieve it from a
-    *                       {@link YoRegistry}.
-    * @param description    description of this variable's purpose.
-    * @param registry       initial parent registry for this variable.
-    * @param enumType       the class representing the type of the enum.
-    * @param allowNullValue whether this variable should support the {@code null} value or not.
-    * @see YoVariable#YoVariable(YoVariableType, String, String, YoRegistry)
-    */
-   public YoEnum(String name, String description, YoRegistry registry, Class<E> enumType, boolean allowNullValue)
-   {
-      super(YoVariableType.ENUM, name, description, registry);
-
-      this.enumType = enumType;
-      this.allowNullValue = allowNullValue;
-      this.enumValues = enumType.getEnumConstants();
-
-      enumValuesAsString = new String[enumValues.length];
-      for (int i = 0; i < enumValues.length; i++)
-      {
-         enumValuesAsString[i] = enumValues[i].toString();
-      }
-
-      if (enumValues.length > 0)
-      {
-         set(0, true);
-      }
-      else
-      {
-         if (allowNullValue)
-         {
-            set(NULL_VALUE, true);
-         }
-         else
-         {
-            throw new IllegalArgumentException("Cannot initialize an enum variable with zero elements if allowNullValue is false.");
-         }
-      }
+      setVariableBounds(allowNullValue ? NULL_VALUE : 0, constants.length - 1);
    }
 
    /**
@@ -488,9 +482,9 @@ public class YoEnum<E extends Enum<E>> extends YoVariable implements EnumProvide
    }
 
    /**
-    * Assesses the number of enum values declared for this YoEnum.
+    * Gets the number of enum values declared for this {@code YoEnum}.
     *
-    * @return length {@link #enumValuesAsString}
+    * @return number of constants for the enum backing this variable.
     */
    public int getEnumSize()
    {

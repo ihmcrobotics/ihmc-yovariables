@@ -9,222 +9,231 @@
  */
 package us.ihmc.yoVariables.parameters;
 
+import us.ihmc.yoVariables.exceptions.IllegalOperationException;
 import us.ihmc.yoVariables.providers.EnumProvider;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoEnum;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 /**
- * Enum parameter
+ * Enum parameter.
  *
  * @author Jesper Smith
+ * @param <E> The enum type used with this parameter.
+ * @see YoParameter
  */
-public class EnumParameter<T extends Enum<T>> extends YoParameter implements EnumProvider<T>
+public class EnumParameter<E extends Enum<E>> extends YoParameter implements EnumProvider<E>
 {
-   private final YoEnum<T> value;
+   /** The variable backing this parameter. */
+   private final YoEnum<E> value;
+   /** Optional default value used for initializing this parameter. */
    private final int initialOrdinal;
 
    /**
-    * Create a new Enum parameter, registered to the namespace of the registry.
+    * Creates a new enum parameter and registers it to the given registry.
     *
-    * @param name            Desired name. Must be unique in the registry
-    * @param registry        YoRegistry to store under
-    * @param enumType        The class representing the type of the enum
-    * @param allowNullValues Boolean determining if null enum values are permitted
+    * @param name           the parameter's name. Must be unique in the registry.
+    * @param registry       initial parent registry for this parameter.
+    * @param enumType       the class representing the type of the enum.
+    * @param allowNullValue whether this variable should support the {@code null} value or not.
     */
-   public EnumParameter(String name, YoRegistry registry, Class<T> enumType, boolean allowNullValues)
+   public EnumParameter(String name, YoRegistry registry, Class<E> enumType, boolean allowNullValue)
    {
-      this(name, "", registry, enumType, allowNullValues);
+      this(name, "", registry, enumType, allowNullValue);
    }
 
    /**
-    * Create a new Enum parameter, registered to the namespace of the registry.
+    * Creates a new enum parameter and registers it to the given registry.
     *
-    * @param name            Desired name. Must be unique in the registry
-    * @param description     User readable description that describes the purpose of this parameter
-    * @param registry        YoRegistry to store under
-    * @param enumType        The class representing the type of the enum
-    * @param allowNullValues Boolean determining if null enum values are permitted
+    * @param name           the parameter's name. Must be unique in the registry.
+    * @param description    description of this parameter's purpose.
+    * @param registry       initial parent registry for this parameter.
+    * @param enumType       the class representing the type of the enum.
+    * @param allowNullValue whether this variable should support the {@code null} value or not.
     */
-   public EnumParameter(String name, String description, YoRegistry registry, Class<T> enumType, boolean allowNullValues)
+   public EnumParameter(String name, String description, YoRegistry registry, Class<E> enumType, boolean allowNullValue)
    {
-      this(name, description, registry, enumType, allowNullValues, allowNullValues ? null : enumType.getEnumConstants()[0]);
+      this(name, description, registry, enumType, allowNullValue, allowNullValue ? null : enumType.getEnumConstants()[0]);
    }
 
    /**
-    * Create a new Enum parameter, registered to the namespace of the registry.
+    * Creates a new enum parameter and registers it to the given registry.
     *
-    * @param name            Desired name. Must be unique in the registry
-    * @param registry        YoRegistry to store under
-    * @param enumType        The class representing the type of the enum
-    * @param allowNullValues Boolean determining if null enum values are permitted
-    * @param initialValue    Value to set to when no value can be found in the user provided
-    *                        parameterLoader
+    * @param name           the parameter's name. Must be unique in the registry.
+    * @param registry       initial parent registry for this parameter.
+    * @param enumType       the class representing the type of the enum.
+    * @param allowNullValue whether this variable should support the {@code null} value or not.
+    * @param initialValue   value to set to when no value can be found in the user provided parameter
+    *                       loader.
     */
-   public EnumParameter(String name, YoRegistry registry, Class<T> enumType, boolean allowNullValues, T initialValue)
+   public EnumParameter(String name, YoRegistry registry, Class<E> enumType, boolean allowNullValue, E initialValue)
    {
-      this(name, "", registry, enumType, allowNullValues, initialValue);
+      this(name, "", registry, enumType, allowNullValue, initialValue);
    }
 
    /**
-    * Create a new Enum parameter, registered to the namespace of the registry.
+    * Creates a new enum parameter and registers it to the given registry.
     *
-    * @param name            Desired name. Must be unique in the registry
-    * @param description     User readable description that describes the purpose of this parameter
-    * @param registry        YoRegistry to store under
-    * @param enumType        The class representing the type of the enum
-    * @param allowNullValues Boolean determining if null enum values are permitted
-    * @param initialValue    Value to set to when no value can be found in the user provided
-    *                        parameterLoader
+    * @param name           the parameter's name. Must be unique in the registry.
+    * @param description    description of this parameter's purpose.
+    * @param registry       initial parent registry for this parameter.
+    * @param enumType       the class representing the type of the enum.
+    * @param allowNullValue whether this variable should support the {@code null} value or not.
+    * @param initialValue   value to set to when no value can be found in the user provided parameter
+    *                       loader.
     */
-   public EnumParameter(String name, String description, YoRegistry registry, Class<T> enumType, boolean allowNullValues, T initialValue)
+   public EnumParameter(String name, String description, YoRegistry registry, Class<E> enumType, boolean allowNullValue, E initialValue)
    {
-      super(name, description);
-
-      for (T constant : enumType.getEnumConstants())
-      {
-         if (constant.toString().equalsIgnoreCase("null"))
-         {
-            throw new RuntimeException("\"" + constant.toString()
-                  + "\" is a reserved keyword for EnumParameters. No enum constants named \"null\"(case insensitive) are allowed.");
-         }
-      }
-
-      this.value = new YoEnumParameter(name, description, registry, enumType, allowNullValues);
-      if (!this.value.isNullAllowed() && initialValue == null)
-      {
-         throw new RuntimeException("Cannot initialize to null value, allowNullValues is false");
-      }
+      value = new YoEnumParameter(name, description, registry, enumType, allowNullValue);
+      if (!value.isNullAllowed() && initialValue == null)
+         throw new IllegalArgumentException("Cannot initialize to null value, allowNullValue is false");
 
       if (initialValue == null)
-      {
          this.initialOrdinal = YoEnum.NULL_VALUE;
-      }
       else
-      {
          this.initialOrdinal = initialValue.ordinal();
-      }
-
-      setSuggestedRange(0, enumType.getEnumConstants().length - 1);
    }
 
    /**
-    * Create a new Enum parameter, registered to the namespace of the registry. This constructor allows
-    * a enum parameter based on string values. This should not be used directly by the user, but only
-    * internally in the robot data logger.
+    * Create a new {@code YoEnum} based on the {@code String} representation of each of the enum
+    * constants.
+    * <p>
+    * This constructor is expected to be used only under peculiar circumstances and is not meant for
+    * general use. It can be found useful when deserializing data which only allows to retrieve
+    * information about the enum constants but cannot provide the actual type of the enum.
+    * </p>
+    * <p>
+    * A {@code EnumParameter} constructed from {@code String}s does not support the part of API
+    * interacting with {@code Enum}s.
+    * </p>
     *
-    * @param name            Desired name. Must be unique in the registry
-    * @param description     User readable description that describes the purpose of this parameter
-    * @param registry        YoRegistry to store under
+    * @param name            the parameter's name. Must be unique in the registry.
+    * @param description     description of this parameter's purpose.
+    * @param registry        initial parent registry for this parameter.
     * @param allowNullValues Boolean determining if null enum values are permitted
     * @param constants       Array of enum constants
     */
    public EnumParameter(String name, String description, YoRegistry registry, boolean allowNullValues, String... constants)
    {
-      super(name, description);
-      for (String constant : constants)
-      {
-         if (constant == null)
-         {
-            throw new RuntimeException("One of the enum constants is null.");
-         }
-         if (constant.equalsIgnoreCase("null"))
-         {
-            throw new RuntimeException("\"" + constant.toString()
-                  + "\" is a reserved keyword for EnumParameters. No enum constants named \"null\"(case insensitive) are allowed.");
-         }
-      }
-      this.value = new YoEnumParameter(name, description, registry, allowNullValues, constants);
-
-      if (!this.value.isNullAllowed() && constants.length == 0)
-      {
-         throw new RuntimeException("Cannot initialize an enum parameter with zero elements if allowNullValues is false.");
-      }
+      value = new YoEnumParameter(name, description, registry, allowNullValues, constants);
 
       if (allowNullValues || constants.length == 0)
-      {
          this.initialOrdinal = YoEnum.NULL_VALUE;
-      }
       else
-      {
          this.initialOrdinal = 0;
-      }
-
-      setSuggestedRange(0, constants.length - 1);
    }
 
    /**
     * Get the current value.
     *
-    * @return value for this parameter
-    * @throws RuntimeException if the parameter is not loaded yet.
+    * @return value for this parameter.
+    * @throws IllegalOperationException if the parameter is not loaded yet.
     */
    @Override
-   public T getValue()
+   public E getValue()
    {
       checkLoaded();
-      return this.value.getEnumValue();
-   }
-
-   @Override
-   public String getValueAsString()
-   {
-      return this.value.getStringValue();
+      return value.getEnumValue();
    }
 
    /**
-    * Retrieves this EnumParameter's enumType if it is backed by an enum.
+    * Assesses if this parameter is backed by a {@code Class} as an enum type.
+    * <p>
+    * A {@code EnumParameter} is backed by an enum type when it was constructed directly or indirectly
+    * using {@link #EnumParameter(String, String, YoRegistry, Class, boolean, Enum)}.
+    * </p>
+    * <p>
+    * A {@code EnumParameter} is <b>not</b> backed by an enum type when it was constructed using
+    * {@link #EnumParameter(String, String, YoRegistry, boolean, String...)}.
+    * </p>
     *
-    * @return enumType
-    * @throws UnsupportedOperationException from {@link YoEnum#checkIfBackedByEnum()}
+    * @return {@code true} if this parameter relies on the actual enum type, {@code false} if it is
+    *         only backed by the {@code String} values representing the enum constants.
     */
-   public Class<T> getEnumType()
+   public boolean isBackedByEnum()
+   {
+      return value.isBackedByEnum();
+   }
+
+   /**
+    * Returns whether this parameter can be set to {@code null} or not.
+    *
+    * @return {@code true} if the value of {@code null} is allowed with this parameter.
+    */
+   public boolean isNullAllowed()
+   {
+      return value.isNullAllowed();
+   }
+
+   /**
+    * Retrieves this parameter's enum type.
+    *
+    * @return the type of the enum.
+    * @throws UnsupportedOperationException if this parameter is not backed by an enum type.
+    * @see #isBackedByEnum()
+    */
+   public Class<E> getEnumType()
    {
       return value.getEnumType();
    }
 
-   @Override
-   YoVariable getVariable()
+   /**
+    * Returns all the enum constants as an array.
+    *
+    * @return the enum constants as an array. Does not contain the {@code null} value regardless of
+    *         {@link #isNullAllowed()}.
+    * @throws UnsupportedOperationException if this parameter is not backed by an enum type.
+    * @see #isBackedByEnum()
+    */
+   public E[] getEnumValues()
    {
-      return this.value;
-   }
-
-   @Override
-   void setToString(String valueString)
-   {
-      if ("null".equalsIgnoreCase(valueString))
-      {
-         this.value.set(YoEnum.NULL_VALUE);
-         return;
-      }
-
-      for (int i = 0; i < this.value.getEnumValuesAsString().length; i++)
-      {
-         if (this.value.getEnumValuesAsString()[i].equals(valueString))
-         {
-            this.value.set(i);
-            return;
-         }
-      }
-
-      throw new RuntimeException("Cannot set enum value to " + valueString + ", undefined enum constant");
-   }
-
-   @Override
-   void setToDefault()
-   {
-      this.value.set(initialOrdinal);
+      return value.getEnumValues();
    }
 
    /**
-    * Internal class to set parameter settings for YoEnum
+    * Returns the {@code String} representation for all the enum constants in order as array.
+    *
+    * @return {@code String} representation for the all enum constants. Does not contain an element for
+    *         representing the {@code null} value regardless of {@link #isNullAllowed()}.
+    */
+   public String[] getEnumValuesAsString()
+   {
+      return value.getEnumValuesAsString();
+   }
+
+   /**
+    * Gets the number of enum values declared for this {@code EnumParameter}.
+    *
+    * @return number of constants for the enum backing this parameter.
+    */
+   public int getEnumSize()
+   {
+      return value.getEnumSize();
+   }
+
+   /** {@inheritDoc} */
+   @Override
+   YoVariable getVariable()
+   {
+      return value;
+   }
+
+   /** {@inheritDoc} */
+   @Override
+   void setToDefault()
+   {
+      value.set(initialOrdinal);
+   }
+
+   /**
+    * Internal class to set parameter settings for {@code YoEnum}.
     *
     * @author Jesper Smith
     */
-   private class YoEnumParameter extends YoEnum<T>
+   private class YoEnumParameter extends YoEnum<E>
    {
 
-      public YoEnumParameter(String name, String description, YoRegistry registry, Class<T> enumType, boolean allowNullValues)
+      public YoEnumParameter(String name, String description, YoRegistry registry, Class<E> enumType, boolean allowNullValues)
       {
          super(name, description, registry, enumType, allowNullValues);
       }
@@ -241,18 +250,18 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter implements Enu
       }
 
       @Override
-      public EnumParameter<T> getParameter()
+      public EnumParameter<E> getParameter()
       {
          return EnumParameter.this;
       }
 
       @Override
-      public YoEnum<T> duplicate(YoRegistry newRegistry)
+      public YoEnum<E> duplicate(YoRegistry newRegistry)
       {
-         EnumParameter<T> newParameter;
+         EnumParameter<E> newParameter;
          if (isBackedByEnum())
          {
-            T initialValue;
+            E initialValue;
             if (initialOrdinal == NULL_VALUE)
             {
                initialValue = null;
@@ -274,5 +283,4 @@ public class EnumParameter<T extends Enum<T>> extends YoParameter implements Enu
          return newParameter.value;
       }
    }
-
 }

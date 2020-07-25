@@ -117,7 +117,7 @@ public class BooleanParameterTest
    {
       BooleanParameter param = createParameterWithNamespace();
       CallbackTest callback = new CallbackTest();
-      param.addParameterChangedListener(callback);
+      param.addListener(callback);
 
       assertFalse(callback.set);
 

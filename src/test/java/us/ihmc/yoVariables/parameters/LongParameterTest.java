@@ -130,7 +130,7 @@ public class LongParameterTest
    {
       LongParameter param = createParameterWithNamespace();
       CallbackTest callback = new CallbackTest();
-      param.addParameterChangedListener(callback);
+      param.addListener(callback);
 
       assertFalse(callback.set);
 

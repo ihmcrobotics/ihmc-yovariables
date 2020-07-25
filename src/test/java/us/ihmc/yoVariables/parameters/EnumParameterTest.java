@@ -203,7 +203,7 @@ public class EnumParameterTest
    {
       EnumParameter<TestEnum> param = createParameterWithNamespace();
       CallbackTest callback = new CallbackTest();
-      param.addParameterChangedListener(callback);
+      param.addListener(callback);
 
       assertFalse(callback.set);
 
