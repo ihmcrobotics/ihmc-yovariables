@@ -36,11 +36,21 @@ public enum YoRegistryRestrictionLevel
       this.removalAllowed = removalAllowed;
    }
 
+   /**
+    * Returns whether addition of registry and/or variable is authorized under this restriction.
+    * 
+    * @return whether addition is allowed.
+    */
    public boolean isAdditionAllowed()
    {
       return additionAllowed;
    }
 
+   /**
+    * Returns whether removal of registry and/or variable is authorized under this restriction.
+    * 
+    * @return whether removal is allowed.
+    */
    public boolean isRemovalAllowed()
    {
       return removalAllowed;

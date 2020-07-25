@@ -27,13 +27,13 @@ public class YoVariableListTest
 
       YoBoolean booleanOne = new YoBoolean("booleanOne", registryOne);
       YoDouble doubleOne = new YoDouble("doubleOne", registryOne);
-      varList.addVariable(booleanOne);
-      varList.addVariable(doubleOne);
+      varList.add(booleanOne);
+      varList.add(doubleOne);
 
       YoBoolean booleanTwo = new YoBoolean("booleanTwo", registryTwo);
       YoDouble doubleTwo = new YoDouble("doubleTwo", registryTwo);
-      varList.addVariable(booleanTwo);
-      varList.addVariable(doubleTwo);
+      varList.add(booleanTwo);
+      varList.add(doubleTwo);
 
       // Here's the tricky case. Same name variable booleanOne but with a
       // different name space.
@@ -42,7 +42,7 @@ public class YoVariableListTest
       // Right now it returns the first one. This has problems with
       // graphGroups and such and should be fixed later
       YoBoolean repeatBooleanOne = new YoBoolean("booleanOne", registryTwo);
-      varList.addVariable(repeatBooleanOne);
+      varList.add(repeatBooleanOne);
 
       YoBoolean notIncluded = new YoBoolean("notIncluded", registryTwo);
 
@@ -62,13 +62,13 @@ public class YoVariableListTest
       assertTrue(varList.contains(repeatBooleanOne));
       assertFalse(varList.contains(notIncluded));
 
-      assertThrows(IndexOutOfBoundsException.class, () -> varList.getVariable(-1));
-      assertTrue(booleanOne == varList.getVariable(0));
-      assertTrue(doubleOne == varList.getVariable(1));
-      assertTrue(booleanTwo == varList.getVariable(2));
-      assertTrue(doubleTwo == varList.getVariable(3));
-      assertTrue(repeatBooleanOne == varList.getVariable(4));
-      assertThrows(IndexOutOfBoundsException.class, () -> varList.getVariable(5));
+      assertThrows(IndexOutOfBoundsException.class, () -> varList.get(-1));
+      assertTrue(booleanOne == varList.get(0));
+      assertTrue(doubleOne == varList.get(1));
+      assertTrue(booleanTwo == varList.get(2));
+      assertTrue(doubleTwo == varList.get(3));
+      assertTrue(repeatBooleanOne == varList.get(4));
+      assertThrows(IndexOutOfBoundsException.class, () -> varList.get(5));
 
       assertTrue(varList.hasVariable("booleanOne"));
       assertFalse(varList.hasUniqueVariable("booleanOne"));
@@ -137,8 +137,8 @@ public class YoVariableListTest
 
          variables.add(variableA);
          variables.add(variableB);
-         varList.addVariable(variableA);
-         varList.addVariable(variableB);
+         varList.add(variableA);
+         varList.add(variableB);
       }
 
       assertEquals(variables.size(), varList.size());
@@ -162,9 +162,9 @@ public class YoVariableListTest
       YoDouble b = new YoDouble("b", registry);
       YoDouble c = new YoDouble("c", registry);
 
-      list.addVariable(a);
-      list.addVariable(b);
-      list.addVariable(c);
+      list.add(a);
+      list.add(b);
+      list.add(c);
 
       assertEquals(list.getName() + ", variables:\n" + a.toString() + "\n" + b.toString() + "\n" + c.toString(), list.toString());
 
@@ -184,41 +184,41 @@ public class YoVariableListTest
       YoDouble c = new YoDouble("c", registry);
 
       //YoVariableList
-      list.addVariable(a);
+      list.add(a);
       assertEquals(1, list.size());
-      list.addVariable(a); // Ignores if added twice.
+      list.add(a); // Ignores if added twice.
       assertEquals(1, list.size());
 
-      listTwo.addVariable(b);
-      listTwo.addVariable(c);
+      listTwo.add(b);
+      listTwo.add(c);
       assertEquals(2, listTwo.size());
 
-      list.addVariables(listTwo);
+      list.addAll(listTwo);
       assertEquals(3, list.size());
 
       //YoVariable[]
-      listThree.addVariable(a);
+      listThree.add(a);
 
       YoVariable[] array = new YoVariable[2];
       array[0] = b;
       array[1] = c;
 
-      listThree.addVariables(Arrays.asList(array));
+      listThree.addAll(Arrays.asList(array));
 
       //ArrayList
       ArrayList<YoVariable> arrayList = new ArrayList<>();
       arrayList.add(b);
       arrayList.add(c);
 
-      listFour.addVariable(a);
+      listFour.add(a);
 
-      listFour.addVariables(arrayList);
+      listFour.addAll(arrayList);
 
       //assertions
       for (int i = 0; i < list.size(); i++)
       {
-         assertEquals(list.getVariable(i), listThree.getVariable(i));
-         assertEquals(list.getVariable(i), listFour.getVariable(i));
+         assertEquals(list.get(i), listThree.get(i));
+         assertEquals(list.get(i), listFour.get(i));
       }
    }
 
@@ -237,15 +237,15 @@ public class YoVariableListTest
       YoDouble c = new YoDouble("c", registry);
       YoDouble f = new YoDouble("f", registry); //variable will not be added to list
 
-      list.addVariable(a);
-      list.addVariable(b);
-      list.addVariable(c);
+      list.add(a);
+      list.add(b);
+      list.add(c);
 
-      list.removeVariable(b);
-      list.removeVariable(f); //attempt to remove variable not in list
+      list.remove(b);
+      list.remove(f); //attempt to remove variable not in list
 
-      listTwo.addVariable(a);
-      listTwo.addVariable(c);
+      listTwo.add(a);
+      listTwo.add(c);
 
       assertEquals(list.toString(), listTwo.toString());
 
@@ -258,7 +258,7 @@ public class YoVariableListTest
 
       for (int i = 0; i < listTwo.size(); i++)
       {
-         assertEquals(allVariables.get(i).toString(), listTwo.getVariable(i).toString());
+         assertEquals(allVariables.get(i).toString(), listTwo.get(i).toString());
       }
    }
 
@@ -275,9 +275,9 @@ public class YoVariableListTest
       YoDouble c = new YoDouble("c_arm", registry);
       YoDouble f = new YoDouble("f_arm", registry); //variable will not be added to list
 
-      list.addVariable(a);
-      list.addVariable(b);
-      list.addVariable(c);
+      list.add(a);
+      list.add(b);
+      list.add(c);
 
       String[] names = new String[2];
       names[0] = "a_arm";

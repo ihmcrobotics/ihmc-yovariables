@@ -57,20 +57,20 @@ public class YoVariableHolderImplementationTest
       YoDouble variableThreeC = new YoDouble("variableThree", registryC);
       YoDouble variableThreeC2 = new YoDouble("variableThree", registryC2);
 
-      yoVariableHolderImplementation.addVariable(variableOneA);
-      yoVariableHolderImplementation.addVariable(variableOneB);
-      yoVariableHolderImplementation.addVariable(variableOneC);
-      yoVariableHolderImplementation.addVariable(variableOneC2);
+      yoVariableHolderImplementation.add(variableOneA);
+      yoVariableHolderImplementation.add(variableOneB);
+      yoVariableHolderImplementation.add(variableOneC);
+      yoVariableHolderImplementation.add(variableOneC2);
 
-      yoVariableHolderImplementation.addVariable(variableTwoA);
-      yoVariableHolderImplementation.addVariable(variableTwoB);
-      yoVariableHolderImplementation.addVariable(variableTwoC);
-      yoVariableHolderImplementation.addVariable(variableTwoC2);
+      yoVariableHolderImplementation.add(variableTwoA);
+      yoVariableHolderImplementation.add(variableTwoB);
+      yoVariableHolderImplementation.add(variableTwoC);
+      yoVariableHolderImplementation.add(variableTwoC2);
 
-      yoVariableHolderImplementation.addVariable(variableThreeA);
-      yoVariableHolderImplementation.addVariable(variableThreeB);
-      yoVariableHolderImplementation.addVariable(variableThreeC);
-      yoVariableHolderImplementation.addVariable(variableThreeC2);
+      yoVariableHolderImplementation.add(variableThreeA);
+      yoVariableHolderImplementation.add(variableThreeB);
+      yoVariableHolderImplementation.add(variableThreeC);
+      yoVariableHolderImplementation.add(variableThreeC2);
    }
 
    @AfterEach
