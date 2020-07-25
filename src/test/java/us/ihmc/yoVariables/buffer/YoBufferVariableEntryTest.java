@@ -106,7 +106,7 @@ public class YoBufferVariableEntryTest
 
       double temp;
       double epsilon = 0;
-      YoDouble yoDouble2 = new YoDouble("yoDouble2", null);
+      YoDouble yoDouble2 = new YoDouble("yoDouble", null);
       yoDouble2.set(0);
       YoBufferVariableEntry entry2 = new YoBufferVariableEntry(yoDouble2, nPoints);
 
