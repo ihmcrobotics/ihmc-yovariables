@@ -5,10 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
-import java.util.NoSuchElementException;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -19,7 +17,6 @@ import org.junit.jupiter.api.Test;
 
 import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.registry.YoRegistry;
-import us.ihmc.yoVariables.tools.YoTools;
 
 public class YoVariableTest
 {
@@ -49,21 +46,6 @@ public class YoVariableTest
       yoVariable = null;
       registry = null;
       variableChangedListeners = null;
-   }
-
-   @Test // timeout=300000
-   public void testFullNameEndsWith()
-   {
-      assertTrue(YoTools.matchFullNameEndsWithCaseInsensitive(yoVariable, "robot.testRegistry.variableOne"));
-      assertTrue(YoTools.matchFullNameEndsWithCaseInsensitive(yoVariable, "testRegistry.variableOne"));
-      assertTrue(YoTools.matchFullNameEndsWithCaseInsensitive(yoVariable, "variableOne"));
-      assertTrue(!YoTools.matchFullNameEndsWithCaseInsensitive(yoVariable, "bot.testRegistry.variableOne"));
-      assertTrue(!YoTools.matchFullNameEndsWithCaseInsensitive(yoVariable, ".testRegistry.variableOne"));
-      assertTrue(!YoTools.matchFullNameEndsWithCaseInsensitive(yoVariable, "gistry.variableOne"));
-      assertTrue(!YoTools.matchFullNameEndsWithCaseInsensitive(yoVariable, "ableOne"));
-      assertTrue(!YoTools.matchFullNameEndsWithCaseInsensitive(yoVariable, "robot.testRegistr"));
-      assertTrue(YoTools.matchFullNameEndsWithCaseInsensitive(yoVariable, "robot.testRegistry.VARIABLEONE"));
-      assertFalse(YoTools.matchFullNameEndsWithCaseInsensitive(yoVariable, "Robot.testRegistry.variableOne"));
    }
 
    @Test // timeout=300000

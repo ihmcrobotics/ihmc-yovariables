@@ -4,18 +4,17 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.mutable.MutableInt;
 
-import us.ihmc.log.LogTools;
 import us.ihmc.yoVariables.exceptions.IllegalNameException;
 import us.ihmc.yoVariables.registry.NameSpace;
 import us.ihmc.yoVariables.registry.YoRegistry;
-import us.ihmc.yoVariables.variable.YoVariable;
 
 public class YoTools
 {
@@ -36,81 +35,58 @@ public class YoTools
       }
    }
 
-   public static void printAllVariablesIncludingDescendants(YoRegistry registry, PrintStream out)
+   public static void printStatistics(int minVariablesToPrint, int minChildrenToPrint, YoRegistry root)
    {
-      for (YoVariable var : registry.getVariables())
-      {
-         out.print(var.getFullNameString() + "\n");
-      }
-
-      for (YoRegistry child : registry.getChildren())
-      {
-         printAllVariablesIncludingDescendants(child, out);
-      }
+      printStatistics(minVariablesToPrint, minChildrenToPrint, root, YoTools::getRegistryInfo, System.out);
    }
 
-   public static void printSizeRecursively(int minVariablesToPrint, int minChildrenToPrint, YoRegistry root)
+   public static void printStatistics(int minVariablesToPrint, int minChildrenToPrint, YoRegistry root, Function<YoRegistry, String> registryInfoFunction,
+                                      PrintStream printStream)
    {
       List<YoRegistry> registriesOfInterest = new ArrayList<>();
-      int totalVariables = collectRegistries(minVariablesToPrint, minChildrenToPrint, root, registriesOfInterest);
-      Collections.sort(registriesOfInterest, new Comparator<YoRegistry>()
+
+      MutableInt totalVariables = new MutableInt();
+      YoSearchTools.filterRegistries(candidate ->
       {
-         @Override
-         public int compare(YoRegistry o1, YoRegistry o2)
-         {
-            if (o1.getNumberOfVariables() == o2.getNumberOfVariables())
-               return 0;
-            return o1.getNumberOfVariables() > o2.getNumberOfVariables() ? -1 : 1;
-         }
-      });
+         totalVariables.add(candidate.getVariables().size());
+         return candidate.getVariables().size() >= minVariablesToPrint || candidate.getChildren().size() >= minChildrenToPrint;
+      }, root);
 
-      System.out.println("");
-      LogTools.info("Printing children of " + root.getName() + " registry.");
-      System.out.println("Total Number of YoVariables: " + totalVariables);
-      System.out.println("Listing registries with at least " + minVariablesToPrint + " variables or at least " + minChildrenToPrint + " children.");
-      System.out.println("Sorting by number of variables.");
+      Collections.sort(registriesOfInterest, (o1, o2) -> Integer.compare(o2.getNumberOfVariables(), o2.getNumberOfVariables()));
 
-      for (int registryIdx = 0; registryIdx < registriesOfInterest.size(); registryIdx++)
-         printInfo(registriesOfInterest.get(registryIdx));
+      printStream.println("");
+      printStream.println(YoTools.class.getSimpleName() + ": Printing children of " + root.getName() + " registry.");
+      printStream.println("Total Number of YoVariables: " + totalVariables.intValue());
+      printStream.println("Listing registries with at least " + minVariablesToPrint + " variables or at least " + minChildrenToPrint + " children.");
+      printStream.println("Sorting by number of variables.");
 
-      System.out.println("");
+      registriesOfInterest.forEach(registry -> printStream.println(getRegistryInfo(registry)));
+
+      printStream.println("");
    }
 
-   private static int collectRegistries(int minVariablesToPrint, int minChildrenToPrint, YoRegistry registry, List<YoRegistry> registriesOfInterest)
+   public static String getRegistryInfo(YoRegistry registry)
    {
-      int variables = registry.getNumberOfVariables();
-      int children = registry.getChildren().size();
-
-      if (variables >= minVariablesToPrint || children >= minChildrenToPrint)
-         registriesOfInterest.add(registry);
-
-      int totalNumberOfVariables = variables;
-      for (int childIdx = 0; childIdx < children; childIdx++)
-      {
-         YoRegistry childRegistry = registry.getChildren().get(childIdx);
-         totalNumberOfVariables += collectRegistries(minVariablesToPrint, minChildrenToPrint, childRegistry, registriesOfInterest);
-      }
-
-      return totalNumberOfVariables;
-   }
-
-   private static void printInfo(YoRegistry registry)
-   {
-      int variables = registry.getNumberOfVariables();
-      int children = registry.getChildren().size();
-
       int maxPropertyLength = 17;
-      String variableString = trimStringToLength("Variables: " + variables, maxPropertyLength, "...");
-      String childrenString = trimStringToLength("Children: " + children, maxPropertyLength, "...");
-
       int maxNameLength = 70;
-      String name = registry.getClass().getSimpleName() + " " + registry.getNameSpace().getName();
-      name = trimStringToLength(name, maxNameLength, "...");
-
-      System.out.println(name + "\t" + variableString + "\t" + childrenString);
+      return getRegistryInfo(registry, maxPropertyLength, maxNameLength);
    }
 
-   private static String trimStringToLength(String original, int length, String placeholder)
+   public static String getRegistryInfo(YoRegistry registry, int maxPropertyLength, int maxNameLength)
+   {
+      int variables = registry.getNumberOfVariables();
+      int children = registry.getChildren().size();
+
+      String variableString = trimOrPadToLength("Variables: " + variables, maxPropertyLength, "...");
+      String childrenString = trimOrPadToLength("Children: " + children, maxPropertyLength, "...");
+
+      String name = registry.getClass().getSimpleName() + " " + registry.getNameSpace().getName();
+      name = trimOrPadToLength(name, maxNameLength, "...");
+
+      return name + "\t" + variableString + "\t" + childrenString;
+   }
+
+   private static String trimOrPadToLength(String original, int length, String placeholder)
    {
       int chararcters = original.length();
       int placeholderLength = placeholder.length();
@@ -203,26 +179,5 @@ public class YoTools
       subNames.addAll(splitNameA);
       subNames.addAll(splitNameB);
       return new NameSpace(subNames);
-   }
-
-   public static boolean matchFullNameEndsWithCaseInsensitive(YoVariable yoVariable, String name)
-   {
-      int lastDotIndex = name.lastIndexOf(".");
-
-      if (lastDotIndex == -1)
-      {
-         return yoVariable.getName().toLowerCase().equals(name.toLowerCase());
-      }
-
-      String endOfName = name.substring(lastDotIndex + 1);
-      String nameSpace = name.substring(0, lastDotIndex);
-
-      if (!endOfName.toLowerCase().equals(yoVariable.getName().toLowerCase()))
-         return false;
-
-      if (yoVariable.getRegistry() == null)
-         return false;
-
-      return yoVariable.getRegistry().getNameSpace().endsWith(nameSpace);
    }
 }

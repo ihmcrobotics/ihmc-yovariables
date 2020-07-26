@@ -35,7 +35,7 @@ public class YoSearchTools
       if (predicate != null)
          yoVariablePredicate = yoVariablePredicate.and(variable -> predicate.test(variable.getParameter()));
 
-      YoVariable result = YoSearchTools.findFirstVariable(nameSpaceEnding, name, yoVariablePredicate, registry);
+      YoVariable result = findFirstVariable(nameSpaceEnding, name, yoVariablePredicate, registry);
       if (result == null)
          return null;
       else
@@ -152,7 +152,7 @@ public class YoSearchTools
     */
    public static List<YoVariable> filterVariables(Predicate<YoVariable> filter, YoVariableHolder yoVariableHolder)
    {
-      return YoSearchTools.filterVariables(filter, yoVariableHolder, null);
+      return filterVariables(filter, yoVariableHolder, null);
    }
 
    /**
@@ -182,6 +182,47 @@ public class YoSearchTools
       }
 
       return filteredVariablesToPack;
+   }
+
+   /**
+    * Recurses the registry subtree to find all the registries for which the given {@code filter}
+    * returns {@code true}.
+    * 
+    * @param filter   the filter used as only search criterion.
+    * @param registry the registry to search the subtree of.
+    * @return all the registries matching the search criterion, the list is empty is no such registry
+    *         could be found.
+    */
+   public static List<YoRegistry> filterRegistries(Predicate<YoRegistry> filter, YoRegistry registry)
+   {
+      return filterRegistries(filter, registry, null);
+   }
+
+   /**
+    * Recurses the {@code yoVariableHolder} subtree to find all the variables for which the given
+    * {@code filter} returns {@code true}.
+    * 
+    * @param filter                   the filter used as only search criterion.
+    * @param registry                 the variable holder to search the subtree of.
+    * @param filteredRegistriesToPack (optional) if provided the found variables are added to this
+    *                                 list.
+    * @return all the variables matching the search criterion, the list is empty is no such variable
+    *         could be found.
+    */
+   public static List<YoRegistry> filterRegistries(Predicate<YoRegistry> filter, YoRegistry registry, List<YoRegistry> filteredRegistriesToPack)
+   {
+      if (filteredRegistriesToPack == null)
+         filteredRegistriesToPack = new ArrayList<>();
+
+      if (filter.test(registry))
+         filteredRegistriesToPack.add(registry);
+
+      for (YoRegistry child : registry.getChildren())
+      {
+         filterRegistries(filter, child, filteredRegistriesToPack);
+      }
+
+      return filteredRegistriesToPack;
    }
 
    /**

@@ -55,7 +55,7 @@ public class YoToolsTest
       int minimumVariablesToPrint = 2;
       int minimumChildrenToPrint = 2;
 
-      YoTools.printSizeRecursively(minimumVariablesToPrint, minimumChildrenToPrint, rootRegistry);
+      YoTools.printStatistics(minimumVariablesToPrint, minimumChildrenToPrint, rootRegistry);
 
       String[] strings = interceptor.getBuffer();
       assertTrue(strings.length != 0);
@@ -72,37 +72,6 @@ public class YoToolsTest
       assertTrue(strings[7 - 1].contains("rootRegistry"));
       assertTrue(strings[7 - 1].contains("Variables: " + 0));
       assertTrue(strings[7 - 1].contains("Children: " + numberOfFirstLevelChildRegistries));
-   }
-
-   @Test // timeout = 30000
-   public void testPrintAllVariablesIncludingDescendants()
-   {
-      Interceptor interceptor = new Interceptor(System.out);
-
-      YoRegistry robotRegistry = new YoRegistry("robot");
-      YoRegistry controllerRegistry = new YoRegistry("controller");
-      YoRegistry testRegistry = new YoRegistry("testRegistry");
-
-      robotRegistry.addChild(controllerRegistry);
-      controllerRegistry.addChild(testRegistry);
-
-      new YoDouble("robotVariable", robotRegistry);
-      new YoDouble("controlVariable", controllerRegistry);
-      new YoDouble("variableOne", testRegistry);
-      new YoDouble("variableTwo", testRegistry);
-      new YoDouble("variableThree", testRegistry);
-      new YoDouble("variableFour", testRegistry);
-
-      YoTools.printAllVariablesIncludingDescendants(robotRegistry, interceptor);
-      String[] buffer = interceptor.getBuffer();
-
-      assertTrue(buffer.length != 0);
-      assertTrue(buffer[0].equals("robot.robotVariable"));
-      assertTrue(buffer[1].equals("robot.controller.controlVariable"));
-      assertTrue(buffer[2].equals("robot.controller.testRegistry.variableOne"));
-      assertTrue(buffer[3].equals("robot.controller.testRegistry.variableTwo"));
-      assertTrue(buffer[4].equals("robot.controller.testRegistry.variableThree"));
-      assertTrue(buffer[5].equals("robot.controller.testRegistry.variableFour"));
    }
 
    private void registerYoDoubles(YoRegistry registry, int numberOfYoDoublesToRegister)
