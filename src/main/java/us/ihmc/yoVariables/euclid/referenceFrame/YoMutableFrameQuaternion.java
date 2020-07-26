@@ -15,7 +15,7 @@ import us.ihmc.euclid.tuple4D.interfaces.Tuple4DReadOnly;
 import us.ihmc.yoVariables.euclid.YoQuaternion;
 import us.ihmc.yoVariables.euclid.referenceFrame.interfaces.FrameIndexMap;
 import us.ihmc.yoVariables.registry.YoRegistry;
-import us.ihmc.yoVariables.tools.YoFrameVariableNameTools;
+import us.ihmc.yoVariables.tools.YoGeometryNameTools;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoLong;
 
@@ -236,7 +236,7 @@ public class YoMutableFrameQuaternion extends YoQuaternion implements FrameQuate
    public YoMutableFrameQuaternion(String namePrefix, String nameSuffix, YoRegistry registry)
    {
       super(namePrefix, nameSuffix, registry);
-      frameId = new YoLong(YoFrameVariableNameTools.createName(namePrefix, "frame", nameSuffix), registry);
+      frameId = new YoLong(YoGeometryNameTools.assembleName(namePrefix, "frame", nameSuffix), registry);
       frameIndexMap = new FrameIndexMap.FrameIndexHashMap();
       setToZero(ReferenceFrame.getWorldFrame());
    }

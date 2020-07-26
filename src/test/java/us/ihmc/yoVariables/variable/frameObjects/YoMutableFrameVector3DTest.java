@@ -38,7 +38,7 @@ import us.ihmc.yoVariables.euclid.referenceFrame.YoMutableFrameObject;
 import us.ihmc.yoVariables.euclid.referenceFrame.YoMutableFrameVector3D;
 import us.ihmc.yoVariables.euclid.referenceFrame.interfaces.FrameIndexMap;
 import us.ihmc.yoVariables.registry.YoRegistry;
-import us.ihmc.yoVariables.tools.YoFrameVariableNameTools;
+import us.ihmc.yoVariables.tools.YoGeometryNameTools;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 public class YoMutableFrameVector3DTest extends FrameTuple3DBasicsTest<YoMutableFrameVector3D>
@@ -68,7 +68,7 @@ public class YoMutableFrameVector3DTest extends FrameTuple3DBasicsTest<YoMutable
       frames.add(null);
 
       YoMutableFrameObject mutableFrameObject = new YoMutableFrameVector3D("", "", registry);
-      YoVariable frameIndex = registry.findVariable(YoFrameVariableNameTools.createName("", "frame", ""));
+      YoVariable frameIndex = registry.findVariable(YoGeometryNameTools.assembleName("", "frame", ""));
       assertNotNull(frameIndex);
 
       for (int i = 0; i < 1000; i++)

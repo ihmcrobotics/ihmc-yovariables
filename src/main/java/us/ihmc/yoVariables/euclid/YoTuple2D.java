@@ -6,7 +6,7 @@ import us.ihmc.euclid.tuple2D.interfaces.Tuple2DBasics;
 import us.ihmc.euclid.tuple2D.interfaces.Tuple2DReadOnly;
 import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.registry.YoRegistry;
-import us.ihmc.yoVariables.tools.YoFrameVariableNameTools;
+import us.ihmc.yoVariables.tools.YoGeometryNameTools;
 import us.ihmc.yoVariables.variable.YoDouble;
 
 /**
@@ -27,8 +27,8 @@ public abstract class YoTuple2D implements Tuple2DBasics
     */
    public YoTuple2D(YoDouble xVariable, YoDouble yVariable)
    {
-      namePrefix = YoFrameVariableNameTools.getCommonPrefix(xVariable.getName(), yVariable.getName());
-      nameSuffix = YoFrameVariableNameTools.getCommonSuffix(xVariable.getName(), yVariable.getName());
+      namePrefix = YoGeometryNameTools.getCommonPrefix(xVariable.getName(), yVariable.getName());
+      nameSuffix = YoGeometryNameTools.getCommonSuffix(xVariable.getName(), yVariable.getName());
 
       x = xVariable;
       y = yVariable;
@@ -57,8 +57,8 @@ public abstract class YoTuple2D implements Tuple2DBasics
       this.namePrefix = namePrefix;
       this.nameSuffix = nameSuffix;
 
-      x = new YoDouble(YoFrameVariableNameTools.createXName(namePrefix, nameSuffix), registry);
-      y = new YoDouble(YoFrameVariableNameTools.createYName(namePrefix, nameSuffix), registry);
+      x = new YoDouble(YoGeometryNameTools.createXName(namePrefix, nameSuffix), registry);
+      y = new YoDouble(YoGeometryNameTools.createYName(namePrefix, nameSuffix), registry);
    }
 
    /** {@inheritDoc} */

@@ -12,7 +12,7 @@ import us.ihmc.euclid.tuple3D.interfaces.Tuple3DReadOnly;
 import us.ihmc.yoVariables.euclid.YoTuple2D;
 import us.ihmc.yoVariables.euclid.referenceFrame.interfaces.FrameIndexMap;
 import us.ihmc.yoVariables.registry.YoRegistry;
-import us.ihmc.yoVariables.tools.YoFrameVariableNameTools;
+import us.ihmc.yoVariables.tools.YoGeometryNameTools;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoLong;
 
@@ -144,7 +144,7 @@ public abstract class YoMutableFrameTuple2D extends YoTuple2D implements FrameTu
    public YoMutableFrameTuple2D(String namePrefix, String nameSuffix, YoRegistry registry)
    {
       super(namePrefix, nameSuffix, registry);
-      frameId = new YoLong(YoFrameVariableNameTools.createName(namePrefix, "frame", nameSuffix), registry);
+      frameId = new YoLong(YoGeometryNameTools.assembleName(namePrefix, "frame", nameSuffix), registry);
       frameIndexMap = new FrameIndexMap.FrameIndexHashMap();
       setReferenceFrame(ReferenceFrame.getWorldFrame());
    }

@@ -11,7 +11,7 @@ import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.registry.YoRegistry;
-import us.ihmc.yoVariables.tools.YoFrameVariableNameTools;
+import us.ihmc.yoVariables.tools.YoGeometryNameTools;
 import us.ihmc.yoVariables.variable.YoDouble;
 
 /**
@@ -50,9 +50,9 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
     */
    public YoFrameYawPitchRoll(String namePrefix, String nameSuffix, ReferenceFrame referenceFrame, YoRegistry registry)
    {
-      yaw = new YoDouble(YoFrameVariableNameTools.createName(namePrefix, "yaw", nameSuffix), registry);
-      pitch = new YoDouble(YoFrameVariableNameTools.createName(namePrefix, "pitch", nameSuffix), registry);
-      roll = new YoDouble(YoFrameVariableNameTools.createName(namePrefix, "roll", nameSuffix), registry);
+      yaw = new YoDouble(YoGeometryNameTools.assembleName(namePrefix, "yaw", nameSuffix), registry);
+      pitch = new YoDouble(YoGeometryNameTools.assembleName(namePrefix, "pitch", nameSuffix), registry);
+      roll = new YoDouble(YoGeometryNameTools.assembleName(namePrefix, "roll", nameSuffix), registry);
 
       this.referenceFrame = referenceFrame;
    }

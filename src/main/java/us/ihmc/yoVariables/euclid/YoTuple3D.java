@@ -6,7 +6,7 @@ import us.ihmc.euclid.tuple3D.interfaces.Tuple3DBasics;
 import us.ihmc.euclid.tuple3D.interfaces.Tuple3DReadOnly;
 import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.registry.YoRegistry;
-import us.ihmc.yoVariables.tools.YoFrameVariableNameTools;
+import us.ihmc.yoVariables.tools.YoGeometryNameTools;
 import us.ihmc.yoVariables.variable.YoDouble;
 
 /**
@@ -28,8 +28,8 @@ public abstract class YoTuple3D implements Tuple3DBasics
     */
    public YoTuple3D(YoDouble xVariable, YoDouble yVariable, YoDouble zVariable)
    {
-      namePrefix = YoFrameVariableNameTools.getCommonPrefix(xVariable.getName(), yVariable.getName(), zVariable.getName());
-      nameSuffix = YoFrameVariableNameTools.getCommonSuffix(xVariable.getName(), yVariable.getName(), zVariable.getName());
+      namePrefix = YoGeometryNameTools.getCommonPrefix(xVariable.getName(), yVariable.getName(), zVariable.getName());
+      nameSuffix = YoGeometryNameTools.getCommonSuffix(xVariable.getName(), yVariable.getName(), zVariable.getName());
 
       x = xVariable;
       y = yVariable;
@@ -59,9 +59,9 @@ public abstract class YoTuple3D implements Tuple3DBasics
       this.namePrefix = namePrefix;
       this.nameSuffix = nameSuffix;
 
-      x = new YoDouble(YoFrameVariableNameTools.createXName(namePrefix, nameSuffix), registry);
-      y = new YoDouble(YoFrameVariableNameTools.createYName(namePrefix, nameSuffix), registry);
-      z = new YoDouble(YoFrameVariableNameTools.createZName(namePrefix, nameSuffix), registry);
+      x = new YoDouble(YoGeometryNameTools.createXName(namePrefix, nameSuffix), registry);
+      y = new YoDouble(YoGeometryNameTools.createYName(namePrefix, nameSuffix), registry);
+      z = new YoDouble(YoGeometryNameTools.createZName(namePrefix, nameSuffix), registry);
    }
 
    /** {@inheritDoc} */

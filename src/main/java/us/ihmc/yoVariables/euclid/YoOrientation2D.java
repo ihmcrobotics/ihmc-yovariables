@@ -7,7 +7,7 @@ import us.ihmc.euclid.tools.EuclidCoreIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.transform.interfaces.Transform;
 import us.ihmc.yoVariables.registry.YoRegistry;
-import us.ihmc.yoVariables.tools.YoFrameVariableNameTools;
+import us.ihmc.yoVariables.tools.YoGeometryNameTools;
 import us.ihmc.yoVariables.variable.YoDouble;
 
 /**
@@ -42,7 +42,7 @@ public class YoOrientation2D implements Orientation2DBasics
     */
    public YoOrientation2D(String namePrefix, String nameSuffix, YoRegistry registry)
    {
-      yaw = new YoDouble(YoFrameVariableNameTools.createName(namePrefix, "yaw", nameSuffix), registry);
+      yaw = new YoDouble(YoGeometryNameTools.assembleName(namePrefix, "yaw", nameSuffix), registry);
    }
 
    /** {@inheritDoc} */

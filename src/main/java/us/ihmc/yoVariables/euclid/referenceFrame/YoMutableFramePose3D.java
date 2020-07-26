@@ -10,7 +10,7 @@ import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.yoVariables.euclid.referenceFrame.interfaces.FrameIndexMap;
 import us.ihmc.yoVariables.registry.YoRegistry;
-import us.ihmc.yoVariables.tools.YoFrameVariableNameTools;
+import us.ihmc.yoVariables.tools.YoGeometryNameTools;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoLong;
 
@@ -57,18 +57,18 @@ public class YoMutableFramePose3D implements FramePose3DBasics, YoMutableFrameOb
     */
    public YoMutableFramePose3D(String namePrefix, String nameSuffix, YoRegistry registry)
    {
-      frameId = new YoLong(YoFrameVariableNameTools.createName(namePrefix, "frame", nameSuffix), registry);
+      frameId = new YoLong(YoGeometryNameTools.assembleName(namePrefix, "frame", nameSuffix), registry);
       frameIndexMap = new FrameIndexMap.FrameIndexHashMap();
 
-      YoDouble x = new YoDouble(YoFrameVariableNameTools.createXName(namePrefix, nameSuffix), registry);
-      YoDouble y = new YoDouble(YoFrameVariableNameTools.createYName(namePrefix, nameSuffix), registry);
-      YoDouble z = new YoDouble(YoFrameVariableNameTools.createZName(namePrefix, nameSuffix), registry);
+      YoDouble x = new YoDouble(YoGeometryNameTools.createXName(namePrefix, nameSuffix), registry);
+      YoDouble y = new YoDouble(YoGeometryNameTools.createYName(namePrefix, nameSuffix), registry);
+      YoDouble z = new YoDouble(YoGeometryNameTools.createZName(namePrefix, nameSuffix), registry);
       position = new YoMutableFramePoint3D(x, y, z, getYoFrameIndex(), getFrameIndexMap());
 
-      YoDouble qx = new YoDouble(YoFrameVariableNameTools.createQxName(namePrefix, nameSuffix), registry);
-      YoDouble qy = new YoDouble(YoFrameVariableNameTools.createQyName(namePrefix, nameSuffix), registry);
-      YoDouble qz = new YoDouble(YoFrameVariableNameTools.createQzName(namePrefix, nameSuffix), registry);
-      YoDouble qs = new YoDouble(YoFrameVariableNameTools.createQsName(namePrefix, nameSuffix), registry);
+      YoDouble qx = new YoDouble(YoGeometryNameTools.createQxName(namePrefix, nameSuffix), registry);
+      YoDouble qy = new YoDouble(YoGeometryNameTools.createQyName(namePrefix, nameSuffix), registry);
+      YoDouble qz = new YoDouble(YoGeometryNameTools.createQzName(namePrefix, nameSuffix), registry);
+      YoDouble qs = new YoDouble(YoGeometryNameTools.createQsName(namePrefix, nameSuffix), registry);
       orientation = new YoMutableFrameQuaternion(qx, qy, qz, qs, getYoFrameIndex(), getFrameIndexMap());
       setReferenceFrame(ReferenceFrame.getWorldFrame());
    }

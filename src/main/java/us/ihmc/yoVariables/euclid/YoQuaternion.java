@@ -6,7 +6,7 @@ import us.ihmc.euclid.tuple4D.interfaces.QuaternionBasics;
 import us.ihmc.euclid.tuple4D.interfaces.Tuple4DReadOnly;
 import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.registry.YoRegistry;
-import us.ihmc.yoVariables.tools.YoFrameVariableNameTools;
+import us.ihmc.yoVariables.tools.YoGeometryNameTools;
 import us.ihmc.yoVariables.variable.YoDouble;
 
 /**
@@ -29,8 +29,8 @@ public class YoQuaternion implements QuaternionBasics
     */
    public YoQuaternion(YoDouble qxVariable, YoDouble qyVariable, YoDouble qzVariable, YoDouble qsVariable)
    {
-      namePrefix = YoFrameVariableNameTools.getCommonPrefix(qxVariable.getName(), qyVariable.getName(), qzVariable.getName(), qsVariable.getName());
-      nameSuffix = YoFrameVariableNameTools.getCommonSuffix(qxVariable.getName(), qyVariable.getName(), qzVariable.getName(), qsVariable.getName());
+      namePrefix = YoGeometryNameTools.getCommonPrefix(qxVariable.getName(), qyVariable.getName(), qzVariable.getName(), qsVariable.getName());
+      nameSuffix = YoGeometryNameTools.getCommonSuffix(qxVariable.getName(), qyVariable.getName(), qzVariable.getName(), qsVariable.getName());
 
       x = qxVariable;
       y = qyVariable;
@@ -63,10 +63,10 @@ public class YoQuaternion implements QuaternionBasics
       this.namePrefix = namePrefix;
       this.nameSuffix = nameSuffix;
 
-      x = new YoDouble(YoFrameVariableNameTools.createQxName(namePrefix, nameSuffix), registry);
-      y = new YoDouble(YoFrameVariableNameTools.createQyName(namePrefix, nameSuffix), registry);
-      z = new YoDouble(YoFrameVariableNameTools.createQzName(namePrefix, nameSuffix), registry);
-      s = new YoDouble(YoFrameVariableNameTools.createQsName(namePrefix, nameSuffix), registry);
+      x = new YoDouble(YoGeometryNameTools.createQxName(namePrefix, nameSuffix), registry);
+      y = new YoDouble(YoGeometryNameTools.createQyName(namePrefix, nameSuffix), registry);
+      z = new YoDouble(YoGeometryNameTools.createQzName(namePrefix, nameSuffix), registry);
+      s = new YoDouble(YoGeometryNameTools.createQsName(namePrefix, nameSuffix), registry);
       s.set(1.0);
    }
 

@@ -11,24 +11,53 @@ import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.registry.YoVariableHolder;
 import us.ihmc.yoVariables.variable.YoVariable;
 
+/**
+ * This class provides tools for searching variables or parameters in a registry tree.
+ */
 public class YoSearchTools
 {
-   public static YoParameter findFirstParameter(String parentNameSpace, String name, Predicate<YoParameter> predicate, YoRegistry registry)
+   /**
+    * Recurses the registry subtree to find the first parameter that matches the search criteria.
+    * 
+    * @param nameSpaceEnding (optional) the namespace of the registry in which the parameter was
+    *                        registered. The namespace does not need to be complete, i.e. it does not
+    *                        need to contain the name of the registries closest to the root registry.
+    *                        If {@code null}, the search is for the parameter name only.
+    * @param name            the name of the parameter to retrieve.
+    * @param predicate       (optional) additional filter on the parameter to find.
+    * @param registry        the registry to search the subtree of.
+    * @return the first parameter matching the search criteria, or {@code null} if no such parameter
+    *         could be found.
+    */
+   public static YoParameter findFirstParameter(String nameSpaceEnding, String name, Predicate<YoParameter> predicate, YoRegistry registry)
    {
       Predicate<YoVariable> yoVariablePredicate = YoVariable::isParameter;
       if (predicate != null)
          yoVariablePredicate = yoVariablePredicate.and(variable -> predicate.test(variable.getParameter()));
 
-      YoVariable result = YoSearchTools.findFirstVariable(parentNameSpace, name, yoVariablePredicate, registry);
+      YoVariable result = YoSearchTools.findFirstVariable(nameSpaceEnding, name, yoVariablePredicate, registry);
       if (result == null)
          return null;
       else
          return result.getParameter();
    }
 
-   public static YoVariable findFirstVariable(String parentNameSpace, String name, Predicate<YoVariable> predicate, YoRegistry registry)
+   /**
+    * Recurses the registry subtree to find the first variable that matches the search criteria.
+    * 
+    * @param nameSpaceEnding (optional) the namespace of the registry in which the variable was
+    *                        registered. The namespace does not need to be complete, i.e. it does not
+    *                        need to contain the name of the registries closest to the root registry.
+    *                        If {@code null}, the search is for the variable name only.
+    * @param name            the name of the variable to retrieve.
+    * @param predicate       (optional) additional filter on the variable to find.
+    * @param registry        the registry to search the subtree of.
+    * @return the first variable matching the search criteria, or {@code null} if no such variable
+    *         could be found.
+    */
+   public static YoVariable findFirstVariable(String nameSpaceEnding, String name, Predicate<YoVariable> predicate, YoRegistry registry)
    {
-      if (parentNameSpace == null || registry.getNameSpace().endsWith(parentNameSpace))
+      if (nameSpaceEnding == null || registry.getNameSpace().endsWith(nameSpaceEnding))
       {
          YoVariable variable = registry.getVariable(name);
          if (variable != null)
@@ -40,7 +69,7 @@ public class YoSearchTools
 
       for (YoRegistry child : registry.getChildren())
       {
-         YoVariable variable = findFirstVariable(parentNameSpace, name, predicate, child);
+         YoVariable variable = findFirstVariable(nameSpaceEnding, name, predicate, child);
          if (variable != null)
             return variable;
       }
@@ -48,12 +77,27 @@ public class YoSearchTools
       return null;
    }
 
-   public static List<YoVariable> findVariables(String parentNameSpace, String name, Predicate<YoVariable> predicate, YoRegistry registry,
+   /**
+    * Recurses the registry subtree to find all the variables that matches the search criteria.
+    * 
+    * @param nameSpaceEnding        (optional) the namespace of the registry in which the variable(s)
+    *                               was registered. The namespace does not need to be complete, i.e. it
+    *                               does not need to contain the name of the registries closest to the
+    *                               root registry. If {@code null}, the search is for the variable name
+    *                               only.
+    * @param name                   the name of the variable(s) to retrieve.
+    * @param predicate              (optional) additional filter on the variable(s) to find.
+    * @param registry               the registry to search the subtree of.
+    * @param matchedVariablesToPack (optional) if provided the found variables are added to this list.
+    * @return all the variables matching the search criteria, the list is empty is no such variable
+    *         could be found.
+    */
+   public static List<YoVariable> findVariables(String nameSpaceEnding, String name, Predicate<YoVariable> predicate, YoRegistry registry,
                                                 List<YoVariable> matchedVariablesToPack)
    {
       if (matchedVariablesToPack == null)
          matchedVariablesToPack = new ArrayList<>();
-      if (parentNameSpace == null || registry.getNameSpace().endsWith(parentNameSpace))
+      if (nameSpaceEnding == null || registry.getNameSpace().endsWith(nameSpaceEnding))
       {
          YoVariable variable = registry.getVariable(name);
          if (variable != null)
@@ -65,12 +109,21 @@ public class YoSearchTools
 
       for (YoRegistry child : registry.getChildren())
       {
-         findVariables(parentNameSpace, name, predicate, child, matchedVariablesToPack);
+         findVariables(nameSpaceEnding, name, predicate, child, matchedVariablesToPack);
       }
       return matchedVariablesToPack;
    }
 
-   public static YoVariable findFirstVariable(Predicate<YoVariable> filter, YoVariableHolder yoVariableHolder)
+   /**
+    * Recurses the {@code yoVariableHolder} subtree to find the first variable for which the given
+    * {@code filter} returns {@code true}.
+    * 
+    * @param filter           the filter used as only search criterion.
+    * @param yoVariableHolder the variable holder to search the subtree of.
+    * @return the first variable matching the search criterion, or {@code null} if no such parameter
+    *         could be found.
+    */
+   public static YoVariable findVariable(Predicate<YoVariable> filter, YoVariableHolder yoVariableHolder)
    {
       for (YoVariable variable : yoVariableHolder.getVariables())
       {
@@ -80,7 +133,7 @@ public class YoSearchTools
 
       for (YoVariableHolder child : yoVariableHolder.getChildren())
       {
-         YoVariable result = findFirstVariable(filter, child);
+         YoVariable result = findVariable(filter, child);
          if (result != null)
             return result;
       }
@@ -88,30 +141,58 @@ public class YoSearchTools
       return null;
    }
 
+   /**
+    * Recurses the {@code yoVariableHolder} subtree to find all the variables for which the given
+    * {@code filter} returns {@code true}.
+    * 
+    * @param filter           the filter used as only search criterion.
+    * @param yoVariableHolder the variable holder to search the subtree of.
+    * @return all the variables matching the search criterion, the list is empty is no such variable
+    *         could be found.
+    */
    public static List<YoVariable> filterVariables(Predicate<YoVariable> filter, YoVariableHolder yoVariableHolder)
    {
       return YoSearchTools.filterVariables(filter, yoVariableHolder, null);
    }
 
-   public static List<YoVariable> filterVariables(Predicate<YoVariable> filter, YoVariableHolder yoVariableHolder, List<YoVariable> variablesToPack)
+   /**
+    * Recurses the {@code yoVariableHolder} subtree to find all the variables for which the given
+    * {@code filter} returns {@code true}.
+    * 
+    * @param filter                  the filter used as only search criterion.
+    * @param yoVariableHolder        the variable holder to search the subtree of.
+    * @param filteredVariablesToPack (optional) if provided the found variables are added to this list.
+    * @return all the variables matching the search criterion, the list is empty is no such variable
+    *         could be found.
+    */
+   public static List<YoVariable> filterVariables(Predicate<YoVariable> filter, YoVariableHolder yoVariableHolder, List<YoVariable> filteredVariablesToPack)
    {
-      if (variablesToPack == null)
-         variablesToPack = new ArrayList<>();
+      if (filteredVariablesToPack == null)
+         filteredVariablesToPack = new ArrayList<>();
 
       for (YoVariable variable : yoVariableHolder.getVariables())
       {
          if (filter.test(variable))
-            variablesToPack.add(variable);
+            filteredVariablesToPack.add(variable);
       }
 
       for (YoVariableHolder child : yoVariableHolder.getChildren())
       {
-         filterVariables(filter, child, variablesToPack);
+         filterVariables(filter, child, filteredVariablesToPack);
       }
 
-      return variablesToPack;
+      return filteredVariablesToPack;
    }
 
+   /**
+    * Creates a new filter for searching variable using regular expression(s).
+    * <p>
+    * The returned filter can be used with {@link #filterVariables(Predicate, YoVariableHolder)}.
+    * </p>
+    * 
+    * @param regularExpressions the regular expressions used to filter variables.
+    * @return the filter to use with {@link #filterVariables(Predicate, YoVariableHolder)}.
+    */
    public static Predicate<YoVariable> regularExpressionFilter(String... regularExpressions)
    {
       Pattern[] patterns = Stream.of(regularExpressions).map(Pattern::compile).toArray(Pattern[]::new);
