@@ -259,8 +259,7 @@ public abstract class YoParameter
     */
    final void setToString(String valueString)
    {
-      if (!getVariable().parseValue(valueString))
-         throw new IllegalArgumentException("Unable to parse value for parameter: " + getFullNameString() + ". String value: " + valueString);
+      getVariable().parseValue(valueString);
    }
 
    /**

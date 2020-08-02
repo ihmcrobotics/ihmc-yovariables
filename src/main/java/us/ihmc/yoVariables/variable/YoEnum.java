@@ -513,7 +513,7 @@ public class YoEnum<E extends Enum<E>> extends YoVariable implements EnumProvide
          }
       }
 
-      return false;
+      throw new IllegalArgumentException("Unable to parse value for parameter: " + getFullNameString() + ". String value: " + valueAsString);
    }
 
    @Override

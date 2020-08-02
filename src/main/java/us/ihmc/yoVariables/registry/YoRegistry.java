@@ -79,7 +79,7 @@ public class YoRegistry implements YoVariableHolder
     *
     * @param name the name of the new registry.
     * @throws IllegalNameException if the name contains any of the following characters:
-    *                              {@value YoTools#ILLEGAL_CHARACTERS_STRING}.
+    *                              {@value YoTools#ILLEGAL_CHARACTERS_REGEX}.
     */
    public YoRegistry(String name)
    {
@@ -773,6 +773,23 @@ public class YoRegistry implements YoVariableHolder
    public int getNumberOfVariables()
    {
       return variables.size();
+   }
+
+   /**
+    * Returns the number of variables in the sub-tree starting at this registry contains.
+    *
+    * @return the number of variables in this registry and its descendants.
+    */
+   public int getNumberOfVariablesDeep()
+   {
+      int numberOfVariables = variables.size();
+
+      for (int i = 0; i < children.size(); i++)
+      {
+         numberOfVariables += children.get(i).getNumberOfVariablesDeep();
+      }
+
+      return numberOfVariables;
    }
 
    /**

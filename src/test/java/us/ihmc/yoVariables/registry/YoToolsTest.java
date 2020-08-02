@@ -1,5 +1,7 @@
 package us.ihmc.yoVariables.registry;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.OutputStream;
@@ -7,11 +9,61 @@ import java.io.PrintStream;
 
 import org.junit.jupiter.api.Test;
 
+import us.ihmc.yoVariables.exceptions.IllegalNameException;
 import us.ihmc.yoVariables.tools.YoTools;
 import us.ihmc.yoVariables.variable.YoDouble;
 
 public class YoToolsTest
 {
+   @Test
+   public void testIllegalCharacters()
+   {
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc`abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc~abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc!abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc@abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc#abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc$abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc%abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc^abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc&abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc*abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc(abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc)abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc-abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc=abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc+abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc{abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc}abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc|abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc\\abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc'abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc\"abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc,abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc.abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc?abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc:abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc;abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc<abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc>abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc[abc"));
+      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc]abc"));
+
+      assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abcabc"));
+      assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abc_abc"));
+      assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abc0abc"));
+      assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abc1abc"));
+      assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abc2abc"));
+      assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abc3abc"));
+      assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abc4abc"));
+      assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abc5abc"));
+      assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abc6abc"));
+      assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abc7abc"));
+      assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abc8abc"));
+      assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abc9abc"));
+      assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abcAabc"));
+   }
 
    @Test // timeout = 30000
    public void testPrintSizeRecursively()
@@ -62,16 +114,16 @@ public class YoToolsTest
 
       // LogTools does not use System.out somehow, so the output for the first test is missing and the rest gets shifted.
       //      assertTrue(strings[1].contains(rootRegistry.getName()));
-      assertTrue(strings[2 - 1].contains(String.valueOf(totalNumberOfYoVariables)));
-      assertTrue(strings[5 - 1].contains("firstLevelChild_0.secondLevelChild_0"));
-      assertTrue(strings[5 - 1].contains("Variables: " + numberOfSecondLevelYoVariables));
-      assertTrue(strings[5 - 1].contains("Children: " + numberOfSecondLevelChildRegistries));
-      assertTrue(strings[6 - 1].contains("firstLevelChild_1.secondLevelChild_0"));
-      assertTrue(strings[6 - 1].contains("Variables: " + numberOfSecondLevelYoVariables));
-      assertTrue(strings[6 - 1].contains("Children: " + numberOfSecondLevelChildRegistries));
-      assertTrue(strings[7 - 1].contains("rootRegistry"));
-      assertTrue(strings[7 - 1].contains("Variables: " + 0));
-      assertTrue(strings[7 - 1].contains("Children: " + numberOfFirstLevelChildRegistries));
+      assertTrue(strings[1].contains(String.valueOf(totalNumberOfYoVariables)));
+      assertTrue(strings[3].contains("firstLevelChild_0.secondLevelChild_0"));
+      assertTrue(strings[3].contains("Variables: " + numberOfSecondLevelYoVariables));
+      assertTrue(strings[3].contains("Children: " + numberOfSecondLevelChildRegistries));
+      assertTrue(strings[4].contains("firstLevelChild_1.secondLevelChild_0"));
+      assertTrue(strings[4].contains("Variables: " + numberOfSecondLevelYoVariables));
+      assertTrue(strings[4].contains("Children: " + numberOfSecondLevelChildRegistries));
+      assertTrue(strings[5].contains("rootRegistry"));
+      assertTrue(strings[5].contains("Variables: " + 0));
+      assertTrue(strings[5].contains("Children: " + numberOfFirstLevelChildRegistries));
    }
 
    private void registerYoDoubles(YoRegistry registry, int numberOfYoDoublesToRegister)
