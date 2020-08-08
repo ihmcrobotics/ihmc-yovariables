@@ -26,7 +26,6 @@ import gnu.trove.map.TLongObjectMap;
 import gnu.trove.map.hash.TLongObjectHashMap;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.tools.ReferenceFrameTools;
-import us.ihmc.yoVariables.euclid.referenceFrame.YoMutableFrameObject;
 
 /**
  * A map used by the {@link YoMutableFrameObject} to map between frames and frame indices.
