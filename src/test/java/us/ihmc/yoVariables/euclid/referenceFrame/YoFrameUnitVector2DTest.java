@@ -1,4 +1,4 @@
-package us.ihmc.yoVariables.variable.frameObjects;
+package us.ihmc.yoVariables.euclid.referenceFrame;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -16,7 +16,6 @@ import us.ihmc.euclid.referenceFrame.api.MethodSignature;
 import us.ihmc.euclid.tools.EuclidCoreRandomTools;
 import us.ihmc.euclid.tuple2D.interfaces.UnitVector2DBasics;
 import us.ihmc.euclid.tuple2D.interfaces.UnitVector2DReadOnly;
-import us.ihmc.yoVariables.euclid.referenceFrame.YoFrameUnitVector2D;
 
 public class YoFrameUnitVector2DTest
 {

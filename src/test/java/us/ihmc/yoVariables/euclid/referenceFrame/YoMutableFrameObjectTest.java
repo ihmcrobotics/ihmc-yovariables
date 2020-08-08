@@ -1,4 +1,4 @@
-package us.ihmc.yoVariables.variable.frameObjects;
+package us.ihmc.yoVariables.euclid.referenceFrame;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

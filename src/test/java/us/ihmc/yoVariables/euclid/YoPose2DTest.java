@@ -1,10 +1,9 @@
-package us.ihmc.yoVariables.variable;
+package us.ihmc.yoVariables.euclid;
 
 import java.util.Random;
 
 import us.ihmc.euclid.geometry.Pose2DBasicsTest;
 import us.ihmc.euclid.geometry.tools.EuclidGeometryRandomTools;
-import us.ihmc.yoVariables.euclid.YoPose2D;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoPose2DTest extends Pose2DBasicsTest<YoPose2D>

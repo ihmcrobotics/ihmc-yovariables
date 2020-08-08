@@ -1,4 +1,4 @@
-package us.ihmc.yoVariables.variable.frameObjects;
+package us.ihmc.yoVariables.euclid.referenceFrame;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.tools.EuclidFrameRandomTools;
-import us.ihmc.yoVariables.euclid.referenceFrame.YoMutableFramePose3D;
 import us.ihmc.yoVariables.euclid.referenceFrame.interfaces.FrameIndexMap;
 import us.ihmc.yoVariables.euclid.referenceFrame.interfaces.YoMutableFrameObject;
 import us.ihmc.yoVariables.registry.YoRegistry;

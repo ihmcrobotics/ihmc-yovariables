@@ -1,9 +1,8 @@
-package us.ihmc.yoVariables.variable;
+package us.ihmc.yoVariables.euclid;
 
 import java.util.Random;
 
 import us.ihmc.euclid.tuple2D.Point2DBasicsTest;
-import us.ihmc.yoVariables.euclid.YoPoint2D;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoPoint2DTest extends Point2DBasicsTest<YoPoint2D>

@@ -1,4 +1,4 @@
-package us.ihmc.yoVariables.variable;
+package us.ihmc.yoVariables.euclid;
 
 public class YoOrientation2DTest
 {

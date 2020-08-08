@@ -1,9 +1,8 @@
-package us.ihmc.yoVariables.variable;
+package us.ihmc.yoVariables.euclid;
 
 import java.util.Random;
 
 import us.ihmc.euclid.tuple3D.Point3DBasicsTest;
-import us.ihmc.yoVariables.euclid.YoPoint3D;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoPoint3DTest extends Point3DBasicsTest<YoPoint3D>

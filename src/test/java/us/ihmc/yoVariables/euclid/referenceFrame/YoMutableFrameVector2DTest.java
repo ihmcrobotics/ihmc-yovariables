@@ -1,4 +1,4 @@
-package us.ihmc.yoVariables.variable.frameObjects;
+package us.ihmc.yoVariables.euclid.referenceFrame;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -34,7 +34,6 @@ import us.ihmc.euclid.transform.RigidBodyTransform;
 import us.ihmc.euclid.tuple2D.Vector2D;
 import us.ihmc.euclid.tuple2D.interfaces.Tuple2DBasics;
 import us.ihmc.euclid.tuple3D.Vector3D;
-import us.ihmc.yoVariables.euclid.referenceFrame.YoMutableFrameVector2D;
 import us.ihmc.yoVariables.euclid.referenceFrame.interfaces.FrameIndexMap;
 import us.ihmc.yoVariables.euclid.referenceFrame.interfaces.YoMutableFrameObject;
 import us.ihmc.yoVariables.registry.YoRegistry;

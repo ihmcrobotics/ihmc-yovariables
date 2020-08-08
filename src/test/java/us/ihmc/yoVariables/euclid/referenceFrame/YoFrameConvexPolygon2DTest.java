@@ -1,4 +1,4 @@
-package us.ihmc.yoVariables.variable;
+package us.ihmc.yoVariables.euclid.referenceFrame;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -13,7 +13,6 @@ import us.ihmc.euclid.referenceFrame.tools.EuclidFrameTestTools;
 import us.ihmc.euclid.tools.EuclidCoreTestTools;
 import us.ihmc.euclid.tuple2D.Point2D;
 import us.ihmc.euclid.tuple2D.interfaces.Point2DReadOnly;
-import us.ihmc.yoVariables.euclid.referenceFrame.YoFrameConvexPolygon2D;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoFrameConvexPolygon2DTest

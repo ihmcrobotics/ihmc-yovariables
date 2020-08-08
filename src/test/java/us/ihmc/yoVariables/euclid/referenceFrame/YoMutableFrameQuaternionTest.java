@@ -1,4 +1,4 @@
-package us.ihmc.yoVariables.variable.frameObjects;
+package us.ihmc.yoVariables.euclid.referenceFrame;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -51,7 +51,6 @@ import us.ihmc.euclid.tuple4D.QuaternionBasicsTest;
 import us.ihmc.euclid.tuple4D.interfaces.QuaternionBasics;
 import us.ihmc.euclid.tuple4D.interfaces.QuaternionReadOnly;
 import us.ihmc.euclid.tuple4D.interfaces.Tuple4DReadOnly;
-import us.ihmc.yoVariables.euclid.referenceFrame.YoMutableFrameQuaternion;
 import us.ihmc.yoVariables.euclid.referenceFrame.interfaces.FrameIndexMap;
 import us.ihmc.yoVariables.euclid.referenceFrame.interfaces.YoMutableFrameObject;
 import us.ihmc.yoVariables.registry.YoRegistry;

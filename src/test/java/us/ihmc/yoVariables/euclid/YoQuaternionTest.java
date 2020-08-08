@@ -1,9 +1,8 @@
-package us.ihmc.yoVariables.variable;
+package us.ihmc.yoVariables.euclid;
 
 import java.util.Random;
 
 import us.ihmc.euclid.tuple4D.QuaternionBasicsTest;
-import us.ihmc.yoVariables.euclid.YoQuaternion;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoQuaternionTest extends QuaternionBasicsTest<YoQuaternion>

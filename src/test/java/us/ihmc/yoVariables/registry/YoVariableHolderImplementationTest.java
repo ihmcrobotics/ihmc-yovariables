@@ -1,4 +1,4 @@
-package us.ihmc.yoVariables;
+package us.ihmc.yoVariables.registry;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -10,9 +10,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import us.ihmc.yoVariables.registry.YoNamespace;
-import us.ihmc.yoVariables.registry.YoRegistry;
-import us.ihmc.yoVariables.registry.YoVariableList;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoVariable;
 

@@ -1,9 +1,8 @@
-package us.ihmc.yoVariables.variable;
+package us.ihmc.yoVariables.euclid;
 
 import java.util.Random;
 
 import us.ihmc.euclid.tuple3D.Vector3DBasicsTest;
-import us.ihmc.yoVariables.euclid.YoVector3D;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoVector3DTest extends Vector3DBasicsTest<YoVector3D>
