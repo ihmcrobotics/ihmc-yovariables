@@ -78,9 +78,9 @@ public class XmlParameterWriter extends AbstractParameterWriter
    @Override
    protected void setValue(YoNamespace namespace, String name, String description, String type, String value, String min, String max)
    {
-      String nameSpaceAsString = namespace.getName();
+      String namespaceAsString = namespace.getName();
 
-      if (!registries.containsKey(nameSpaceAsString))
+      if (!registries.containsKey(namespaceAsString))
       {
          addNamespace(namespace);
       }

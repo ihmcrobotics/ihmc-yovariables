@@ -77,7 +77,7 @@ public abstract class AbstractParameterReader
       {
          YoParameter parameter = parameters.get(i);
 
-         YoNamespace relativeNamespace = getRelativeNamespace(parameter.getNameSpace(), registry);
+         YoNamespace relativeNamespace = getRelativeNamespace(parameter.getNamespace(), registry);
          String fullName = relativeNamespace + "." + parameter.getName();
          ParameterData data = localMap.remove(fullName);
 
@@ -105,10 +105,10 @@ public abstract class AbstractParameterReader
 
    static YoNamespace getRelativeNamespace(YoNamespace parameterNamespace, YoRegistry registry)
    {
-      YoNamespace registryNamespace = registry.getNameSpace();
+      YoNamespace registryNamespace = registry.getNamespace();
       if (registryNamespace.isRoot())
          return parameterNamespace;
       else
-         return parameterNamespace.removeStart(registry.getNameSpace().removeEnd(1));
+         return parameterNamespace.removeStart(registry.getNamespace().removeEnd(1));
    }
 }

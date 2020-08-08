@@ -45,7 +45,7 @@ public class YoRegistry implements YoVariableHolder
    /**
     * The namespace of this registry, it is the collection of the registry names from the root to here.
     */
-   private YoNamespace nameSpace;
+   private YoNamespace namespace;
 
    /** The list of variables that are currently registered in {@code this}. */
    private final List<YoVariable> variables = new ArrayList<>();
@@ -103,7 +103,7 @@ public class YoRegistry implements YoVariableHolder
 
       YoTools.checkForIllegalCharacters(name);
       this.name = name;
-      nameSpace = new YoNamespace(name);
+      namespace = new YoNamespace(name);
    }
 
    /**
@@ -125,9 +125,9 @@ public class YoRegistry implements YoVariableHolder
     *
     * @return this registry's namespace.
     */
-   public YoNamespace getNameSpace()
+   public YoNamespace getNamespace()
    {
-      return nameSpace;
+      return namespace;
    }
 
    /**
@@ -257,7 +257,7 @@ public class YoRegistry implements YoVariableHolder
    public void addVariable(YoVariable variable)
    {
       if (!restrictionLevel.isAdditionAllowed())
-         throw new IllegalOperationException("Cannot add variables to this registry: " + nameSpace);
+         throw new IllegalOperationException("Cannot add variables to this registry: " + namespace);
 
       if (nameToVariableMap.containsValue(variable))
          return;
@@ -266,7 +266,7 @@ public class YoRegistry implements YoVariableHolder
       String variableName = variable.getName().toLowerCase();
 
       if (nameToVariableMap.containsKey(variableName))
-         throw new NameCollisionException("Name collision for new variable: " + variableName + ". Parent name space = " + getNameSpace());
+         throw new NameCollisionException("Name collision for new variable: " + variableName + ". Parent name space = " + getNamespace());
 
       if (variable.getRegistry() != null)
          variable.getRegistry().removeVariable(variable);
@@ -300,7 +300,7 @@ public class YoRegistry implements YoVariableHolder
          return;
 
       if (!restrictionLevel.isRemovalAllowed())
-         throw new IllegalOperationException("Cannot remove variables from this registry: " + nameSpace);
+         throw new IllegalOperationException("Cannot remove variables from this registry: " + namespace);
 
       variable.setRegistry(null);
       variables.remove(variable);
@@ -349,10 +349,10 @@ public class YoRegistry implements YoVariableHolder
       if (child == null)
          return;
       if (child == this)
-         throw new IllegalOperationException("Cannot register a registry as a child of itself, registry: " + nameSpace);
+         throw new IllegalOperationException("Cannot register a registry as a child of itself, registry: " + namespace);
 
       if (!restrictionLevel.isAdditionAllowed())
-         throw new IllegalOperationException("Cannot add children to this registry: " + nameSpace);
+         throw new IllegalOperationException("Cannot add children to this registry: " + namespace);
 
       if (nameToChildMap.containsValue(child))
          return;
@@ -361,11 +361,11 @@ public class YoRegistry implements YoVariableHolder
 
       // Make sure no children with this name already:
       if (nameToChildMap.containsKey(childName))
-         throw new NameCollisionException("Name collision for new child: " + childName + ". Parent name space = " + getNameSpace());
+         throw new NameCollisionException("Name collision for new child: " + childName + ". Parent name space = " + getNamespace());
 
       child.detachFromParent();
       child.parent = this;
-      child.setParentNameSpace(nameSpace);
+      child.setParentNamespace(namespace);
       if (child.getRestrictionLevel().ordinal() < restrictionLevel.ordinal())
          child.setRestrictionLevel(restrictionLevel);
 
@@ -388,12 +388,12 @@ public class YoRegistry implements YoVariableHolder
          return;
 
       if (!restrictionLevel.isRemovalAllowed())
-         throw new IllegalOperationException("Cannot remove children from this registry: " + nameSpace);
+         throw new IllegalOperationException("Cannot remove children from this registry: " + namespace);
 
       String childName = child.getName().toLowerCase();
 
       child.parent = null;
-      child.setParentNameSpace(null);
+      child.setParentNamespace(null);
 
       children.remove(child);
       nameToChildMap.remove(childName);
@@ -416,17 +416,17 @@ public class YoRegistry implements YoVariableHolder
    /**
     * Convenience method for updating the namespace of this registry when its parent is being updated.
     *
-    * @param parentNameSpace the new namespace of this registry's parent.
+    * @param parentNamespace the new namespace of this registry's parent.
     * @throws IllegalNameException if the namespace sanity check fails.
     */
-   private void setParentNameSpace(YoNamespace parentNameSpace)
+   private void setParentNamespace(YoNamespace parentNamespace)
    {
-      if (parentNameSpace == null)
-         nameSpace = new YoNamespace(name);
+      if (parentNamespace == null)
+         namespace = new YoNamespace(name);
       else
-         nameSpace = parentNameSpace.append(name);
-      nameSpace.checkSanity();
-      children.forEach(child -> child.setParentNameSpace(nameSpace));
+         namespace = parentNamespace.append(name);
+      namespace.checkSanity();
+      children.forEach(child -> child.setParentNamespace(namespace));
    }
 
    /**
@@ -669,10 +669,10 @@ public class YoRegistry implements YoVariableHolder
     * </p>
     */
    @Override
-   public YoVariable findVariable(String nameSpaceEnding, String name)
+   public YoVariable findVariable(String namespaceEnding, String name)
    {
       YoTools.checkNameDoesNotContainSeparator(name);
-      return YoSearchTools.findFirstVariable(nameSpaceEnding, name, null, this);
+      return YoSearchTools.findFirstVariable(namespaceEnding, name, null, this);
    }
 
    /**
@@ -696,23 +696,23 @@ public class YoRegistry implements YoVariableHolder
     * </p>
     */
    @Override
-   public List<YoVariable> findVariables(String nameSpaceEnding, String name)
+   public List<YoVariable> findVariables(String namespaceEnding, String name)
    {
       YoTools.checkNameDoesNotContainSeparator(name);
-      return YoSearchTools.findVariables(nameSpaceEnding, name, null, this, null);
+      return YoSearchTools.findVariables(namespaceEnding, name, null, this, null);
    }
 
    /**
-    * Finds the registry matching the given {@code nameSpace} and returns its variables.
+    * Finds the registry matching the given {@code namespace} and returns its variables.
     * <p>
     * The search is first conducted in this registry, then in its children in the order in which they
     * were added.
     * </p>
     */
    @Override
-   public List<YoVariable> findVariables(YoNamespace nameSpace)
+   public List<YoVariable> findVariables(YoNamespace namespace)
    {
-      YoRegistry registry = findRegistry(nameSpace);
+      YoRegistry registry = findRegistry(namespace);
       if (registry == null)
          return Collections.emptyList();
       else
@@ -720,27 +720,27 @@ public class YoRegistry implements YoVariableHolder
    }
 
    /**
-    * Finds and returns the registry with the given {@code nameSpace}.
+    * Finds and returns the registry with the given {@code namespace}.
     * <p>
     * The search is first conducted in this registry, then in its children in the order in which they
     * were added.
     * </p>
     *
-    * @param nameSpaceEnding the namespace of the registry of interest. The namespace does not need to
+    * @param namespaceEnding the namespace of the registry of interest. The namespace does not need to
     *                        be complete, i.e. it does not need to contain the name of the registries
     *                        closest to the root registry.
     * @return the registry which namespace matches the given one, or {@code null} if it could not be
     *         found.
     */
-   public YoRegistry findRegistry(YoNamespace nameSpaceEnding)
+   public YoRegistry findRegistry(YoNamespace namespaceEnding)
    {
-      if (this.nameSpace.endsWith(nameSpaceEnding))
+      if (this.namespace.endsWith(namespaceEnding))
          return this;
 
       // TODO Can likely speed up the search by performing smart comparison of the children namespace with the query.
       for (YoRegistry child : children)
       {
-         YoRegistry registry = child.findRegistry(nameSpaceEnding);
+         YoRegistry registry = child.findRegistry(namespaceEnding);
          if (registry != null)
             return registry;
       }
@@ -756,17 +756,17 @@ public class YoRegistry implements YoVariableHolder
     * </p>
     */
    @Override
-   public boolean hasUniqueVariable(String nameSpaceEnding, String name)
+   public boolean hasUniqueVariable(String namespaceEnding, String name)
    {
       YoTools.checkNameDoesNotContainSeparator(name);
-      return countNumberOfVariables(nameSpaceEnding, name) == 1;
+      return countNumberOfVariables(namespaceEnding, name) == 1;
    }
 
-   private int countNumberOfVariables(String parentNameSpace, String name)
+   private int countNumberOfVariables(String parentNamespace, String name)
    {
       int count = 0;
 
-      if (parentNameSpace == null || nameSpace.endsWith(parentNameSpace))
+      if (parentNamespace == null || namespace.endsWith(parentNamespace))
       {
          if (nameToVariableMap.containsKey(name.toLowerCase()))
             count++;
@@ -774,7 +774,7 @@ public class YoRegistry implements YoVariableHolder
 
       for (YoRegistry child : children)
       {
-         count += child.countNumberOfVariables(parentNameSpace, name);
+         count += child.countNumberOfVariables(parentNamespace, name);
       }
 
       return count;
@@ -848,7 +848,7 @@ public class YoRegistry implements YoVariableHolder
 
       YoRegistry other = (YoRegistry) object;
 
-      if (!getNameSpace().equals(other.getNameSpace()))
+      if (!getNamespace().equals(other.getNamespace()))
          return false;
 
       if (variables.size() != other.variables.size())
@@ -875,13 +875,13 @@ public class YoRegistry implements YoVariableHolder
    @Override
    public int hashCode()
    {
-      return nameSpace.hashCode();
+      return namespace.hashCode();
    }
 
    @Override
    public String toString()
    {
-      return nameSpace.getName();
+      return namespace.getName();
    }
 
    private enum ChangeType

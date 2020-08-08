@@ -105,9 +105,9 @@ public abstract class YoParameter
     *
     * @return this parameter's namespace.
     */
-   public YoNamespace getNameSpace()
+   public YoNamespace getNamespace()
    {
-      return getVariable().getNameSpace();
+      return getVariable().getNamespace();
    }
 
    /**

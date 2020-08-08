@@ -132,28 +132,28 @@ public class YoVariableHolderImplementationTest
    @Test // timeout=300000
    public void testGetVariables()
    {
-      YoNamespace nameSpace = new YoNamespace("robot.registryA");
-      List<YoVariable> variables = yoVariableHolderImplementation.findVariables(nameSpace);
+      YoNamespace namespace = new YoNamespace("robot.registryA");
+      List<YoVariable> variables = yoVariableHolderImplementation.findVariables(namespace);
       assertEquals(3, variables.size());
 
-      nameSpace = new YoNamespace("robot.registryB");
-      variables = yoVariableHolderImplementation.findVariables(nameSpace);
+      namespace = new YoNamespace("robot.registryB");
+      variables = yoVariableHolderImplementation.findVariables(namespace);
       assertEquals(3, variables.size());
 
-      nameSpace = new YoNamespace("robot.registryC");
-      variables = yoVariableHolderImplementation.findVariables(nameSpace);
+      namespace = new YoNamespace("robot.registryC");
+      variables = yoVariableHolderImplementation.findVariables(namespace);
       assertEquals(3, variables.size());
 
-      nameSpace = new YoNamespace("robot2.registryC");
-      variables = yoVariableHolderImplementation.findVariables(nameSpace);
+      namespace = new YoNamespace("robot2.registryC");
+      variables = yoVariableHolderImplementation.findVariables(namespace);
       assertEquals(3, variables.size());
 
-      nameSpace = new YoNamespace("robot");
-      variables = yoVariableHolderImplementation.findVariables(nameSpace);
+      namespace = new YoNamespace("robot");
+      variables = yoVariableHolderImplementation.findVariables(namespace);
       assertEquals(0, variables.size());
 
-      nameSpace = new YoNamespace("registryA");
-      variables = yoVariableHolderImplementation.findVariables(nameSpace);
+      namespace = new YoNamespace("registryA");
+      variables = yoVariableHolderImplementation.findVariables(namespace);
       assertEquals(0, variables.size());
 
    }

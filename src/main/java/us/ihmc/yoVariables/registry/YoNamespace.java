@@ -82,7 +82,7 @@ public class YoNamespace implements Serializable
     */
    public void checkSanity()
    {
-      YoTools.checkNameSpaceSanity(this);
+      YoTools.checkNamespaceSanity(this);
    }
 
    /**
@@ -176,9 +176,9 @@ public class YoNamespace implements Serializable
     * @param fromIndex the index of the first sub-name in the sub-namespace to create.
     * @return the sub-namespace.
     */
-   public YoNamespace subNameSpace(int fromIndex)
+   public YoNamespace subNamespace(int fromIndex)
    {
-      return subNameSpace(fromIndex, size());
+      return subNamespace(fromIndex, size());
    }
 
    /**
@@ -188,7 +188,7 @@ public class YoNamespace implements Serializable
     * @param toIndex   the end index (exclusive).
     * @return the sub-namespace.
     */
-   public YoNamespace subNameSpace(int fromIndex, int toIndex)
+   public YoNamespace subNamespace(int fromIndex, int toIndex)
    {
       if (fromIndex == 0 && toIndex == size())
          return this;
@@ -208,30 +208,30 @@ public class YoNamespace implements Serializable
    {
       if (length < 0 || length > size())
          throw new IndexOutOfBoundsException("Invalid length: " + length);
-      return subNameSpace(length);
+      return subNamespace(length);
    }
 
    /**
     * Will create a new namespace that is the sub-namespace of {@code this} with the provided
-    * {@code nameSpaceToRemove} removed from the start.
+    * {@code namespaceToRemove} removed from the start.
     * <p>
     * If {@code this} does not start with the provided namespace or the provided namespace equals
     * {@code this} the method will return {@code null}.
     * </p>
     * <p>
-    * If {@code nameSpaceToRemove} is {@code null} the method will return {@code this}.
+    * If {@code namespaceToRemove} is {@code null} the method will return {@code this}.
     * </p>
     *
-    * @param nameSpaceToRemove is the namespace to remove from the start of {@code this}.
+    * @param namespaceToRemove is the namespace to remove from the start of {@code this}.
     * @return whether this namespace contains with {@code nameToMatch}.
     */
-   public YoNamespace removeStart(YoNamespace nameSpaceToRemove)
+   public YoNamespace removeStart(YoNamespace namespaceToRemove)
    {
-      if (nameSpaceToRemove == null)
+      if (namespaceToRemove == null)
          return this;
-      if (equals(nameSpaceToRemove) || !startsWith(nameSpaceToRemove))
+      if (equals(namespaceToRemove) || !startsWith(namespaceToRemove))
          return null;
-      return removeStart(nameSpaceToRemove.size());
+      return removeStart(namespaceToRemove.size());
    }
 
    /**
@@ -245,32 +245,32 @@ public class YoNamespace implements Serializable
    {
       if (length < 0 || length > size())
          throw new IndexOutOfBoundsException("Invalid length: " + length);
-      return subNameSpace(0, size() - length);
+      return subNamespace(0, size() - length);
    }
 
    /**
     * Will create a new namespace that is the sub-namespace of {@code this} with the provided
-    * {@code nameSpaceToRemove} removed from the end.
+    * {@code namespaceToRemove} removed from the end.
     * <p>
     * If {@code this} does not end with the provided namespace or the provided namespace equals
     * {@code this} the method will return {@code null}.
     * </p>
     * <p>
-    * If {@code nameSpaceToRemove} is {@code null} the method will return {@code this}.
+    * If {@code namespaceToRemove} is {@code null} the method will return {@code this}.
     * </p>
     *
-    * @param nameSpaceToRemove is the namespace to remove from the end of {@code this}.
+    * @param namespaceToRemove is the namespace to remove from the end of {@code this}.
     * @return whether this namespace contains with {@code nameToMatch}.
     */
-   public YoNamespace removeEnd(YoNamespace nameSpaceToRemove)
+   public YoNamespace removeEnd(YoNamespace namespaceToRemove)
    {
-      if (nameSpaceToRemove == null)
+      if (namespaceToRemove == null)
          return this;
 
-      if (equals(nameSpaceToRemove) || !endsWith(nameSpaceToRemove))
+      if (equals(namespaceToRemove) || !endsWith(namespaceToRemove))
          return null;
 
-      return removeEnd(nameSpaceToRemove.size());
+      return removeEnd(namespaceToRemove.size());
    }
 
    /**
@@ -631,12 +631,12 @@ public class YoNamespace implements Serializable
    }
 
    @Override
-   public boolean equals(Object nameSpace)
+   public boolean equals(Object object)
    {
-      if (nameSpace == this)
+      if (object == this)
          return true;
-      else if (nameSpace instanceof YoNamespace)
-         return ((YoNamespace) nameSpace).name.equals(name);
+      else if (object instanceof YoNamespace)
+         return ((YoNamespace) object).name.equals(name);
       else
          return false;
    }

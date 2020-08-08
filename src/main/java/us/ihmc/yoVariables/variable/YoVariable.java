@@ -140,7 +140,7 @@ public abstract class YoVariable
          if (registry == null)
             fullName = new YoNamespace(name);
          else
-            fullName = registry.getNameSpace().append(name);
+            fullName = registry.getNamespace().append(name);
       }
 
       return fullName;
@@ -163,9 +163,9 @@ public abstract class YoVariable
     *
     * @return this variable's namespace.
     */
-   public YoNamespace getNameSpace()
+   public YoNamespace getNamespace()
    {
-      return registry == null ? null : registry.getNameSpace();
+      return registry == null ? null : registry.getNamespace();
    }
 
    /**

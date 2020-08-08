@@ -181,7 +181,7 @@ public class YoVariableTest
    }
 
    @Test // timeout=300000
-   public void testGetFullNameWithNameSpace()
+   public void testGetFullNameWithNamespace()
    {
       assertEquals(yoVariable.getFullNameString(), "robot.testRegistry.variableOne");
    }

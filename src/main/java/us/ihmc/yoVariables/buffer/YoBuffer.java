@@ -996,9 +996,9 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
 
    /** {@inheritDoc} */
    @Override
-   public YoVariable findVariable(String nameSpaceEnding, String name)
+   public YoVariable findVariable(String namespaceEnding, String name)
    {
-      YoBufferVariableEntry entry = findVariableEntry(nameSpaceEnding, name);
+      YoBufferVariableEntry entry = findVariableEntry(namespaceEnding, name);
       return entry == null ? null : entry.getVariable();
    }
 
@@ -1027,7 +1027,7 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
     * Returns the first discovered instance of a buffer entry which variable it manages matches the
     * given name.
     *
-    * @param nameSpaceEnding (optional) the namespace of the registry in which the variable was
+    * @param namespaceEnding (optional) the namespace of the registry in which the variable was
     *                        registered. The namespace does not need to be complete, i.e. it does not
     *                        need to contain the name of the registries closest to the root registry.
     *                        If {@code null}, the search is for the variable name only.
@@ -1036,7 +1036,7 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
     *         could not be found.
     * @throws IllegalNameException if {@code name} contains "{@value YoTools#NAMESPACE_SEPERATOR}".
     */
-   public YoBufferVariableEntry findVariableEntry(String nameSpaceEnding, String name)
+   public YoBufferVariableEntry findVariableEntry(String namespaceEnding, String name)
    {
       YoTools.checkNameDoesNotContainSeparator(name);
       List<YoBufferVariableEntry> entryList = simpleNameToEntriesMap.get(name.toLowerCase());
@@ -1044,7 +1044,7 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
       if (entryList == null || entryList.isEmpty())
          return null;
 
-      if (nameSpaceEnding == null)
+      if (namespaceEnding == null)
       {
          return entryList.get(0);
       }
@@ -1054,7 +1054,7 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
          {
             YoBufferVariableEntry candidate = entryList.get(i);
 
-            if (candidate.getVariable().getNameSpace().endsWith(nameSpaceEnding, true))
+            if (candidate.getVariable().getNamespace().endsWith(namespaceEnding, true))
                return candidate;
          }
       }
@@ -1064,9 +1064,9 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
 
    /** {@inheritDoc} */
    @Override
-   public List<YoVariable> findVariables(String nameSpaceEnding, String name)
+   public List<YoVariable> findVariables(String namespaceEnding, String name)
    {
-      return findVariableEntries(nameSpaceEnding, name).stream().map(YoBufferVariableEntry::getVariable).collect(Collectors.toList());
+      return findVariableEntries(namespaceEnding, name).stream().map(YoBufferVariableEntry::getVariable).collect(Collectors.toList());
    }
 
    /**
@@ -1092,7 +1092,7 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
     * Returns the all the buffer entries which variables they manage match the given name and
     * namespace.
     *
-    * @param nameSpaceEnding (optional) the namespace of the registry in which the variable was
+    * @param namespaceEnding (optional) the namespace of the registry in which the variable was
     *                        registered. The namespace does not need to be complete, i.e. it does not
     *                        need to contain the name of the registries closest to the root registry.
     *                        If {@code null}, the search for the variable name only.
@@ -1100,7 +1100,7 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
     * @return list of all the variable buffer entries corresponding to the search criteria.
     * @throws IllegalNameException if {@code name} contains "{@value YoTools#NAMESPACE_SEPERATOR}".
     */
-   public List<YoBufferVariableEntry> findVariableEntries(String nameSpaceEnding, String name)
+   public List<YoBufferVariableEntry> findVariableEntries(String namespaceEnding, String name)
    {
       YoTools.checkNameDoesNotContainSeparator(name);
       List<YoBufferVariableEntry> entryList = simpleNameToEntriesMap.get(name.toLowerCase());
@@ -1110,7 +1110,7 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
 
       List<YoBufferVariableEntry> result = new ArrayList<>();
 
-      if (nameSpaceEnding == null)
+      if (namespaceEnding == null)
       {
          result.addAll(entryList);
       }
@@ -1120,7 +1120,7 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
          {
             YoBufferVariableEntry candidate = entryList.get(i);
 
-            if (candidate.getVariable().getNameSpace().endsWith(nameSpaceEnding, true))
+            if (candidate.getVariable().getNamespace().endsWith(namespaceEnding, true))
                result.add(candidate);
          }
       }
@@ -1130,24 +1130,24 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
 
    /** {@inheritDoc} */
    @Override
-   public List<YoVariable> findVariables(YoNamespace nameSpace)
+   public List<YoVariable> findVariables(YoNamespace namespace)
    {
-      return findVariableEntries(nameSpace).stream().map(YoBufferVariableEntry::getVariable).collect(Collectors.toList());
+      return findVariableEntries(namespace).stream().map(YoBufferVariableEntry::getVariable).collect(Collectors.toList());
    }
 
    /**
     * Searches for all the buffer entries which variables' namespace match the given one.
     *
-    * @param nameSpace the full namespace of the registry of interest.
+    * @param namespace the full namespace of the registry of interest.
     * @return the buffer entries which variables that were registered at the given namespace.
     */
-   public List<YoBufferVariableEntry> findVariableEntries(YoNamespace nameSpace)
+   public List<YoBufferVariableEntry> findVariableEntries(YoNamespace namespace)
    {
       List<YoBufferVariableEntry> result = new ArrayList<>();
 
       for (YoBufferVariableEntry entry : entries)
       {
-         if (entry.getVariable().getNameSpace().equals(nameSpace))
+         if (entry.getVariable().getNamespace().equals(namespace))
          {
             result.add(entry);
          }
@@ -1184,27 +1184,27 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
 
    /** {@inheritDoc} */
    @Override
-   public boolean hasUniqueVariable(String nameSpaceEnding, String name)
+   public boolean hasUniqueVariable(String namespaceEnding, String name)
    {
       YoTools.checkNameDoesNotContainSeparator(name);
-      return countNumberOfEntries(nameSpaceEnding, name) == 1;
+      return countNumberOfEntries(namespaceEnding, name) == 1;
    }
 
-   private int countNumberOfEntries(String parentNameSpace, String name)
+   private int countNumberOfEntries(String parentNamespace, String name)
    {
       List<YoBufferVariableEntry> entryList = simpleNameToEntriesMap.get(name.toLowerCase());
 
       if (entryList == null || entryList.isEmpty())
          return 0;
 
-      if (parentNameSpace == null)
+      if (parentNamespace == null)
          return entryList.size();
 
       int count = 0;
 
       for (int i = 0; i < entryList.size(); i++)
       {
-         if (entryList.get(i).getVariable().getNameSpace().endsWith(parentNameSpace, true))
+         if (entryList.get(i).getVariable().getNamespace().endsWith(parentNamespace, true))
             count++;
       }
       return count;

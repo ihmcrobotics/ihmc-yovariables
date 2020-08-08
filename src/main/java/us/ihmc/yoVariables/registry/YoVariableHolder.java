@@ -76,7 +76,7 @@ public interface YoVariableHolder
    /**
     * Returns the first discovered instance of a variable matching the given name and namespace.
     *
-    * @param nameSpaceEnding (optional) the namespace of the registry in which the variable was
+    * @param namespaceEnding (optional) the namespace of the registry in which the variable was
     *                        registered. The namespace does not need to be complete, i.e. it does not
     *                        need to contain the name of the registries closest to the root registry.
     *                        If {@code null}, the search is for the variable name only.
@@ -85,7 +85,7 @@ public interface YoVariableHolder
     *         found.
     * @throws IllegalNameException if {@code name} contains "{@value YoTools#NAMESPACE_SEPERATOR}".
     */
-   YoVariable findVariable(String nameSpaceEnding, String name);
+   YoVariable findVariable(String namespaceEnding, String name);
 
    /**
     * Returns the all the variables matching the given name.
@@ -109,7 +109,7 @@ public interface YoVariableHolder
    /**
     * Returns the all the variables matching the given name and namespace.
     *
-    * @param nameSpaceEnding (optional) the namespace of the registry in which the variable was
+    * @param namespaceEnding (optional) the namespace of the registry in which the variable was
     *                        registered. The namespace does not need to be complete, i.e. it does not
     *                        need to contain the name of the registries closest to the root registry.
     *                        If {@code null}, the search for the variable name only.
@@ -117,15 +117,15 @@ public interface YoVariableHolder
     * @return list of all the variables corresponding to the search criteria.
     * @throws IllegalNameException if {@code name} contains "{@value YoTools#NAMESPACE_SEPERATOR}".
     */
-   List<YoVariable> findVariables(String nameSpaceEnding, String name);
+   List<YoVariable> findVariables(String namespaceEnding, String name);
 
    /**
     * Searches for all the variables which namespace match the given one.
     *
-    * @param nameSpace the full namespace of the registry of interest.
+    * @param namespace the full namespace of the registry of interest.
     * @return the variables that were registered at the given namespace.
     */
-   List<YoVariable> findVariables(YoNamespace nameSpace);
+   List<YoVariable> findVariables(YoNamespace namespace);
 
    /**
     * Returns all the variables in this {@code YoVariableHolder} for which the given filter returns
@@ -163,7 +163,7 @@ public interface YoVariableHolder
     * Searches this variable holder and tests if there is exactly one variable that matches the search
     * criteria.
     *
-    * @param nameSpaceEnding (optional) the namespace of the registry in which the variable was
+    * @param namespaceEnding (optional) the namespace of the registry in which the variable was
     *                        registered. The namespace does not need to be complete, i.e. it does not
     *                        need to contain the name of the registries closest to the root registry.
     *                        If {@code null}, the search for the variable name only.
@@ -172,7 +172,7 @@ public interface YoVariableHolder
     *         {@code false} otherwise.
     * @throws IllegalNameException if {@code name} contains "{@value YoTools#NAMESPACE_SEPERATOR}".
     */
-   boolean hasUniqueVariable(String nameSpaceEnding, String name);
+   boolean hasUniqueVariable(String namespaceEnding, String name);
 
    /**
     * Searches this variable holder and tests if there is at least one variable that matches the search
@@ -193,7 +193,7 @@ public interface YoVariableHolder
     * Searches this variable holder and tests if there is at least one variable that matches the search
     * criteria.
     *
-    * @param nameSpaceEnding (optional) the namespace of the registry in which the variable(s) was
+    * @param namespaceEnding (optional) the namespace of the registry in which the variable(s) was
     *                        registered. The namespace does not need to be complete, i.e. it does not
     *                        need to contain the name of the registries closest to the root registry.
     *                        If {@code null}, the search for the variable name only.
@@ -202,8 +202,8 @@ public interface YoVariableHolder
     *         {@code false} otherwise.
     * @throws IllegalNameException if {@code name} contains "{@value YoTools#NAMESPACE_SEPERATOR}".
     */
-   default boolean hasVariable(String nameSpaceEnding, String name)
+   default boolean hasVariable(String namespaceEnding, String name)
    {
-      return findVariable(nameSpaceEnding, name) != null;
+      return findVariable(namespaceEnding, name) != null;
    }
 }

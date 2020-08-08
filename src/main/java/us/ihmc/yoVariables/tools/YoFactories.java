@@ -24,36 +24,36 @@ import us.ihmc.yoVariables.registry.YoRegistry;
 public class YoFactories
 {
    /**
-    * First attempts to find a registry with the same namespace as {@code fullNameSpace}, if no such
+    * First attempts to find a registry with the same namespace as {@code fullNamespace}, if no such
     * registry could be found then it is created and attached to {@code startRegistry} subtree such
     * that it's namespace equals the given one.
     * 
     * @param startRegistry the registry to start recursing from to look for the namespace.
-    * @param fullNameSpace the namespace of the registry to find or create.
-    * @return the found/created registry which namespace equals {@code fullNameSpace}, or {@code null}
+    * @param fullNamespace the namespace of the registry to find or create.
+    * @return the found/created registry which namespace equals {@code fullNamespace}, or {@code null}
     *         if the given namespace is incompatible with {@code startRegistry}.
     */
-   public static YoRegistry findOrCreateRegistry(YoRegistry startRegistry, YoNamespace fullNameSpace)
+   public static YoRegistry findOrCreateRegistry(YoRegistry startRegistry, YoNamespace fullNamespace)
    {
-      YoNamespace nameSpace = startRegistry.getNameSpace();
+      YoNamespace namespace = startRegistry.getNamespace();
 
-      if (nameSpace.equals(fullNameSpace))
+      if (namespace.equals(fullNamespace))
          return startRegistry;
 
-      if (!fullNameSpace.startsWith(nameSpace))
+      if (!fullNamespace.startsWith(namespace))
          return null;
 
       for (YoRegistry child : startRegistry.getChildren())
       {
-         YoRegistry registry = findOrCreateRegistry(child, fullNameSpace);
+         YoRegistry registry = findOrCreateRegistry(child, fullNamespace);
          if (registry != null)
             return registry;
       }
 
       // If, after going through all the children, none of them match, then
       // create it here and return it.
-      YoNamespace nameSpaceToContinueWith = fullNameSpace.removeStart(nameSpace);
-      YoRegistry registry = createChainOfRegistries(nameSpaceToContinueWith);
+      YoNamespace namespaceToContinueWith = fullNamespace.removeStart(namespace);
+      YoRegistry registry = createChainOfRegistries(namespaceToContinueWith);
       startRegistry.addChild(registry);
 
       return getToBottomRegistry(registry);
@@ -63,17 +63,17 @@ public class YoFactories
     * Creates a chain of registries such that the last registry, the one with no child, has its
     * namespace equal to the given one.
     * 
-    * @param fullNameSpace the namespace representing the registry chain to create.
+    * @param fullNamespace the namespace representing the registry chain to create.
     * @return the root registry of the new chain.
     */
-   public static YoRegistry createChainOfRegistries(YoNamespace fullNameSpace)
+   public static YoRegistry createChainOfRegistries(YoNamespace fullNamespace)
    {
-      YoRegistry rootRegistry = new YoRegistry(fullNameSpace.getRootName());
+      YoRegistry rootRegistry = new YoRegistry(fullNamespace.getRootName());
       YoRegistry current = rootRegistry;
 
-      for (int i = 1; i < fullNameSpace.size(); i++)
+      for (int i = 1; i < fullNamespace.size(); i++)
       {
-         YoRegistry child = new YoRegistry(fullNameSpace.getSubName(i));
+         YoRegistry child = new YoRegistry(fullNamespace.getSubName(i));
          current.addChild(child);
          current = child;
       }

@@ -579,7 +579,7 @@ public class YoBufferVariableEntryTest
    }
 
    @Test // timeout = 30000
-   public void testGetFullVariableNameWithNameSpace()
+   public void testGetFullVariableNameWithNamespace()
    {
       assertTrue(dataBufferEntry.getVariableFullNameString().equals(yoDouble.getFullNameString()));
    }

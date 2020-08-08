@@ -52,7 +52,7 @@ public class BooleanParameterTest
 
       BooleanParameter param = createParameterWithNamespace();
 
-      assertEquals("root.a.b.c", param.getNameSpace().toString());
+      assertEquals("root.a.b.c", param.getNamespace().toString());
       assertEquals("param", param.getName());
 
    }

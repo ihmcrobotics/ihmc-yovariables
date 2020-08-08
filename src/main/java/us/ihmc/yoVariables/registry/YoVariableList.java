@@ -255,7 +255,7 @@ public class YoVariableList extends AbstractList<YoVariable> implements YoVariab
          // Make sure the variable is unique:
          for (int i = 0; i < homonyms.size(); i++)
          {
-            if (homonyms.get(i).getNameSpace().equals(variable.getNameSpace()))
+            if (homonyms.get(i).getNamespace().equals(variable.getNamespace()))
             {
                throw new NameCollisionException("Name collision with " + variable.getFullNameString());
             }
@@ -268,7 +268,7 @@ public class YoVariableList extends AbstractList<YoVariable> implements YoVariab
 
    /** {@inheritDoc} */
    @Override
-   public YoVariable findVariable(String nameSpaceEnding, String name)
+   public YoVariable findVariable(String namespaceEnding, String name)
    {
       YoTools.checkNameDoesNotContainSeparator(name);
       List<YoVariable> variableList = simpleNameToVariablesMap.get(name.toLowerCase());
@@ -276,7 +276,7 @@ public class YoVariableList extends AbstractList<YoVariable> implements YoVariab
       if (variableList == null || variableList.isEmpty())
          return null;
 
-      if (nameSpaceEnding == null)
+      if (namespaceEnding == null)
       {
          return variableList.get(0);
       }
@@ -286,7 +286,7 @@ public class YoVariableList extends AbstractList<YoVariable> implements YoVariab
          {
             YoVariable candidate = variableList.get(i);
 
-            if (candidate.getNameSpace().endsWith(nameSpaceEnding))
+            if (candidate.getNamespace().endsWith(namespaceEnding))
                return candidate;
          }
       }
@@ -296,27 +296,27 @@ public class YoVariableList extends AbstractList<YoVariable> implements YoVariab
 
    /** {@inheritDoc} */
    @Override
-   public boolean hasUniqueVariable(String nameSpaceEnding, String name)
+   public boolean hasUniqueVariable(String namespaceEnding, String name)
    {
       YoTools.checkNameDoesNotContainSeparator(name);
-      return countNumberOfVariables(nameSpaceEnding, name) == 1;
+      return countNumberOfVariables(namespaceEnding, name) == 1;
    }
 
-   private int countNumberOfVariables(String parentNameSpace, String name)
+   private int countNumberOfVariables(String parentNamespace, String name)
    {
       List<YoVariable> variableList = simpleNameToVariablesMap.get(name.toLowerCase());
 
       if (variableList == null || variableList.isEmpty())
          return 0;
 
-      if (parentNameSpace == null)
+      if (parentNamespace == null)
          return variableList.size();
 
       int count = 0;
 
       for (int i = 0; i < variableList.size(); i++)
       {
-         if (variableList.get(i).getNameSpace().endsWith(parentNameSpace))
+         if (variableList.get(i).getNamespace().endsWith(parentNamespace))
             count++;
       }
       return count;
@@ -324,7 +324,7 @@ public class YoVariableList extends AbstractList<YoVariable> implements YoVariab
 
    /** {@inheritDoc} */
    @Override
-   public List<YoVariable> findVariables(String nameSpaceEnding, String name)
+   public List<YoVariable> findVariables(String namespaceEnding, String name)
    {
       YoTools.checkNameDoesNotContainSeparator(name);
       List<YoVariable> variableList = simpleNameToVariablesMap.get(name.toLowerCase());
@@ -334,7 +334,7 @@ public class YoVariableList extends AbstractList<YoVariable> implements YoVariab
 
       List<YoVariable> result = new ArrayList<>();
 
-      if (nameSpaceEnding == null)
+      if (namespaceEnding == null)
       {
          result.addAll(variableList);
       }
@@ -344,7 +344,7 @@ public class YoVariableList extends AbstractList<YoVariable> implements YoVariab
          {
             YoVariable candidate = variableList.get(i);
 
-            if (candidate.getNameSpace().endsWith(nameSpaceEnding))
+            if (candidate.getNamespace().endsWith(namespaceEnding))
                result.add(candidate);
          }
       }
@@ -354,13 +354,13 @@ public class YoVariableList extends AbstractList<YoVariable> implements YoVariab
 
    /** {@inheritDoc} */
    @Override
-   public List<YoVariable> findVariables(YoNamespace nameSpace)
+   public List<YoVariable> findVariables(YoNamespace namespace)
    {
       List<YoVariable> result = new ArrayList<>();
 
       for (YoVariable variable : variableList)
       {
-         if (variable.getNameSpace().equals(nameSpace))
+         if (variable.getNamespace().equals(namespace))
          {
             result.add(variable);
          }

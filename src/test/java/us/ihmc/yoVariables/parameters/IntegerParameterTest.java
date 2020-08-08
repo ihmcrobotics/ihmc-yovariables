@@ -87,7 +87,7 @@ public class IntegerParameterTest
 
       IntegerParameter param = createParameterWithNamespace();
 
-      assertEquals("root.a.b.c", param.getNameSpace().toString());
+      assertEquals("root.a.b.c", param.getNamespace().toString());
       assertEquals("param", param.getName());
 
    }

@@ -124,10 +124,10 @@ public class YoRegistryTest
    }
 
    @Test
-   public void testGetNameSpace()
+   public void testGetNamespace()
    {
       YoNamespace expectedReturn = new YoNamespace("robot.controller.testRegistry");
-      YoNamespace actualReturn = testRegistry.getNameSpace();
+      YoNamespace actualReturn = testRegistry.getNamespace();
       assertEquals(expectedReturn, actualReturn, "return value");
    }
 
@@ -225,48 +225,48 @@ public class YoRegistryTest
    @Test
    public void testGetVariable1()
    {
-      String nameSpace = "robot.controller.testRegistry";
+      String namespace = "robot.controller.testRegistry";
 
-      YoVariable variableOne = testRegistry.findVariable(nameSpace, "variableOne");
-      YoVariable variableTwo = testRegistry.findVariable(nameSpace, "variableTwo");
-      YoVariable variableThree = testRegistry.findVariable(nameSpace, "variableThree");
-      YoVariable variableFour = testRegistry.findVariable(nameSpace, "variableFour");
-
-      assertTrue(variableOne.getName().equals("variableOne"));
-      assertTrue(variableTwo.getName().equals("variableTwo"));
-      assertTrue(variableThree.getName().equals("variableThree"));
-      assertTrue(variableFour.getName().equals("variableFour"));
-
-      nameSpace = "controller.testRegistry";
-
-      variableOne = testRegistry.findVariable(nameSpace, "variableOne");
-      variableTwo = testRegistry.findVariable(nameSpace, "variableTwo");
-      variableThree = testRegistry.findVariable(nameSpace, "variableThree");
-      variableFour = testRegistry.findVariable(nameSpace, "variableFour");
+      YoVariable variableOne = testRegistry.findVariable(namespace, "variableOne");
+      YoVariable variableTwo = testRegistry.findVariable(namespace, "variableTwo");
+      YoVariable variableThree = testRegistry.findVariable(namespace, "variableThree");
+      YoVariable variableFour = testRegistry.findVariable(namespace, "variableFour");
 
       assertTrue(variableOne.getName().equals("variableOne"));
       assertTrue(variableTwo.getName().equals("variableTwo"));
       assertTrue(variableThree.getName().equals("variableThree"));
       assertTrue(variableFour.getName().equals("variableFour"));
 
-      nameSpace = "testRegistry";
+      namespace = "controller.testRegistry";
 
-      variableOne = testRegistry.findVariable(nameSpace, "variableOne");
-      variableTwo = testRegistry.findVariable(nameSpace, "variableTwo");
-      variableThree = testRegistry.findVariable(nameSpace, "variableThree");
-      variableFour = testRegistry.findVariable(nameSpace, "variableFour");
+      variableOne = testRegistry.findVariable(namespace, "variableOne");
+      variableTwo = testRegistry.findVariable(namespace, "variableTwo");
+      variableThree = testRegistry.findVariable(namespace, "variableThree");
+      variableFour = testRegistry.findVariable(namespace, "variableFour");
 
       assertTrue(variableOne.getName().equals("variableOne"));
       assertTrue(variableTwo.getName().equals("variableTwo"));
       assertTrue(variableThree.getName().equals("variableThree"));
       assertTrue(variableFour.getName().equals("variableFour"));
 
-      nameSpace = ".testRegistry";
+      namespace = "testRegistry";
 
-      variableOne = testRegistry.findVariable(nameSpace, "variableOne");
-      variableTwo = testRegistry.findVariable(nameSpace, "variableTwo");
-      variableThree = testRegistry.findVariable(nameSpace, "variableThree");
-      variableFour = testRegistry.findVariable(nameSpace, "variableFour");
+      variableOne = testRegistry.findVariable(namespace, "variableOne");
+      variableTwo = testRegistry.findVariable(namespace, "variableTwo");
+      variableThree = testRegistry.findVariable(namespace, "variableThree");
+      variableFour = testRegistry.findVariable(namespace, "variableFour");
+
+      assertTrue(variableOne.getName().equals("variableOne"));
+      assertTrue(variableTwo.getName().equals("variableTwo"));
+      assertTrue(variableThree.getName().equals("variableThree"));
+      assertTrue(variableFour.getName().equals("variableFour"));
+
+      namespace = ".testRegistry";
+
+      variableOne = testRegistry.findVariable(namespace, "variableOne");
+      variableTwo = testRegistry.findVariable(namespace, "variableTwo");
+      variableThree = testRegistry.findVariable(namespace, "variableThree");
+      variableFour = testRegistry.findVariable(namespace, "variableFour");
 
       assertNull(variableOne);
       assertNull(variableTwo);
@@ -276,7 +276,7 @@ public class YoRegistryTest
       boolean testPassed = true;
       try
       {
-         testRegistry.findVariable(nameSpace, "foo.variableOne");
+         testRegistry.findVariable(namespace, "foo.variableOne");
          testPassed = false;
       }
       catch (RuntimeException e)
@@ -383,10 +383,10 @@ public class YoRegistryTest
    @Test
    public void testHasUniqueVariable1()
    {
-      String nameSpace = "";
+      String namespace = "";
       String name = "";
       boolean expectedReturn = false;
-      boolean actualReturn = testRegistry.hasUniqueVariable(nameSpace, name);
+      boolean actualReturn = testRegistry.hasUniqueVariable(namespace, name);
       assertEquals(expectedReturn, actualReturn, "return value");
 
       /** @todo fill in the test code */
@@ -575,7 +575,7 @@ public class YoRegistryTest
          YoRegistry childOne = new YoRegistry("childOne");
          testRegistry.addChild(childOne);
 
-         YoRegistry grandChildOne = new YoRegistry(childOne.getParent().getNameSpace().getRootName());
+         YoRegistry grandChildOne = new YoRegistry(childOne.getParent().getNamespace().getRootName());
          childOne.addChild(grandChildOne);
       });
    }
@@ -597,12 +597,12 @@ public class YoRegistryTest
       YoRegistry root = new YoRegistry("root");
 
       YoRegistry registry0 = new YoRegistry("registry0");
-      assertEquals("registry0", registry0.getNameSpace().getName());
+      assertEquals("registry0", registry0.getNamespace().getName());
       YoRegistry registry1 = new YoRegistry("registry1");
       YoRegistry registry2 = new YoRegistry("registry2");
       root.addChild(registry0);
-      assertEquals("root.registry0", registry0.getNameSpace().getName());
-      assertEquals("registry0", registry0.getNameSpace().getShortName());
+      assertEquals("root.registry0", registry0.getNamespace().getName());
+      assertEquals("registry0", registry0.getNamespace().getShortName());
       root.addChild(registry2);
 
       YoRegistry registry00 = new YoRegistry("registry00");
@@ -630,7 +630,7 @@ public class YoRegistryTest
       // Do some of the addChilds out of order to make sure they work correctly when done out of order.
       root.addChild(registry1);
       registry01.addChild(registry011);
-      assertEquals("root.registry0.registry01.registry011", registry011.getNameSpace().getName());
+      assertEquals("root.registry0.registry01.registry011", registry011.getNamespace().getName());
 
       assertEquals("root.registry0.variable0_A", variable0_A.getFullNameString());
       assertEquals("root.registry0.variable0_B", variable0_B.getFullNameString());
@@ -805,15 +805,15 @@ public class YoRegistryTest
    @Test
    public void testGetVariables()
    {
-      YoNamespace robotNameSpace = new YoNamespace("robot");
-      List<YoVariable> robotVariables = robotRegistry.findVariables(robotNameSpace);
+      YoNamespace robotNamespace = new YoNamespace("robot");
+      List<YoVariable> robotVariables = robotRegistry.findVariables(robotNamespace);
 
       assertTrue(robotVariables.size() == 1);
       assertTrue(robotVariables.contains(robotVariable));
       assertFalse(robotVariables.contains(controlVariable));
 
-      YoNamespace controllerNameSpace = new YoNamespace("robot.controller");
-      List<YoVariable> controllerVariables = robotRegistry.findVariables(controllerNameSpace);
+      YoNamespace controllerNamespace = new YoNamespace("robot.controller");
+      List<YoVariable> controllerVariables = robotRegistry.findVariables(controllerNamespace);
 
       assertTrue(controllerVariables.size() == 1);
       assertFalse(controllerVariables.contains(robotVariable));

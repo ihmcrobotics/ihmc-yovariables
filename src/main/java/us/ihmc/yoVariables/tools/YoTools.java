@@ -34,7 +34,7 @@ import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 /**
- * This class provides general tools used in classes such as {@code NameSpace}, {@code YoRegistry},
+ * This class provides general tools used in classes such as {@code YoNamespace}, {@code YoRegistry},
  * and {@code YoVariable}.
  */
 public class YoTools
@@ -199,7 +199,7 @@ public class YoTools
       String variableString = trimOrPadToLength("Variables: " + variables, maxPropertyLength, "...");
       String childrenString = trimOrPadToLength("Children: " + children, maxPropertyLength, "...");
 
-      String name = registry.getClass().getSimpleName() + " " + registry.getNameSpace().getName();
+      String name = registry.getClass().getSimpleName() + " " + registry.getNamespace().getName();
       name = trimOrPadToLength(name, maxNameLength, "...");
 
       return name + "\t" + variableString + "\t" + childrenString;
@@ -278,87 +278,87 @@ public class YoTools
     * <ul>
     * <li>sub-name cannot be empty,
     * <li>sub-name cannot contain the namespace separator {@link #NAMESPACE_SEPERATOR},
-    * <li>the sub-names and name of the given {@code nameSpace} have to be consistent,
+    * <li>the sub-names and name of the given {@code namespace} have to be consistent,
     * <li>each sub-name is unique.
     * </ul>
     * </p>
     * 
-    * @param nameSpace the namespace to validate.
-    * @throws IllegalNameException if the given {@code nameSpace} failed any of the checks mentioned
+    * @param namespace the namespace to validate.
+    * @throws IllegalNameException if the given {@code namespace} failed any of the checks mentioned
     *                              above.
     */
-   public static void checkNameSpaceSanity(YoNamespace nameSpace)
+   public static void checkNamespaceSanity(YoNamespace namespace)
    {
-      if (nameSpace.getSubNames().stream().anyMatch(subName -> subName.isEmpty()))
+      if (namespace.getSubNames().stream().anyMatch(subName -> subName.isEmpty()))
       {
-         throw new IllegalNameException("The namespace has 1+ empty subname.\nNamespace: " + nameSpace.getName());
+         throw new IllegalNameException("The namespace has 1+ empty subname.\nNamespace: " + namespace.getName());
       }
 
-      if (nameSpace.getSubNames().stream().anyMatch(subName -> subName.contains(NAMESPACE_SEPERATOR_REGEX)))
+      if (namespace.getSubNames().stream().anyMatch(subName -> subName.contains(NAMESPACE_SEPERATOR_REGEX)))
       {
          throw new IllegalNameException("A sub-name can not contain the seperator string '" + NAMESPACE_SEPERATOR + "'.");
       }
 
-      if (!joinNames(nameSpace.getSubNames()).equals(nameSpace.getName()))
+      if (!joinNames(namespace.getSubNames()).equals(namespace.getName()))
       {
-         throw new IllegalNameException("The namespace has inconsistent sub-names.\nNamespace: " + nameSpace.getName() + "\nSub-names: "
-               + joinNames(nameSpace.getSubNames()));
+         throw new IllegalNameException("The namespace has inconsistent sub-names.\nNamespace: " + namespace.getName() + "\nSub-names: "
+               + joinNames(namespace.getSubNames()));
       }
 
-      if (new HashSet<>(nameSpace.getSubNames()).size() != nameSpace.size())
+      if (new HashSet<>(namespace.getSubNames()).size() != namespace.size())
       {
-         throw new IllegalNameException("The namespace has duplicate sub names.\nNamespace: " + nameSpace.getName());
+         throw new IllegalNameException("The namespace has duplicate sub-names.\nNamespace: " + namespace.getName());
       }
    }
 
    /**
-    * Concatenates the two namespaces into a new namespace: [{@code nameSpaceA}, {@code nameSpaceB}].
+    * Concatenates the two namespaces into a new namespace: [{@code namespaceA}, {@code namespaceB}].
     * 
-    * @param nameSpaceA the first namespace.
-    * @param nameSpaceB the second namespace.
-    * @return the new namespace that starts with {@code nameSpaceA} and ends with {@code nameSpaceB}.
+    * @param namespaceA the first namespace.
+    * @param namespaceB the second namespace.
+    * @return the new namespace that starts with {@code namespaceA} and ends with {@code namespaceB}.
     */
-   public static YoNamespace concatenate(YoNamespace nameSpaceA, YoNamespace nameSpaceB)
+   public static YoNamespace concatenate(YoNamespace namespaceA, YoNamespace namespaceB)
    {
-      List<String> subNames = new ArrayList<>(nameSpaceA.size() + nameSpaceB.size());
-      subNames.addAll(nameSpaceA.getSubNames());
-      subNames.addAll(nameSpaceB.getSubNames());
+      List<String> subNames = new ArrayList<>(namespaceA.size() + namespaceB.size());
+      subNames.addAll(namespaceA.getSubNames());
+      subNames.addAll(namespaceB.getSubNames());
       return new YoNamespace(subNames);
    }
 
    /**
-    * Appends the given {@code name} to the given {@code nameSpace} and returns the results as a new
+    * Appends the given {@code name} to the given {@code namespace} and returns the results as a new
     * namespace.
     * 
-    * @param nameSpace the namespace.
+    * @param namespace the namespace.
     * @param name      the name to append. It can represent another namespace, i.e. it can contain
     *                  {@link #NAMESPACE_SEPERATOR}.
-    * @return the new namespace that starts with {@code nameSpace} and ends with {@code name}.
+    * @return the new namespace that starts with {@code namespace} and ends with {@code name}.
     */
-   public static YoNamespace concatenate(YoNamespace nameSpace, String name)
+   public static YoNamespace concatenate(YoNamespace namespace, String name)
    {
       List<String> splitName = splitName(name);
-      List<String> subNames = new ArrayList<>(nameSpace.size() + splitName.size());
-      subNames.addAll(nameSpace.getSubNames());
+      List<String> subNames = new ArrayList<>(namespace.size() + splitName.size());
+      subNames.addAll(namespace.getSubNames());
       subNames.addAll(splitName);
       return new YoNamespace(subNames);
    }
 
    /**
-    * Appends the given {@code nameSpace} to the given {@code name} and returns the results as a new
+    * Appends the given {@code namespace} to the given {@code name} and returns the results as a new
     * namespace.
     * 
     * @param name      the name. It can represent another namespace, i.e. it can contain
     *                  {@link #NAMESPACE_SEPERATOR}.
-    * @param nameSpace the namespace to append.
-    * @return the new namespace that starts with {@code name} and ends with {@code nameSpace}.
+    * @param namespace the namespace to append.
+    * @return the new namespace that starts with {@code name} and ends with {@code namespace}.
     */
-   public static YoNamespace concatenate(String name, YoNamespace nameSpace)
+   public static YoNamespace concatenate(String name, YoNamespace namespace)
    {
       List<String> splitName = splitName(name);
-      List<String> subNames = new ArrayList<>(splitName.size() + nameSpace.size());
+      List<String> subNames = new ArrayList<>(splitName.size() + namespace.size());
       subNames.addAll(splitName);
-      subNames.addAll(nameSpace.getSubNames());
+      subNames.addAll(namespace.getSubNames());
       return new YoNamespace(subNames);
    }
 

@@ -34,7 +34,7 @@ public class YoSearchTools
    /**
     * Recurses the registry subtree to find the first parameter that matches the search criteria.
     * 
-    * @param nameSpaceEnding (optional) the namespace of the registry in which the parameter was
+    * @param namespaceEnding (optional) the namespace of the registry in which the parameter was
     *                        registered. The namespace does not need to be complete, i.e. it does not
     *                        need to contain the name of the registries closest to the root registry.
     *                        If {@code null}, the search is for the parameter name only.
@@ -44,13 +44,13 @@ public class YoSearchTools
     * @return the first parameter matching the search criteria, or {@code null} if no such parameter
     *         could be found.
     */
-   public static YoParameter findFirstParameter(String nameSpaceEnding, String name, Predicate<YoParameter> predicate, YoRegistry registry)
+   public static YoParameter findFirstParameter(String namespaceEnding, String name, Predicate<YoParameter> predicate, YoRegistry registry)
    {
       Predicate<YoVariable> yoVariablePredicate = YoVariable::isParameter;
       if (predicate != null)
          yoVariablePredicate = yoVariablePredicate.and(variable -> predicate.test(variable.getParameter()));
 
-      YoVariable result = findFirstVariable(nameSpaceEnding, name, yoVariablePredicate, registry);
+      YoVariable result = findFirstVariable(namespaceEnding, name, yoVariablePredicate, registry);
       if (result == null)
          return null;
       else
@@ -60,7 +60,7 @@ public class YoSearchTools
    /**
     * Recurses the registry subtree to find the first variable that matches the search criteria.
     * 
-    * @param nameSpaceEnding (optional) the namespace of the registry in which the variable was
+    * @param namespaceEnding (optional) the namespace of the registry in which the variable was
     *                        registered. The namespace does not need to be complete, i.e. it does not
     *                        need to contain the name of the registries closest to the root registry.
     *                        If {@code null}, the search is for the variable name only.
@@ -70,9 +70,9 @@ public class YoSearchTools
     * @return the first variable matching the search criteria, or {@code null} if no such variable
     *         could be found.
     */
-   public static YoVariable findFirstVariable(String nameSpaceEnding, String name, Predicate<YoVariable> predicate, YoRegistry registry)
+   public static YoVariable findFirstVariable(String namespaceEnding, String name, Predicate<YoVariable> predicate, YoRegistry registry)
    {
-      if (nameSpaceEnding == null || registry.getNameSpace().endsWith(nameSpaceEnding))
+      if (namespaceEnding == null || registry.getNamespace().endsWith(namespaceEnding))
       {
          YoVariable variable = registry.getVariable(name);
          if (variable != null)
@@ -84,7 +84,7 @@ public class YoSearchTools
 
       for (YoRegistry child : registry.getChildren())
       {
-         YoVariable variable = findFirstVariable(nameSpaceEnding, name, predicate, child);
+         YoVariable variable = findFirstVariable(namespaceEnding, name, predicate, child);
          if (variable != null)
             return variable;
       }
@@ -95,7 +95,7 @@ public class YoSearchTools
    /**
     * Recurses the registry subtree to find all the variables that matches the search criteria.
     * 
-    * @param nameSpaceEnding        (optional) the namespace of the registry in which the variable(s)
+    * @param namespaceEnding        (optional) the namespace of the registry in which the variable(s)
     *                               was registered. The namespace does not need to be complete, i.e. it
     *                               does not need to contain the name of the registries closest to the
     *                               root registry. If {@code null}, the search is for the variable name
@@ -107,12 +107,12 @@ public class YoSearchTools
     * @return all the variables matching the search criteria, the list is empty is no such variable
     *         could be found.
     */
-   public static List<YoVariable> findVariables(String nameSpaceEnding, String name, Predicate<YoVariable> predicate, YoRegistry registry,
+   public static List<YoVariable> findVariables(String namespaceEnding, String name, Predicate<YoVariable> predicate, YoRegistry registry,
                                                 List<YoVariable> matchedVariablesToPack)
    {
       if (matchedVariablesToPack == null)
          matchedVariablesToPack = new ArrayList<>();
-      if (nameSpaceEnding == null || registry.getNameSpace().endsWith(nameSpaceEnding))
+      if (namespaceEnding == null || registry.getNamespace().endsWith(namespaceEnding))
       {
          YoVariable variable = registry.getVariable(name);
          if (variable != null)
@@ -124,7 +124,7 @@ public class YoSearchTools
 
       for (YoRegistry child : registry.getChildren())
       {
-         findVariables(nameSpaceEnding, name, predicate, child, matchedVariablesToPack);
+         findVariables(namespaceEnding, name, predicate, child, matchedVariablesToPack);
       }
       return matchedVariablesToPack;
    }

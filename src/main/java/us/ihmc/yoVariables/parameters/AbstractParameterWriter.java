@@ -45,7 +45,7 @@ public abstract class AbstractParameterWriter
       {
          YoParameter parameter = parameters.get(i);
 
-         YoNamespace relativeNamespace = AbstractParameterReader.getRelativeNamespace(parameter.getNameSpace(), registry);
+         YoNamespace relativeNamespace = AbstractParameterReader.getRelativeNamespace(parameter.getNamespace(), registry);
 
          String value = parameter.getValueAsString();
          String min = String.valueOf(parameter.getVariable().getLowerBound());
