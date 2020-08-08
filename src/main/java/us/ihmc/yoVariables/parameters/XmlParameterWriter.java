@@ -27,7 +27,7 @@ import javax.xml.bind.Marshaller;
 import us.ihmc.yoVariables.parameters.xml.Parameter;
 import us.ihmc.yoVariables.parameters.xml.Parameters;
 import us.ihmc.yoVariables.parameters.xml.Registry;
-import us.ihmc.yoVariables.registry.NameSpace;
+import us.ihmc.yoVariables.registry.YoNamespace;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
@@ -52,7 +52,7 @@ public class XmlParameterWriter extends AbstractParameterWriter
       parameterRoot.setRegistries(new ArrayList<>());
    }
 
-   private void addNamespace(NameSpace namespace)
+   private void addNamespace(YoNamespace namespace)
    {
       Registry newRegistry = new Registry(namespace.getShortName());
 
@@ -62,7 +62,7 @@ public class XmlParameterWriter extends AbstractParameterWriter
       }
       else
       {
-         NameSpace parent = namespace.removeEnd(1);
+         YoNamespace parent = namespace.removeEnd(1);
          if (!registries.containsKey(parent.getName()))
          {
             addNamespace(parent);
@@ -76,7 +76,7 @@ public class XmlParameterWriter extends AbstractParameterWriter
    }
 
    @Override
-   protected void setValue(NameSpace namespace, String name, String description, String type, String value, String min, String max)
+   protected void setValue(YoNamespace namespace, String name, String description, String type, String value, String min, String max)
    {
       String nameSpaceAsString = namespace.getName();
 

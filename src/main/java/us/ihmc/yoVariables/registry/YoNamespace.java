@@ -29,7 +29,7 @@ import us.ihmc.yoVariables.tools.YoTools;
  * name of a {@link YoRegistry} with the parent to child relationship between one sub-name and the
  * following one.
  */
-public class NameSpace implements Serializable
+public class YoNamespace implements Serializable
 {
    private static final long serialVersionUID = -2584260031738121095L;
 
@@ -41,7 +41,7 @@ public class NameSpace implements Serializable
     *
     * @param subNames is the list of names starting with the root name.
     */
-   public NameSpace(List<String> subNames)
+   public YoNamespace(List<String> subNames)
    {
       if (subNames == null || subNames.isEmpty())
          throw new IllegalArgumentException("Cannot create an empty namespace.");
@@ -59,7 +59,7 @@ public class NameSpace implements Serializable
     *
     * @param name of the namespace.
     */
-   public NameSpace(String name)
+   public YoNamespace(String name)
    {
       if (name == null || name.isEmpty())
          throw new IllegalArgumentException("Cannot create an empty namespace.");
@@ -165,7 +165,7 @@ public class NameSpace implements Serializable
     * 
     * @return the parent namespace.
     */
-   public NameSpace getParent()
+   public YoNamespace getParent()
    {
       return removeEnd(1);
    }
@@ -176,7 +176,7 @@ public class NameSpace implements Serializable
     * @param fromIndex the index of the first sub-name in the sub-namespace to create.
     * @return the sub-namespace.
     */
-   public NameSpace subNameSpace(int fromIndex)
+   public YoNamespace subNameSpace(int fromIndex)
    {
       return subNameSpace(fromIndex, size());
    }
@@ -188,13 +188,13 @@ public class NameSpace implements Serializable
     * @param toIndex   the end index (exclusive).
     * @return the sub-namespace.
     */
-   public NameSpace subNameSpace(int fromIndex, int toIndex)
+   public YoNamespace subNameSpace(int fromIndex, int toIndex)
    {
       if (fromIndex == 0 && toIndex == size())
          return this;
       if (fromIndex == toIndex)
          return null;
-      return new NameSpace(subNames.subList(fromIndex, toIndex));
+      return new YoNamespace(subNames.subList(fromIndex, toIndex));
    }
 
    /**
@@ -204,7 +204,7 @@ public class NameSpace implements Serializable
     * @param length the number of sub-names to remove for the start.
     * @return the new sub-namespace.
     */
-   public NameSpace removeStart(int length)
+   public YoNamespace removeStart(int length)
    {
       if (length < 0 || length > size())
          throw new IndexOutOfBoundsException("Invalid length: " + length);
@@ -225,7 +225,7 @@ public class NameSpace implements Serializable
     * @param nameSpaceToRemove is the namespace to remove from the start of {@code this}.
     * @return whether this namespace contains with {@code nameToMatch}.
     */
-   public NameSpace removeStart(NameSpace nameSpaceToRemove)
+   public YoNamespace removeStart(YoNamespace nameSpaceToRemove)
    {
       if (nameSpaceToRemove == null)
          return this;
@@ -241,7 +241,7 @@ public class NameSpace implements Serializable
     * @param length the number of sub-names to remove for the end.
     * @return the new sub-namespace.
     */
-   public NameSpace removeEnd(int length)
+   public YoNamespace removeEnd(int length)
    {
       if (length < 0 || length > size())
          throw new IndexOutOfBoundsException("Invalid length: " + length);
@@ -262,7 +262,7 @@ public class NameSpace implements Serializable
     * @param nameSpaceToRemove is the namespace to remove from the end of {@code this}.
     * @return whether this namespace contains with {@code nameToMatch}.
     */
-   public NameSpace removeEnd(NameSpace nameSpaceToRemove)
+   public YoNamespace removeEnd(YoNamespace nameSpaceToRemove)
    {
       if (nameSpaceToRemove == null)
          return this;
@@ -280,7 +280,7 @@ public class NameSpace implements Serializable
     * @param other the other namespace to prepend to this.
     * @return the new namespace [{@code other}, {@code this}].
     */
-   public NameSpace prepend(NameSpace other)
+   public YoNamespace prepend(YoNamespace other)
    {
       return YoTools.concatenate(other, this);
    }
@@ -296,7 +296,7 @@ public class NameSpace implements Serializable
     * @param name the name to prepend to this.
     * @return the new namespace [{@code name}, {@code this}].
     */
-   public NameSpace prepend(String name)
+   public YoNamespace prepend(String name)
    {
       return YoTools.concatenate(name, this);
    }
@@ -308,7 +308,7 @@ public class NameSpace implements Serializable
     * @param other the other namespace to append to this.
     * @return the new namespace [{@code this}, {@code other}].
     */
-   public NameSpace append(NameSpace other)
+   public YoNamespace append(YoNamespace other)
    {
       return YoTools.concatenate(this, other);
    }
@@ -324,7 +324,7 @@ public class NameSpace implements Serializable
     * @param name the name to append to this.
     * @return the new namespace [{@code this}, {@code name}].
     */
-   public NameSpace append(String name)
+   public YoNamespace append(String name)
    {
       return YoTools.concatenate(this, name);
    }
@@ -335,7 +335,7 @@ public class NameSpace implements Serializable
     * @param query the namespace to test for.
     * @return {@code true} if this namespace ends with {@code query}, {@code false} otherwise.
     */
-   public boolean endsWith(NameSpace query)
+   public boolean endsWith(YoNamespace query)
    {
       return endsWith(query, false);
    }
@@ -347,7 +347,7 @@ public class NameSpace implements Serializable
     * @param ignoreCase whether to ignore case when performing {@code String} comparison or not.
     * @return {@code true} if this namespace ends with {@code query}, {@code false} otherwise.
     */
-   public boolean endsWith(NameSpace query, boolean ignoreCase)
+   public boolean endsWith(YoNamespace query, boolean ignoreCase)
    {
       if (query.size() > size())
          return false;
@@ -428,7 +428,7 @@ public class NameSpace implements Serializable
     * @param query the namespace to test for.
     * @return {@code true} if this namespace starts with {@code query}, {@code false} otherwise.
     */
-   public boolean startsWith(NameSpace query)
+   public boolean startsWith(YoNamespace query)
    {
       return startsWith(query, false);
    }
@@ -440,7 +440,7 @@ public class NameSpace implements Serializable
     * @param ignoreCase whether to ignore case when performing {@code String} comparison or not.
     * @return {@code true} if this namespace starts with {@code query}, {@code false} otherwise.
     */
-   public boolean startsWith(NameSpace query, boolean ignoreCase)
+   public boolean startsWith(YoNamespace query, boolean ignoreCase)
    {
       if (query.size() > size())
          return false;
@@ -518,7 +518,7 @@ public class NameSpace implements Serializable
     * @param query the namespace to test for.
     * @return {@code true} if this namespace contains {@code query}, {@code false} otherwise.
     */
-   public boolean contains(NameSpace query)
+   public boolean contains(YoNamespace query)
    {
       return contains(query, false);
    }
@@ -530,7 +530,7 @@ public class NameSpace implements Serializable
     * @param ignoreCase whether to ignore case when performing {@code String} comparison or not.
     * @return {@code true} if this namespace contains {@code query}, {@code false} otherwise.
     */
-   public boolean contains(NameSpace query, boolean ignoreCase)
+   public boolean contains(YoNamespace query, boolean ignoreCase)
    {
       if (query.size() > size())
          return false;
@@ -635,8 +635,8 @@ public class NameSpace implements Serializable
    {
       if (nameSpace == this)
          return true;
-      else if (nameSpace instanceof NameSpace)
-         return ((NameSpace) nameSpace).name.equals(name);
+      else if (nameSpace instanceof YoNamespace)
+         return ((YoNamespace) nameSpace).name.equals(name);
       else
          return false;
    }

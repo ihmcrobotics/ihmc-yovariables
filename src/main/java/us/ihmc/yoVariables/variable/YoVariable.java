@@ -20,7 +20,7 @@ import java.util.List;
 
 import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.parameters.YoParameter;
-import us.ihmc.yoVariables.registry.NameSpace;
+import us.ihmc.yoVariables.registry.YoNamespace;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.tools.YoTools;
 
@@ -47,7 +47,7 @@ public abstract class YoVariable
    private final String description;
    private final YoVariableType type;
    private YoRegistry registry;
-   private NameSpace fullName;
+   private YoNamespace fullName;
 
    private List<YoVariableChangedListener> changedListeners;
    private double lowerBound = 0.0;
@@ -133,12 +133,12 @@ public abstract class YoVariable
     *
     * @return this variable's full name as a namespace.
     */
-   public NameSpace getFullName()
+   public YoNamespace getFullName()
    {
       if (fullName == null)
       {
          if (registry == null)
-            fullName = new NameSpace(name);
+            fullName = new YoNamespace(name);
          else
             fullName = registry.getNameSpace().append(name);
       }
@@ -163,7 +163,7 @@ public abstract class YoVariable
     *
     * @return this variable's namespace.
     */
-   public NameSpace getNameSpace()
+   public YoNamespace getNameSpace()
    {
       return registry == null ? null : registry.getNameSpace();
    }

@@ -15,7 +15,7 @@
  */
 package us.ihmc.yoVariables.tools;
 
-import us.ihmc.yoVariables.registry.NameSpace;
+import us.ihmc.yoVariables.registry.YoNamespace;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
@@ -33,9 +33,9 @@ public class YoFactories
     * @return the found/created registry which namespace equals {@code fullNameSpace}, or {@code null}
     *         if the given namespace is incompatible with {@code startRegistry}.
     */
-   public static YoRegistry findOrCreateRegistry(YoRegistry startRegistry, NameSpace fullNameSpace)
+   public static YoRegistry findOrCreateRegistry(YoRegistry startRegistry, YoNamespace fullNameSpace)
    {
-      NameSpace nameSpace = startRegistry.getNameSpace();
+      YoNamespace nameSpace = startRegistry.getNameSpace();
 
       if (nameSpace.equals(fullNameSpace))
          return startRegistry;
@@ -52,7 +52,7 @@ public class YoFactories
 
       // If, after going through all the children, none of them match, then
       // create it here and return it.
-      NameSpace nameSpaceToContinueWith = fullNameSpace.removeStart(nameSpace);
+      YoNamespace nameSpaceToContinueWith = fullNameSpace.removeStart(nameSpace);
       YoRegistry registry = createChainOfRegistries(nameSpaceToContinueWith);
       startRegistry.addChild(registry);
 
@@ -66,7 +66,7 @@ public class YoFactories
     * @param fullNameSpace the namespace representing the registry chain to create.
     * @return the root registry of the new chain.
     */
-   public static YoRegistry createChainOfRegistries(NameSpace fullNameSpace)
+   public static YoRegistry createChainOfRegistries(YoNamespace fullNameSpace)
    {
       YoRegistry rootRegistry = new YoRegistry(fullNameSpace.getRootName());
       YoRegistry current = rootRegistry;

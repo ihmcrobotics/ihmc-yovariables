@@ -10,7 +10,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import us.ihmc.yoVariables.registry.NameSpace;
+import us.ihmc.yoVariables.registry.YoNamespace;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.registry.YoVariableList;
 import us.ihmc.yoVariables.variable.YoDouble;
@@ -132,27 +132,27 @@ public class YoVariableHolderImplementationTest
    @Test // timeout=300000
    public void testGetVariables()
    {
-      NameSpace nameSpace = new NameSpace("robot.registryA");
+      YoNamespace nameSpace = new YoNamespace("robot.registryA");
       List<YoVariable> variables = yoVariableHolderImplementation.findVariables(nameSpace);
       assertEquals(3, variables.size());
 
-      nameSpace = new NameSpace("robot.registryB");
+      nameSpace = new YoNamespace("robot.registryB");
       variables = yoVariableHolderImplementation.findVariables(nameSpace);
       assertEquals(3, variables.size());
 
-      nameSpace = new NameSpace("robot.registryC");
+      nameSpace = new YoNamespace("robot.registryC");
       variables = yoVariableHolderImplementation.findVariables(nameSpace);
       assertEquals(3, variables.size());
 
-      nameSpace = new NameSpace("robot2.registryC");
+      nameSpace = new YoNamespace("robot2.registryC");
       variables = yoVariableHolderImplementation.findVariables(nameSpace);
       assertEquals(3, variables.size());
 
-      nameSpace = new NameSpace("robot");
+      nameSpace = new YoNamespace("robot");
       variables = yoVariableHolderImplementation.findVariables(nameSpace);
       assertEquals(0, variables.size());
 
-      nameSpace = new NameSpace("registryA");
+      nameSpace = new YoNamespace("registryA");
       variables = yoVariableHolderImplementation.findVariables(nameSpace);
       assertEquals(0, variables.size());
 

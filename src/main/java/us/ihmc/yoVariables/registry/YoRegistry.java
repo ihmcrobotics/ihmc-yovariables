@@ -45,7 +45,7 @@ public class YoRegistry implements YoVariableHolder
    /**
     * The namespace of this registry, it is the collection of the registry names from the root to here.
     */
-   private NameSpace nameSpace;
+   private YoNamespace nameSpace;
 
    /** The list of variables that are currently registered in {@code this}. */
    private final List<YoVariable> variables = new ArrayList<>();
@@ -103,7 +103,7 @@ public class YoRegistry implements YoVariableHolder
 
       YoTools.checkForIllegalCharacters(name);
       this.name = name;
-      nameSpace = new NameSpace(name);
+      nameSpace = new YoNamespace(name);
    }
 
    /**
@@ -125,7 +125,7 @@ public class YoRegistry implements YoVariableHolder
     *
     * @return this registry's namespace.
     */
-   public NameSpace getNameSpace()
+   public YoNamespace getNameSpace()
    {
       return nameSpace;
    }
@@ -419,10 +419,10 @@ public class YoRegistry implements YoVariableHolder
     * @param parentNameSpace the new namespace of this registry's parent.
     * @throws IllegalNameException if the namespace sanity check fails.
     */
-   private void setParentNameSpace(NameSpace parentNameSpace)
+   private void setParentNameSpace(YoNamespace parentNameSpace)
    {
       if (parentNameSpace == null)
-         nameSpace = new NameSpace(name);
+         nameSpace = new YoNamespace(name);
       else
          nameSpace = parentNameSpace.append(name);
       nameSpace.checkSanity();
@@ -710,7 +710,7 @@ public class YoRegistry implements YoVariableHolder
     * </p>
     */
    @Override
-   public List<YoVariable> findVariables(NameSpace nameSpace)
+   public List<YoVariable> findVariables(YoNamespace nameSpace)
    {
       YoRegistry registry = findRegistry(nameSpace);
       if (registry == null)
@@ -732,7 +732,7 @@ public class YoRegistry implements YoVariableHolder
     * @return the registry which namespace matches the given one, or {@code null} if it could not be
     *         found.
     */
-   public YoRegistry findRegistry(NameSpace nameSpaceEnding)
+   public YoRegistry findRegistry(YoNamespace nameSpaceEnding)
    {
       if (this.nameSpace.endsWith(nameSpaceEnding))
          return this;

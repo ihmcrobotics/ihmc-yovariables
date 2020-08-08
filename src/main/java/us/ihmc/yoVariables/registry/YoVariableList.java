@@ -354,7 +354,7 @@ public class YoVariableList extends AbstractList<YoVariable> implements YoVariab
 
    /** {@inheritDoc} */
    @Override
-   public List<YoVariable> findVariables(NameSpace nameSpace)
+   public List<YoVariable> findVariables(YoNamespace nameSpace)
    {
       List<YoVariable> result = new ArrayList<>();
 

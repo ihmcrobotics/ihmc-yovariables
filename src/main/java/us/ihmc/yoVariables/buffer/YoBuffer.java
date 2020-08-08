@@ -31,7 +31,7 @@ import us.ihmc.yoVariables.buffer.interfaces.YoBufferReader;
 import us.ihmc.yoVariables.buffer.interfaces.YoBufferVariableEntryHolder;
 import us.ihmc.yoVariables.buffer.interfaces.YoTimeBufferHolder;
 import us.ihmc.yoVariables.exceptions.IllegalNameException;
-import us.ihmc.yoVariables.registry.NameSpace;
+import us.ihmc.yoVariables.registry.YoNamespace;
 import us.ihmc.yoVariables.registry.YoVariableHolder;
 import us.ihmc.yoVariables.tools.YoTools;
 import us.ihmc.yoVariables.variable.YoVariable;
@@ -1130,7 +1130,7 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
 
    /** {@inheritDoc} */
    @Override
-   public List<YoVariable> findVariables(NameSpace nameSpace)
+   public List<YoVariable> findVariables(YoNamespace nameSpace)
    {
       return findVariableEntries(nameSpace).stream().map(YoBufferVariableEntry::getVariable).collect(Collectors.toList());
    }
@@ -1141,7 +1141,7 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
     * @param nameSpace the full namespace of the registry of interest.
     * @return the buffer entries which variables that were registered at the given namespace.
     */
-   public List<YoBufferVariableEntry> findVariableEntries(NameSpace nameSpace)
+   public List<YoBufferVariableEntry> findVariableEntries(YoNamespace nameSpace)
    {
       List<YoBufferVariableEntry> result = new ArrayList<>();
 

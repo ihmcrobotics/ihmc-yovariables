@@ -126,8 +126,8 @@ public class YoRegistryTest
    @Test
    public void testGetNameSpace()
    {
-      NameSpace expectedReturn = new NameSpace("robot.controller.testRegistry");
-      NameSpace actualReturn = testRegistry.getNameSpace();
+      YoNamespace expectedReturn = new YoNamespace("robot.controller.testRegistry");
+      YoNamespace actualReturn = testRegistry.getNameSpace();
       assertEquals(expectedReturn, actualReturn, "return value");
    }
 
@@ -726,19 +726,19 @@ public class YoRegistryTest
    @Test
    public void testGetRegistry()
    {
-      assertEquals(robotRegistry, robotRegistry.findRegistry(new NameSpace("robot")));
-      assertEquals(controllerRegistry, robotRegistry.findRegistry(new NameSpace("robot.controller")));
-      assertEquals(testRegistry, robotRegistry.findRegistry(new NameSpace("robot.controller.testRegistry")));
+      assertEquals(robotRegistry, robotRegistry.findRegistry(new YoNamespace("robot")));
+      assertEquals(controllerRegistry, robotRegistry.findRegistry(new YoNamespace("robot.controller")));
+      assertEquals(testRegistry, robotRegistry.findRegistry(new YoNamespace("robot.controller.testRegistry")));
 
-      assertEquals(controllerRegistry, controllerRegistry.findRegistry(new NameSpace("robot.controller")));
-      assertEquals(testRegistry, controllerRegistry.findRegistry(new NameSpace("robot.controller.testRegistry")));
+      assertEquals(controllerRegistry, controllerRegistry.findRegistry(new YoNamespace("robot.controller")));
+      assertEquals(testRegistry, controllerRegistry.findRegistry(new YoNamespace("robot.controller.testRegistry")));
 
-      assertEquals(testRegistry, testRegistry.findRegistry(new NameSpace("robot.controller.testRegistry")));
+      assertEquals(testRegistry, testRegistry.findRegistry(new YoNamespace("robot.controller.testRegistry")));
 
-      assertTrue(testRegistry == robotRegistry.findRegistry(new NameSpace("testRegistry")));
-      assertTrue(testRegistry == robotRegistry.findRegistry(new NameSpace("controller.testRegistry")));
+      assertTrue(testRegistry == robotRegistry.findRegistry(new YoNamespace("testRegistry")));
+      assertTrue(testRegistry == robotRegistry.findRegistry(new YoNamespace("controller.testRegistry")));
 
-      assertTrue(robotRegistry != controllerRegistry.findRegistry(new NameSpace("robot")));
+      assertTrue(robotRegistry != controllerRegistry.findRegistry(new YoNamespace("robot")));
 
    }
 
@@ -805,14 +805,14 @@ public class YoRegistryTest
    @Test
    public void testGetVariables()
    {
-      NameSpace robotNameSpace = new NameSpace("robot");
+      YoNamespace robotNameSpace = new YoNamespace("robot");
       List<YoVariable> robotVariables = robotRegistry.findVariables(robotNameSpace);
 
       assertTrue(robotVariables.size() == 1);
       assertTrue(robotVariables.contains(robotVariable));
       assertFalse(robotVariables.contains(controlVariable));
 
-      NameSpace controllerNameSpace = new NameSpace("robot.controller");
+      YoNamespace controllerNameSpace = new YoNamespace("robot.controller");
       List<YoVariable> controllerVariables = robotRegistry.findVariables(controllerNameSpace);
 
       assertTrue(controllerVariables.size() == 1);

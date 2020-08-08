@@ -125,7 +125,7 @@ public interface YoVariableHolder
     * @param nameSpace the full namespace of the registry of interest.
     * @return the variables that were registered at the given namespace.
     */
-   List<YoVariable> findVariables(NameSpace nameSpace);
+   List<YoVariable> findVariables(YoNamespace nameSpace);
 
    /**
     * Returns all the variables in this {@code YoVariableHolder} for which the given filter returns

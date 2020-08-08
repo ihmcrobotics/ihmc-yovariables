@@ -21,7 +21,7 @@ import java.util.List;
 import us.ihmc.yoVariables.exceptions.IllegalOperationException;
 import us.ihmc.yoVariables.listener.YoParameterChangedListener;
 import us.ihmc.yoVariables.listener.YoVariableChangedListener;
-import us.ihmc.yoVariables.registry.NameSpace;
+import us.ihmc.yoVariables.registry.YoNamespace;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 /**
@@ -83,7 +83,7 @@ public abstract class YoParameter
     *
     * @return this parameter's full name as a namespace.
     */
-   public NameSpace getFullName()
+   public YoNamespace getFullName()
    {
       return getVariable().getFullName();
    }
@@ -105,7 +105,7 @@ public abstract class YoParameter
     *
     * @return this parameter's namespace.
     */
-   public NameSpace getNameSpace()
+   public YoNamespace getNameSpace()
    {
       return getVariable().getNameSpace();
    }

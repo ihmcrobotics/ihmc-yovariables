@@ -26,11 +26,11 @@ public class NameSpaceTest
    @Test // timeout = 300000
    public void testConstructors()
    {
-      new NameSpace("robot1.controller1.module1");
+      new YoNamespace("robot1.controller1.module1");
 
       try
       {
-         new NameSpace("");
+         new YoNamespace("");
          fail("Shouldn't be able to create a namespace with no name");
       }
       catch (RuntimeException e)
@@ -39,7 +39,7 @@ public class NameSpaceTest
 
       try
       {
-         new NameSpace("foo.bar.");
+         new YoNamespace("foo.bar.");
          fail();
       }
       catch (RuntimeException e)
@@ -48,7 +48,7 @@ public class NameSpaceTest
 
       try
       {
-         new NameSpace(".foo.bar");
+         new YoNamespace(".foo.bar");
          fail();
       }
       catch (RuntimeException e)
@@ -57,7 +57,7 @@ public class NameSpaceTest
 
       try
       {
-         new NameSpace("foo.foo").checkSanity();
+         new YoNamespace("foo.foo").checkSanity();
          fail();
       }
       catch (RuntimeException e)
@@ -66,7 +66,7 @@ public class NameSpaceTest
 
       try
       {
-         new NameSpace("foo.bar.foo").checkSanity();
+         new YoNamespace("foo.bar.foo").checkSanity();
          fail();
       }
       catch (RuntimeException e)
@@ -75,7 +75,7 @@ public class NameSpaceTest
 
       try
       {
-         new NameSpace("foo..bar");
+         new YoNamespace("foo..bar");
          fail();
       }
       catch (RuntimeException e)
@@ -86,11 +86,11 @@ public class NameSpaceTest
    @Test // timeout = 300000
    public void testEquals()
    {
-      NameSpace nameSpace1 = new NameSpace("robot1.controller1.module1");
-      NameSpace nameSpace2 = new NameSpace("robot1.controller1.module1");
-      NameSpace nameSpace3 = new NameSpace("robot1.module1");
-      NameSpace nameSpace4 = new NameSpace("robot1.controller1.mod");
-      NameSpace nameSpace5 = new NameSpace("bot1.controller1.module1");
+      YoNamespace nameSpace1 = new YoNamespace("robot1.controller1.module1");
+      YoNamespace nameSpace2 = new YoNamespace("robot1.controller1.module1");
+      YoNamespace nameSpace3 = new YoNamespace("robot1.module1");
+      YoNamespace nameSpace4 = new YoNamespace("robot1.controller1.mod");
+      YoNamespace nameSpace5 = new YoNamespace("bot1.controller1.module1");
 
       assertTrue(nameSpace1.equals(nameSpace1));
       assertTrue(nameSpace2.equals(nameSpace2));
@@ -114,7 +114,7 @@ public class NameSpaceTest
    @Test // timeout = 300000
    public void testStartsWith()
    {
-      NameSpace nameSpace = new NameSpace("robot1.controller1.module1");
+      YoNamespace nameSpace = new YoNamespace("robot1.controller1.module1");
       assertTrue(nameSpace.startsWith("robot1"));
       assertTrue(nameSpace.startsWith("robot1.controller1"));
       assertTrue(nameSpace.startsWith("robot1.controller1.module1"));
@@ -132,7 +132,7 @@ public class NameSpaceTest
    @Test // timeout = 300000
    public void testEndsWith()
    {
-      NameSpace nameSpace = new NameSpace("robot1.controller1.module1");
+      YoNamespace nameSpace = new YoNamespace("robot1.controller1.module1");
       assertTrue(nameSpace.endsWith("module1"));
       assertTrue(nameSpace.endsWith("controller1.module1"));
       assertTrue(nameSpace.endsWith("robot1.controller1.module1"));
@@ -150,11 +150,11 @@ public class NameSpaceTest
    @Test // timeout = 300000
    public void testGetShortName()
    {
-      NameSpace nameSpace = new NameSpace("robot1.controller1.module1");
+      YoNamespace nameSpace = new YoNamespace("robot1.controller1.module1");
       assertTrue(nameSpace.getShortName().equals("module1"));
       assertTrue(nameSpace.getName().equals("robot1.controller1.module1"));
 
-      nameSpace = new NameSpace("module2");
+      nameSpace = new YoNamespace("module2");
       assertTrue(nameSpace.getName().equals("module2"));
       assertTrue(nameSpace.getShortName().equals("module2"));
    }
@@ -162,7 +162,7 @@ public class NameSpaceTest
    @Test // timeout = 300000
    public void testContains()
    {
-      NameSpace nameSpace = new NameSpace("robot1.controller1.module1");
+      YoNamespace nameSpace = new YoNamespace("robot1.controller1.module1");
 
       assertTrue(nameSpace.contains("robot1"));
       assertFalse(nameSpace.contains("notMe"));
@@ -195,21 +195,21 @@ public class NameSpaceTest
    @Test // timeout = 300000
    public void testStripOffFromBeginning()
    {
-      NameSpace nameSpace = new NameSpace("root.name1.name2");
+      YoNamespace nameSpace = new YoNamespace("root.name1.name2");
 
-      NameSpace nameSpaceToRemove = new NameSpace("root");
-      NameSpace newNameSpace = nameSpace.removeStart(nameSpaceToRemove);
-      assertEquals(new NameSpace("name1.name2"), newNameSpace);
+      YoNamespace nameSpaceToRemove = new YoNamespace("root");
+      YoNamespace newNameSpace = nameSpace.removeStart(nameSpaceToRemove);
+      assertEquals(new YoNamespace("name1.name2"), newNameSpace);
 
-      nameSpaceToRemove = new NameSpace("root.name1");
+      nameSpaceToRemove = new YoNamespace("root.name1");
       newNameSpace = nameSpace.removeStart(nameSpaceToRemove);
-      assertEquals(new NameSpace("name2"), newNameSpace);
+      assertEquals(new YoNamespace("name2"), newNameSpace);
 
-      nameSpaceToRemove = new NameSpace("root.name1.name2");
+      nameSpaceToRemove = new YoNamespace("root.name1.name2");
       newNameSpace = nameSpace.removeStart(nameSpaceToRemove);
       assertEquals(null, newNameSpace);
 
-      nameSpaceToRemove = new NameSpace("name1");
+      nameSpaceToRemove = new YoNamespace("name1");
       newNameSpace = nameSpace.removeStart(nameSpaceToRemove);
       assertEquals(null, newNameSpace);
    }

@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
 import us.ihmc.yoVariables.exceptions.IllegalNameException;
-import us.ihmc.yoVariables.registry.NameSpace;
+import us.ihmc.yoVariables.registry.YoNamespace;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoVariable;
 
@@ -287,7 +287,7 @@ public class YoTools
     * @throws IllegalNameException if the given {@code nameSpace} failed any of the checks mentioned
     *                              above.
     */
-   public static void checkNameSpaceSanity(NameSpace nameSpace)
+   public static void checkNameSpaceSanity(YoNamespace nameSpace)
    {
       if (nameSpace.getSubNames().stream().anyMatch(subName -> subName.isEmpty()))
       {
@@ -318,12 +318,12 @@ public class YoTools
     * @param nameSpaceB the second namespace.
     * @return the new namespace that starts with {@code nameSpaceA} and ends with {@code nameSpaceB}.
     */
-   public static NameSpace concatenate(NameSpace nameSpaceA, NameSpace nameSpaceB)
+   public static YoNamespace concatenate(YoNamespace nameSpaceA, YoNamespace nameSpaceB)
    {
       List<String> subNames = new ArrayList<>(nameSpaceA.size() + nameSpaceB.size());
       subNames.addAll(nameSpaceA.getSubNames());
       subNames.addAll(nameSpaceB.getSubNames());
-      return new NameSpace(subNames);
+      return new YoNamespace(subNames);
    }
 
    /**
@@ -335,13 +335,13 @@ public class YoTools
     *                  {@link #NAMESPACE_SEPERATOR}.
     * @return the new namespace that starts with {@code nameSpace} and ends with {@code name}.
     */
-   public static NameSpace concatenate(NameSpace nameSpace, String name)
+   public static YoNamespace concatenate(YoNamespace nameSpace, String name)
    {
       List<String> splitName = splitName(name);
       List<String> subNames = new ArrayList<>(nameSpace.size() + splitName.size());
       subNames.addAll(nameSpace.getSubNames());
       subNames.addAll(splitName);
-      return new NameSpace(subNames);
+      return new YoNamespace(subNames);
    }
 
    /**
@@ -353,13 +353,13 @@ public class YoTools
     * @param nameSpace the namespace to append.
     * @return the new namespace that starts with {@code name} and ends with {@code nameSpace}.
     */
-   public static NameSpace concatenate(String name, NameSpace nameSpace)
+   public static YoNamespace concatenate(String name, YoNamespace nameSpace)
    {
       List<String> splitName = splitName(name);
       List<String> subNames = new ArrayList<>(splitName.size() + nameSpace.size());
       subNames.addAll(splitName);
       subNames.addAll(nameSpace.getSubNames());
-      return new NameSpace(subNames);
+      return new YoNamespace(subNames);
    }
 
    /**
@@ -371,13 +371,13 @@ public class YoTools
     *              {@link #NAMESPACE_SEPERATOR}.
     * @return the new namespace that starts with {@code nameA} and ends with {@code nameB}.
     */
-   public static NameSpace concatenate(String nameA, String nameB)
+   public static YoNamespace concatenate(String nameA, String nameB)
    {
       List<String> splitNameA = splitName(nameA);
       List<String> splitNameB = splitName(nameB);
       List<String> subNames = new ArrayList<>(splitNameA.size() + splitNameB.size());
       subNames.addAll(splitNameA);
       subNames.addAll(splitNameB);
-      return new NameSpace(subNames);
+      return new YoNamespace(subNames);
    }
 }

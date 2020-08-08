@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import us.ihmc.yoVariables.registry.NameSpace;
+import us.ihmc.yoVariables.registry.YoNamespace;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
@@ -77,7 +77,7 @@ public abstract class AbstractParameterReader
       {
          YoParameter parameter = parameters.get(i);
 
-         NameSpace relativeNamespace = getRelativeNamespace(parameter.getNameSpace(), registry);
+         YoNamespace relativeNamespace = getRelativeNamespace(parameter.getNameSpace(), registry);
          String fullName = relativeNamespace + "." + parameter.getName();
          ParameterData data = localMap.remove(fullName);
 
@@ -103,9 +103,9 @@ public abstract class AbstractParameterReader
     */
    protected abstract Map<String, ParameterData> getValues();
 
-   static NameSpace getRelativeNamespace(NameSpace parameterNamespace, YoRegistry registry)
+   static YoNamespace getRelativeNamespace(YoNamespace parameterNamespace, YoRegistry registry)
    {
-      NameSpace registryNamespace = registry.getNameSpace();
+      YoNamespace registryNamespace = registry.getNameSpace();
       if (registryNamespace.isRoot())
          return parameterNamespace;
       else

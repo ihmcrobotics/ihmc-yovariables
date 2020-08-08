@@ -17,7 +17,7 @@ package us.ihmc.yoVariables.parameters;
 
 import java.util.List;
 
-import us.ihmc.yoVariables.registry.NameSpace;
+import us.ihmc.yoVariables.registry.YoNamespace;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
@@ -33,7 +33,7 @@ public abstract class AbstractParameterWriter
 {
    /**
     * Recurses starting from the given registry, finds all parameters, and calls for each
-    * {@link #setValue(NameSpace, String, String, String, String, String, String)}.
+    * {@link #setValue(YoNamespace, String, String, String, String, String, String)}.
     * 
     * @param registry with parameters that need to be exported.
     */
@@ -45,7 +45,7 @@ public abstract class AbstractParameterWriter
       {
          YoParameter parameter = parameters.get(i);
 
-         NameSpace relativeNamespace = AbstractParameterReader.getRelativeNamespace(parameter.getNameSpace(), registry);
+         YoNamespace relativeNamespace = AbstractParameterReader.getRelativeNamespace(parameter.getNameSpace(), registry);
 
          String value = parameter.getValueAsString();
          String min = String.valueOf(parameter.getVariable().getLowerBound());
@@ -58,5 +58,5 @@ public abstract class AbstractParameterWriter
    /**
     * Exports the data for a parameter.
     */
-   protected abstract void setValue(NameSpace namespace, String name, String description, String type, String value, String min, String max);
+   protected abstract void setValue(YoNamespace namespace, String name, String description, String type, String value, String min, String max);
 }
