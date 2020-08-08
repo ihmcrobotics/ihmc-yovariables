@@ -30,7 +30,6 @@ public class YoToolsTest
       assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc*abc"));
       assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc(abc"));
       assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc)abc"));
-      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc-abc"));
       assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc=abc"));
       assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc+abc"));
       assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc{abc"));
@@ -52,6 +51,7 @@ public class YoToolsTest
 
       assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abcabc"));
       assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abc_abc"));
+      assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abc-abc"));
       assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abc0abc"));
       assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abc1abc"));
       assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abc2abc"));

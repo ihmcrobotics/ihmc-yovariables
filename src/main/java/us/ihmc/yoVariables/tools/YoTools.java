@@ -34,8 +34,8 @@ import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 /**
- * This class provides general tools used in classes such as {@code YoNamespace}, {@code YoRegistry},
- * and {@code YoVariable}.
+ * This class provides general tools used in classes such as {@code YoNamespace},
+ * {@code YoRegistry}, and {@code YoVariable}.
  */
 public class YoTools
 {
@@ -55,12 +55,12 @@ public class YoTools
     * The regular expression for searching any illegal character that can not be used in the name of a
     * {@link YoRegistry} or a {@link YoVariable}.
     * <p>
-    * Any punctuation character is illegal except for the underscore character "_" that is permitted,
-    * and spaces are also illegal. List of illegal characters:
+    * Any punctuation character is illegal except for the underscore "_" and hyphen "-" characters that
+    * are permitted, and spaces are also illegal. List of illegal characters:
     * <tt>!"#$%&'()*+,-./:;<=>?@[\]^ `{|}~</tt>
     * </p>
     */
-   public static final String ILLEGAL_CHARACTERS_REGEX = "[[\\p{Punct}[ ]]&&[^_]]";
+   public static final String ILLEGAL_CHARACTERS_REGEX = "[[\\p{Punct}[ ]]&&[^_-]]";
    /**
     * The regular expression of illegal characters as a {@link Pattern} which can be used to create a
     * {@link Matcher} can be easily setup to perform a thorough search for illegal characters.
@@ -70,9 +70,9 @@ public class YoTools
    /**
     * Checks that the given {@code name} does not contain any illegal character.
     * <p>
-    * Any punctuation character is illegal except for the underscore character "_" that is permitted,
-    * and spaces are also illegal. List of illegal characters:
-    * <tt>!"#$%&'()*+,-./:;<=>?@[\]^ `{|}~</tt>
+    * Any punctuation character is illegal except for the underscore "_" and hyphen "-" characters that
+    * are permitted, and spaces are also illegal. List of illegal characters:
+    * <tt>!"#$%&'()*+,./:;<=>?@[\]^ `{|}~</tt>
     * </p>
     * 
     * @param name the {@code String} to validate.
