@@ -33,9 +33,8 @@ import us.ihmc.yoVariables.variable.YoVariable;
  * Simulation Construction Set, that he/she is the only entity able to modify the parameter's value.
  * </p>
  * <p>
- * A parameter can be initialized with an given value, note that process requires manual
- * intervention. Parameters can be initialized only once and have to be initialized before they can
- * be used. The initialization can be performed by using a parameter reader, i.e. implementation of
+ * Parameters can be initialized only once and have to be initialized before they can be used. The
+ * initialization can be performed by using a parameter reader, i.e. implementation of
  * {@link AbstractParameterReader}. Two default implementations are provided in this package:
  * {@link DefaultParameterReader} which initializes the parameters to the value that was passed at
  * construction of each parameter, {@link XmlParameterReader} that parses the initial values from a
