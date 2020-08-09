@@ -172,8 +172,8 @@ public class YoBooleanTest
    @Test // timeout=300000
    public void testProviderValue()
    {
-      assertEquals(yoBoolean.getBooleanValue(), yoBoolean.getValue());
+      assertEquals(yoBoolean.getBooleanValue(), yoBoolean.getAsBoolean());
       yoBoolean.set(true);
-      assertEquals(yoBoolean.getBooleanValue(), yoBoolean.getValue());
+      assertEquals(yoBoolean.getBooleanValue(), yoBoolean.getAsBoolean());
    }
 }

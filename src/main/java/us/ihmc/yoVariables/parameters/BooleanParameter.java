@@ -15,8 +15,9 @@
  */
 package us.ihmc.yoVariables.parameters;
 
+import java.util.function.BooleanSupplier;
+
 import us.ihmc.yoVariables.exceptions.IllegalOperationException;
-import us.ihmc.yoVariables.providers.BooleanProvider;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoBoolean;
 
@@ -26,7 +27,7 @@ import us.ihmc.yoVariables.variable.YoBoolean;
  * @author Jesper Smith
  * @see YoParameter
  */
-public class BooleanParameter extends YoParameter implements BooleanProvider
+public class BooleanParameter extends YoParameter implements BooleanSupplier
 {
    /** The variable backing this parameter. */
    private final YoBoolean value;
@@ -93,7 +94,7 @@ public class BooleanParameter extends YoParameter implements BooleanProvider
     * @throws IllegalOperationException if the parameter is not loaded yet.
     */
    @Override
-   public boolean getValue()
+   public boolean getAsBoolean()
    {
       checkLoaded();
       return value.getBooleanValue();
@@ -142,7 +143,7 @@ public class BooleanParameter extends YoParameter implements BooleanProvider
       public YoBoolean duplicate(YoRegistry newRegistry)
       {
          BooleanParameter newParameter = new BooleanParameter(getName(), getDescription(), newRegistry, initialValue);
-         newParameter.value.set(value.getValue());
+         newParameter.value.set(value.getAsBoolean());
          newParameter.loadStatus = getLoadStatus();
          return newParameter.value;
       }

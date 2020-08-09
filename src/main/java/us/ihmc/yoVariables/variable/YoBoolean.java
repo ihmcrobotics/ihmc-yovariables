@@ -15,7 +15,8 @@
  */
 package us.ihmc.yoVariables.variable;
 
-import us.ihmc.yoVariables.providers.BooleanProvider;
+import java.util.function.BooleanSupplier;
+
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
@@ -23,7 +24,7 @@ import us.ihmc.yoVariables.registry.YoRegistry;
  * 
  * @see YoVariable
  */
-public class YoBoolean extends YoVariable implements BooleanProvider
+public class YoBoolean extends YoVariable implements BooleanSupplier
 {
    /**
     * Internal boolean value of this YoBoolean.
@@ -74,7 +75,7 @@ public class YoBoolean extends YoVariable implements BooleanProvider
     * @return the internal boolean value of this variable.
     */
    @Override
-   public boolean getValue()
+   public boolean getAsBoolean()
    {
       return value;
    }
@@ -86,7 +87,7 @@ public class YoBoolean extends YoVariable implements BooleanProvider
     */
    public boolean getBooleanValue()
    {
-      return value;
+      return getAsBoolean();
    }
 
    /**
@@ -177,7 +178,7 @@ public class YoBoolean extends YoVariable implements BooleanProvider
    @Override
    public boolean setValue(YoVariable other, boolean notifyListeners)
    {
-      return set(((YoBoolean) other).getValue(), notifyListeners);
+      return set(((YoBoolean) other).getAsBoolean(), notifyListeners);
    }
 
    /**

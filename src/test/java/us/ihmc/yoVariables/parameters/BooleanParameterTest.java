@@ -63,7 +63,7 @@ public class BooleanParameterTest
       Assertions.assertThrows(RuntimeException.class, () ->
       {
          BooleanParameter param = createParameterWithNamespace();
-         param.getValue();
+         param.getAsBoolean();
       });
    }
 
@@ -80,7 +80,7 @@ public class BooleanParameterTest
          BooleanParameter param = new BooleanParameter("test", dummy);
          param.load(options[i]);
 
-         assertEquals(i % 2 == 1, param.getValue());
+         assertEquals(i % 2 == 1, param.getAsBoolean());
          assertEquals(options[i].toLowerCase(), param.getValueAsString());
       }
    }
@@ -90,7 +90,7 @@ public class BooleanParameterTest
    {
       BooleanParameter param = createParameterWithNamespace();
       param.loadDefault();
-      assertEquals(initialValue, param.getValue());
+      assertEquals(initialValue, param.getAsBoolean());
    }
 
    @Test // timeout = 1000
@@ -108,7 +108,7 @@ public class BooleanParameterTest
 
       assertEquals(param.getName(), newParam.getName());
       assertEquals(param.getDescription(), newParam.getDescription());
-      assertEquals(param.getValue(), newParam.getValue());
+      assertEquals(param.getAsBoolean(), newParam.getAsBoolean());
 
    }
 
