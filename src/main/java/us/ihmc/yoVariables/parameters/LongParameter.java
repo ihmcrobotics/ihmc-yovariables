@@ -15,8 +15,9 @@
  */
 package us.ihmc.yoVariables.parameters;
 
+import java.util.function.LongSupplier;
+
 import us.ihmc.yoVariables.exceptions.IllegalOperationException;
-import us.ihmc.yoVariables.providers.LongProvider;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoLong;
 
@@ -25,7 +26,7 @@ import us.ihmc.yoVariables.variable.YoLong;
  *
  * @author Jesper Smith
  */
-public class LongParameter extends YoParameter implements LongProvider
+public class LongParameter extends YoParameter implements LongSupplier
 {
    private final static long DefaultSuggestedMinimum = -100L;
    private final static long DefaultSuggestedMaximum = 100L;
@@ -193,7 +194,7 @@ public class LongParameter extends YoParameter implements LongProvider
     * @throws IllegalOperationException if the parameter is not loaded yet.
     */
    @Override
-   public long getValue()
+   public long getAsLong()
    {
       checkLoaded();
       return value.getLongValue();
@@ -263,7 +264,7 @@ public class LongParameter extends YoParameter implements LongProvider
       public YoLong duplicate(YoRegistry newRegistry)
       {
          LongParameter newParameter = new LongParameter(getName(), getDescription(), newRegistry, initialValue, (long) getLowerBound(), (long) getUpperBound());
-         newParameter.value.set(value.getValue());
+         newParameter.value.set(value.getAsLong());
          newParameter.loadStatus = getLoadStatus();
          return newParameter.value;
       }

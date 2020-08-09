@@ -49,7 +49,7 @@ public interface YoMutableFrameObject extends ReferenceFrameHolder
     */
    default long getFrameIndex()
    {
-      return getYoFrameIndex().getValue();
+      return getYoFrameIndex().getAsLong();
    }
 
    /**

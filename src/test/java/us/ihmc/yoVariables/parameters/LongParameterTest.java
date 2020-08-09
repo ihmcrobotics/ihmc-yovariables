@@ -56,7 +56,7 @@ public class LongParameterTest
       LongParameter test = new LongParameter("test", dummy);
       test.loadDefault();
 
-      assertEquals(0, test.getValue());
+      assertEquals(0, test.getAsLong());
 
    }
 
@@ -75,7 +75,7 @@ public class LongParameterTest
 
       assertEquals(param.getName(), newParam.getName());
       assertEquals(param.getDescription(), newParam.getDescription());
-      assertEquals(param.getValue(), newParam.getValue(), 1e-9);
+      assertEquals(param.getAsLong(), newParam.getAsLong(), 1e-9);
       assertEquals(var.getLowerBound(), newVar.getLowerBound(), 1e-9);
       assertEquals(var.getUpperBound(), newVar.getUpperBound(), 1e-9);
 
@@ -102,7 +102,7 @@ public class LongParameterTest
          LongParameter param = new LongParameter("test", dummy);
          param.load(String.valueOf(s));
 
-         assertEquals(s, param.getValue());
+         assertEquals(s, param.getAsLong());
          assertEquals(String.valueOf(s), param.getValueAsString());
       }
    }
@@ -113,7 +113,7 @@ public class LongParameterTest
       Assertions.assertThrows(RuntimeException.class, () ->
       {
          LongParameter param = createParameterWithNamespace();
-         param.getValue();
+         param.getAsLong();
       });
    }
 
@@ -122,7 +122,7 @@ public class LongParameterTest
    {
       LongParameter param = createParameterWithNamespace();
       param.loadDefault();
-      assertEquals(initialValue, param.getValue());
+      assertEquals(initialValue, param.getAsLong());
    }
 
    @Test // timeout = 1000

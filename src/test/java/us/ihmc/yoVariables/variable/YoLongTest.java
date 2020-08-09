@@ -156,9 +156,9 @@ public class YoLongTest
    public void testProviderValue()
    {
       yoLong.set(10L * Integer.MAX_VALUE);
-      assertEquals(yoLong.getLongValue(), yoLong.getValue());
+      assertEquals(yoLong.getLongValue(), yoLong.getAsLong());
       yoLong.set(10L * Integer.MIN_VALUE);
-      assertEquals(yoLong.getLongValue(), yoLong.getValue());
+      assertEquals(yoLong.getLongValue(), yoLong.getAsLong());
 
    }
 }

@@ -15,7 +15,8 @@
  */
 package us.ihmc.yoVariables.variable;
 
-import us.ihmc.yoVariables.providers.LongProvider;
+import java.util.function.LongSupplier;
+
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
@@ -23,7 +24,7 @@ import us.ihmc.yoVariables.registry.YoRegistry;
  * 
  * @see YoVariable
  */
-public class YoLong extends YoVariable implements LongProvider
+public class YoLong extends YoVariable implements LongSupplier
 {
    /**
     * Internal long value of this YoLong.
@@ -99,7 +100,7 @@ public class YoLong extends YoVariable implements LongProvider
     * @return the internal long value of this YoLong
     */
    @Override
-   public long getValue()
+   public long getAsLong()
    {
       return value;
    }
@@ -220,7 +221,7 @@ public class YoLong extends YoVariable implements LongProvider
    @Override
    public boolean setValue(YoVariable other, boolean notifyListeners)
    {
-      return set(((YoLong) other).getValue(), notifyListeners);
+      return set(((YoLong) other).getAsLong(), notifyListeners);
    }
 
    /**
