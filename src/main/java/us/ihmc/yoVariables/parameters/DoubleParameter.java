@@ -15,8 +15,9 @@
  */
 package us.ihmc.yoVariables.parameters;
 
+import java.util.function.DoubleSupplier;
+
 import us.ihmc.yoVariables.exceptions.IllegalOperationException;
-import us.ihmc.yoVariables.providers.DoubleProvider;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
 
@@ -26,7 +27,7 @@ import us.ihmc.yoVariables.variable.YoDouble;
  * @author Jesper Smith
  * @see YoParameter
  */
-public class DoubleParameter extends YoParameter implements DoubleProvider
+public class DoubleParameter extends YoParameter implements DoubleSupplier
 {
    private static final double defaultSuggestedMinimum = 0.0;
    private static final double defaultSuggestedMaximum = 1.0;
@@ -194,7 +195,7 @@ public class DoubleParameter extends YoParameter implements DoubleProvider
     * @throws IllegalOperationException if the parameter is not loaded yet.
     */
    @Override
-   public double getValue()
+   public double getAsDouble()
    {
       checkLoaded();
       return value.getDoubleValue();
@@ -249,7 +250,7 @@ public class DoubleParameter extends YoParameter implements DoubleProvider
       public YoDouble duplicate(YoRegistry newRegistry)
       {
          DoubleParameter newParameter = new DoubleParameter(getName(), getDescription(), newRegistry, initialValue, getLowerBound(), getUpperBound());
-         newParameter.value.set(value.getValue());
+         newParameter.value.set(value.getAsDouble());
          newParameter.loadStatus = getLoadStatus();
          return newParameter.value;
       }

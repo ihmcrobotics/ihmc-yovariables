@@ -38,6 +38,6 @@ public class DefaultParameterReaderTest
       DefaultParameterReader reader = new DefaultParameterReader();
       reader.readParametersInRegistry(root);
 
-      assertEquals(initialValue, param.getValue(), 1e-9);
+      assertEquals(initialValue, param.getAsDouble(), 1e-9);
    }
 }

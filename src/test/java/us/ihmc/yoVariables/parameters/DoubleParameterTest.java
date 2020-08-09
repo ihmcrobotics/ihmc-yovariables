@@ -53,7 +53,7 @@ public class DoubleParameterTest
       DoubleParameter test = new DoubleParameter("test", dummy);
       test.loadDefault();
 
-      assertTrue(Double.isNaN(test.getValue()));
+      assertTrue(Double.isNaN(test.getAsDouble()));
 
    }
 
@@ -72,7 +72,7 @@ public class DoubleParameterTest
 
       assertEquals(param.getName(), newParam.getName());
       assertEquals(param.getDescription(), newParam.getDescription());
-      assertEquals(param.getValue(), newParam.getValue(), 1e-9);
+      assertEquals(param.getAsDouble(), newParam.getAsDouble(), 1e-9);
       assertEquals(var.getLowerBound(), newVar.getLowerBound(), 1e-9);
       assertEquals(var.getUpperBound(), newVar.getUpperBound(), 1e-9);
 
@@ -99,7 +99,7 @@ public class DoubleParameterTest
          DoubleParameter param = new DoubleParameter("test", dummy);
          param.load(String.valueOf(s));
 
-         assertEquals(s, param.getValue(), 1e-9);
+         assertEquals(s, param.getAsDouble(), 1e-9);
          assertEquals(String.valueOf(s), param.getValueAsString());
       }
    }
@@ -110,7 +110,7 @@ public class DoubleParameterTest
       Assertions.assertThrows(RuntimeException.class, () ->
       {
          DoubleParameter param = createParameterWithNamespace();
-         param.getValue();
+         param.getAsDouble();
       });
    }
 
@@ -119,7 +119,7 @@ public class DoubleParameterTest
    {
       DoubleParameter param = createParameterWithNamespace();
       param.loadDefault();
-      assertEquals(initialValue, param.getValue(), 1e-9);
+      assertEquals(initialValue, param.getAsDouble(), 1e-9);
    }
 
    @Test // timeout = 1000

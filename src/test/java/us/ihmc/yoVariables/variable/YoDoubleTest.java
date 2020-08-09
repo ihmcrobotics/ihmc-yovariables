@@ -204,7 +204,7 @@ public class YoDoubleTest
       yoDouble1.set(12509481.0);
       yoDouble2.set(2358);
 
-      assertEquals(yoDouble1.getDoubleValue(), yoDouble1.getValue(), 1e-9);
-      assertEquals(yoDouble2.getDoubleValue(), yoDouble2.getValue(), 1e-9);
+      assertEquals(yoDouble1.getDoubleValue(), yoDouble1.getAsDouble(), 1e-9);
+      assertEquals(yoDouble2.getDoubleValue(), yoDouble2.getAsDouble(), 1e-9);
    }
 }

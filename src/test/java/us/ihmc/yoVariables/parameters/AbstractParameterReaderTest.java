@@ -63,7 +63,7 @@ public class AbstractParameterReaderTest
 
          assertEquals(numberOfDefaults, defaultParameters.size());
          assertEquals(numberOfUnmatched, unmatchedParameters.size());
-         assertEquals(expectedValue, parameter.getValue(), Double.MIN_VALUE);
+         assertEquals(expectedValue, parameter.getAsDouble(), Double.MIN_VALUE);
       }
    }
 
@@ -84,7 +84,7 @@ public class AbstractParameterReaderTest
 
       reader.readParametersInRegistry(new YoRegistry("RandomRegistry"));
       reader.readParametersInRegistry(root);
-      assertEquals(loadedValue, parameter.getValue(), Double.MIN_VALUE);
+      assertEquals(loadedValue, parameter.getAsDouble(), Double.MIN_VALUE);
    }
 
    private static class TestParameterReader extends AbstractParameterReader

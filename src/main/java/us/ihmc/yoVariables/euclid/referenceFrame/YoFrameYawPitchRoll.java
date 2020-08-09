@@ -230,21 +230,21 @@ public class YoFrameYawPitchRoll implements FixedFrameYawPitchRollBasics
    @Override
    public double getYaw()
    {
-      return yaw.getValue();
+      return yaw.getAsDouble();
    }
 
    /** {@inheritDoc} */
    @Override
    public double getPitch()
    {
-      return pitch.getValue();
+      return pitch.getAsDouble();
    }
 
    /** {@inheritDoc} */
    @Override
    public double getRoll()
    {
-      return roll.getValue();
+      return roll.getAsDouble();
    }
 
    /**

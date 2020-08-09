@@ -15,7 +15,8 @@
  */
 package us.ihmc.yoVariables.variable;
 
-import us.ihmc.yoVariables.providers.DoubleProvider;
+import java.util.function.DoubleSupplier;
+
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
@@ -23,7 +24,7 @@ import us.ihmc.yoVariables.registry.YoRegistry;
  * 
  * @see YoVariable
  */
-public class YoDouble extends YoVariable implements DoubleProvider
+public class YoDouble extends YoVariable implements DoubleSupplier
 {
    private double value;
 
@@ -148,7 +149,7 @@ public class YoDouble extends YoVariable implements DoubleProvider
     * @return the internal double value of this variable.
     */
    @Override
-   public double getValue()
+   public double getAsDouble()
    {
       return value;
    }
@@ -253,7 +254,7 @@ public class YoDouble extends YoVariable implements DoubleProvider
    @Override
    public boolean setValue(YoVariable other, boolean notifyListeners)
    {
-      return set(((YoDouble) other).getValue(), notifyListeners);
+      return set(((YoDouble) other).getAsDouble(), notifyListeners);
    }
 
    /**

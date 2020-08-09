@@ -120,8 +120,8 @@ public class XMLParameterIOTest
       XmlParameterReader parameterReader = new XmlParameterReader(stream1, stream2);
       parameterReader.readParametersInRegistry(target);
 
-      assertEquals(0.0, parameter1.getValue(), Double.MIN_VALUE);
-      assertEquals(0.5, parameter2.getValue(), Double.MIN_VALUE);
+      assertEquals(0.0, parameter1.getAsDouble(), Double.MIN_VALUE);
+      assertEquals(0.5, parameter2.getAsDouble(), Double.MIN_VALUE);
    }
 
    @Test // timeout = 30000
@@ -146,8 +146,8 @@ public class XMLParameterIOTest
       parameterReader.overwrite(stream2);
       parameterReader.readParametersInRegistry(target);
 
-      assertEquals(0.0, parameter1.getValue(), Double.MIN_VALUE);
-      assertEquals(0.5, parameter2.getValue(), Double.MIN_VALUE);
+      assertEquals(0.0, parameter1.getAsDouble(), Double.MIN_VALUE);
+      assertEquals(0.5, parameter2.getAsDouble(), Double.MIN_VALUE);
    }
 
    @Test // timeout = 30000, expected = RuntimeException.class
@@ -173,8 +173,8 @@ public class XMLParameterIOTest
          parameterReader.overwrite(stream2);
          parameterReader.readParametersInRegistry(target);
 
-         assertEquals(0.0, parameter1.getValue(), Double.MIN_VALUE);
-         assertEquals(0.5, parameter2.getValue(), Double.MIN_VALUE);
+         assertEquals(0.0, parameter1.getAsDouble(), Double.MIN_VALUE);
+         assertEquals(0.5, parameter2.getAsDouble(), Double.MIN_VALUE);
       });
    }
 

@@ -181,14 +181,14 @@ public class YoFrameUnitVector2D extends YoFrameTuple2D implements FixedFrameUni
    @Override
    public double getRawX()
    {
-      return getYoX().getValue();
+      return getYoX().getAsDouble();
    }
 
    /** {@inheritDoc} */
    @Override
    public double getRawY()
    {
-      return getYoY().getValue();
+      return getYoY().getAsDouble();
    }
 
    /** {@inheritDoc} */
