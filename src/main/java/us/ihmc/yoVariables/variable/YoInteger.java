@@ -15,7 +15,8 @@
  */
 package us.ihmc.yoVariables.variable;
 
-import us.ihmc.yoVariables.providers.IntegerProvider;
+import java.util.function.IntSupplier;
+
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
@@ -23,7 +24,7 @@ import us.ihmc.yoVariables.registry.YoRegistry;
  * 
  * @see YoVariable
  */
-public class YoInteger extends YoVariable implements IntegerProvider
+public class YoInteger extends YoVariable implements IntSupplier
 {
    /**
     * Internal integer value of this YoInteger.
@@ -110,7 +111,7 @@ public class YoInteger extends YoVariable implements IntegerProvider
     * @return the internal integer value of this variable.
     */
    @Override
-   public int getValue()
+   public int getAsInt()
    {
       return value;
    }
@@ -212,7 +213,7 @@ public class YoInteger extends YoVariable implements IntegerProvider
    @Override
    public boolean setValue(YoVariable other, boolean notifyListeners)
    {
-      return set(((YoInteger) other).getValue(), notifyListeners);
+      return set(((YoInteger) other).getAsInt(), notifyListeners);
    }
 
    /**

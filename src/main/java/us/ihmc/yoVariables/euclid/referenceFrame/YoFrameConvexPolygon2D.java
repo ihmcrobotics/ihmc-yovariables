@@ -231,7 +231,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
       if (isUpToDate)
          return;
 
-      numberOfVertices.set(EuclidGeometryPolygonTools.inPlaceGiftWrapConvexHull2D(vertexBuffer, numberOfVertices.getValue()));
+      numberOfVertices.set(EuclidGeometryPolygonTools.inPlaceGiftWrapConvexHull2D(vertexBuffer, numberOfVertices.getAsInt()));
       isUpToDate = true;
 
       updateCentroidAndArea();
@@ -242,7 +242,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
    @Override
    public void updateCentroidAndArea()
    {
-      area = EuclidGeometryPolygonTools.computeConvexPolygon2DArea(vertexBuffer, numberOfVertices.getValue(), clockwiseOrdered, centroid);
+      area = EuclidGeometryPolygonTools.computeConvexPolygon2DArea(vertexBuffer, numberOfVertices.getAsInt(), clockwiseOrdered, centroid);
    }
 
    /** {@inheritDoc} */
@@ -250,7 +250,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
    public void addVertex(double x, double y)
    {
       isUpToDate = false;
-      YoFramePoint2D newVertex = vertexBuffer.get(numberOfVertices.getValue());
+      YoFramePoint2D newVertex = vertexBuffer.get(numberOfVertices.getAsInt());
       if (newVertex == null)
          throw new RuntimeException("This polygon has reached its maximum number of vertices.");
       newVertex.set(x, y);
@@ -264,13 +264,13 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
       checkNonEmpty();
       checkIndexInBoundaries(indexOfVertexToRemove);
 
-      if (indexOfVertexToRemove == numberOfVertices.getValue() - 1)
+      if (indexOfVertexToRemove == numberOfVertices.getAsInt() - 1)
       {
          numberOfVertices.decrement();
          return;
       }
       isUpToDate = false;
-      swap(vertexBuffer, indexOfVertexToRemove, numberOfVertices.getValue() - 1);
+      swap(vertexBuffer, indexOfVertexToRemove, numberOfVertices.getAsInt() - 1);
       numberOfVertices.decrement();
    }
 
@@ -322,7 +322,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
    @Override
    public int getNumberOfVertices()
    {
-      return numberOfVertices.getValue();
+      return numberOfVertices.getAsInt();
    }
 
    /**

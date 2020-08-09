@@ -56,7 +56,7 @@ public class IntegerParameterTest
       IntegerParameter test = new IntegerParameter("test", dummy);
       test.loadDefault();
 
-      assertEquals(0, test.getValue());
+      assertEquals(0, test.getAsInt());
 
    }
 
@@ -75,7 +75,7 @@ public class IntegerParameterTest
 
       assertEquals(param.getName(), newParam.getName());
       assertEquals(param.getDescription(), newParam.getDescription());
-      assertEquals(param.getValue(), newParam.getValue(), 1e-9);
+      assertEquals(param.getAsInt(), newParam.getAsInt(), 1e-9);
       assertEquals(var.getLowerBound(), newVar.getLowerBound(), 1e-9);
       assertEquals(var.getUpperBound(), newVar.getUpperBound(), 1e-9);
 
@@ -102,7 +102,7 @@ public class IntegerParameterTest
          IntegerParameter param = new IntegerParameter("test", dummy);
          param.load(String.valueOf(s));
 
-         assertEquals(s, param.getValue());
+         assertEquals(s, param.getAsInt());
          assertEquals(String.valueOf(s), param.getValueAsString());
       }
    }
@@ -113,7 +113,7 @@ public class IntegerParameterTest
       Assertions.assertThrows(RuntimeException.class, () ->
       {
          IntegerParameter param = createParameterWithNamespace();
-         param.getValue();
+         param.getAsInt();
       });
    }
 
@@ -122,7 +122,7 @@ public class IntegerParameterTest
    {
       IntegerParameter param = createParameterWithNamespace();
       param.loadDefault();
-      assertEquals(initialValue, param.getValue());
+      assertEquals(initialValue, param.getAsInt());
    }
 
    @Test // timeout = 1000

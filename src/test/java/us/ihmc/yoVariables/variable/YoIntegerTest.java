@@ -152,9 +152,9 @@ public class YoIntegerTest
    public void testProviderValue()
    {
       yoInteger.set(1250948);
-      assertEquals(yoInteger.getIntegerValue(), yoInteger.getValue());
+      assertEquals(yoInteger.getIntegerValue(), yoInteger.getAsInt());
       yoInteger.set(-521);
-      assertEquals(yoInteger.getIntegerValue(), yoInteger.getValue());
+      assertEquals(yoInteger.getIntegerValue(), yoInteger.getAsInt());
 
    }
 }

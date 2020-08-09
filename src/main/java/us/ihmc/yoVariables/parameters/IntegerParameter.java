@@ -15,8 +15,9 @@
  */
 package us.ihmc.yoVariables.parameters;
 
+import java.util.function.IntSupplier;
+
 import us.ihmc.yoVariables.exceptions.IllegalOperationException;
-import us.ihmc.yoVariables.providers.IntegerProvider;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoInteger;
 
@@ -26,7 +27,7 @@ import us.ihmc.yoVariables.variable.YoInteger;
  * @author Jesper Smith
  * @see YoParameter
  */
-public class IntegerParameter extends YoParameter implements IntegerProvider
+public class IntegerParameter extends YoParameter implements IntSupplier
 {
    private static final int DefaultSuggestedMinimum = -10;
    private static final int DefaultSuggestedMaximum = 10;
@@ -194,7 +195,7 @@ public class IntegerParameter extends YoParameter implements IntegerProvider
     * @throws IllegalOperationException if the parameter is not loaded yet.
     */
    @Override
-   public int getValue()
+   public int getAsInt()
    {
       checkLoaded();
       return value.getIntegerValue();
@@ -269,7 +270,7 @@ public class IntegerParameter extends YoParameter implements IntegerProvider
                                                               initialValue,
                                                               (int) getLowerBound(),
                                                               (int) getUpperBound());
-         newParameter.value.set(value.getValue());
+         newParameter.value.set(value.getAsInt());
          newParameter.loadStatus = getLoadStatus();
          return newParameter.value;
       }
