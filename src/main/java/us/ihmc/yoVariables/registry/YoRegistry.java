@@ -559,10 +559,10 @@ public class YoRegistry implements YoVariableHolder
     *
     * @return list of all variables registered to this registry and its child registries.
     */
-   public List<YoVariable> subtreeVariables()
+   public List<YoVariable> collectSubtreeVariables()
    {
       List<YoVariable> yoVariables = new ArrayList<>();
-      subtreeVariables(yoVariables);
+      collectSubtreeVariables(yoVariables);
       return yoVariables;
    }
 
@@ -573,7 +573,7 @@ public class YoRegistry implements YoVariableHolder
     * @param variablesToPack list used to store all variables registered to this registry and its child
     *                        registries.
     */
-   private void subtreeVariables(List<YoVariable> variablesToPack)
+   private void collectSubtreeVariables(List<YoVariable> variablesToPack)
    {
       // Add ours:
       variablesToPack.addAll(variables);
@@ -581,7 +581,7 @@ public class YoRegistry implements YoVariableHolder
       // Add children's recursively:
       for (YoRegistry child : children)
       {
-         child.subtreeVariables(variablesToPack);
+         child.collectSubtreeVariables(variablesToPack);
       }
    }
 
@@ -591,10 +591,10 @@ public class YoRegistry implements YoVariableHolder
     *
     * @return list of all parameters registered to this registry and its child registries.
     */
-   public List<YoParameter> subtreeParameters()
+   public List<YoParameter> collectSubtreeParameters()
    {
       List<YoParameter> yoParameters = new ArrayList<>();
-      subtreeParameters(yoParameters);
+      collectSubtreeParameters(yoParameters);
       return yoParameters;
    }
 
@@ -605,7 +605,7 @@ public class YoRegistry implements YoVariableHolder
     * @param parametersToPack list used to store all parameters registered to this registry and its
     *                         child registries.
     */
-   private void subtreeParameters(List<YoParameter> parametersToPack)
+   private void collectSubtreeParameters(List<YoParameter> parametersToPack)
    {
       // Add ours:
       parametersToPack.addAll(parameters);
@@ -613,7 +613,7 @@ public class YoRegistry implements YoVariableHolder
       // Add children's recursively:
       for (YoRegistry child : children)
       {
-         child.subtreeParameters(parametersToPack);
+         child.collectSubtreeParameters(parametersToPack);
       }
    }
 
@@ -622,10 +622,10 @@ public class YoRegistry implements YoVariableHolder
     *
     * @return list of all the registries composing the subtree starting at {@code this}.
     */
-   public List<YoRegistry> subtreeRegistries()
+   public List<YoRegistry> collectSubtreeRegistries()
    {
       List<YoRegistry> yoVariableRegistries = new ArrayList<>();
-      subtreeRegistries(yoVariableRegistries);
+      collectSubtreeRegistries(yoVariableRegistries);
       return yoVariableRegistries;
    }
 
@@ -636,7 +636,7 @@ public class YoRegistry implements YoVariableHolder
     * @param yoVariableRegistriesToPack list used to store all the registries composing the subtree
     *                                   starting at {@code this}.
     */
-   public void subtreeRegistries(List<YoRegistry> yoVariableRegistriesToPack)
+   public void collectSubtreeRegistries(List<YoRegistry> yoVariableRegistriesToPack)
    {
       // Add mine:
       yoVariableRegistriesToPack.add(this);
@@ -644,7 +644,7 @@ public class YoRegistry implements YoVariableHolder
       // Add all the children recursively:
       for (YoRegistry child : children)
       {
-         child.subtreeRegistries(yoVariableRegistriesToPack);
+         child.collectSubtreeRegistries(yoVariableRegistriesToPack);
       }
    }
 

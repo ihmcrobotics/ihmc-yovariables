@@ -119,7 +119,7 @@ public class YoRegistryTest
    @Test
    public void testGetAllVariables()
    {
-      List<YoVariable> allVars = testRegistry.subtreeVariables();
+      List<YoVariable> allVars = testRegistry.collectSubtreeVariables();
       assertTrue(allVars.size() == 4);
    }
 
@@ -540,10 +540,10 @@ public class YoRegistryTest
 
       int nVarsExpected = nVarsChildOne + nVarsChildTwo + N_VARS_IN_ROOT;
 
-      List<YoVariable> allVariables = testRegistry.subtreeVariables();
+      List<YoVariable> allVariables = testRegistry.collectSubtreeVariables();
       assertEquals(nVarsExpected, allVariables.size());
 
-      assertEquals(nVarsChildTwo, childTwo.subtreeVariables().size());
+      assertEquals(nVarsChildTwo, childTwo.collectSubtreeVariables().size());
    }
 
    @Test
@@ -637,7 +637,7 @@ public class YoRegistryTest
       assertEquals("root.registry1.registry10.variable10_A", variable10_A.getFullNameString());
       assertEquals("root.registry0.registry01.registry011.variable011_A", variable011_A.getFullNameString());
 
-      List<YoVariable> allRootVariables = root.subtreeVariables();
+      List<YoVariable> allRootVariables = root.collectSubtreeVariables();
       assertEquals(8, allRootVariables.size());
 
       assertTrue(registry10.hasUniqueVariable("root.registry1.registry10.variable10_A"));
@@ -715,7 +715,7 @@ public class YoRegistryTest
    @Test
    public void testGetAllRegistriesIncludingChildren()
    {
-      List<YoRegistry> registries = robotRegistry.subtreeRegistries();
+      List<YoRegistry> registries = robotRegistry.collectSubtreeRegistries();
 
       assertEquals(3, registries.size());
       assertTrue(registries.contains(robotRegistry));
@@ -793,12 +793,12 @@ public class YoRegistryTest
    @Test
    public void testClear()
    {
-      assertFalse(robotRegistry.subtreeVariables().size() == 0);
+      assertFalse(robotRegistry.collectSubtreeVariables().size() == 0);
       assertFalse(robotRegistry.getChildren().size() == 0);
 
       robotRegistry.clear();
 
-      assertTrue(robotRegistry.subtreeVariables().size() == 0);
+      assertTrue(robotRegistry.collectSubtreeVariables().size() == 0);
       assertTrue(robotRegistry.getChildren().size() == 0);
    }
 
@@ -851,11 +851,11 @@ public class YoRegistryTest
       assertFalse(ab.hasParameters());
       assertFalse(aab.hasParameters());
 
-      assertEquals(3, a.subtreeParameters().size());
-      assertEquals(3, aa.subtreeParameters().size());
-      assertEquals(2, aaa.subtreeParameters().size());
-      assertEquals(0, ab.subtreeParameters().size());
-      assertEquals(0, aab.subtreeParameters().size());
+      assertEquals(3, a.collectSubtreeParameters().size());
+      assertEquals(3, aa.collectSubtreeParameters().size());
+      assertEquals(2, aaa.collectSubtreeParameters().size());
+      assertEquals(0, ab.collectSubtreeParameters().size());
+      assertEquals(0, aab.collectSubtreeParameters().size());
 
       assertEquals(1, aa.getParameters().size());
       assertEquals(2, aaa.getParameters().size());
@@ -863,9 +863,9 @@ public class YoRegistryTest
       assertEquals(0, ab.getParameters().size());
       assertEquals(0, aab.getParameters().size());
 
-      assertTrue(a.subtreeParameters().contains(paramater1));
-      assertTrue(a.subtreeParameters().contains(paramater2));
-      assertTrue(a.subtreeParameters().contains(paramater3));
+      assertTrue(a.collectSubtreeParameters().contains(paramater1));
+      assertTrue(a.collectSubtreeParameters().contains(paramater2));
+      assertTrue(a.collectSubtreeParameters().contains(paramater3));
 
       assertTrue(aa.getParameters().contains(paramater1));
       assertTrue(aaa.getParameters().contains(paramater2));

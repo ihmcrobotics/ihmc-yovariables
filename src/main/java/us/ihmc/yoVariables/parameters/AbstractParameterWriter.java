@@ -39,7 +39,7 @@ public abstract class AbstractParameterWriter
     */
    public void addParameters(YoRegistry registry)
    {
-      List<YoParameter> parameters = registry.subtreeParameters();
+      List<YoParameter> parameters = registry.collectSubtreeParameters();
 
       for (int i = 0; i < parameters.size(); i++)
       {
