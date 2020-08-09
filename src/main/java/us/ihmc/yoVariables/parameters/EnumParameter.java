@@ -16,8 +16,8 @@
 package us.ihmc.yoVariables.parameters;
 
 import us.ihmc.yoVariables.exceptions.IllegalOperationException;
-import us.ihmc.yoVariables.providers.EnumSupplier;
 import us.ihmc.yoVariables.registry.YoRegistry;
+import us.ihmc.yoVariables.suppliers.EnumSupplier;
 import us.ihmc.yoVariables.variable.YoEnum;
 import us.ihmc.yoVariables.variable.YoVariable;
 

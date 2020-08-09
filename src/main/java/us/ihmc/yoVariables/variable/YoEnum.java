@@ -17,8 +17,8 @@ package us.ihmc.yoVariables.variable;
 
 import java.util.Arrays;
 
-import us.ihmc.yoVariables.providers.EnumSupplier;
 import us.ihmc.yoVariables.registry.YoRegistry;
+import us.ihmc.yoVariables.suppliers.EnumSupplier;
 
 /**
  * Enum implementation of a {@code YoVariable}.
