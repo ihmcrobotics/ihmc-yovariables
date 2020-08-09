@@ -60,7 +60,7 @@ public class EnumParameterTest
 
       yesnull.load("NULL");
 
-      assertEquals(null, yesnull.getValue());
+      assertEquals(null, yesnull.get());
 
    }
 
@@ -81,7 +81,7 @@ public class EnumParameterTest
 
       assertEquals(param.getName(), newParam.getName());
       assertEquals(param.getDescription(), newParam.getDescription());
-      assertEquals(param.getValue(), newParam.getValue());
+      assertEquals(param.get(), newParam.get());
 
       assertEquals(var.isNullAllowed(), newVar.isNullAllowed());
       assertArrayEquals(var.getEnumValues(), newVar.getEnumValues());
@@ -148,8 +148,8 @@ public class EnumParameterTest
       nonull.loadDefault();
       yesnull.loadDefault();
 
-      assertEquals(TestEnum.A, nonull.getValue());
-      assertEquals(null, yesnull.getValue());
+      assertEquals(TestEnum.A, nonull.get());
+      assertEquals(null, yesnull.get());
 
    }
 
@@ -175,7 +175,7 @@ public class EnumParameterTest
          String stringValue = element.toString();
          param.load(stringValue);
 
-         assertEquals(TestEnum.valueOf(stringValue), param.getValue());
+         assertEquals(TestEnum.valueOf(stringValue), param.get());
          assertEquals(stringValue, param.getValueAsString());
       }
    }
@@ -186,7 +186,7 @@ public class EnumParameterTest
       Assertions.assertThrows(RuntimeException.class, () ->
       {
          EnumParameter<TestEnum> param = createParameterWithNamespace();
-         param.getValue();
+         param.get();
       });
    }
 
@@ -195,7 +195,7 @@ public class EnumParameterTest
    {
       EnumParameter<TestEnum> param = createParameterWithNamespace();
       param.loadDefault();
-      assertEquals(initialValue, param.getValue());
+      assertEquals(initialValue, param.get());
    }
 
    @Test // timeout = 1000
@@ -261,7 +261,7 @@ public class EnumParameterTest
          YoRegistry registry = new YoRegistry("test");
          EnumParameter<?> nullDefault = new EnumParameter<>("nullDefault", "", registry, true, constants);
          nullDefault.loadDefault();
-         nullDefault.getValue();
+         nullDefault.get();
       });
    }
 

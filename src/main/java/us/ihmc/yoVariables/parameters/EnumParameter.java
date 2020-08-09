@@ -16,7 +16,7 @@
 package us.ihmc.yoVariables.parameters;
 
 import us.ihmc.yoVariables.exceptions.IllegalOperationException;
-import us.ihmc.yoVariables.providers.EnumProvider;
+import us.ihmc.yoVariables.providers.EnumSupplier;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoEnum;
 import us.ihmc.yoVariables.variable.YoVariable;
@@ -28,7 +28,7 @@ import us.ihmc.yoVariables.variable.YoVariable;
  * @param <E> The enum type used with this parameter.
  * @see YoParameter
  */
-public class EnumParameter<E extends Enum<E>> extends YoParameter implements EnumProvider<E>
+public class EnumParameter<E extends Enum<E>> extends YoParameter implements EnumSupplier<E>
 {
    /** The variable backing this parameter. */
    private final YoEnum<E> value;
@@ -136,7 +136,7 @@ public class EnumParameter<E extends Enum<E>> extends YoParameter implements Enu
     * @throws IllegalOperationException if the parameter is not loaded yet.
     */
    @Override
-   public E getValue()
+   public E get()
    {
       checkLoaded();
       return value.getEnumValue();

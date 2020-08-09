@@ -254,8 +254,8 @@ public class YoEnumTest
       yoEnum.set(EnumYoVariableTestEnums.ONE);
       yoEnum2.set(EnumYoVariableTestEnums.TWO);
 
-      assertEquals(yoEnum.getEnumValue(), yoEnum.getValue());
-      assertEquals(yoEnum2.getEnumValue(), yoEnum2.getValue());
+      assertEquals(yoEnum.getEnumValue(), yoEnum.get());
+      assertEquals(yoEnum2.getEnumValue(), yoEnum2.get());
    }
 
    @Test // expected = RuntimeException.class, timeout = 1000

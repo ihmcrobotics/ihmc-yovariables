@@ -17,7 +17,7 @@ package us.ihmc.yoVariables.variable;
 
 import java.util.Arrays;
 
-import us.ihmc.yoVariables.providers.EnumProvider;
+import us.ihmc.yoVariables.providers.EnumSupplier;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
@@ -26,7 +26,7 @@ import us.ihmc.yoVariables.registry.YoRegistry;
  * @param <E> The enum type used with this variable.
  * @see YoVariable
  */
-public class YoEnum<E extends Enum<E>> extends YoVariable implements EnumProvider<E>
+public class YoEnum<E extends Enum<E>> extends YoVariable implements EnumSupplier<E>
 {
    /** Ordinal representing the {@code null} value. */
    public static final int NULL_VALUE = -1;
@@ -266,7 +266,7 @@ public class YoEnum<E extends Enum<E>> extends YoVariable implements EnumProvide
     * @see #isBackedByEnum()
     */
    @Override
-   public E getValue()
+   public E get()
    {
       return getEnumValue();
    }
