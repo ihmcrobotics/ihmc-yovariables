@@ -15,15 +15,15 @@
  */
 package us.ihmc.yoVariables.parameters;
 
-import static us.ihmc.robotics.Assert.assertEquals;
-import static us.ihmc.robotics.Assert.assertFalse;
-import static us.ihmc.robotics.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import us.ihmc.yoVariables.listener.ParameterChangedListener;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.listener.YoParameterChangedListener;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoBoolean;
 
 public class BooleanParameterTest
@@ -32,10 +32,10 @@ public class BooleanParameterTest
 
    public BooleanParameter createParameterWithNamespace()
    {
-      YoVariableRegistry root = new YoVariableRegistry("root");
-      YoVariableRegistry a = new YoVariableRegistry("a");
-      YoVariableRegistry b = new YoVariableRegistry("b");
-      YoVariableRegistry c = new YoVariableRegistry("c");
+      YoRegistry root = new YoRegistry("root");
+      YoRegistry a = new YoRegistry("a");
+      YoRegistry b = new YoRegistry("b");
+      YoRegistry c = new YoRegistry("c");
 
       root.addChild(a);
       a.addChild(b);
@@ -52,7 +52,7 @@ public class BooleanParameterTest
 
       BooleanParameter param = createParameterWithNamespace();
 
-      assertEquals("root.a.b.c", param.getNameSpace().toString());
+      assertEquals("root.a.b.c", param.getNamespace().toString());
       assertEquals("param", param.getName());
 
    }
@@ -76,7 +76,7 @@ public class BooleanParameterTest
       for (int i = 0; i < options.length; i++)
       {
 
-         YoVariableRegistry dummy = new YoVariableRegistry("dummy");
+         YoRegistry dummy = new YoRegistry("dummy");
          BooleanParameter param = new BooleanParameter("test", dummy);
          param.load(options[i]);
 
@@ -102,7 +102,7 @@ public class BooleanParameterTest
 
       var.set(true);
 
-      YoVariableRegistry newRegistry = new YoVariableRegistry("newRegistry");
+      YoRegistry newRegistry = new YoRegistry("newRegistry");
       YoBoolean newVar = var.duplicate(newRegistry);
       BooleanParameter newParam = (BooleanParameter) newVar.getParameter();
 
@@ -117,7 +117,7 @@ public class BooleanParameterTest
    {
       BooleanParameter param = createParameterWithNamespace();
       CallbackTest callback = new CallbackTest();
-      param.addParameterChangedListener(callback);
+      param.addListener(callback);
 
       assertFalse(callback.set);
 
@@ -135,12 +135,12 @@ public class BooleanParameterTest
 
    }
 
-   private class CallbackTest implements ParameterChangedListener
+   private class CallbackTest implements YoParameterChangedListener
    {
       boolean set = false;
 
       @Override
-      public void notifyOfParameterChange(YoParameter<?> v)
+      public void changed(YoParameter v)
       {
          set = true;
       }

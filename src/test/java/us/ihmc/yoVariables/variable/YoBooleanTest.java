@@ -1,8 +1,8 @@
 package us.ihmc.yoVariables.variable;
 
-import static us.ihmc.robotics.Assert.assertEquals;
-import static us.ihmc.robotics.Assert.assertFalse;
-import static us.ihmc.robotics.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Random;
 
@@ -10,19 +10,18 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import us.ihmc.robotics.Assert;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoBooleanTest
 {
    private YoBoolean yoBoolean;
-   private YoVariableRegistry registry;
+   private YoRegistry registry;
    private static final double EPSILON = 1e-10;
 
    @BeforeEach
    public void setUp()
    {
-      registry = new YoVariableRegistry("testRegistry");
+      registry = new YoRegistry("testRegistry");
       yoBoolean = new YoBoolean("booleanVariable", registry);
    }
 
@@ -36,9 +35,9 @@ public class YoBooleanTest
    @Test // timeout=300000
    public void testBooleanYoVariable()
    {
-      Assert.assertEquals("booleanVariable", yoBoolean.getName());
-      Assert.assertEquals("testRegistry", yoBoolean.getYoVariableRegistry().getName());
-      Assert.assertEquals(false, yoBoolean.getBooleanValue());
+      assertEquals("booleanVariable", yoBoolean.getName());
+      assertEquals("testRegistry", yoBoolean.getRegistry().getName());
+      assertEquals(false, yoBoolean.getBooleanValue());
    }
 
    @Test // timeout=300000
@@ -127,25 +126,9 @@ public class YoBooleanTest
    public void testToString()
    {
       yoBoolean.set(false);
-      Assert.assertEquals(yoBoolean.toString(), "booleanVariable: false");
+      assertEquals(yoBoolean.toString(), "booleanVariable: false");
       yoBoolean.set(true);
-      Assert.assertEquals(yoBoolean.toString(), "booleanVariable: true");
-   }
-
-   @Test // timeout=300000
-   public void testGetValueWithStringBuffer()
-   {
-      StringBuffer testStringBuffer = new StringBuffer();
-      testStringBuffer.append("Test Case: ");
-      yoBoolean.set(false);
-      yoBoolean.getValueString(testStringBuffer);
-      testStringBuffer.append(" ");
-      yoBoolean.getValueStringFromDouble(testStringBuffer, 1.0);
-
-      StringBuffer expectedTestStringBuffer = new StringBuffer();
-      expectedTestStringBuffer.append("Test Case: false true");
-
-      assertEquals(testStringBuffer.toString(), expectedTestStringBuffer.toString());
+      assertEquals(yoBoolean.toString(), "booleanVariable: true");
    }
 
    @Test // timeout=300000
@@ -167,36 +150,23 @@ public class YoBooleanTest
    @Test // timeout=300000
    public void testYoVariableType()
    {
-      Assert.assertEquals(yoBoolean.getYoVariableType(), YoVariableType.BOOLEAN);
+      assertEquals(yoBoolean.getType(), YoVariableType.BOOLEAN);
    }
 
    @Test // timeout=300000
    public void testDuplicate()
    {
-      YoVariableRegistry newRegistry = new YoVariableRegistry("newTestRegistry");
+      YoRegistry newRegistry = new YoRegistry("newTestRegistry");
       YoBoolean val, testVal;
 
       yoBoolean.set(true);
       val = yoBoolean.duplicate(newRegistry);
-      testVal = (YoBoolean) newRegistry.getAllVariables().get(0);
-      Assert.assertEquals(yoBoolean.getBooleanValue(), val.getBooleanValue());
-      Assert.assertEquals(yoBoolean.getBooleanValue(), testVal.getBooleanValue());
-      assertTrue(val.getYoVariableRegistry().areEqual(newRegistry));
-      assertTrue(val.getYoVariableRegistry().areEqual(testVal.getYoVariableRegistry()));
+      testVal = (YoBoolean) newRegistry.getVariables().get(0);
+      assertEquals(yoBoolean.getBooleanValue(), val.getBooleanValue());
+      assertEquals(yoBoolean.getBooleanValue(), testVal.getBooleanValue());
+      assertTrue(val.getRegistry().equals(newRegistry));
+      assertTrue(val.getRegistry().equals(testVal.getRegistry()));
       newRegistry = null;
-   }
-
-   @Test // timeout=300000
-   public void testSetValue()
-   {
-      boolean valSet = false;
-      YoVariableRegistry newRegistry = new YoVariableRegistry("newTestRegistry");
-      YoBoolean testBoolean = new YoBoolean("testBooleanVariable", newRegistry);
-      testBoolean.set(true);
-      valSet = yoBoolean.setValue(testBoolean, false);
-      assertTrue(valSet);
-      Assert.assertEquals(yoBoolean.getBooleanValue(), testBoolean.getBooleanValue());
-      assertTrue(yoBoolean.getYoVariableRegistry().areEqual(registry));
    }
 
    @Test // timeout=300000

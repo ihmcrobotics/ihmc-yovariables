@@ -15,15 +15,15 @@
  */
 package us.ihmc.yoVariables.parameters;
 
-import static us.ihmc.robotics.Assert.assertEquals;
-import static us.ihmc.robotics.Assert.assertFalse;
-import static us.ihmc.robotics.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import us.ihmc.yoVariables.listener.ParameterChangedListener;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.listener.YoParameterChangedListener;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
 
 public class DoubleParameterTest
@@ -32,10 +32,10 @@ public class DoubleParameterTest
 
    public DoubleParameter createParameterWithNamespace()
    {
-      YoVariableRegistry root = new YoVariableRegistry("root");
-      YoVariableRegistry a = new YoVariableRegistry("a");
-      YoVariableRegistry b = new YoVariableRegistry("b");
-      YoVariableRegistry c = new YoVariableRegistry("c");
+      YoRegistry root = new YoRegistry("root");
+      YoRegistry a = new YoRegistry("a");
+      YoRegistry b = new YoRegistry("b");
+      YoRegistry c = new YoRegistry("c");
 
       root.addChild(a);
       a.addChild(b);
@@ -49,7 +49,7 @@ public class DoubleParameterTest
    @Test // timeout = 1000
    public void testConstructDefaultValue()
    {
-      YoVariableRegistry dummy = new YoVariableRegistry("dummy");
+      YoRegistry dummy = new YoRegistry("dummy");
       DoubleParameter test = new DoubleParameter("test", dummy);
       test.loadDefault();
 
@@ -66,15 +66,15 @@ public class DoubleParameterTest
 
       var.set(632.0);
 
-      YoVariableRegistry newRegistry = new YoVariableRegistry("newRegistry");
+      YoRegistry newRegistry = new YoRegistry("newRegistry");
       YoDouble newVar = var.duplicate(newRegistry);
       DoubleParameter newParam = (DoubleParameter) newVar.getParameter();
 
       assertEquals(param.getName(), newParam.getName());
       assertEquals(param.getDescription(), newParam.getDescription());
       assertEquals(param.getValue(), newParam.getValue(), 1e-9);
-      assertEquals(var.getManualScalingMin(), newVar.getManualScalingMin(), 1e-9);
-      assertEquals(var.getManualScalingMax(), newVar.getManualScalingMax(), 1e-9);
+      assertEquals(var.getLowerBound(), newVar.getLowerBound(), 1e-9);
+      assertEquals(var.getUpperBound(), newVar.getUpperBound(), 1e-9);
 
    }
 
@@ -84,7 +84,7 @@ public class DoubleParameterTest
 
       DoubleParameter param = createParameterWithNamespace();
 
-      assertEquals("root.a.b.c", param.getNameSpace().toString());
+      assertEquals("root.a.b.c", param.getNamespace().toString());
       assertEquals("param", param.getName());
 
    }
@@ -95,7 +95,7 @@ public class DoubleParameterTest
 
       for (double s = 0; s < 100.0; s += 1.153165)
       {
-         YoVariableRegistry dummy = new YoVariableRegistry("dummy");
+         YoRegistry dummy = new YoRegistry("dummy");
          DoubleParameter param = new DoubleParameter("test", dummy);
          param.load(String.valueOf(s));
 
@@ -127,7 +127,7 @@ public class DoubleParameterTest
    {
       DoubleParameter param = createParameterWithNamespace();
       CallbackTest callback = new CallbackTest();
-      param.addParameterChangedListener(callback);
+      param.addListener(callback);
 
       assertFalse(callback.set);
 
@@ -145,12 +145,12 @@ public class DoubleParameterTest
 
    }
 
-   private class CallbackTest implements ParameterChangedListener
+   private class CallbackTest implements YoParameterChangedListener
    {
       boolean set = false;
 
       @Override
-      public void notifyOfParameterChange(YoParameter<?> v)
+      public void changed(YoParameter v)
       {
          set = true;
       }

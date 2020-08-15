@@ -15,16 +15,16 @@
  */
 package us.ihmc.yoVariables.parameters;
 
-import static us.ihmc.robotics.Assert.assertArrayEquals;
-import static us.ihmc.robotics.Assert.assertEquals;
-import static us.ihmc.robotics.Assert.assertFalse;
-import static us.ihmc.robotics.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import us.ihmc.yoVariables.listener.ParameterChangedListener;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.listener.YoParameterChangedListener;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoEnum;
 
 public class EnumParameterTest
@@ -38,10 +38,10 @@ public class EnumParameterTest
 
    public EnumParameter<TestEnum> createParameterWithNamespace()
    {
-      YoVariableRegistry root = new YoVariableRegistry("root");
-      YoVariableRegistry a = new YoVariableRegistry("a");
-      YoVariableRegistry b = new YoVariableRegistry("b");
-      YoVariableRegistry c = new YoVariableRegistry("c");
+      YoRegistry root = new YoRegistry("root");
+      YoRegistry a = new YoRegistry("a");
+      YoRegistry b = new YoRegistry("b");
+      YoRegistry c = new YoRegistry("c");
 
       root.addChild(a);
       a.addChild(b);
@@ -55,7 +55,7 @@ public class EnumParameterTest
    @Test // timeout = 1000
    public void testLoadNullValue()
    {
-      YoVariableRegistry dummy = new YoVariableRegistry("dummy");
+      YoRegistry dummy = new YoRegistry("dummy");
       EnumParameter<TestEnum> yesnull = new EnumParameter<>("yesnull", dummy, TestEnum.class, true, initialValue);
 
       yesnull.load("NULL");
@@ -74,7 +74,7 @@ public class EnumParameterTest
 
       var.set(TestEnum.E);
 
-      YoVariableRegistry newRegistry = new YoVariableRegistry("newRegistry");
+      YoRegistry newRegistry = new YoRegistry("newRegistry");
       YoEnum<TestEnum> newVar = var.duplicate(newRegistry);
       @SuppressWarnings("unchecked")
       EnumParameter<TestEnum> newParam = (EnumParameter<TestEnum>) newVar.getParameter();
@@ -83,7 +83,7 @@ public class EnumParameterTest
       assertEquals(param.getDescription(), newParam.getDescription());
       assertEquals(param.getValue(), newParam.getValue());
 
-      assertEquals(var.getAllowNullValue(), newVar.getAllowNullValue());
+      assertEquals(var.isNullAllowed(), newVar.isNullAllowed());
       assertArrayEquals(var.getEnumValues(), newVar.getEnumValues());
 
    }
@@ -91,7 +91,7 @@ public class EnumParameterTest
    @Test // timeout = 1000
    public void testStringDuplicate()
    {
-      YoVariableRegistry root = new YoVariableRegistry("root");
+      YoRegistry root = new YoRegistry("root");
 
       EnumParameter<?> param = new EnumParameter<>("testString", "stringDescription", root, true, "A", "B", "C", "D", "E", "F");
       @SuppressWarnings("unchecked")
@@ -100,7 +100,7 @@ public class EnumParameterTest
 
       var.set(4);
 
-      YoVariableRegistry newRegistry = new YoVariableRegistry("newRegistry");
+      YoRegistry newRegistry = new YoRegistry("newRegistry");
       YoEnum<TestEnum> newVar = var.duplicate(newRegistry);
       @SuppressWarnings("unchecked")
       EnumParameter<TestEnum> newParam = (EnumParameter<TestEnum>) newVar.getParameter();
@@ -110,7 +110,7 @@ public class EnumParameterTest
       assertEquals(param.getValueAsString(), newParam.getValueAsString());
 
       assertEquals(var.isBackedByEnum(), newVar.isBackedByEnum());
-      assertEquals(var.getAllowNullValue(), newVar.getAllowNullValue());
+      assertEquals(var.isNullAllowed(), newVar.isNullAllowed());
       assertArrayEquals(var.getEnumValuesAsString(), newVar.getEnumValuesAsString());
 
    }
@@ -120,7 +120,7 @@ public class EnumParameterTest
    {
       Assertions.assertThrows(RuntimeException.class, () ->
       {
-         YoVariableRegistry dummy = new YoVariableRegistry("dummy");
+         YoRegistry dummy = new YoRegistry("dummy");
          EnumParameter<TestEnum> nonull = new EnumParameter<>("nonull", dummy, TestEnum.class, false, initialValue);
          nonull.load("null");
       });
@@ -132,7 +132,7 @@ public class EnumParameterTest
    {
       Assertions.assertThrows(RuntimeException.class, () ->
       {
-         YoVariableRegistry dummy = new YoVariableRegistry("dummy");
+         YoRegistry dummy = new YoRegistry("dummy");
          new EnumParameter<>("nonull", dummy, TestEnum.class, false, null);
       });
 
@@ -141,7 +141,7 @@ public class EnumParameterTest
    @Test // timeout = 1000
    public void testConstructDefaultValue()
    {
-      YoVariableRegistry dummy = new YoVariableRegistry("dummy");
+      YoRegistry dummy = new YoRegistry("dummy");
       EnumParameter<TestEnum> nonull = new EnumParameter<>("nonull", dummy, TestEnum.class, false);
       EnumParameter<TestEnum> yesnull = new EnumParameter<>("yesnull", dummy, TestEnum.class, true);
 
@@ -159,7 +159,7 @@ public class EnumParameterTest
 
       EnumParameter<TestEnum> param = createParameterWithNamespace();
 
-      assertEquals("root.a.b.c", param.getNameSpace().toString());
+      assertEquals("root.a.b.c", param.getNamespace().toString());
       assertEquals("param", param.getName());
 
    }
@@ -170,7 +170,7 @@ public class EnumParameterTest
 
       for (TestEnum element : TestEnum.values())
       {
-         YoVariableRegistry dummy = new YoVariableRegistry("dummy");
+         YoRegistry dummy = new YoRegistry("dummy");
          EnumParameter<TestEnum> param = new EnumParameter<>("test", dummy, TestEnum.class, true, null);
          String stringValue = element.toString();
          param.load(stringValue);
@@ -203,7 +203,7 @@ public class EnumParameterTest
    {
       EnumParameter<TestEnum> param = createParameterWithNamespace();
       CallbackTest callback = new CallbackTest();
-      param.addParameterChangedListener(callback);
+      param.addListener(callback);
 
       assertFalse(callback.set);
 
@@ -226,7 +226,7 @@ public class EnumParameterTest
    {
       String[] constants = {"A", "B", "C", "D", "E", "F", "G", "H"};
 
-      YoVariableRegistry registry = new YoVariableRegistry("test");
+      YoRegistry registry = new YoRegistry("test");
 
       EnumParameter<?> nullDefault = new EnumParameter<>("nullDefault", "", registry, true, constants);
       nullDefault.loadDefault();
@@ -258,7 +258,7 @@ public class EnumParameterTest
       {
          String[] constants = {"A", "B", "C", "D", "E", "F", "G", "H"};
 
-         YoVariableRegistry registry = new YoVariableRegistry("test");
+         YoRegistry registry = new YoRegistry("test");
          EnumParameter<?> nullDefault = new EnumParameter<>("nullDefault", "", registry, true, constants);
          nullDefault.loadDefault();
          nullDefault.getValue();
@@ -272,7 +272,7 @@ public class EnumParameterTest
       {
          String[] constants = {"A", "B", "C", "D", "E", "F", "G", "H"};
 
-         YoVariableRegistry registry = new YoVariableRegistry("test");
+         YoRegistry registry = new YoRegistry("test");
 
          EnumParameter<?> constantDefault = new EnumParameter<>("constantDefault", "", registry, false, constants);
          constantDefault.loadDefault();
@@ -288,7 +288,7 @@ public class EnumParameterTest
       {
          String[] constants = {"A", "B", "C", "D", "E", "F", "G", "H"};
 
-         YoVariableRegistry registry = new YoVariableRegistry("test");
+         YoRegistry registry = new YoRegistry("test");
 
          EnumParameter<?> constantDefault = new EnumParameter<>("constantDefault", "", registry, false, constants);
          constantDefault.loadDefault();
@@ -304,7 +304,7 @@ public class EnumParameterTest
       {
          String[] constants = {"A", "B", "C", "NuLl", "E", "F", "G", "H"};
 
-         YoVariableRegistry registry = new YoVariableRegistry("test");
+         YoRegistry registry = new YoRegistry("test");
 
          new EnumParameter<>("constantDefault", "", registry, false, constants);
       });
@@ -318,7 +318,7 @@ public class EnumParameterTest
       {
          String[] constants = {"A", "B", "C", null, "E", "F", "G", "H"};
 
-         YoVariableRegistry registry = new YoVariableRegistry("test");
+         YoRegistry registry = new YoRegistry("test");
 
          new EnumParameter<>("constantDefault", "", registry, false, constants);
       });
@@ -332,7 +332,7 @@ public class EnumParameterTest
       {
          String[] constants = {};
 
-         YoVariableRegistry registry = new YoVariableRegistry("test");
+         YoRegistry registry = new YoRegistry("test");
 
          new EnumParameter<>("constantDefault", "", registry, false, constants);
       });
@@ -344,7 +344,7 @@ public class EnumParameterTest
    {
       String[] constants = {};
 
-      YoVariableRegistry registry = new YoVariableRegistry("test");
+      YoRegistry registry = new YoRegistry("test");
 
       EnumParameter<?> nullDefault = new EnumParameter<>("nullDefault", "", registry, true, constants);
       nullDefault.loadDefault();
@@ -352,12 +352,12 @@ public class EnumParameterTest
 
    }
 
-   private class CallbackTest implements ParameterChangedListener
+   private class CallbackTest implements YoParameterChangedListener
    {
       boolean set = false;
 
       @Override
-      public void notifyOfParameterChange(YoParameter<?> v)
+      public void changed(YoParameter v)
       {
          set = true;
       }

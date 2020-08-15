@@ -15,142 +15,182 @@
  */
 package us.ihmc.yoVariables.parameters;
 
+import us.ihmc.yoVariables.exceptions.IllegalOperationException;
 import us.ihmc.yoVariables.providers.LongProvider;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoLong;
-import us.ihmc.yoVariables.variable.YoVariable;
 
 /**
- * Long parameter
+ * Long parameter.
  *
  * @author Jesper Smith
  */
-public class LongParameter extends YoParameter<LongParameter> implements LongProvider
+public class LongParameter extends YoParameter implements LongProvider
 {
    private final static long DefaultSuggestedMinimum = -100L;
    private final static long DefaultSuggestedMaximum = 100L;
 
+   /** The variable backing this parameter. */
    private final YoLong value;
+   /** Optional default value used for initializing this parameter. */
    private final long initialValue;
 
    /**
-    * Create a new Long parameter, registered to the namespace of the registry.
+    * Creates a new long parameter and registers it to the given registry.
     *
     * @param name     Desired name. Must be unique in the registry
-    * @param registry YoVariableRegistry to store under
+    * @param registry YoRegistry to store under
     */
-   public LongParameter(String name, YoVariableRegistry registry)
+   public LongParameter(String name, YoRegistry registry)
    {
       this(name, "", registry);
    }
 
    /**
-    * Create a new Long parameter, registered to the namespace of the registry.
+    * Creates a new long parameter and registers it to the given registry.
+    * <p>
+    * Parameter bounds are typically used when interacting with the parameter via a GUI. For instance,
+    * the parameter bounds can be used to set the bounds of control slider or set the range when
+    * plotting this variable.
+    * </p>
+    * <p>
+    * Note that nothing in the implementation of a {@code YoParameter} enforces the value to remain
+    * within its current bounds, it is only for facilitating the definition of bounds and tracking to
+    * the bounds' owner.
+    * </p>
     *
-    * @param name             Desired name. Must be unique in the registry
-    * @param registry         YoVariableRegistry to store under
-    * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
-    * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
+    * @param name       the parameter's name. Must be unique in the registry.
+    * @param registry   initial parent registry for this parameter.
+    * @param lowerBound double value representing the lower bound for this parameter. Not enforced.
+    * @param upperBound double value representing the upper bound for this parameter. Not enforced.
     */
-   public LongParameter(String name, YoVariableRegistry registry, long suggestedMinimum, long suggestedMaximum)
+   public LongParameter(String name, YoRegistry registry, long lowerBound, long upperBound)
    {
-      this(name, "", registry, suggestedMinimum, suggestedMaximum);
+      this(name, "", registry, lowerBound, upperBound);
    }
 
    /**
-    * Create a new Long parameter, registered to the namespace of the registry.
+    * Creates a new long parameter and registers it to the given registry.
     *
-    * @param name        Desired name. Must be unique in the registry
-    * @param description User readable description that describes the purpose of this parameter
-    * @param registry    YoVariableRegistry to store under
+    * @param name        the parameter's name. Must be unique in the registry.
+    * @param description description of this parameter's purpose.
+    * @param registry    initial parent registry for this parameter.
     */
-   public LongParameter(String name, String description, YoVariableRegistry registry)
+   public LongParameter(String name, String description, YoRegistry registry)
    {
       this(name, "", registry, 0L);
    }
 
    /**
-    * Create a new Long parameter, registered to the namespace of the registry.
+    * Creates a new long parameter and registers it to the given registry.
+    * <p>
+    * Parameter bounds are typically used when interacting with the parameter via a GUI. For instance,
+    * the parameter bounds can be used to set the bounds of control slider or set the range when
+    * plotting this variable.
+    * </p>
+    * <p>
+    * Note that nothing in the implementation of a {@code YoParameter} enforces the value to remain
+    * within its current bounds, it is only for facilitating the definition of bounds and tracking to
+    * the bounds' owner.
+    * </p>
     *
-    * @param name             Desired name. Must be unique in the registry
-    * @param description      User readable description that describes the purpose of this parameter
-    * @param registry         YoVariableRegistry to store under
-    * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
-    * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
+    * @param name        the parameter's name. Must be unique in the registry.
+    * @param description description of this parameter's purpose.
+    * @param registry    initial parent registry for this parameter.
+    * @param lowerBound  double value representing the lower bound for this parameter. Not enforced.
+    * @param upperBound  double value representing the upper bound for this parameter. Not enforced.
     */
-   public LongParameter(String name, String description, YoVariableRegistry registry, long suggestedMinimum, long suggestedMaximum)
+   public LongParameter(String name, String description, YoRegistry registry, long lowerBound, long upperBound)
    {
-      this(name, "", registry, 0L, suggestedMinimum, suggestedMaximum);
+      this(name, "", registry, 0L, lowerBound, upperBound);
    }
 
    /**
-    * Create a new Long parameter, registered to the namespace of the registry.
+    * Creates a new long parameter and registers it to the given registry.
     *
-    * @param name         Desired name. Must be unique in the registry
-    * @param registry     YoVariableRegistry to store under
-    * @param initialValue Value to set to when no value can be found in the user provided
-    *                     parameterLoader
+    * @param name         the parameter's name. Must be unique in the registry.
+    * @param registry     initial parent registry for this parameter.
+    * @param initialValue value to set to when no value can be found in the user provided parameter
+    *                     loader.
     */
-   public LongParameter(String name, YoVariableRegistry registry, long initialValue)
+   public LongParameter(String name, YoRegistry registry, long initialValue)
    {
       this(name, "", registry, initialValue);
    }
 
    /**
-    * Create a new Long parameter, registered to the namespace of the registry.
+    * Creates a new long parameter and registers it to the given registry.
+    * <p>
+    * Parameter bounds are typically used when interacting with the parameter via a GUI. For instance,
+    * the parameter bounds can be used to set the bounds of control slider or set the range when
+    * plotting this variable.
+    * </p>
+    * <p>
+    * Note that nothing in the implementation of a {@code YoParameter} enforces the value to remain
+    * within its current bounds, it is only for facilitating the definition of bounds and tracking to
+    * the bounds' owner.
+    * </p>
     *
-    * @param name             Desired name. Must be unique in the registry
-    * @param registry         YoVariableRegistry to store under
-    * @param initialValue     Value to set to when no value can be found in the user provided
-    *                         parameterLoader
-    * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
-    * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
+    * @param name         the parameter's name. Must be unique in the registry.
+    * @param registry     initial parent registry for this parameter.
+    * @param initialValue value to set to when no value can be found in the user provided parameter
+    *                     loader.
+    * @param lowerBound   double value representing the lower bound for this parameter. Not enforced.
+    * @param upperBound   double value representing the upper bound for this parameter. Not enforced.
     */
-   public LongParameter(String name, YoVariableRegistry registry, long initialValue, long suggestedMinimum, long suggestedMaximum)
+   public LongParameter(String name, YoRegistry registry, long initialValue, long lowerBound, long upperBound)
    {
-      this(name, "", registry, initialValue, suggestedMinimum, suggestedMaximum);
+      this(name, "", registry, initialValue, lowerBound, upperBound);
    }
 
    /**
-    * Create a new Long parameter, registered to the namespace of the registry.
+    * Creates a new long parameter and registers it to the given registry.
     *
-    * @param name         Desired name. Must be unique in the registry
-    * @param description  User readable description that describes the purpose of this parameter
-    * @param registry     YoVariableRegistry to store under
-    * @param initialValue Value to set to when no value can be found in the user provided
-    *                     parameterLoader
+    * @param name         the parameter's name. Must be unique in the registry.
+    * @param description  description of this parameter's purpose.
+    * @param registry     initial parent registry for this parameter.
+    * @param initialValue value to set to when no value can be found in the user provided parameter
+    *                     loader.
     */
-   public LongParameter(String name, String description, YoVariableRegistry registry, long initialValue)
+   public LongParameter(String name, String description, YoRegistry registry, long initialValue)
    {
       this(name, description, registry, initialValue, DefaultSuggestedMinimum, DefaultSuggestedMaximum);
    }
 
    /**
-    * Create a new Long parameter, registered to the namespace of the registry.
+    * Creates a new long parameter and registers it to the given registry.
+    * <p>
+    * Parameter bounds are typically used when interacting with the parameter via a GUI. For instance,
+    * the parameter bounds can be used to set the bounds of control slider or set the range when
+    * plotting this variable.
+    * </p>
+    * <p>
+    * Note that nothing in the implementation of a {@code YoParameter} enforces the value to remain
+    * within its current bounds, it is only for facilitating the definition of bounds and tracking to
+    * the bounds' owner.
+    * </p>
     *
-    * @param name             Desired name. Must be unique in the registry
-    * @param description      User readable description that describes the purpose of this parameter
-    * @param registry         YoVariableRegistry to store under
-    * @param initialValue     Value to set to when no value can be found in the user provided
-    *                         parameterLoader
-    * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
-    * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
+    * @param name         the parameter's name. Must be unique in the registry.
+    * @param description  description of this parameter's purpose.
+    * @param registry     initial parent registry for this parameter.
+    * @param initialValue value to set to when no value can be found in the user provided parameter
+    *                     loader.
+    * @param lowerBound   double value representing the lower bound for this parameter. Not enforced.
+    * @param upperBound   double value representing the upper bound for this parameter. Not enforced.
     */
-   public LongParameter(String name, String description, YoVariableRegistry registry, long initialValue, long suggestedMinimum, long suggestedMaximum)
+   public LongParameter(String name, String description, YoRegistry registry, long initialValue, long lowerBound, long upperBound)
    {
-      super(name, description);
-
       value = new YoLongParameter(name, description, registry);
       this.initialValue = initialValue;
 
-      setSuggestedRange(suggestedMinimum, suggestedMaximum);
+      setParameterBounds(lowerBound, upperBound);
    }
 
    /**
     * Get the current value.
     *
-    * @return value for this parameter
-    * @throws RuntimeException if the parameter is not loaded yet.
+    * @return value for this parameter.
+    * @throws IllegalOperationException if the parameter is not loaded yet.
     */
    @Override
    public long getValue()
@@ -160,35 +200,34 @@ public class LongParameter extends YoParameter<LongParameter> implements LongPro
    }
 
    /**
-    * Sets the suggested range for tuning purposes. The minimum and maximum will not be enforced and
-    * the parameter can be set to any value. This is just a suggestion to the user.
+    * Sets the bounds for this parameter's range of values.
+    * <p>
+    * Parameter bounds are typically used when interacting with the parameter via a GUI. For instance,
+    * the parameter bounds can be used to set the bounds of control slider or set the range when
+    * plotting this variable.
+    * </p>
+    * <p>
+    * Note that nothing in the implementation of a {@code YoParameter} enforces the value to remain
+    * within its current bounds, it is only for facilitating the definition of bounds and tracking to
+    * the bounds' owner.
+    * </p>
     *
-    * @param min Lower end of the suggested range for this parameter.
-    * @param max Upper end of the suggested range for this parameter.
+    * @param lowerBound double value representing the lower bound for this parameter. Not enforced.
+    * @param upperBound double value representing the upper bound for this parameter. Not enforced.
     */
-   public void setSuggestedRange(long min, long max)
+   public void setParameterBounds(long lowerBound, long upperBound)
    {
-      super.setSuggestedRange(min, max);
+      super.setParameterBounds(lowerBound, upperBound);
    }
 
+   /** {@inheritDoc} */
    @Override
-   public String getValueAsString()
-   {
-      return String.valueOf(getValue());
-   }
-
-   @Override
-   YoVariable<?> getVariable()
+   YoLong getVariable()
    {
       return value;
    }
 
-   @Override
-   void setToString(String valueString)
-   {
-      value.set(Long.parseLong(valueString));
-   }
-
+   /** {@inheritDoc} */
    @Override
    void setToDefault()
    {
@@ -196,14 +235,14 @@ public class LongParameter extends YoParameter<LongParameter> implements LongPro
    }
 
    /**
-    * Internal class to set parameter settings for YoLong
+    * Internal class to set parameter settings for {@code YoLong}.
     *
     * @author Jesper Smith
     */
    private class YoLongParameter extends YoLong
    {
 
-      public YoLongParameter(String name, String description, YoVariableRegistry registry)
+      public YoLongParameter(String name, String description, YoRegistry registry)
       {
          super(name, description, registry);
       }
@@ -215,20 +254,15 @@ public class LongParameter extends YoParameter<LongParameter> implements LongPro
       }
 
       @Override
-      public YoParameter<?> getParameter()
+      public LongParameter getParameter()
       {
          return LongParameter.this;
       }
 
       @Override
-      public YoLong duplicate(YoVariableRegistry newRegistry)
+      public YoLong duplicate(YoRegistry newRegistry)
       {
-         LongParameter newParameter = new LongParameter(getName(),
-                                                        getDescription(),
-                                                        newRegistry,
-                                                        initialValue,
-                                                        (long) getManualScalingMin(),
-                                                        (long) getManualScalingMax());
+         LongParameter newParameter = new LongParameter(getName(), getDescription(), newRegistry, initialValue, (long) getLowerBound(), (long) getUpperBound());
          newParameter.value.set(value.getValue());
          newParameter.loadStatus = getLoadStatus();
          return newParameter.value;

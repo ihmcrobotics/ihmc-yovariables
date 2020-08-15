@@ -1,112 +1,86 @@
+/*
+ * Copyright 2020 Florida Institute for Human and Machine Cognition (IHMC)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package us.ihmc.yoVariables.variable;
 
-import java.text.FieldPosition;
-import java.text.NumberFormat;
-
-import org.apache.commons.math3.util.Precision;
-
 import us.ihmc.yoVariables.providers.DoubleProvider;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
- * Double implementation of the YoVariable class.
- * <p>
- * All abstract functions of YoVariable will be implemented using double type for interpretation.
- * Values will be interpreted, compared, and returned as doubles rather than other native types.
+ * Double implementation of a {@code YoVariable}.
+ * 
+ * @see YoVariable
  */
-public class YoDouble extends YoVariable<YoDouble> implements DoubleProvider
+public class YoDouble extends YoVariable implements DoubleProvider
 {
-   private static final java.text.NumberFormat DOUBLE_FORMAT = new java.text.DecimalFormat(" 0.00000;-0.00000");
-   private static final FieldPosition FIELD_POSITION = new FieldPosition(NumberFormat.INTEGER_FIELD);
-
-   private double val;
+   private double value;
 
    /**
-    * Create a new YoDouble. This will call {@link #YoDouble(String, String, YoVariableRegistry)} with
-    * the given name and registry and an empty description.
+    * Create a new {@code YoDouble} and initializes to {@code 0.0}.
     *
-    * @param name     String uniquely identifying this YoDouble
-    * @param registry YoVariableRegistry for this YoDouble to register itself to after initialization
+    * @param name     the name for this variable that can be used to retrieve it from a
+    *                 {@link YoRegistry}.
+    * @param registry initial parent registry for this variable.
     */
-   public YoDouble(String name, YoVariableRegistry registry)
+   public YoDouble(String name, YoRegistry registry)
    {
       this(name, "", registry);
    }
 
    /**
-    * Create a new YoDouble. This will call {@link #YoDouble(String, String, YoVariableRegistry)} with
-    * the given values as well as set {@link #manualMinScaling} and {@link #manualMaxScaling} to the
-    * given values.
+    * Create a new {@code YoDouble} and initializes to {@code 0.0}.
     *
-    * @param name        String uniquely identifying this YoDouble
-    * @param description String describing this YoDouble's purpose
-    * @param registry    YoVariableRegistry for this YoDouble to register itself to after
-    *                    initialization
-    * @param minScaling  double to set manualMinScaling to
-    * @param maxScaling  double to set manualMaxScaling to
+    * @param name        the name for this variable that can be used to retrieve it from a
+    *                    {@link YoRegistry}.
+    * @param description description of this variable's purpose.
+    * @param registry    initial parent registry for this variable.
     */
-   public YoDouble(String name, String description, YoVariableRegistry registry, double minScaling, double maxScaling)
-   {
-      this(name, description, registry);
-
-      manualMinScaling = minScaling;
-      manualMaxScaling = maxScaling;
-   }
-
-   /**
-    * Create a new YoDouble. This will call {@link YoVariable(String, String, YoVariableRegistry)} with
-    * {@link YoVariableType#DOUBLE} and the given values.
-    *
-    * @param name        name to be used for all references of this variable by SCS
-    * @param description A short description of this variable
-    * @param registry    YoVariableRegistry with which this variable is to be registered
-    */
-   public YoDouble(String name, String description, YoVariableRegistry registry)
+   public YoDouble(String name, String description, YoRegistry registry)
    {
       super(YoVariableType.DOUBLE, name, description, registry);
-
       this.set(0.0);
    }
 
    /**
-    * Returns String representation of this YoDouble.
-    *
-    * @return String representing this YoDouble and its current value as a double
-    */
-   @Override
-   public String toString()
-   {
-      return String.format("%s: %s", getName(), getDoubleValue());
-   }
-
-   /**
-    * Assesses if this YoDouble's value is a NaN.
+    * Assesses if this variable's current value is {@link Double#NaN}.
     *
     * @return boolean return of Double.isNaN on this YoDouble's internal double state
     */
    public boolean isNaN()
    {
-      return Double.isNaN(val);
+      return Double.isNaN(value);
    }
 
    /**
     * Sets this YoDouble to its current value plus the current value of the given YoDouble.
     *
-    * @param variable YoDouble whose value should be added to this YoDouble
+    * @param other YoDouble whose value should be added to this YoDouble
     */
-   public void add(YoDouble variable)
+   public void add(YoDouble other)
    {
-      this.set(getDoubleValue() + variable.getDoubleValue());
+      this.set(this.value + other.value);
    }
 
    /**
     * Sets this YoDouble to its current value minus the current value of the given YoDouble.
     *
-    * @param variable YoDouble whose value should be subtracted from this YoDouble
+    * @param other YoDouble whose value should be subtracted from this YoDouble
     */
-   public void sub(YoDouble variable)
+   public void sub(YoDouble other)
    {
-      this.set(getDoubleValue() - variable.getDoubleValue());
+      this.set(this.value - other.value);
    }
 
    /**
@@ -116,7 +90,7 @@ public class YoDouble extends YoVariable<YoDouble> implements DoubleProvider
     */
    public void sub(double value)
    {
-      this.set(getDoubleValue() - value);
+      this.set(this.value - value);
    }
 
    /**
@@ -126,7 +100,7 @@ public class YoDouble extends YoVariable<YoDouble> implements DoubleProvider
     */
    public void add(double value)
    {
-      this.set(getDoubleValue() + value);
+      this.set(this.value + value);
    }
 
    /**
@@ -136,17 +110,17 @@ public class YoDouble extends YoVariable<YoDouble> implements DoubleProvider
     */
    public void mul(double value)
    {
-      this.set(getDoubleValue() * value);
+      this.set(this.value * value);
    }
 
    /**
     * Sets this YoDouble to its current value multiplied by the current value of the given YoDouble.
     *
-    * @param value YoDouble whose value should be used to multiply this YoDouble's value by
+    * @param other YoDouble whose value should be used to multiply this YoDouble's value by
     */
-   public void mul(YoDouble value)
+   public void mul(YoDouble other)
    {
-      this.set(getDoubleValue() * value.getDoubleValue());
+      this.set(this.value * other.value);
    }
 
    /**
@@ -157,156 +131,7 @@ public class YoDouble extends YoVariable<YoDouble> implements DoubleProvider
     */
    public boolean valueEquals(double value)
    {
-      return val == value;
-   }
-
-   /**
-    * Retrieves the value of this YoDouble.
-    *
-    * @return the internal double value of this YoDouble
-    */
-   public double getDoubleValue()
-   {
-      return val;
-   }
-
-   /**
-    * Calls {@link #set(double, boolean)} with value and true.
-    *
-    * @param value long to set this YoDouble's internal double state to
-    */
-   public void set(double value)
-   {
-      set(value, true);
-   }
-
-   /**
-    * Sets this YoDouble to the given value.
-    *
-    * @param value           double to set this YoDouble's internal long state to
-    * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyVariableChangedListeners()}
-    * @return boolean if the given value differed from the current value of this YoDouble
-    */
-   public boolean set(double value, boolean notifyListeners)
-   {
-      if (val != value)
-      {
-         val = value;
-         if (notifyListeners)
-         {
-            notifyVariableChangedListeners();
-         }
-         return true;
-      }
-      return false;
-   }
-
-   /**
-    * Appends the value of this variable to the end of the given StringBuffer.
-    *
-    * @param stringBuffer StringBuffer to which the value will be appended
-    */
-   @Override
-   public void getValueString(StringBuffer stringBuffer)
-   {
-      getValueStringFromDouble(stringBuffer, val);
-   }
-
-   /**
-    * Appends the YoDouble representation of the given double value to the given StringBuffer.
-    *
-    * @param stringBuffer StringBuffer to append to
-    * @param doubleValue  double value to convert to YoDouble representation
-    */
-   @Override
-   public void getValueStringFromDouble(StringBuffer stringBuffer, double doubleValue)
-   {
-      DOUBLE_FORMAT.format(doubleValue, stringBuffer, FIELD_POSITION); // Add the variable value to it
-   }
-
-   /**
-    * Retrieves this YoDouble's value as a double.
-    * <p>
-    * Effectively equivalent to {@link #getDoubleValue()}.
-    *
-    * @return internal double value of this YoDouble.
-    */
-   @Override
-   public double getValueAsDouble()
-   {
-      return getDoubleValue();
-   }
-
-   /**
-    * Set the value of this YoDouble using the given double.
-    * <p>
-    * Effectively equivalent to {@link #set(double, boolean)}.
-    *
-    * @param value           double to set this YoDouble to
-    * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyVariableChangedListeners()}
-    */
-   @Override
-   public void setValueFromDouble(double value, boolean notifyListeners)
-   {
-      set(value, notifyListeners);
-   }
-
-   /**
-    * Retrieves this YoDouble's value as a long.
-    *
-    * @return long representing this YouDouble's internal long value passed through
-    *         {@link Double#doubleToLongBits(double)}
-    */
-   @Override
-   public long getValueAsLongBits()
-   {
-      return Double.doubleToLongBits(val);
-   }
-
-   /**
-    * Sets the internal double value of this YoDouble using the passed long value.
-    * <p>
-    * Passes the given value through {@link Double#longBitsToDouble(long)}.
-    *
-    * @param value           long to set this variable's value to
-    * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyVariableChangedListeners()}
-    */
-   @Override
-   public void setValueFromLongBits(long value, boolean notifyListeners)
-   {
-      set(Double.longBitsToDouble(value), notifyListeners);
-   }
-
-   /**
-    * Creates a new YoDouble with the same parameters as this one, and registers it to the passed
-    * {@link YoVariableRegistry}.
-    *
-    * @param newRegistry YoVariableRegistry to duplicate this YoDouble to
-    * @return the newly created and registered YoDouble
-    */
-   @Override
-   public YoDouble duplicate(YoVariableRegistry newRegistry)
-   {
-      YoDouble retVar = new YoDouble(getName(), getDescription(), newRegistry, getManualScalingMin(), getManualScalingMax());
-      retVar.set(val);
-      return retVar;
-   }
-
-   /**
-    * Sets the internal value of this YoDouble to the current value of the passed YoDouble.
-    *
-    * @param value           YoDouble value to set this variable's value to
-    * @param notifyListeners boolean determining whether or not to call
-    *                        {@link #notifyVariableChangedListeners()}
-    * @return boolean whether or not internal state differed from the passed value
-    */
-   @Override
-   public boolean setValue(YoDouble value, boolean notifyListeners)
-   {
-      return set(value.getDoubleValue(), notifyListeners);
+      return this.value == value;
    }
 
    /**
@@ -315,75 +140,179 @@ public class YoDouble extends YoVariable<YoDouble> implements DoubleProvider
    public void setToNaN()
    {
       this.set(Double.NaN);
-
    }
 
    /**
-    * Assesses if this YoDouble is equal to zero.
+    * Retrieves the current double value of this variable.
     *
-    * @return boolean if this YoDouble's internal double value is equal to double 0.0
+    * @return the internal double value of this variable.
     */
    @Override
-   public boolean isZero()
+   public double getValue()
    {
-      return Precision.equals(0.0, getDoubleValue(), 1);
+      return value;
    }
 
+   /**
+    * Retrieves the current double value of this variable.
+    *
+    * @return the internal double value of this variable.
+    */
+   public double getDoubleValue()
+   {
+      return value;
+   }
+
+   /**
+    * Sets this variable's current value.
+    * <p>
+    * This variable's listeners will be notified if this variable's value is changed.
+    * </p>
+    *
+    * @param value the new value for this variable.
+    * @return {@code true} if this variable's value changed, {@code false} otherwise.
+    */
+   public boolean set(double value)
+   {
+      return set(value, true);
+   }
+
+   /**
+    * Sets this variable's current value.
+    *
+    * @param value           the new value for this variable.
+    * @param notifyListeners whether to notify this variable's listeners if this operation results in
+    *                        changing this variable's current value.
+    * @return {@code true} if this variable's value changed, {@code false} otherwise.
+    */
+   public boolean set(double value, boolean notifyListeners)
+   {
+      if (this.value != value)
+      {
+         this.value = value;
+         if (notifyListeners)
+            notifyListeners();
+         return true;
+      }
+      return false;
+   }
+
+   /**
+    * Redirection to {@link #getDoubleValue()}.
+    *
+    * @return current value for this variable.
+    */
    @Override
-   public double getValue()
+   public double getValueAsDouble()
    {
       return getDoubleValue();
    }
 
-   //   NOTE: JEP October 30, 2010:
-   //   The following is very useful for debugging things so please do not delete!
-   //   I should probably use the change listener stuff instead, but this is nice for eavesdropping
-   //   to catch when a variable changes or in order to compare two runs that should be identical
-   //   to discover the first time their YoVariables differ...
-   //
-   //   private static boolean startDisplaying = false;
-   //   private static boolean stopDisplaying = false;
-   //   private static YoDouble time;
-   //   private static PrintWriter writer;
-   //
-   //   private void setAndLogToAFile(double value)
-   //   {
-   //      if ((time == null) && (this.getName().equals("t")))
-   //      {
-   //         System.out.println("found time");
-   //         time = this;
-   //
-   //
-   //         try
-   //         {
-   //            writer = new PrintWriter("run.txt");
-   //         } catch (FileNotFoundException e)
-   //         {
-   //
-   //         }
-   //      }
-   //
-   //      if ((time != null) && (time.getDoubleValue() >= 1.656-1e-7)) startDisplaying = true;
-   //      if ((time != null) && (time.getDoubleValue() >= 1.6632+1e-7))
-   //      {
-   //         stopDisplaying = true; //1.6705
-   //         writer.close();
-   //      }
-   //
-   //      if (startDisplaying & !stopDisplaying)
-   //      {
-   //         if ((Math.abs(time.getDoubleValue() - 1.6632) < 0.00005) && (this.getName().equals("o_tau_rh_roll")))
-   //         {
-   //            System.out.println("time = " + time.getDoubleValue());
-   //            System.out.println(this.getName() + " is getting set to " + value);
-   //         }
-   //
-   //         if (!this.name.contains("DurationMilli"))
-   //         {
-   //            writer.println(time.getDoubleValue() + ": " + this.name + " = " + value);
-   //            //       System.out.println(time.getDoubleValue() + ": " + this.name + " = " + value);
-   //         }
-   //      }
-   //
-   //   }
+   /**
+    * Sets this variable's current value.
+    * <p>
+    * Redirection to {@link #set(double, boolean)}.
+    * </p>
+    *
+    * @param value the new value for this variable.
+    */
+   @Override
+   public boolean setValueFromDouble(double value, boolean notifyListeners)
+   {
+      return set(value, notifyListeners);
+   }
+
+   /**
+    * Retrieves this variable's current value as a long.
+    *
+    * @return long representing the current value using {@link Double#doubleToLongBits(double)}.
+    */
+   @Override
+   public long getValueAsLongBits()
+   {
+      return Double.doubleToLongBits(value);
+   }
+
+   /**
+    * Sets this variable's current value after converting the given long value.
+    *
+    * @param value converted to a double using {@link Double#longBitsToDouble(long)}.
+    */
+   @Override
+   public boolean setValueFromLongBits(long value, boolean notifyListeners)
+   {
+      return set(Double.longBitsToDouble(value), notifyListeners);
+   }
+
+   /**
+    * Sets this variable's value from the other variable once casted to {@code YoDouble}.
+    * 
+    * @param other the other {@code YoDouble} used to update this variable's value.
+    * @throws ClassCastException if {@code other} cannot be casted as a {@code YoDouble}.
+    */
+   @Override
+   public boolean setValue(YoVariable other, boolean notifyListeners)
+   {
+      return set(((YoDouble) other).getValue(), notifyListeners);
+   }
+
+   /**
+    * Returns the value of this variable as a string.
+    * 
+    * @return string representation of the current value using to {@link Double#toString(double)} when
+    *         no format is provided. When a format is provided,
+    *         {@link String#format(String, Object...)} is used.
+    */
+   @Override
+   public String getValueAsString(String format)
+   {
+      return convertDoubleValueToString(format, value);
+   }
+
+   /**
+    * Tries to parse the given string and set this variable's value using
+    * {@link Double#parseDouble(String)}.
+    */
+   @Override
+   public boolean parseValue(String valueAsString, boolean notifyListeners)
+   {
+      return set(Double.parseDouble(valueAsString), notifyListeners);
+   }
+
+   @Override
+   public String convertDoubleValueToString(String format, double value)
+   {
+      if (format == null)
+         return Double.toString(value);
+      else
+         return String.format(format, value);
+   }
+
+   /**
+    * Assesses if this variable is equal to zero.
+    *
+    * @return {@code true} if this variable's value is {@code 0.0}.
+    */
+   @Override
+   public boolean isZero()
+   {
+      return value == 0.0;
+   }
+
+   /** {@inheritDoc} */
+   @Override
+   public YoDouble duplicate(YoRegistry newRegistry)
+   {
+      YoDouble duplicate = new YoDouble(getName(), getDescription(), newRegistry);
+      duplicate.setVariableBounds(getLowerBound(), getUpperBound());
+      duplicate.set(value);
+      return duplicate;
+   }
+
+   /** {@inheritDoc} */
+   @Override
+   public String toString()
+   {
+      return String.format("%s: %s", getName(), value);
+   }
 }

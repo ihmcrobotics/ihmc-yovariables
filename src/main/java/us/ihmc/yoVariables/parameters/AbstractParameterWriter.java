@@ -17,29 +17,46 @@ package us.ihmc.yoVariables.parameters;
 
 import java.util.List;
 
-import us.ihmc.yoVariables.registry.NameSpace;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoNamespace;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
+/**
+ * Base class for parameter writers.
+ * <p>
+ * A parameter writer is used to export parameters to some external destination, for instance a XML
+ * file when using {@link XmlParameterWriter}.
+ * </p>
+ *
+ * @author Jesper Smith
+ */
 public abstract class AbstractParameterWriter
 {
-   public void writeParametersInRegistry(YoVariableRegistry registry)
+   /**
+    * Recurses starting from the given registry, finds all parameters, and calls for each
+    * {@link #setValue(YoNamespace, String, String, String, String, String, String)}.
+    * 
+    * @param registry with parameters that need to be exported.
+    */
+   public void addParameters(YoRegistry registry)
    {
-      List<YoParameter<?>> parameters = registry.getAllParameters();
+      List<YoParameter> parameters = registry.collectSubtreeParameters();
 
       for (int i = 0; i < parameters.size(); i++)
       {
-         YoParameter<?> parameter = parameters.get(i);
+         YoParameter parameter = parameters.get(i);
 
-         NameSpace relativeNamespace = AbstractParameterReader.getRelativeNamespace(parameter.getNameSpace(), registry);
+         YoNamespace relativeNamespace = AbstractParameterReader.getRelativeNamespace(parameter.getNamespace(), registry);
 
          String value = parameter.getValueAsString();
-         String min = String.valueOf(parameter.getVariable().getManualScalingMin());
-         String max = String.valueOf(parameter.getVariable().getManualScalingMax());
+         String min = String.valueOf(parameter.getVariable().getLowerBound());
+         String max = String.valueOf(parameter.getVariable().getUpperBound());
          setValue(relativeNamespace, parameter.getName(), parameter.getDescription(), parameter.getClass().getSimpleName(), value, min, max);
 
       }
    }
 
-   protected abstract void setValue(NameSpace namespace, String name, String description, String type, String value, String min, String max);
-
+   /**
+    * Exports the data for a parameter.
+    */
+   protected abstract void setValue(YoNamespace namespace, String name, String description, String type, String value, String min, String max);
 }
