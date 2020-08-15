@@ -17,182 +17,257 @@ package us.ihmc.yoVariables.parameters;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
-import us.ihmc.yoVariables.listener.ParameterChangedListener;
-import us.ihmc.yoVariables.listener.VariableChangedListener;
-import us.ihmc.yoVariables.registry.NameSpace;
+import us.ihmc.yoVariables.exceptions.IllegalOperationException;
+import us.ihmc.yoVariables.listener.YoParameterChangedListener;
+import us.ihmc.yoVariables.listener.YoVariableChangedListener;
+import us.ihmc.yoVariables.registry.YoNamespace;
 import us.ihmc.yoVariables.variable.YoVariable;
 
 /**
- * Base class for parameters. Parameters cannot be changed from code and are only changed by the
- * user/operator. Available implementations
- * <ul>
- * <li>BooleanParameter
- * <li>DoubleParameter
- * <li>EnumParameter
- * <li>IntegerParameter
- * <li>LongParameter
- * </ul>
+ * Base class for parameters.
+ * <p>
+ * A parameter can be seen as a read-only {@link YoVariable}. The intention for parameters is the
+ * guarantee of not being modified by the algorithm/controller/module that uses the parameter's
+ * value for computation. This allows to guarantee the user of a graphical user interface, such as
+ * Simulation Construction Set, that he/she is the only entity able to modify the parameter's value.
+ * </p>
+ * <p>
+ * Parameters can be initialized only once and have to be initialized before they can be used. The
+ * initialization can be performed by using a parameter reader, i.e. implementation of
+ * {@link AbstractParameterReader}. Two default implementations are provided in this package:
+ * {@link DefaultParameterReader} which initializes the parameters to the value that was passed at
+ * construction of each parameter, {@link XmlParameterReader} that parses the initial values from a
+ * given XML file.
+ * </p>
  *
  * @author Jesper Smith
- * @param <T>
+ * @see YoVariable
+ * @see BooleanParameter
+ * @see DoubleParameter
+ * @see EnumParameter
+ * @see IntegerParameter
+ * @see LongParameter
  */
-public abstract class YoParameter<T extends YoParameter<T>>
+public abstract class YoParameter
 {
-   private final String name;
-   private final String description;
+   /** Field used to keep track of the initialization state of this parameter. */
    protected ParameterLoadStatus loadStatus = ParameterLoadStatus.UNLOADED;
-   private YoParameterChangedListenerHolder parameterChangedListenersHolder;
+   /** Manager of the {@code YoParameterChangedListener}s added to this variable. */
+   private YoParameterChangedListenerHolder changedListenerHolder;
 
    /**
-    * @return the name of this parameter
+    * Retrieves the name of this parameter.
+    *
+    * @return the name of this parameter.
     */
    public String getName()
    {
-      return name;
+      return getVariable().getName();
    }
 
    /**
-    * User readable description that describes the purpose of this parameter The description is only
-    * used as a guideline to the user.
+    * Retrieve the description of this parameter purpose, "" if not specified.
     *
-    * @return
+    * @return the description of this parameter.
     */
    public String getDescription()
    {
-      return description;
+      return getVariable().getDescription();
    }
 
    /**
-    * @return the namespace of this parameter
+    * Retrieves this parameter's full name, i.e. this parameter name prepended with its parent's
+    * namespace if applicable, and returns the full name as a namespace.
+    *
+    * @return this parameter's full name as a namespace.
     */
-   public NameSpace getNameSpace()
+   public YoNamespace getFullName()
    {
-      return getVariable().getNameSpace();
+      return getVariable().getFullName();
    }
 
    /**
-    * Attaches an object implementing {@link ParameterChangedListener} to this parameter's list of
-    * listeners.
+    * Retrieves this parameter's full name, i.e. this parameter prepended with its parent's namespace
+    * if applicable.
+    *
+    * @return this parameter's full name.
+    */
+   public String getFullNameString()
+   {
+      return getVariable().getFullNameString();
+   }
+
+   /**
+    * Returns the namespace of the registry in which this parameter is currently registered to, or
+    * {@code null} if this parameter is not registered to any registry.
+    *
+    * @return this parameter's namespace.
+    */
+   public YoNamespace getNamespace()
+   {
+      return getVariable().getNamespace();
+   }
+
+   /**
+    * Sets the bounds for this parameter's range of values.
     * <p>
-    * Instantiates a new list of listeners if it is currently empty.
+    * Parameter bounds are typically used when interacting with the parameter via a GUI. For instance,
+    * the parameter bounds can be used to set the bounds of control slider or set the range when
+    * plotting this variable.
+    * </p>
+    * <p>
+    * Note that nothing in the implementation of a {@code YoParameter} enforces the value to remain
+    * within its current bounds, it is only for facilitating the definition of bounds and tracking to
+    * the bounds' owner.
     * </p>
     *
-    * @param ParameterChangedListener ParameterChangedListener to attach
+    * @param lowerBound double value representing the lower bound for this parameter. Not enforced.
+    * @param upperBound double value representing the upper bound for this parameter. Not enforced.
     */
-   public void addParameterChangedListener(ParameterChangedListener parameterChangedListener)
+   void setParameterBounds(double lowerBound, double upperBound)
    {
-      if (parameterChangedListenersHolder == null)
-      {
-         parameterChangedListenersHolder = new YoParameterChangedListenerHolder();
-         getVariable().addVariableChangedListener(parameterChangedListenersHolder);
-      }
-
-      this.parameterChangedListenersHolder.add(parameterChangedListener);
+      getVariable().setVariableBounds(lowerBound, upperBound);
    }
 
    /**
-    * Clears this parameter's list of {@link ParameterChangedListener}s.
+    * Returns the current double value representing the lower bound for this parameter's value range.
     * <p>
-    * If the list is null, does nothing.
+    * Parameter bounds are typically used when interacting with the parameter via a GUI. For instance,
+    * the parameter bounds can be used to set the bounds of control slider or set the range when
+    * plotting this parameter.
     * </p>
+    * <p>
+    * Note that nothing in the implementation of a {@code YoParameter} enforces the value to remain
+    * within its current bounds, it is only for facilitating the definition of bounds and tracking to
+    * the bounds' owner.
+    * </p>
+    *
+    * @return minimum value as double for this parameter.
     */
-   public void removeAllParameterChangedListeners()
+   public double getLowerBound()
    {
-      if (this.parameterChangedListenersHolder != null)
-      {
-         this.parameterChangedListenersHolder.clear();
-      }
+      return getVariable().getLowerBound();
    }
 
    /**
-    * Returns this parameter's list of {@link ParameterChangedListener}s.
+    * Returns the current double value representing the upper bound for this parameter's value range.
+    * <p>
+    * Parameter bounds are typically used when interacting with the parameter via a GUI. For instance,
+    * the parameter bounds can be used to set the bounds of control slider or set the range when
+    * plotting this parameter.
+    * </p>
+    * <p>
+    * Note that nothing in the implementation of a {@code YoParameter} enforces the value to remain
+    * within its current bounds, it is only for facilitating the definition of bounds and tracking to
+    * the bounds' owner.
+    * </p>
     *
-    * @return List of change listeners, null if empty
+    * @return maximum value as double for this parameter.
     */
-   public List<ParameterChangedListener> getParameterChangedListeners()
+   public double getUpperBound()
    {
-      if (this.parameterChangedListenersHolder == null)
+      return getVariable().getUpperBound();
+   }
+
+   /**
+    * Adds a listener to this parameter.
+    *
+    * @param listener the listener for listening to changes done to this parameter.
+    */
+   public void addListener(YoParameterChangedListener listener)
+   {
+      if (changedListenerHolder == null)
       {
+         changedListenerHolder = new YoParameterChangedListenerHolder();
+         getVariable().addListener(changedListenerHolder);
+      }
+
+      changedListenerHolder.addListener(listener);
+   }
+
+   /**
+    * Removes all listeners previously added to this parameter.
+    */
+   public void removeListeners()
+   {
+      if (changedListenerHolder != null)
+         changedListenerHolder.removeListeners();
+   }
+
+   /**
+    * Returns this parameter's list of {@link YoParameterChangedListener}s.
+    *
+    * @return the listeners previously added to this parameter, or {@code null} if this parameter has
+    *         no listener.
+    */
+   public List<YoParameterChangedListener> getListeners()
+   {
+      if (changedListenerHolder == null)
          return null;
-      }
       else
-      {
-         return this.parameterChangedListenersHolder.getParameterChangedListeners();
-      }
+         return changedListenerHolder.getListeners();
    }
 
    /**
-    * Removes a {@link ParameterChangedListener} from this parameter's list of listeners.
+    * Tries to remove a listener from this parameter. If the listener could not be found and removed,
+    * nothing happens.
     *
-    * @param ParameterChangedListener ParameterChangedListener to remove
+    * @param listener the listener to remove.
+    * @return {@code true} if the listener was removed, {@code false} if the listener was not found and
+    *         nothing happened.
     */
-   public void removeParameterChangedListener(ParameterChangedListener parameterChangedListener)
+   public boolean removeListener(YoParameterChangedListener listener)
    {
-      boolean success;
-
-      if (parameterChangedListenersHolder == null)
-         success = false;
+      if (changedListenerHolder == null)
+         return false;
       else
-         success = this.parameterChangedListenersHolder.remove(parameterChangedListener);
-
-      if (!success)
-         throw new NoSuchElementException("Listener not found");
+         return changedListenerHolder.removeListener(listener);
    }
 
    /**
-    * Get the value of this parameter as a string. The value depends on the type, numeric types will
-    * return a numeric representation while enum's will return the enum value string.
-    *
-    * @return the value as string
+    * Returns the value of this parameter as a {@code String}.
+    * <p>
+    * The returned {@code String} depends on the type, numeric types will return a numeric
+    * representation while enum's will return the enum value string.
+    * </p>
+    * 
+    * @return the string representation of this parameter's current value.
     */
-   public abstract String getValueAsString();
-
-   YoParameter(String name, String description)
+   public final String getValueAsString()
    {
-      checkForIllegalCharacters(name);
-      this.name = name;
-      this.description = description;
+      checkLoaded();
+      return getVariable().getValueAsString();
    }
 
-   abstract YoVariable<?> getVariable();
+   /**
+    * Returns the variable backing this parameter.
+    * 
+    * @return the internal variable.
+    */
+   abstract YoVariable getVariable();
 
-   abstract void setToString(String valueString);
+   /**
+    * Tries to parse the given string and to set this parameter's value.
+    * <p>
+    * This is typically used to initialize this parameter.
+    * </p>
+    * 
+    * @param valueAsString the string to parse.
+    * @throws IllegalArgumentException if the given string value could not be parsed.
+    */
+   final void setToString(String valueString)
+   {
+      getVariable().parseValue(valueString);
+   }
 
+   /**
+    * Sets this parameter's value to the initial value that was provided at construction.
+    * <p>
+    * This is typically used to initialize this parameter.
+    * </p>
+    */
    abstract void setToDefault();
-
-   void setSuggestedRange(double min, double max)
-   {
-      getVariable().setManualScalingMinMax(min, max);
-   }
-
-   public double getManualScalingMin()
-   {
-      return getVariable().getManualScalingMin();
-   }
-
-   public double getManualScalingMax()
-   {
-      return getVariable().getManualScalingMax();
-   }
-
-   private static void checkForIllegalCharacters(String name)
-   {
-      if (YoVariable.ILLEGAL_CHARACTERS.matcher(name).find())
-      {
-         throw new RuntimeException(name
-               + " is an invalid name for a Parameter. A Parameter cannot have crazy characters in them, otherwise namespaces will not work.");
-      }
-   }
-
-   void checkLoaded()
-   {
-      if (loadStatus == ParameterLoadStatus.UNLOADED)
-      {
-         throw new RuntimeException("Cannot use parameter " + name + " before it's value is loaded.");
-      }
-   }
 
    void load(String valueString)
    {
@@ -218,9 +293,20 @@ public abstract class YoParameter<T extends YoParameter<T>>
    }
 
    /**
-    * Check if this parameter has been loaded
+    * Checks that this parameter has been initialized.
+    * 
+    * @throws IllegalOperationException if this parameter has not been initialized.
+    */
+   public void checkLoaded()
+   {
+      if (!isLoaded())
+         throw new IllegalOperationException("The parameter " + getFullName() + " has not been loaded. This is required to enable its use.");
+   }
+
+   /**
+    * Tests if this parameter has been loaded.
     *
-    * @return true if this parameter has been loaded and can be used
+    * @return {@code true} if this parameter has been loaded and can be used.
     */
    public boolean isLoaded()
    {
@@ -228,43 +314,42 @@ public abstract class YoParameter<T extends YoParameter<T>>
    }
 
    /**
-    * Helper class to delegate VariableChangedListeners to ParameterChangedListeners
+    * Helper class to delegate {@link YoVariableChangedListener}s to
+    * {@link YoParameterChangedListener}s.
     *
     * @author Jesper Smith
     */
-   private class YoParameterChangedListenerHolder implements VariableChangedListener
+   private static class YoParameterChangedListenerHolder implements YoVariableChangedListener
    {
-      private final ArrayList<ParameterChangedListener> parameterChangedListeners = new ArrayList<>();
+      private final List<YoParameterChangedListener> changedListeners = new ArrayList<>();
 
       @Override
-      public void notifyOfVariableChange(YoVariable<?> v)
+      public void changed(YoVariable v)
       {
-         for (int i = 0; i < parameterChangedListeners.size(); i++)
+         for (int i = 0; i < changedListeners.size(); i++)
          {
-            parameterChangedListeners.get(i).notifyOfParameterChange(v.getParameter());
+            changedListeners.get(i).changed(v.getParameter());
          }
       }
 
-      public boolean remove(ParameterChangedListener parameterChangedListener)
+      public void addListener(YoParameterChangedListener listener)
       {
-         return parameterChangedListeners.remove(parameterChangedListener);
+         changedListeners.add(listener);
       }
 
-      public List<ParameterChangedListener> getParameterChangedListeners()
+      public void removeListeners()
       {
-         return parameterChangedListeners;
+         changedListeners.clear();
       }
 
-      public void clear()
+      public boolean removeListener(YoParameterChangedListener listener)
       {
-         parameterChangedListeners.clear();
+         return changedListeners.remove(listener);
       }
 
-      public void add(ParameterChangedListener parameterChangedListener)
+      public List<YoParameterChangedListener> getListeners()
       {
-         parameterChangedListeners.add(parameterChangedListener);
+         return changedListeners;
       }
-
    }
-
 }

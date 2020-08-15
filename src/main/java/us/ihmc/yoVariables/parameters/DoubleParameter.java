@@ -15,142 +15,183 @@
  */
 package us.ihmc.yoVariables.parameters;
 
+import us.ihmc.yoVariables.exceptions.IllegalOperationException;
 import us.ihmc.yoVariables.providers.DoubleProvider;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
-import us.ihmc.yoVariables.variable.YoVariable;
 
 /**
- * Double parameter
+ * Double parameter.
  *
  * @author Jesper Smith
+ * @see YoParameter
  */
-public class DoubleParameter extends YoParameter<DoubleParameter> implements DoubleProvider
+public class DoubleParameter extends YoParameter implements DoubleProvider
 {
    private static final double defaultSuggestedMinimum = 0.0;
    private static final double defaultSuggestedMaximum = 1.0;
 
+   /** The variable backing this parameter. */
    private final YoDouble value;
+   /** Optional default value used for initializing this parameter. */
    private final double initialValue;
 
    /**
-    * Create a new Double parameter, registered to the namespace of the registry.
+    * Creates a new double parameter and registers it to the given registry.
     *
-    * @param name     Desired name. Must be unique in the registry
-    * @param registry YoVariableRegistry to store under
+    * @param name     the parameter's name. Must be unique in the registry.
+    * @param registry initial parent registry for this parameter.
     */
-   public DoubleParameter(String name, YoVariableRegistry registry)
+   public DoubleParameter(String name, YoRegistry registry)
    {
       this(name, "", registry);
    }
 
    /**
-    * Create a new Double parameter, registered to the namespace of the registry.
+    * Creates a new double parameter and registers it to the given registry.
+    * <p>
+    * Parameter bounds are typically used when interacting with the parameter via a GUI. For instance,
+    * the parameter bounds can be used to set the bounds of control slider or set the range when
+    * plotting this variable.
+    * </p>
+    * <p>
+    * Note that nothing in the implementation of a {@code YoParameter} enforces the value to remain
+    * within its current bounds, it is only for facilitating the definition of bounds and tracking to
+    * the bounds' owner.
+    * </p>
     *
-    * @param name             Desired name. Must be unique in the registry
-    * @param registry         YoVariableRegistry to store under
-    * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
-    * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
+    * @param name       the parameter's name. Must be unique in the registry.
+    * @param registry   initial parent registry for this parameter.
+    * @param lowerBound double value representing the lower bound for this parameter. Not enforced.
+    * @param upperBound double value representing the upper bound for this parameter. Not enforced.
     */
-   public DoubleParameter(String name, YoVariableRegistry registry, double suggestedMinimum, double suggestedMaximum)
+   public DoubleParameter(String name, YoRegistry registry, double lowerBound, double upperBound)
    {
-      this(name, "", registry, suggestedMinimum, suggestedMaximum);
+      this(name, "", registry, lowerBound, upperBound);
    }
 
    /**
-    * Create a new Double parameter, registered to the namespace of the registry.
+    * Creates a new double parameter and registers it to the given registry.
     *
-    * @param name        Desired name. Must be unique in the registry
-    * @param description User readable description that describes the purpose of this parameter
-    * @param registry    YoVariableRegistry to store under
+    * @param name        the parameter's name. Must be unique in the registry.
+    * @param description description of this parameter's purpose.
+    * @param registry    initial parent registry for this parameter.
     */
-   public DoubleParameter(String name, String description, YoVariableRegistry registry)
+   public DoubleParameter(String name, String description, YoRegistry registry)
    {
-      this(name, "", registry, Double.NaN);
+      this(name, description, registry, Double.NaN);
    }
 
    /**
-    * Create a new Double parameter, registered to the namespace of the registry.
+    * Creates a new double parameter and registers it to the given registry.
+    * <p>
+    * Parameter bounds are typically used when interacting with the parameter via a GUI. For instance,
+    * the parameter bounds can be used to set the bounds of control slider or set the range when
+    * plotting this variable.
+    * </p>
+    * <p>
+    * Note that nothing in the implementation of a {@code YoParameter} enforces the value to remain
+    * within its current bounds, it is only for facilitating the definition of bounds and tracking to
+    * the bounds' owner.
+    * </p>
     *
-    * @param name             Desired name. Must be unique in the registry
-    * @param description      User readable description that describes the purpose of this parameter
-    * @param registry         YoVariableRegistry to store under
-    * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
-    * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
+    * @param name        the parameter's name. Must be unique in the registry.
+    * @param description description of this parameter's purpose.
+    * @param registry    initial parent registry for this parameter.
+    * @param lowerBound  double value representing the lower bound for this parameter. Not enforced.
+    * @param upperBound  double value representing the upper bound for this parameter. Not enforced.
     */
-   public DoubleParameter(String name, String description, YoVariableRegistry registry, double suggestedMinimum, double suggestedMaximum)
+   public DoubleParameter(String name, String description, YoRegistry registry, double lowerBound, double upperBound)
    {
-      this(name, "", registry, Double.NaN, suggestedMinimum, suggestedMaximum);
+      this(name, description, registry, Double.NaN, lowerBound, upperBound);
    }
 
    /**
-    * Create a new Double parameter, registered to the namespace of the registry.
+    * Creates a new double parameter and registers it to the given registry.
     *
-    * @param name         Desired name. Must be unique in the registry
-    * @param registry     YoVariableRegistry to store under
-    * @param initialValue Value to set to when no value can be found in the user provided
-    *                     parameterLoader
+    * @param name         the parameter's name. Must be unique in the registry.
+    * @param registry     initial parent registry for this parameter.
+    * @param initialValue value to set to when no value can be found in the user provided parameter
+    *                     loader.
     */
-   public DoubleParameter(String name, YoVariableRegistry registry, double initialValue)
+   public DoubleParameter(String name, YoRegistry registry, double initialValue)
    {
       this(name, "", registry, initialValue);
    }
 
    /**
-    * Create a new Double parameter, registered to the namespace of the registry.
+    * Creates a new double parameter and registers it to the given registry.
+    * <p>
+    * Parameter bounds are typically used when interacting with the parameter via a GUI. For instance,
+    * the parameter bounds can be used to set the bounds of control slider or set the range when
+    * plotting this variable.
+    * </p>
+    * <p>
+    * Note that nothing in the implementation of a {@code YoParameter} enforces the value to remain
+    * within its current bounds, it is only for facilitating the definition of bounds and tracking to
+    * the bounds' owner.
+    * </p>
     *
-    * @param name             Desired name. Must be unique in the registry
-    * @param registry         YoVariableRegistry to store under
-    * @param initialValue     Value to set to when no value can be found in the user provided
-    *                         parameterLoader
-    * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
-    * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
+    * @param name         the parameter's name. Must be unique in the registry.
+    * @param registry     initial parent registry for this parameter.
+    * @param initialValue value to set to when no value can be found in the user provided parameter
+    *                     loader.
+    * @param lowerBound   double value representing the lower bound for this parameter. Not enforced.
+    * @param upperBound   double value representing the upper bound for this parameter. Not enforced.
     */
-   public DoubleParameter(String name, YoVariableRegistry registry, double initialValue, double suggestedMinimum, double suggestedMaximum)
+   public DoubleParameter(String name, YoRegistry registry, double initialValue, double lowerBound, double upperBound)
    {
-      this(name, "", registry, initialValue, suggestedMinimum, suggestedMaximum);
+      this(name, "", registry, initialValue, lowerBound, upperBound);
    }
 
    /**
-    * Create a new Double parameter, registered to the namespace of the registry.
+    * Creates a new double parameter and registers it to the given registry.
     *
-    * @param name         Desired name. Must be unique in the registry
-    * @param description  User readable description that describes the purpose of this parameter
-    * @param registry     YoVariableRegistry to store under
-    * @param initialValue Value to set to when no value can be found in the user provided
-    *                     parameterLoader
+    * @param name         the parameter's name. Must be unique in the registry.
+    * @param description  description of this parameter's purpose.
+    * @param registry     initial parent registry for this parameter.
+    * @param initialValue value to set to when no value can be found in the user provided parameter
+    *                     loader.
     */
-   public DoubleParameter(String name, String description, YoVariableRegistry registry, double initialValue)
+   public DoubleParameter(String name, String description, YoRegistry registry, double initialValue)
    {
       this(name, description, registry, initialValue, defaultSuggestedMinimum, defaultSuggestedMaximum);
    }
 
    /**
-    * Create a new Double parameter, registered to the namespace of the registry.
+    * Creates a new double parameter and registers it to the given registry.
+    * <p>
+    * Parameter bounds are typically used when interacting with the parameter via a GUI. For instance,
+    * the parameter bounds can be used to set the bounds of control slider or set the range when
+    * plotting this variable.
+    * </p>
+    * <p>
+    * Note that nothing in the implementation of a {@code YoParameter} enforces the value to remain
+    * within its current bounds, it is only for facilitating the definition of bounds and tracking to
+    * the bounds' owner.
+    * </p>
     *
-    * @param name             Desired name. Must be unique in the registry
-    * @param description      User readable description that describes the purpose of this parameter
-    * @param registry         YoVariableRegistry to store under
-    * @param initialValue     Value to set to when no value can be found in the user provided
-    *                         parameterLoader
-    * @param suggestedMinimum A suggested minimum value for this parameter. Not enforced.
-    * @param suggestedMaximum A suggested maximum value for this parameter. Not enforced.
+    * @param name         the parameter's name. Must be unique in the registry.
+    * @param description  description of this parameter's purpose.
+    * @param registry     initial parent registry for this parameter.
+    * @param initialValue value to set to when no value can be found in the user provided parameter
+    *                     loader.
+    * @param lowerBound   double value representing the lower bound for this parameter. Not enforced.
+    * @param upperBound   double value representing the upper bound for this parameter. Not enforced.
     */
-   public DoubleParameter(String name, String description, YoVariableRegistry registry, double initialValue, double suggestedMinimum, double suggestedMaximum)
+   public DoubleParameter(String name, String description, YoRegistry registry, double initialValue, double lowerBound, double upperBound)
    {
-      super(name, description);
-
       value = new YoDoubleParameter(name, description, registry);
       this.initialValue = initialValue;
 
-      setSuggestedRange(suggestedMinimum, suggestedMaximum);
+      setParameterBounds(lowerBound, upperBound);
    }
 
    /**
     * Get the current value.
     *
-    * @return value for this parameter
-    * @throws RuntimeException if the parameter is not loaded yet.
+    * @return value for this parameter.
+    * @throws IllegalOperationException if the parameter is not loaded yet.
     */
    @Override
    public double getValue()
@@ -159,37 +200,21 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
       return value.getDoubleValue();
    }
 
-   /**
-    * Sets the suggested range for tuning purposes. The minimum and maximum will not be enforced and
-    * the parameter can be set to any value. This is just a suggestion to the user.
-    *
-    * @param min Lower end of the suggested range for this parameter.
-    * @param max Upper end of the suggested range for this parameter.
-    */
+   /** {@inheritDoc} */
    @Override
-   public void setSuggestedRange(double min, double max)
+   public void setParameterBounds(double lowerBound, double upperBound)
    {
-      super.setSuggestedRange(min, max);
+      super.setParameterBounds(lowerBound, upperBound);
    }
 
+   /** {@inheritDoc} */
    @Override
-   public String getValueAsString()
-   {
-      return String.valueOf(getValue());
-   }
-
-   @Override
-   YoVariable<?> getVariable()
+   YoDouble getVariable()
    {
       return value;
    }
 
-   @Override
-   void setToString(String valueString)
-   {
-      value.set(Double.parseDouble(valueString));
-   }
-
+   /** {@inheritDoc} */
    @Override
    void setToDefault()
    {
@@ -197,14 +222,13 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
    }
 
    /**
-    * Internal class to set parameter settings for YoDouble
+    * Internal class to set parameter settings for {@code YoDouble}.
     *
     * @author Jesper Smith
     */
    private class YoDoubleParameter extends YoDouble
    {
-
-      public YoDoubleParameter(String name, String description, YoVariableRegistry registry)
+      public YoDoubleParameter(String name, String description, YoRegistry registry)
       {
          super(name, description, registry);
       }
@@ -216,24 +240,18 @@ public class DoubleParameter extends YoParameter<DoubleParameter> implements Dou
       }
 
       @Override
-      public YoParameter<?> getParameter()
+      public DoubleParameter getParameter()
       {
          return DoubleParameter.this;
       }
 
       @Override
-      public YoDouble duplicate(YoVariableRegistry newRegistry)
+      public YoDouble duplicate(YoRegistry newRegistry)
       {
-         DoubleParameter newParameter = new DoubleParameter(getName(),
-                                                            getDescription(),
-                                                            newRegistry,
-                                                            initialValue,
-                                                            getManualScalingMin(),
-                                                            getManualScalingMax());
+         DoubleParameter newParameter = new DoubleParameter(getName(), getDescription(), newRegistry, initialValue, getLowerBound(), getUpperBound());
          newParameter.value.set(value.getValue());
          newParameter.loadStatus = getLoadStatus();
          return newParameter.value;
       }
    }
-
 }

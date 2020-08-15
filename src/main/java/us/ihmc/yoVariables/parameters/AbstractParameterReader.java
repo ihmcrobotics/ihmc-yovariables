@@ -21,30 +21,42 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import us.ihmc.yoVariables.registry.NameSpace;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoNamespace;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
- * Base class for parameter readers
+ * Base class for parameter readers.
+ * <p>
+ * A parameter reader is used to initialize parameters from some external source, for instance a XML
+ * file when using {@link XmlParameterReader}.
+ * </p>
  *
  * @author Jesper Smith
  */
 public abstract class AbstractParameterReader
 {
    /**
-    * Read all parameters registered to the registry and all its children. If a parameter cannot be
-    * found in the parameter store, it is initialized to its default.
+    * Recurses starting from the given registry, finds all parameters, and initializes them using the
+    * {@link #getValues()} map.
+    * <p>
+    * If {@link #getValues()} does not cover all parameters, the missed parameters are initialized to
+    * default, see {@link YoParameter#loadDefault()}.
+    * </p>
     *
     * @param registry with parameters that need to be loaded.
     */
-   public void readParametersInRegistry(YoVariableRegistry registry)
+   public void readParametersInRegistry(YoRegistry registry)
    {
       readParametersInRegistry(registry, new HashSet<>(), new HashSet<>());
    }
 
    /**
-    * Read all parameters registered to the registry and all its children. If a parameter cannot be
-    * found in the parameter store, it is initialized to its default.
+    * Recurses starting from the given registry, finds all parameters, and initializes them using the
+    * {@link #getValues()} map.
+    * <p>
+    * If {@link #getValues()} does not cover all parameters, the missed parameters are initialized to
+    * default, see {@link YoParameter#loadDefault()}.
+    * </p>
     *
     * @param registry                  with parameters that need to be loaded.
     * @param defaultParametersToPack   will be set to contain all parameter names (incl. namespace)
@@ -53,19 +65,19 @@ public abstract class AbstractParameterReader
     *                                  that exist in the loader but have no matching parameter in the
     *                                  registry.
     */
-   public void readParametersInRegistry(YoVariableRegistry registry, Set<String> defaultParametersToPack, Set<String> unmatchedParametersToPack)
+   public void readParametersInRegistry(YoRegistry registry, Set<String> defaultParametersToPack, Set<String> unmatchedParametersToPack)
    {
       defaultParametersToPack.clear();
       unmatchedParametersToPack.clear();
 
-      List<YoParameter<?>> parameters = registry.getAllParameters();
+      List<YoParameter> parameters = registry.collectSubtreeParameters();
       Map<String, ParameterData> localMap = new HashMap<>(getValues());
 
       for (int i = 0; i < parameters.size(); i++)
       {
-         YoParameter<?> parameter = parameters.get(i);
+         YoParameter parameter = parameters.get(i);
 
-         NameSpace relativeNamespace = getRelativeNamespace(parameter.getNameSpace(), registry);
+         YoNamespace relativeNamespace = getRelativeNamespace(parameter.getNamespace(), registry);
          String fullName = relativeNamespace + "." + parameter.getName();
          ParameterData data = localMap.remove(fullName);
 
@@ -83,18 +95,20 @@ public abstract class AbstractParameterReader
       unmatchedParametersToPack.addAll(localMap.keySet());
    }
 
+   /**
+    * Returns a map from parameter full-name to parameter's initial values that is to be used in
+    * {@link #readParametersInRegistry(YoRegistry, Set, Set)} for initializing the parameters.
+    * 
+    * @return the map containing the parameters' initial values.
+    */
    protected abstract Map<String, ParameterData> getValues();
 
-   static NameSpace getRelativeNamespace(NameSpace parameterNamespace, YoVariableRegistry registry)
+   static YoNamespace getRelativeNamespace(YoNamespace parameterNamespace, YoRegistry registry)
    {
-      NameSpace registryNamespace = registry.getNameSpace();
-      if (registryNamespace.isRootNameSpace())
-      {
+      YoNamespace registryNamespace = registry.getNamespace();
+      if (registryNamespace.isRoot())
          return parameterNamespace;
-      }
       else
-      {
-         return parameterNamespace.stripOffFromBeginning(registry.getNameSpace().getParent());
-      }
+         return parameterNamespace.removeStart(registry.getNamespace().removeEnd(1));
    }
 }

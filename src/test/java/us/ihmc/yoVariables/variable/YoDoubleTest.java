@@ -1,25 +1,21 @@
 package us.ihmc.yoVariables.variable;
 
-import static us.ihmc.robotics.Assert.assertEquals;
-import static us.ihmc.robotics.Assert.assertFalse;
-import static us.ihmc.robotics.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.text.DecimalFormat;
-import java.text.FieldPosition;
-import java.text.NumberFormat;
 import java.util.Random;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import us.ihmc.robotics.Assert;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoDoubleTest
 {
 
-   private YoVariableRegistry registry;
+   private YoRegistry registry;
    private YoDouble yoDouble1;
    private YoDouble yoDouble2;
    private static final double EPSILON = 1e-10;
@@ -28,9 +24,10 @@ public class YoDoubleTest
    @BeforeEach
    public void setUp()
    {
-      registry = new YoVariableRegistry("testRegistry");
+      registry = new YoRegistry("testRegistry");
       yoDouble1 = new YoDouble("yoDouble1", registry);
-      yoDouble2 = new YoDouble("yoDouble2", "description2", registry, 0.0, 10.0);
+      yoDouble2 = new YoDouble("yoDouble2", "description2", registry);
+      yoDouble2.setVariableBounds(0.0, 10.0);
    }
 
    @AfterEach
@@ -44,7 +41,7 @@ public class YoDoubleTest
    public void testDoubleYoVariableConstructorWithoutDescription()
    {
       assertTrue(yoDouble1.getDoubleValue() == 0.0);
-      Assert.assertEquals(yoDouble1.getName(), "yoDouble1");
+      assertEquals(yoDouble1.getName(), "yoDouble1");
    }
 
    @Test // timeout=300000
@@ -53,7 +50,7 @@ public class YoDoubleTest
       String testDescription = "This is a test description.";
       YoDouble yoDoubleWithDescription = new YoDouble("yoDoubleWithDescription", testDescription, registry);
       assertTrue(yoDoubleWithDescription.getDoubleValue() == 0.0);
-      Assert.assertEquals(yoDoubleWithDescription.getName(), "yoDoubleWithDescription");
+      assertEquals(yoDoubleWithDescription.getName(), "yoDoubleWithDescription");
       assertTrue(yoDoubleWithDescription.getDescription() == testDescription);
    }
 
@@ -62,7 +59,7 @@ public class YoDoubleTest
    {
       double randomNumber = Math.random();
       yoDouble1.set(randomNumber);
-      Assert.assertEquals(yoDouble1.toString(), "yoDouble1: " + randomNumber);
+      assertEquals(yoDouble1.toString(), "yoDouble1: " + randomNumber);
    }
 
    @Test // timeout=300000
@@ -157,32 +154,6 @@ public class YoDoubleTest
    }
 
    @Test // timeout=300000
-   public void testSetValueWithStringBuffer()
-   {
-      FieldPosition fieldPosition = new FieldPosition(NumberFormat.INTEGER_FIELD);
-      NumberFormat doubleFormat = new DecimalFormat(" 0.00000;-0.00000");
-
-      double randomNumber = 100000 * Math.random();
-      randomNumber = Math.round(randomNumber);
-      randomNumber /= 100000; //five decimal format as determined by doubleFormat under <p>getValue</p> method.
-      StringBuffer stringBufferTest = new StringBuffer();
-      stringBufferTest.append("Test case:");
-
-      yoDouble1.set(randomNumber);
-      yoDouble1.getValueString(stringBufferTest);
-
-      StringBuffer expectedStringBuffer = new StringBuffer();
-      expectedStringBuffer.append("Test case:");
-      doubleFormat.format(randomNumber, expectedStringBuffer, fieldPosition);
-      //         expectedStringBuffer.append(" " + randomNumber); //added space that occurs in <p>getValue</p> method.
-
-      System.out.println("Expected String Buffer: " + expectedStringBuffer.toString());
-      System.out.println("String Buffer: " + stringBufferTest.toString());
-
-      assertEquals(expectedStringBuffer.toString(), stringBufferTest.toString());
-   }
-
-   @Test // timeout=300000
    public void testGetAndSetMethods()
    {
       double randomNumber = Math.random();
@@ -207,27 +178,13 @@ public class YoDoubleTest
       yoDouble1.set(0.0);
 
       yoDouble1.set(10.0);
-      Assert.assertEquals(10.0, yoDouble1.getDoubleValue(), EPSILON);
-   }
-
-   @Test // timeout=300000
-   public void testGetValueAsLongBitsAndSetValueFromLongBits()
-   {
-      long longValue = random.nextLong();
-      yoDouble1.setValueFromLongBits(longValue);
-      Assert.assertEquals(longValue, yoDouble1.getValueAsLongBits());
-
-      YoDouble yoDouble = new YoDouble("doubleYo", registry);
-      yoDouble.set(Double.NEGATIVE_INFINITY);
-
-      yoDouble1.setValue(yoDouble, true);
-      Assert.assertEquals(0xfff0000000000000L, yoDouble1.getValueAsLongBits());
+      assertEquals(10.0, yoDouble1.getDoubleValue(), EPSILON);
    }
 
    @Test // timeout=300000
    public void testGetYoVariableType()
    {
-      assertTrue(yoDouble1.getYoVariableType() == YoVariableType.DOUBLE);
+      assertTrue(yoDouble1.getType() == YoVariableType.DOUBLE);
    }
 
    @Test // timeout=300000
@@ -236,9 +193,9 @@ public class YoDoubleTest
       String newName = "registry2000";
       double value = random.nextDouble();
       yoDouble2.set(value);
-      YoVariableRegistry newRegistry = new YoVariableRegistry(newName);
+      YoRegistry newRegistry = new YoRegistry(newName);
       YoDouble duplicate = yoDouble2.duplicate(newRegistry);
-      Assert.assertEquals(yoDouble2.getDoubleValue(), duplicate.getDoubleValue(), EPSILON);
+      assertEquals(yoDouble2.getDoubleValue(), duplicate.getDoubleValue(), EPSILON);
    }
 
    @Test // timeout = 300000

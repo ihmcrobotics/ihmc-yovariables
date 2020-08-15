@@ -1,7 +1,7 @@
 package us.ihmc.yoVariables.variable;
 
-import static us.ihmc.robotics.Assert.assertEquals;
-import static us.ihmc.robotics.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Random;
 
@@ -9,12 +9,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import us.ihmc.robotics.Assert;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoIntegerTest
 {
-   private YoVariableRegistry registry;
+   private YoRegistry registry;
    private Random random;
    private YoInteger yoInteger;
    private static final double EPSILON = 1e-10;
@@ -22,7 +21,7 @@ public class YoIntegerTest
    @BeforeEach
    public void setUp()
    {
-      registry = new YoVariableRegistry("testRegistry");
+      registry = new YoRegistry("testRegistry");
       random = new Random(1776L);
       yoInteger = new YoInteger("test", registry);
    }
@@ -41,7 +40,7 @@ public class YoIntegerTest
       {
          int value = random.nextInt(Integer.MAX_VALUE);
          yoInteger.set(value);
-         Assert.assertEquals(value, yoInteger.getIntegerValue());
+         assertEquals(value, yoInteger.getIntegerValue());
       }
    }
 
@@ -52,16 +51,16 @@ public class YoIntegerTest
       yoInteger.set(value);
 
       yoInteger.increment();
-      Assert.assertEquals(value + 1, yoInteger.getIntegerValue());
+      assertEquals(value + 1, yoInteger.getIntegerValue());
 
       yoInteger.decrement();
-      Assert.assertEquals(value, yoInteger.getIntegerValue());
+      assertEquals(value, yoInteger.getIntegerValue());
 
       yoInteger.add(value);
-      Assert.assertEquals(value * 2, yoInteger.getIntegerValue());
+      assertEquals(value * 2, yoInteger.getIntegerValue());
 
-      yoInteger.subtract(value);
-      Assert.assertEquals(value, yoInteger.getIntegerValue());
+      yoInteger.sub(value);
+      assertEquals(value, yoInteger.getIntegerValue());
    }
 
    @Test // timeout=300000
@@ -69,7 +68,7 @@ public class YoIntegerTest
    {
       int value = Integer.MAX_VALUE - 2;
       yoInteger.set(value);
-      Assert.assertEquals(value, yoInteger.getIntegerValue());
+      assertEquals(value, yoInteger.getIntegerValue());
    }
 
    @Test // timeout=300000
@@ -82,13 +81,13 @@ public class YoIntegerTest
    @Test // timeout=300000
    public void testSetFinal()
    {
-      Assert.assertEquals(0, yoInteger.getIntegerValue());
+      assertEquals(0, yoInteger.getIntegerValue());
       yoInteger.set(0);
-      Assert.assertEquals(0, yoInteger.getIntegerValue());
+      assertEquals(0, yoInteger.getIntegerValue());
 
       int value = random.nextInt() + 1;
       yoInteger.set(value);
-      Assert.assertEquals(value, yoInteger.getIntegerValue());
+      assertEquals(value, yoInteger.getIntegerValue());
    }
 
    @Test // timeout=300000
@@ -98,14 +97,14 @@ public class YoIntegerTest
       int intValue = (int) Math.round(doubleValue);
       boolean notifyListeners = true;
       yoInteger.setValueFromDouble(doubleValue, notifyListeners);
-      Assert.assertEquals(intValue, yoInteger.getIntegerValue());
+      assertEquals(intValue, yoInteger.getIntegerValue());
    }
 
    @Test // timeout=300000
    public void testGetValueAsDouble()
    {
       int value = 15;
-      Assert.assertEquals(0, yoInteger.getIntegerValue());
+      assertEquals(0, yoInteger.getIntegerValue());
       yoInteger.set(value);
       double result = yoInteger.getValueAsDouble();
       assertEquals(15.0, result, EPSILON);
@@ -114,36 +113,13 @@ public class YoIntegerTest
    @Test // timeout=300000
    public void testToString()
    {
-      Assert.assertEquals(yoInteger.getName() + ": " + yoInteger.getIntegerValue(), yoInteger.toString());
-   }
-
-   @Test // timeout=300000
-   public void testGetValueString()
-   {
-      Assert.assertEquals(0, yoInteger.getIntegerValue());
-      int value = random.nextInt();
-      yoInteger.set(value);
-      StringBuffer stringBuffer = new StringBuffer();
-      yoInteger.getValueString(stringBuffer);
-      assertEquals("" + value, stringBuffer.toString());
-   }
-
-   @Test // timeout=300000
-   public void testGetValueStringFromDouble()
-   {
-      Assert.assertEquals(0, yoInteger.getIntegerValue());
-      double doubleValue = random.nextDouble();
-      int value = (int) Math.round(doubleValue);
-      yoInteger.setValueFromDouble(doubleValue);
-      StringBuffer stringBuffer = new StringBuffer();
-      yoInteger.getValueStringFromDouble(stringBuffer, doubleValue);
-      assertEquals("" + value, stringBuffer.toString());
+      assertEquals(yoInteger.getName() + ": " + yoInteger.getIntegerValue(), yoInteger.toString());
    }
 
    @Test // timeout=300000
    public void testGetYoVariableType()
    {
-      Assert.assertEquals(YoVariableType.INTEGER, yoInteger.getYoVariableType());
+      assertEquals(YoVariableType.INTEGER, yoInteger.getType());
    }
 
    @Test // timeout=300000
@@ -157,28 +133,19 @@ public class YoIntegerTest
       long longValue = 12345;
       boolean notifyListeners = true;
       yoInteger.setValueFromLongBits(longValue, notifyListeners);
-      Assert.assertEquals(longValue, yoInteger.getValueAsLongBits());
+      assertEquals(longValue, yoInteger.getValueAsLongBits());
    }
 
    @Test // timeout=300000
    public void testDuplicate()
    {
       YoInteger yoInteger2 = new YoInteger("var2", "descriptionTest", registry);
-      YoVariableRegistry newRegistry = new YoVariableRegistry("newRegistry");
+      YoRegistry newRegistry = new YoRegistry("newRegistry");
       YoInteger duplicate = yoInteger2.duplicate(newRegistry);
-      Assert.assertEquals(yoInteger2.getName(), duplicate.getName());
-      Assert.assertEquals(yoInteger2.getDescription(), duplicate.getDescription());
-      Assert.assertEquals(yoInteger2.getManualScalingMin(), duplicate.getManualScalingMin(), EPSILON);
-      Assert.assertEquals(yoInteger2.getManualScalingMax(), duplicate.getManualScalingMax(), EPSILON);
-   }
-
-   @Test // timeout=300000
-   public void testSetValue()
-   {
-      YoInteger yoInteger2 = new YoInteger("var2", "descriptionTest", registry);
-      boolean notifyListeners = true;
-      yoInteger.setValue(yoInteger2, notifyListeners);
-      Assert.assertEquals(yoInteger2.getIntegerValue(), yoInteger.getIntegerValue());
+      assertEquals(yoInteger2.getName(), duplicate.getName());
+      assertEquals(yoInteger2.getDescription(), duplicate.getDescription());
+      assertEquals(yoInteger2.getLowerBound(), duplicate.getLowerBound(), EPSILON);
+      assertEquals(yoInteger2.getUpperBound(), duplicate.getUpperBound(), EPSILON);
    }
 
    @Test // timeout = 300000

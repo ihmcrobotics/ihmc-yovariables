@@ -27,29 +27,42 @@ import javax.xml.bind.Marshaller;
 import us.ihmc.yoVariables.parameters.xml.Parameter;
 import us.ihmc.yoVariables.parameters.xml.Parameters;
 import us.ihmc.yoVariables.parameters.xml.Registry;
-import us.ihmc.yoVariables.registry.NameSpace;
+import us.ihmc.yoVariables.registry.YoNamespace;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
+/**
+ * A parameter writer which manages parameter export to a XML file.
+ */
 public class XmlParameterWriter extends AbstractParameterWriter
 {
    private final HashMap<String, Registry> registries = new HashMap<>();
    private final Parameters parameterRoot = new Parameters();
 
+   /**
+    * Creates a new writer.
+    * <p>
+    * Before writing parameters into a XML file, it needs to be initialized with the parameters to be
+    * exported using {@link #addParameters(YoRegistry)}. This action can be performed on multiple
+    * distinct registries which parameters are to be exported. The export can then be finalized with
+    * {@link #write(OutputStream)}.
+    * </p>
+    */
    public XmlParameterWriter()
    {
       parameterRoot.setRegistries(new ArrayList<>());
    }
 
-   private void addNamespace(NameSpace namespace)
+   private void addNamespace(YoNamespace namespace)
    {
-      Registry newRegistry = new Registry(NameSpace.stripOffNameSpaceToGetVariableName(namespace.getName()));
+      Registry newRegistry = new Registry(namespace.getShortName());
 
-      if (namespace.isRootNameSpace())
+      if (namespace.isRoot())
       {
          parameterRoot.getRegistries().add(newRegistry);
       }
       else
       {
-         NameSpace parent = namespace.getParent();
+         YoNamespace parent = namespace.removeEnd(1);
          if (!registries.containsKey(parent.getName()))
          {
             addNamespace(parent);
@@ -63,11 +76,11 @@ public class XmlParameterWriter extends AbstractParameterWriter
    }
 
    @Override
-   protected void setValue(NameSpace namespace, String name, String description, String type, String value, String min, String max)
+   protected void setValue(YoNamespace namespace, String name, String description, String type, String value, String min, String max)
    {
-      String nameSpaceAsString = namespace.getName();
+      String namespaceAsString = namespace.getName();
 
-      if (!registries.containsKey(nameSpaceAsString))
+      if (!registries.containsKey(namespaceAsString))
       {
          addNamespace(namespace);
       }
@@ -86,13 +99,12 @@ public class XmlParameterWriter extends AbstractParameterWriter
    }
 
    /**
-    * Write the current parameter tree to an OutputStream This function can be called as multiple times
-    * without affecting the output.
+    * Write the current parameter tree previously initialized via {@link #addParameters(YoRegistry)}.
     *
-    * @param os OutputStream to use
-    * @throws IOException
+    * @param outputStream the stream to use for exporting the parameters.
+    * @throws IOException if something went wrong during the export process.
     */
-   public void write(OutputStream os) throws IOException
+   public void write(OutputStream outputStream) throws IOException
    {
       try
       {
@@ -101,13 +113,11 @@ public class XmlParameterWriter extends AbstractParameterWriter
 
          jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-         jaxbMarshaller.marshal(parameterRoot, os);
+         jaxbMarshaller.marshal(parameterRoot, outputStream);
       }
       catch (JAXBException e)
       {
          throw new IOException(e);
       }
-
    }
-
 }

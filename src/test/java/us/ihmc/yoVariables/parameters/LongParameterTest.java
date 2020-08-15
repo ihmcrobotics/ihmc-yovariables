@@ -15,17 +15,17 @@
  */
 package us.ihmc.yoVariables.parameters;
 
-import static us.ihmc.robotics.Assert.assertEquals;
-import static us.ihmc.robotics.Assert.assertFalse;
-import static us.ihmc.robotics.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
-import us.ihmc.yoVariables.listener.ParameterChangedListener;
-import us.ihmc.yoVariables.registry.YoVariableRegistry;
+import us.ihmc.yoVariables.listener.YoParameterChangedListener;
+import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoLong;
 
 @Execution(ExecutionMode.SAME_THREAD)
@@ -35,10 +35,10 @@ public class LongParameterTest
 
    public LongParameter createParameterWithNamespace()
    {
-      YoVariableRegistry root = new YoVariableRegistry("root");
-      YoVariableRegistry a = new YoVariableRegistry("a");
-      YoVariableRegistry b = new YoVariableRegistry("b");
-      YoVariableRegistry c = new YoVariableRegistry("c");
+      YoRegistry root = new YoRegistry("root");
+      YoRegistry a = new YoRegistry("a");
+      YoRegistry b = new YoRegistry("b");
+      YoRegistry c = new YoRegistry("c");
 
       root.addChild(a);
       a.addChild(b);
@@ -52,7 +52,7 @@ public class LongParameterTest
    @Test // timeout = 1000
    public void testConstructDefaultValue()
    {
-      YoVariableRegistry dummy = new YoVariableRegistry("dummy");
+      YoRegistry dummy = new YoRegistry("dummy");
       LongParameter test = new LongParameter("test", dummy);
       test.loadDefault();
 
@@ -69,15 +69,15 @@ public class LongParameterTest
 
       var.set(632);
 
-      YoVariableRegistry newRegistry = new YoVariableRegistry("newRegistry");
+      YoRegistry newRegistry = new YoRegistry("newRegistry");
       YoLong newVar = var.duplicate(newRegistry);
       LongParameter newParam = (LongParameter) newVar.getParameter();
 
       assertEquals(param.getName(), newParam.getName());
       assertEquals(param.getDescription(), newParam.getDescription());
       assertEquals(param.getValue(), newParam.getValue(), 1e-9);
-      assertEquals(var.getManualScalingMin(), newVar.getManualScalingMin(), 1e-9);
-      assertEquals(var.getManualScalingMax(), newVar.getManualScalingMax(), 1e-9);
+      assertEquals(var.getLowerBound(), newVar.getLowerBound(), 1e-9);
+      assertEquals(var.getUpperBound(), newVar.getUpperBound(), 1e-9);
 
    }
 
@@ -87,7 +87,7 @@ public class LongParameterTest
 
       LongParameter param = createParameterWithNamespace();
 
-      assertEquals("root.a.b.c", param.getNameSpace().toString());
+      assertEquals("root.a.b.c", param.getNamespace().toString());
       assertEquals("param", param.getName());
 
    }
@@ -98,7 +98,7 @@ public class LongParameterTest
 
       for (long s = 100L * Integer.MIN_VALUE; s < 100L * Integer.MAX_VALUE; s += Integer.MAX_VALUE)
       {
-         YoVariableRegistry dummy = new YoVariableRegistry("dummy");
+         YoRegistry dummy = new YoRegistry("dummy");
          LongParameter param = new LongParameter("test", dummy);
          param.load(String.valueOf(s));
 
@@ -130,7 +130,7 @@ public class LongParameterTest
    {
       LongParameter param = createParameterWithNamespace();
       CallbackTest callback = new CallbackTest();
-      param.addParameterChangedListener(callback);
+      param.addListener(callback);
 
       assertFalse(callback.set);
 
@@ -148,12 +148,12 @@ public class LongParameterTest
 
    }
 
-   private class CallbackTest implements ParameterChangedListener
+   private class CallbackTest implements YoParameterChangedListener
    {
       boolean set = false;
 
       @Override
-      public void notifyOfParameterChange(YoParameter<?> v)
+      public void changed(YoParameter v)
       {
          set = true;
       }
