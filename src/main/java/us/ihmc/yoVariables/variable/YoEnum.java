@@ -537,7 +537,10 @@ public class YoEnum<E extends Enum<E>> extends YoVariable implements EnumProvide
       int ordinal = (int) Math.round(value);
       ordinal = Math.min(ordinal, getEnumSize() - 1);
       ordinal = Math.max(ordinal, allowNullValue ? NULL_VALUE : 0);
-      return enumValuesAsString[ordinal];
+      if (ordinal == NULL_VALUE)
+         return NULL_VALUE_STRING;
+      else
+         return enumValuesAsString[ordinal];
    }
 
    /**
