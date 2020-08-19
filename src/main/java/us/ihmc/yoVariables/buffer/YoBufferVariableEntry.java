@@ -235,9 +235,6 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
       // Calculate the total number of points after the crop
       int nPoints = computeBufferSizeAfterCrop(start, end, oldNPoints);
 
-      // If the result is 0 the size will remain the same
-      if (nPoints == 0)
-         nPoints = oldNPoints;
       bufferData = new double[nPoints];
 
       // Transfer the data into the new array beginning with start.
@@ -312,7 +309,11 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
 
    protected static int computeBufferSizeAfterCrop(int start, int end, int previousBufferSize)
    {
-      return (end - start + 1 + previousBufferSize) % previousBufferSize;
+      int newBufferSize = (end - start + 1 + previousBufferSize) % previousBufferSize;
+      if (newBufferSize == 0)
+         return previousBufferSize;
+      else
+         return newBufferSize;
    }
 
    protected static int computeBufferSizeAfterCut(int start, int end, int previousBufferSize)

@@ -306,6 +306,16 @@ public class YoBufferTest
 
    }
 
+   @Test
+   public void testCropBuffer()
+   {
+      // Test bugfix Cropping twice to assert that it doesn't throw an ArithmeticException.
+      dataBuffer.cropBuffer();
+      int bufferSize = dataBuffer.getBufferSize();
+      dataBuffer.cropBuffer();
+      assertEquals(bufferSize, dataBuffer.getBufferSize());
+   }
+
    @Test // timeout = 300000
    public void testIsIndexBetweenInAndOutPoint()
    {
