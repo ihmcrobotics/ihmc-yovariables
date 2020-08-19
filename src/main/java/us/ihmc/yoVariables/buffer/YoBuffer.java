@@ -500,8 +500,9 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
     */
    public void tickAndWriteIntoBuffer()
    {
-      if (lockIndex)
-         return;
+      // TODO This is inconsistent the rest of the API, but needed for SCS to function properly when used as a remote visualizer.
+//      if (lockIndex)
+//         return;
 
       currentIndex = currentIndex + 1;
 
