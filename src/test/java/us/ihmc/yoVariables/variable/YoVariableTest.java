@@ -82,21 +82,15 @@ public class YoVariableTest
    }
 
    @Test // timeout=300000
-   public void testCantHaveAClosingBracket()
+   public void testCanHaveAClosingBracket()
    {
-      Assertions.assertThrows(RuntimeException.class, () ->
-      {
-         new YoDouble("foo]bar", "", null);
-      });
+      new YoDouble("foo]bar", "", null);
    }
 
    @Test // timeout=300000
-   public void testCantHaveAnOpeningBracket()
+   public void testCanHaveAnOpeningBracket()
    {
-      Assertions.assertThrows(RuntimeException.class, () ->
-      {
-         new YoDouble("foo[bar", "", null);
-      });
+      new YoDouble("foo[bar", "", null);
    }
 
    @Test // timeout=300000,expected = RuntimeException.class
