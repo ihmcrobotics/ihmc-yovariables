@@ -46,8 +46,6 @@ public class YoToolsTest
       assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc;abc"));
       assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc<abc"));
       assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc>abc"));
-      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc[abc"));
-      assertThrows(IllegalNameException.class, () -> YoTools.checkForIllegalCharacters("abc]abc"));
 
       assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abcabc"));
       assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abc_abc"));
@@ -63,6 +61,8 @@ public class YoToolsTest
       assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abc8abc"));
       assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abc9abc"));
       assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abcAabc"));
+      assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abc[abc"));
+      assertDoesNotThrow(() -> YoTools.checkForIllegalCharacters("abc]abc"));
    }
 
    @Test // timeout = 30000

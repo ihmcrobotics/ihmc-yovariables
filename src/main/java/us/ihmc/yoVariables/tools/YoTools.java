@@ -57,10 +57,10 @@ public class YoTools
     * <p>
     * Any punctuation character is illegal except for the underscore "_" and hyphen "-" characters that
     * are permitted, and spaces are also illegal. List of illegal characters:
-    * <tt>!"#$%&'()*+,-./:;<=>?@[\]^ `{|}~</tt>
+    * <tt> `~.*!?@#$%/^&()<>,:;{}'"\=+|</tt>
     * </p>
     */
-   public static final String ILLEGAL_CHARACTERS_REGEX = "[[\\p{Punct}[ ]]&&[^_-]]";
+   public static final String ILLEGAL_CHARACTERS_REGEX = "[ `~.*!?@#$%/^&()<>,:;{}'\"\\\\=+|]";
    /**
     * The regular expression of illegal characters as a {@link Pattern} which can be used to create a
     * {@link Matcher} can be easily setup to perform a thorough search for illegal characters.
@@ -72,7 +72,7 @@ public class YoTools
     * <p>
     * Any punctuation character is illegal except for the underscore "_" and hyphen "-" characters that
     * are permitted, and spaces are also illegal. List of illegal characters:
-    * <tt>!"#$%&'()*+,./:;<=>?@[\]^ `{|}~</tt>
+    * <tt> `~.*!?@#$%/^&()<>,:;{}'"\=+|</tt>
     * </p>
     * 
     * @param name the {@code String} to validate.
