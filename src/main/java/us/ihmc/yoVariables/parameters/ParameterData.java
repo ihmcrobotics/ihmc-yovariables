@@ -15,6 +15,8 @@
  */
 package us.ihmc.yoVariables.parameters;
 
+import us.ihmc.euclid.tools.EuclidHashCodeTools;
+
 /**
  * Minimalist data structure used in parameter reader.
  */
@@ -70,5 +72,68 @@ public class ParameterData
    {
       parameter.load(value);
       parameter.setParameterBounds(min, max);
+   }
+
+   /**
+    * Returns the parameter value as {@code String}.
+    * 
+    * @return the parameter value as {@code String}.
+    */
+   public String getValue()
+   {
+      return value;
+   }
+
+   /**
+    * Returns the parameter min value if set or {@code 0.0} otherwise.
+    * 
+    * @return the parameter min value if set or {@code 0.0} otherwise.
+    */
+   public double getMin()
+   {
+      return min;
+   }
+
+   /**
+    * Returns the parameter max value if set or {@code 1.0} otherwise.
+    * 
+    * @return the parameter max value if set or {@code 1.0} otherwise.
+    */
+   public double getMax()
+   {
+      return max;
+   }
+
+   @Override
+   public int hashCode()
+   {
+      long bits = EuclidHashCodeTools.addToHashCode(1L, value);
+      bits = EuclidHashCodeTools.addToHashCode(bits, min);
+      bits = EuclidHashCodeTools.addToHashCode(bits, max);
+      return EuclidHashCodeTools.toIntHashCode(bits);
+   }
+
+   @Override
+   public boolean equals(Object object)
+   {
+      if (object == this)
+      {
+         return true;
+      }
+      else if (object instanceof ParameterData)
+      {
+         ParameterData other = (ParameterData) object;
+         return value.equals(other.value) && min == other.min && max == other.max;
+      }
+      else
+      {
+         return false;
+      }
+   }
+
+   @Override
+   public String toString()
+   {
+      return String.format("[value=%s, min=%s, max=%s]", value, Double.toString(min), Double.toString(max));
    }
 }
