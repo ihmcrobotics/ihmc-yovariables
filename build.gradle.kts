@@ -1,12 +1,12 @@
 plugins {
-   id("us.ihmc.ihmc-build") version "0.21.0"
-   id("us.ihmc.ihmc-ci") version "5.9"
+   id("us.ihmc.ihmc-build") version "0.22.0"
+   id("us.ihmc.ihmc-ci") version "6.4"
    id("us.ihmc.ihmc-cd") version "1.14"
 }
 
 ihmc {
    group = "us.ihmc"
-   version = "0.9.5"
+   version = "0.9.6"
    vcsUrl = "https://github.com/ihmcrobotics/ihmc-yovariables"
    openSource = true
    maintainer = "Georg Wiedebach (gwiedebach@ihmc.us)"
