@@ -481,12 +481,6 @@ public class YoBuffer implements YoVariableHolder, YoBufferReader, YoTimeBufferH
          return false;
 
       int newIndex = currentIndex + stepSize;
-
-      if (newIndex >= bufferSize)
-         newIndex = 0;
-      else if (newIndex < 0)
-         newIndex = bufferSize - 1;
-
       boolean rolledOver = !isIndexBetweenBounds(newIndex);
 
       if (rolledOver)
