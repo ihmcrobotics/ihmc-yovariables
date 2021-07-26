@@ -496,6 +496,18 @@ public class YoRegistry implements YoVariableHolder
    }
 
    /**
+    * Returns a registry previously registered in this registry.
+    *
+    * @param name the name of the registry to get.
+    * @return the registry corresponding to the given {@code name}, or {@code null} if such registry
+    *         has not been registered.
+    */
+   public YoRegistry getChild(String name)
+   {
+      return nameToChildMap.get(name.toLowerCase());
+   }
+
+   /**
     * Returns the child registries contained in this registry.
     *
     * @return this registry direct children.
