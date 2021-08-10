@@ -94,6 +94,18 @@ public abstract class YoVariable
          registry.addVariable(this);
 
       this.registry = registry;
+      resetFullName();
+   }
+
+   /**
+    * Resets this variable's full name such that next time {@link #getFullName()} is invoked the full
+    * name will be updated.
+    * <p>
+    * Intended for internal use.
+    * </p>
+    */
+   public void resetFullName()
+   {
       fullName = null; // Force to reset the fullName so it is updated on next query.
    }
 

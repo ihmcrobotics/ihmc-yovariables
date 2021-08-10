@@ -427,6 +427,7 @@ public class YoRegistry implements YoVariableHolder
          namespace = parentNamespace.append(name);
       namespace.checkSanity();
       children.forEach(child -> child.setParentNamespace(namespace));
+      variables.forEach(variable -> variable.resetFullName());
    }
 
    /**
