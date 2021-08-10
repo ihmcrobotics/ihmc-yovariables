@@ -177,7 +177,15 @@ public class YoVariableTest
    @Test // timeout=300000
    public void testGetFullNameWithNamespace()
    {
+      assertEquals(yoVariable.getFullName(), yoVariable.getRegistry().getNamespace().append(yoVariable.getName()));
       assertEquals(yoVariable.getFullNameString(), "robot.testRegistry.variableOne");
+
+      YoRegistry newReg = new YoRegistry("newReg");
+      newReg.addChild(yoVariable.getRegistry().getRoot());
+
+      assertEquals(yoVariable.getFullName(), yoVariable.getRegistry().getNamespace().append(yoVariable.getName()));
+      assertEquals(yoVariable.getFullNameString(), "newReg.robot.testRegistry.variableOne");
+
    }
 
    @Test // timeout=300000

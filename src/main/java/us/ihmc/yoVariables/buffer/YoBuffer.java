@@ -30,7 +30,6 @@ import us.ihmc.yoVariables.buffer.interfaces.YoBufferProcessor;
 import us.ihmc.yoVariables.buffer.interfaces.YoBufferReader;
 import us.ihmc.yoVariables.buffer.interfaces.YoBufferVariableEntryHolder;
 import us.ihmc.yoVariables.buffer.interfaces.YoTimeBufferHolder;
-import us.ihmc.yoVariables.exceptions.IllegalNameException;
 import us.ihmc.yoVariables.registry.YoNamespace;
 import us.ihmc.yoVariables.registry.YoVariableHolder;
 import us.ihmc.yoVariables.tools.YoTools;

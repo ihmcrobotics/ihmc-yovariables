@@ -427,6 +427,7 @@ public class YoRegistry implements YoVariableHolder
          namespace = parentNamespace.append(name);
       namespace.checkSanity();
       children.forEach(child -> child.setParentNamespace(namespace));
+      variables.forEach(variable -> variable.resetFullName());
    }
 
    /**
@@ -493,6 +494,18 @@ public class YoRegistry implements YoVariableHolder
    public YoRegistry getParent()
    {
       return parent;
+   }
+
+   /**
+    * Returns a registry previously registered in this registry.
+    *
+    * @param name the name of the registry to get.
+    * @return the registry corresponding to the given {@code name}, or {@code null} if such registry
+    *         has not been registered.
+    */
+   public YoRegistry getChild(String name)
+   {
+      return nameToChildMap.get(name.toLowerCase());
    }
 
    /**
