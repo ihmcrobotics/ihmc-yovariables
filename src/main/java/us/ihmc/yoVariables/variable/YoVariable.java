@@ -496,6 +496,18 @@ public abstract class YoVariable
    }
 
    /**
+    * Detaches this variable from its parent and clears the listeners.
+    * <p>
+    * Mostly useful when clearing before terminating an application.
+    * </p>
+    */
+   public void clear()
+   {
+      setRegistry(null);
+      changedListeners = null;
+   }
+
+   /**
     * Clones this variable and registers the clone to the given registry.
     *
     * @param newRegistry the registry in which the clone is registered.
