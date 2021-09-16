@@ -314,6 +314,17 @@ public abstract class YoParameter
    }
 
    /**
+    * Returns {@code String} representation of this parameter.
+    *
+    * @return {@code String} representing this parameter and its current value.
+    */
+   @Override
+   public String toString()
+   {
+      return getVariable().toString();
+   }
+
+   /**
     * Helper class to delegate {@link YoVariableChangedListener}s to
     * {@link YoParameterChangedListener}s.
     *

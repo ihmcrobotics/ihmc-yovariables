@@ -6,7 +6,7 @@ plugins {
 
 ihmc {
    group = "us.ihmc"
-   version = "0.9.10"
+   version = "0.9.11"
    vcsUrl = "https://github.com/ihmcrobotics/ihmc-yovariables"
    openSource = true
    maintainer = "Sylvain Bertrand (sbertrand@ihmc.us)"
@@ -21,10 +21,10 @@ dependencies {
    api("org.glassfish.jaxb:jaxb-runtime:2.3.2")
 
    api("us.ihmc:ihmc-commons:0.30.4")
-   api("us.ihmc:euclid-frame:0.16.2")
+   api("us.ihmc:euclid-frame:0.17.0")
 }
 
 testDependencies {
    api("us.ihmc:ihmc-commons-testing:0.30.4")
-   api("us.ihmc:euclid-test:0.16.2")
+   api("us.ihmc:euclid-test:0.17.0")
 }

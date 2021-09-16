@@ -187,21 +187,23 @@ public class YoRegistry implements YoVariableHolder
       if (!isRoot() && restrictionLevel != YoRegistryRestrictionLevel.FULLY_MUTABLE)
          throw new IllegalOperationException("Cannot clear a registry that is not the root and that does not have appropriate restriction level.");
       detachFromParent();
-      clearInternal();
+      clearInternal(false);
       notifyListeners(null, null, null, ChangeType.CLEARED);
       changedListeners = null;
    }
 
-   private void clearInternal()
+   private void clearInternal(boolean clearListeners)
    {
-      variables.forEach(variable -> variable.setRegistry(null));
+      variables.forEach(variable -> variable.clear());
       variables.clear();
       nameToVariableMap.clear();
       parameters.clear();
-      children.forEach(YoRegistry::clearInternal);
+      children.forEach(child -> child.clearInternal(true));
       children.clear();
       nameToChildMap.clear();
       restrictionLevel = YoRegistryRestrictionLevel.FULLY_MUTABLE;
+      if (clearListeners)
+         changedListeners = null;
    }
 
    /**
