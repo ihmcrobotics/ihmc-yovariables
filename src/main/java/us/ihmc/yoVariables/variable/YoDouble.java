@@ -187,7 +187,7 @@ public class YoDouble extends YoVariable implements DoubleProvider
     */
    public boolean set(double value, boolean notifyListeners)
    {
-      if (this.value != value)
+      if (Double.doubleToLongBits(this.value) != Double.doubleToLongBits(value)) // Switch to long bits to handle NaNs
       {
          this.value = value;
          if (notifyListeners)
