@@ -6,10 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Random;
 
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.registry.YoRegistry;
 
 public class YoDoubleTest
@@ -35,6 +37,42 @@ public class YoDoubleTest
    {
       yoDouble1 = null;
       registry = null;
+   }
+
+   @Test
+   public void testVariableChangeListenerNotification()
+   {
+      MutableBoolean valueChanged = new MutableBoolean(false);
+      YoVariableChangedListener listener = v -> valueChanged.setTrue();
+      yoDouble1.addListener(listener);
+
+      yoDouble1.set(yoDouble1.getValue() + 0.1);
+      assertTrue(valueChanged.booleanValue());
+      valueChanged.setFalse();
+
+      yoDouble1.set(yoDouble1.getValue());
+      assertFalse(valueChanged.booleanValue());
+
+      yoDouble1.set(Double.POSITIVE_INFINITY);
+      assertTrue(valueChanged.booleanValue());
+      valueChanged.setFalse();
+
+      yoDouble1.set(Double.POSITIVE_INFINITY);
+      assertFalse(valueChanged.booleanValue());
+
+      yoDouble1.set(Double.NEGATIVE_INFINITY);
+      assertTrue(valueChanged.booleanValue());
+      valueChanged.setFalse();
+
+      yoDouble1.set(Double.NEGATIVE_INFINITY);
+      assertFalse(valueChanged.booleanValue());
+
+      yoDouble1.set(Double.NaN);
+      assertTrue(valueChanged.booleanValue());
+      valueChanged.setFalse();
+
+      yoDouble1.set(Double.NaN);
+      assertFalse(valueChanged.booleanValue());
    }
 
    @Test // timeout=300000
