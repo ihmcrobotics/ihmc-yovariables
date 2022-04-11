@@ -133,6 +133,24 @@ public class XmlParameterReader extends AbstractParameterReader
       }
    }
 
+   /**
+    * Will overwrite parameters in the parameter reader with parameters specified in the provided
+    * streams. Unlike {@link #overwrite(InputStream...)}, this method will NOT throw a
+    * {@link RuntimeException} if any parameter that needs to be overwritten does not exist, and will
+    * instead replace that parameter.
+    *
+    * @param overwriteParameters the input streams from which the parameters' value to override can be
+    *                            read.
+    * @throws IOException if something went wrong during parsing.
+    */
+   public void readAndOverwrite(InputStream... overwriteParameters) throws IOException
+   {
+      for (InputStream dataStream : overwriteParameters)
+      {
+         readStream(dataStream, false);
+      }
+   }
+
    private void readStream(InputStream data, boolean forceOverwrite) throws IOException
    {
       try
@@ -158,7 +176,7 @@ public class XmlParameterReader extends AbstractParameterReader
       }
    }
 
-   private void addRegistry(String path, Registry registry, boolean forceOverwrite)
+   private void addRegistry(String path, Registry registry, boolean checkParameterExists)
    {
       if (registry.getParameters() != null)
       {
@@ -173,7 +191,7 @@ public class XmlParameterReader extends AbstractParameterReader
                   System.out.println(prefix + " overwriting " + param.getName());
                }
             }
-            else if (forceOverwrite)
+            else if (checkParameterExists)
             {
                throw new RuntimeException(prefix + " trying to overwrite parameter " + param.getName() + " but it does not exist.");
             }
@@ -185,7 +203,7 @@ public class XmlParameterReader extends AbstractParameterReader
          for (Registry child : registry.getRegistries())
          {
             String childPath = path + "." + child.getName();
-            addRegistry(childPath, child, forceOverwrite);
+            addRegistry(childPath, child, checkParameterExists);
          }
       }
    }

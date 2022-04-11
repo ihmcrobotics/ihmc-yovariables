@@ -150,6 +150,35 @@ public class XMLParameterIOTest
       assertEquals(0.5, parameter2.getValue(), Double.MIN_VALUE);
    }
 
+   @Test // timeout = 30000
+   public void testOverwritingAvoidingException() throws IOException
+   {
+      YoRegistry target = new YoRegistry("TestRegistry");
+      DoubleParameter parameter1 = new DoubleParameter("TestParameter1", target);
+      DoubleParameter parameter2 = new DoubleParameter("TestParameter2", target);
+      DoubleParameter parameter3 = new DoubleParameter("TestParameter3", target);
+
+      String data1 = "<parameters>" + "<registry name=\"TestRegistry\">"
+                     + "<parameter name=\"TestParameter1\" type=\"DoubleParameter\" min=\"0.0\" max=\"1.0\" value=\"0.5\"/>"
+                     + "<parameter name=\"TestParameter2\" type=\"DoubleParameter\" min=\"0.0\" max=\"1.0\" value=\"0.5\"/>" + "</registry>" + "</parameters>";
+      StringReader reader1 = new StringReader(data1);
+      ReaderInputStream stream1 = new ReaderInputStream(reader1, Charset.forName("UTF-8"));
+
+      String data2 = "<parameters>" + "<registry name=\"TestRegistry\">"
+                     + "<parameter name=\"TestParameter1\" type=\"DoubleParameter\" min=\"0.0\" max=\"1.0\" value=\"0.0\"/>"
+                     + "<parameter name=\"TestParameter3\" type=\"DoubleParameter\" min=\"0.0\" max=\"1.0\" value=\"0.3\"/>" + "</registry>" + "</parameters>";
+      StringReader reader2 = new StringReader(data2);
+      ReaderInputStream stream2 = new ReaderInputStream(reader2, Charset.forName("UTF-8"));
+
+      XmlParameterReader parameterReader = new XmlParameterReader(stream1);
+      parameterReader.readAndOverwrite(stream2);
+      parameterReader.readParametersInRegistry(target);
+
+      assertEquals(0.0, parameter1.getValue(), Double.MIN_VALUE);
+      assertEquals(0.5, parameter2.getValue(), Double.MIN_VALUE);
+      assertEquals(0.3, parameter3.getValue(), Double.MIN_VALUE);
+   }
+
    @Test // timeout = 30000, expected = RuntimeException.class
    public void testOverwritingFails() throws IOException
    {
