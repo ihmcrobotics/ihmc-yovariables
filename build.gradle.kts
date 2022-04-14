@@ -21,7 +21,7 @@ dependencies {
    api("org.glassfish.jaxb:jaxb-runtime:2.3.2")
 
    api("us.ihmc:ihmc-commons:0.30.5")
-   api("us.ihmc:euclid-frame:0.17.0")
+   api("us.ihmc:euclid-frame:0.17.2")
 }
 
 testDependencies {
