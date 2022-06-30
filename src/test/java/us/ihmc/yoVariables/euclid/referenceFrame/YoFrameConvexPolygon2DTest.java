@@ -61,7 +61,7 @@ public class YoFrameConvexPolygon2DTest
          testedPolygon.update();
 
          assertEquals(referencePolygon.getNumberOfVertices(), testedPolygon.getNumberOfVertices());
-         EuclidFrameTestTools.assertFrameConvexPolygon2DEquals(referencePolygon, testedPolygon, 0.0);
+         EuclidFrameTestTools.assertEquals(referencePolygon, testedPolygon, 0.0);
       }
    }
 }

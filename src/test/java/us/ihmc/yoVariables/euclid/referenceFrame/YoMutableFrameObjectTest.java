@@ -54,6 +54,8 @@ public class YoMutableFrameObjectTest
    @Test
    public void testFrameIndexFinder()
    {
+      // This clears the frames that were created in previous tests. The FrameIndexFinder slows down drastically as the number of frames increases
+      System.gc();
       // Create map but do not put any frames in!
       FrameIndexMap mapper = new FrameIndexMap.FrameIndexFinder(ReferenceFrame.getWorldFrame());
 

@@ -112,7 +112,7 @@ public class YoMutableFramePoint2DTest extends FrameTuple2DBasicsTest<YoMutableF
          Point2D randomTuple = EuclidCoreRandomTools.nextPoint2D(random);
          YoMutableFramePoint2D YoMutableFramePoint2D = new YoMutableFramePoint2D("", "", null, randomFrame, randomTuple.getX(), randomTuple.getY());
          assertTrue(YoMutableFramePoint2D.getReferenceFrame() == randomFrame);
-         EuclidCoreTestTools.assertTuple2DEquals(randomTuple, YoMutableFramePoint2D, EPSILON);
+         EuclidCoreTestTools.assertEquals(randomTuple, YoMutableFramePoint2D, EPSILON);
       }
 
       for (int i = 0; i < ITERATIONS; i++)
@@ -123,7 +123,7 @@ public class YoMutableFramePoint2DTest extends FrameTuple2DBasicsTest<YoMutableF
          randomTuple.get(array);
          YoMutableFramePoint2D YoMutableFramePoint2D = new YoMutableFramePoint2D("", "", null, randomFrame, array);
          assertTrue(YoMutableFramePoint2D.getReferenceFrame() == randomFrame);
-         EuclidCoreTestTools.assertTuple2DEquals(randomTuple, YoMutableFramePoint2D, EPSILON);
+         EuclidCoreTestTools.assertEquals(randomTuple, YoMutableFramePoint2D, EPSILON);
       }
 
       for (int i = 0; i < ITERATIONS; i++)
@@ -132,7 +132,7 @@ public class YoMutableFramePoint2DTest extends FrameTuple2DBasicsTest<YoMutableF
          Point2D randomTuple = EuclidCoreRandomTools.nextPoint2D(random);
          YoMutableFramePoint2D YoMutableFramePoint2D = new YoMutableFramePoint2D("", "", null, randomFrame, randomTuple);
          assertTrue(YoMutableFramePoint2D.getReferenceFrame() == randomFrame);
-         EuclidCoreTestTools.assertTuple2DEquals(randomTuple, YoMutableFramePoint2D, EPSILON);
+         EuclidCoreTestTools.assertEquals(randomTuple, YoMutableFramePoint2D, EPSILON);
       }
 
       for (int i = 0; i < ITERATIONS; i++)
@@ -141,7 +141,7 @@ public class YoMutableFramePoint2DTest extends FrameTuple2DBasicsTest<YoMutableF
          Point3D randomTuple3D = EuclidCoreRandomTools.nextPoint3D(random);
          YoMutableFramePoint2D YoMutableFramePoint2D = new YoMutableFramePoint2D("", "", null, randomFrame, randomTuple3D);
          assertTrue(YoMutableFramePoint2D.getReferenceFrame() == randomFrame);
-         EuclidCoreTestTools.assertTuple2DEquals(new Point2D(randomTuple3D), YoMutableFramePoint2D, EPSILON);
+         EuclidCoreTestTools.assertEquals(new Point2D(randomTuple3D), YoMutableFramePoint2D, EPSILON);
       }
 
       for (int i = 0; i < ITERATIONS; i++)
@@ -150,7 +150,7 @@ public class YoMutableFramePoint2DTest extends FrameTuple2DBasicsTest<YoMutableF
          FramePoint3D randomFrameTuple3D = EuclidFrameRandomTools.nextFramePoint3D(random, randomFrame);
          YoMutableFramePoint2D YoMutableFramePoint2D = new YoMutableFramePoint2D("", "", null, randomFrameTuple3D);
          assertTrue(YoMutableFramePoint2D.getReferenceFrame() == randomFrame);
-         EuclidCoreTestTools.assertTuple2DEquals(new Point2D(randomFrameTuple3D), YoMutableFramePoint2D, EPSILON);
+         EuclidCoreTestTools.assertEquals(new Point2D(randomFrameTuple3D), YoMutableFramePoint2D, EPSILON);
       }
 
       for (int i = 0; i < ITERATIONS; i++)
@@ -159,8 +159,8 @@ public class YoMutableFramePoint2DTest extends FrameTuple2DBasicsTest<YoMutableF
          FramePoint2DReadOnly randomTuple = EuclidFrameRandomTools.nextFramePoint2D(random, randomFrame);
          YoMutableFramePoint2D YoMutableFramePoint2D = new YoMutableFramePoint2D("", "", null, randomTuple);
          assertTrue(YoMutableFramePoint2D.getReferenceFrame() == randomFrame);
-         EuclidCoreTestTools.assertTuple2DEquals(randomTuple, YoMutableFramePoint2D, EPSILON);
-         EuclidFrameTestTools.assertFrameTuple2DEquals(randomTuple, YoMutableFramePoint2D, EPSILON);
+         EuclidCoreTestTools.assertEquals(randomTuple, YoMutableFramePoint2D, EPSILON);
+         EuclidFrameTestTools.assertEquals(randomTuple, YoMutableFramePoint2D, EPSILON);
       }
    }
 
@@ -182,7 +182,7 @@ public class YoMutableFramePoint2DTest extends FrameTuple2DBasicsTest<YoMutableF
          YoMutableFramePoint2D expected = new YoMutableFramePoint2D("", "", null, source);
          expected.changeFrame(destinationFrame);
 
-         EuclidFrameTestTools.assertFrameTuple2DEquals(expected, actual, EPSILON);
+         EuclidFrameTestTools.assertEquals(expected, actual, EPSILON);
       }
    }
 
@@ -205,7 +205,7 @@ public class YoMutableFramePoint2DTest extends FrameTuple2DBasicsTest<YoMutableF
 
          actual.changeFrame(anotherFrame);
          assertTrue(anotherFrame == actual.getReferenceFrame());
-         EuclidCoreTestTools.assertTuple2DEquals(expected, actual, EPSILON);
+         EuclidCoreTestTools.assertEquals(expected, actual, EPSILON);
 
          ReferenceFrame differentRootFrame = ReferenceFrameTools.constructARootFrame("anotherRootFrame");
          try
@@ -237,7 +237,7 @@ public class YoMutableFramePoint2DTest extends FrameTuple2DBasicsTest<YoMutableF
          actual.changeFrameAndProjectToXYPlane(newFrame);
 
          assertTrue(newFrame == actual.getReferenceFrame());
-         EuclidCoreTestTools.assertTuple2DEquals(expected, actual, EPSILON);
+         EuclidCoreTestTools.assertEquals(expected, actual, EPSILON);
       }
    }
 
@@ -258,7 +258,7 @@ public class YoMutableFramePoint2DTest extends FrameTuple2DBasicsTest<YoMutableF
          YoMutableFramePoint2D actual = createRandomFrameTuple(random, initialFrame);
          actual.setFromReferenceFrame(anotherFrame);
          assertTrue(initialFrame == actual.getReferenceFrame());
-         EuclidCoreTestTools.assertTuple2DEquals(expected, actual, EPSILON);
+         EuclidCoreTestTools.assertEquals(expected, actual, EPSILON);
       }
    }
 

@@ -46,7 +46,7 @@ public class YoFrameUnitVector2DTest
    public void testConsistencyWithUnitVector2D()
    {
       Predicate<Method> methodFilter = m -> !m.getName().equals("hashCode") && !m.getName().equals("epsilonEquals")
-            && !m.getName().contains("IntermediateVariableSupplier");
+            && !m.getName().contains("IntermediateVariableSupplier") && !m.getName().contains("toString");
       EuclidFrameAPITester tester = new EuclidFrameAPITester(new EuclidFrameAPIDefaultConfiguration());
       tester.assertFrameMethodsOfFrameHolderPreserveFunctionality((referenceFrame, unitVector2D) -> newYoFrameUnitVector2D(referenceFrame,
                                                                                                                            (UnitVector2DReadOnly) unitVector2D),
