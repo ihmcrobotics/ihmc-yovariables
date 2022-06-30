@@ -141,7 +141,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
                                                                                           randomQuaternion.getZ(),
                                                                                           randomQuaternion.getS());
          assertTrue(YoMutableFrameQuaternion.getReferenceFrame() == randomFrame);
-         EuclidCoreTestTools.assertTuple4DEquals(randomQuaternion, YoMutableFrameQuaternion, EPSILON);
+         EuclidCoreTestTools.assertEquals(randomQuaternion, YoMutableFrameQuaternion, EPSILON);
       }
 
       for (int i = 0; i < ITERATIONS; i++)
@@ -152,7 +152,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
          randomQuaternion.get(array);
          YoMutableFrameQuaternion YoMutableFrameQuaternion = new YoMutableFrameQuaternion("", "", null, randomFrame, array);
          assertTrue(YoMutableFrameQuaternion.getReferenceFrame() == randomFrame);
-         EuclidCoreTestTools.assertTuple4DEquals(randomQuaternion, YoMutableFrameQuaternion, EPSILON);
+         EuclidCoreTestTools.assertEquals(randomQuaternion, YoMutableFrameQuaternion, EPSILON);
       }
 
       for (int i = 0; i < ITERATIONS; i++)
@@ -163,7 +163,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
          randomQuaternion.get(denseMatrix);
          YoMutableFrameQuaternion YoMutableFrameQuaternion = new YoMutableFrameQuaternion("", "", null, randomFrame, denseMatrix);
          assertTrue(YoMutableFrameQuaternion.getReferenceFrame() == randomFrame);
-         EuclidCoreTestTools.assertTuple4DEquals(randomQuaternion, YoMutableFrameQuaternion, EPSILON);
+         EuclidCoreTestTools.assertEquals(randomQuaternion, YoMutableFrameQuaternion, EPSILON);
       }
 
       for (int i = 0; i < ITERATIONS; i++)
@@ -172,7 +172,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
          QuaternionReadOnly randomQuaternion = EuclidCoreRandomTools.nextQuaternion(random);
          YoMutableFrameQuaternion YoMutableFrameQuaternion = new YoMutableFrameQuaternion("", "", null, randomFrame, randomQuaternion);
          assertTrue(YoMutableFrameQuaternion.getReferenceFrame() == randomFrame);
-         EuclidCoreTestTools.assertTuple4DEquals(randomQuaternion, YoMutableFrameQuaternion, EPSILON);
+         EuclidCoreTestTools.assertEquals(randomQuaternion, YoMutableFrameQuaternion, EPSILON);
       }
 
       for (int i = 0; i < ITERATIONS; i++)
@@ -181,7 +181,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
          Tuple4DReadOnly randomTuple = EuclidCoreRandomTools.nextVector4D(random);
          Quaternion expectedQuaternion = new Quaternion(randomTuple);
          YoMutableFrameQuaternion YoMutableFrameQuaternion = new YoMutableFrameQuaternion("", "", null, randomFrame, randomTuple);
-         EuclidCoreTestTools.assertTuple4DEquals(expectedQuaternion, YoMutableFrameQuaternion, EPSILON);
+         EuclidCoreTestTools.assertEquals(expectedQuaternion, YoMutableFrameQuaternion, EPSILON);
       }
 
       for (int i = 0; i < ITERATIONS; i++)
@@ -190,7 +190,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
          RotationMatrixReadOnly randomRotationMatrix = EuclidCoreRandomTools.nextRotationMatrix(random);
          Quaternion expectedQuaternion = new Quaternion(randomRotationMatrix);
          YoMutableFrameQuaternion YoMutableFrameQuaternion = new YoMutableFrameQuaternion("", "", null, randomFrame, randomRotationMatrix);
-         EuclidCoreTestTools.assertTuple4DEquals(expectedQuaternion, YoMutableFrameQuaternion, EPSILON);
+         EuclidCoreTestTools.assertEquals(expectedQuaternion, YoMutableFrameQuaternion, EPSILON);
       }
 
       for (int i = 0; i < ITERATIONS; i++)
@@ -199,7 +199,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
          AxisAngleReadOnly randomAxisAngle = EuclidCoreRandomTools.nextAxisAngle(random);
          Quaternion expectedQuaternion = new Quaternion(randomAxisAngle);
          YoMutableFrameQuaternion YoMutableFrameQuaternion = new YoMutableFrameQuaternion("", "", null, randomFrame, randomAxisAngle);
-         EuclidCoreTestTools.assertTuple4DEquals(expectedQuaternion, YoMutableFrameQuaternion, EPSILON);
+         EuclidCoreTestTools.assertEquals(expectedQuaternion, YoMutableFrameQuaternion, EPSILON);
       }
 
       for (int i = 0; i < ITERATIONS; i++)
@@ -208,7 +208,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
          Vector3DReadOnly randomRotationVector = EuclidCoreRandomTools.nextVector3D(random);
          Quaternion expectedQuaternion = new Quaternion(randomRotationVector);
          YoMutableFrameQuaternion YoMutableFrameQuaternion = new YoMutableFrameQuaternion("", "", null, randomFrame, randomRotationVector);
-         EuclidCoreTestTools.assertTuple4DEquals(expectedQuaternion, YoMutableFrameQuaternion, EPSILON);
+         EuclidCoreTestTools.assertEquals(expectedQuaternion, YoMutableFrameQuaternion, EPSILON);
       }
 
       for (int i = 0; i < ITERATIONS; i++)
@@ -219,7 +219,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
          double roll = EuclidCoreRandomTools.nextDouble(random, Math.PI);
          Quaternion expectedQuaternion = new Quaternion(yaw, pitch, roll);
          YoMutableFrameQuaternion YoMutableFrameQuaternion = new YoMutableFrameQuaternion("", "", null, randomFrame, yaw, pitch, roll);
-         EuclidCoreTestTools.assertTuple4DEquals(expectedQuaternion, YoMutableFrameQuaternion, EPSILON);
+         EuclidCoreTestTools.assertEquals(expectedQuaternion, YoMutableFrameQuaternion, EPSILON);
       }
 
       for (int i = 0; i < ITERATIONS; i++)
@@ -228,8 +228,8 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
          FrameTuple4DReadOnly randomFrameTuple4D = EuclidFrameRandomTools.nextFrameQuaternion(random, randomFrame);
          YoMutableFrameQuaternion YoMutableFrameQuaternion = new YoMutableFrameQuaternion("", "", null, randomFrameTuple4D);
          assertTrue(YoMutableFrameQuaternion.getReferenceFrame() == randomFrame);
-         EuclidCoreTestTools.assertTuple4DEquals(randomFrameTuple4D, YoMutableFrameQuaternion, EPSILON);
-         EuclidFrameTestTools.assertFrameTuple4DEquals(randomFrameTuple4D, YoMutableFrameQuaternion, EPSILON);
+         EuclidCoreTestTools.assertEquals(randomFrameTuple4D, YoMutableFrameQuaternion, EPSILON);
+         EuclidFrameTestTools.assertEquals(randomFrameTuple4D, YoMutableFrameQuaternion, EPSILON);
       }
 
       for (int i = 0; i < ITERATIONS; i++)
@@ -238,8 +238,8 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
          FrameQuaternionReadOnly randomFrameQuaternion = EuclidFrameRandomTools.nextFrameQuaternion(random, randomFrame);
          YoMutableFrameQuaternion YoMutableFrameQuaternion = new YoMutableFrameQuaternion("", "", null, randomFrameQuaternion);
          assertTrue(YoMutableFrameQuaternion.getReferenceFrame() == randomFrame);
-         EuclidCoreTestTools.assertTuple4DEquals(randomFrameQuaternion, YoMutableFrameQuaternion, EPSILON);
-         EuclidFrameTestTools.assertFrameTuple4DEquals(randomFrameQuaternion, YoMutableFrameQuaternion, EPSILON);
+         EuclidCoreTestTools.assertEquals(randomFrameQuaternion, YoMutableFrameQuaternion, EPSILON);
+         EuclidFrameTestTools.assertEquals(randomFrameQuaternion, YoMutableFrameQuaternion, EPSILON);
       }
    }
 
@@ -260,7 +260,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
          assertEquals(initialFrame, frameGeometryObject.getReferenceFrame());
          assertFalse(expectedGeometryObject.epsilonEquals(frameGeometryObject, EPSILON));
          frameGeometryObject.setToZero();
-         EuclidCoreTestTools.assertTuple4DEquals(expectedGeometryObject, frameGeometryObject, EPSILON);
+         EuclidCoreTestTools.assertEquals(expectedGeometryObject, frameGeometryObject, EPSILON);
 
          frameGeometryObject = createRandomFrameTuple(random, initialFrame);
          ReferenceFrame newFrame = referenceFrames[random.nextInt(referenceFrames.length)];
@@ -269,7 +269,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
          assertFalse(expectedGeometryObject.epsilonEquals(frameGeometryObject, EPSILON));
          frameGeometryObject.setToZero(newFrame);
          assertEquals(newFrame, frameGeometryObject.getReferenceFrame());
-         EuclidCoreTestTools.assertTuple4DEquals(expectedGeometryObject, frameGeometryObject, EPSILON);
+         EuclidCoreTestTools.assertEquals(expectedGeometryObject, frameGeometryObject, EPSILON);
       }
    }
 
@@ -316,7 +316,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
          actual.setMatchingFrame(expected);
          expected.changeFrame(destinationFrame);
 
-         EuclidFrameTestTools.assertFrameTuple4DEquals(expected, actual, EPSILON);
+         EuclidFrameTestTools.assertEquals(expected, actual, EPSILON);
       }
 
       for (int i = 0; i < ITERATIONS; i++)
@@ -331,7 +331,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
          YoMutableFrameQuaternion expected = new YoMutableFrameQuaternion("", "", null, source);
          expected.changeFrame(destinationFrame);
 
-         EuclidFrameTestTools.assertFrameTuple4DEquals(expected, actual, EPSILON);
+         EuclidFrameTestTools.assertEquals(expected, actual, EPSILON);
       }
    }
 
@@ -352,7 +352,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
          YoMutableFrameQuaternion.setIncludingFrame(newFrame, axisAngle);
          quaternion.set(axisAngle);
          assertEquals(newFrame, YoMutableFrameQuaternion.getReferenceFrame());
-         EuclidCoreTestTools.assertTuple4DEquals(quaternion, YoMutableFrameQuaternion, EPSILON);
+         EuclidCoreTestTools.assertEquals(quaternion, YoMutableFrameQuaternion, EPSILON);
       }
 
       for (int i = 0; i < ITERATIONS; i++)
@@ -365,7 +365,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
          YoMutableFrameQuaternion.setIncludingFrame(newFrame, rotationMatrix);
          quaternion.set(rotationMatrix);
          assertEquals(newFrame, YoMutableFrameQuaternion.getReferenceFrame());
-         EuclidCoreTestTools.assertTuple4DEquals(quaternion, YoMutableFrameQuaternion, EPSILON);
+         EuclidCoreTestTools.assertEquals(quaternion, YoMutableFrameQuaternion, EPSILON);
       }
 
       for (int i = 0; i < ITERATIONS; i++)
@@ -378,7 +378,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
          YoMutableFrameQuaternion.setRotationVectorIncludingFrame(newFrame, rotationVector);
          quaternion.setRotationVector(rotationVector);
          assertEquals(newFrame, YoMutableFrameQuaternion.getReferenceFrame());
-         EuclidCoreTestTools.assertTuple4DEquals(quaternion, YoMutableFrameQuaternion, EPSILON);
+         EuclidCoreTestTools.assertEquals(quaternion, YoMutableFrameQuaternion, EPSILON);
       }
 
       for (int i = 0; i < ITERATIONS; i++)
@@ -391,7 +391,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
          YoMutableFrameQuaternion.setRotationVectorIncludingFrame(rotationVector);
          quaternion.setRotationVector(rotationVector);
          assertEquals(newFrame, YoMutableFrameQuaternion.getReferenceFrame());
-         EuclidCoreTestTools.assertTuple4DEquals(quaternion, YoMutableFrameQuaternion, EPSILON);
+         EuclidCoreTestTools.assertEquals(quaternion, YoMutableFrameQuaternion, EPSILON);
       }
 
       for (int i = 0; i < ITERATIONS; i++)
@@ -406,7 +406,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
          YoMutableFrameQuaternion.setYawPitchRollIncludingFrame(newFrame, yaw, pitch, roll);
          quaternion.setYawPitchRoll(yaw, pitch, roll);
          assertEquals(newFrame, YoMutableFrameQuaternion.getReferenceFrame());
-         EuclidCoreTestTools.assertTuple4DEquals(quaternion, YoMutableFrameQuaternion, EPSILON);
+         EuclidCoreTestTools.assertEquals(quaternion, YoMutableFrameQuaternion, EPSILON);
       }
 
       for (int i = 0; i < ITERATIONS; i++)
@@ -420,7 +420,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
          YoMutableFrameQuaternion.setEulerIncludingFrame(newFrame, eulerAngles);
          quaternion.setEuler(eulerAngles);
          assertEquals(newFrame, YoMutableFrameQuaternion.getReferenceFrame());
-         EuclidCoreTestTools.assertTuple4DEquals(quaternion, YoMutableFrameQuaternion, EPSILON);
+         EuclidCoreTestTools.assertEquals(quaternion, YoMutableFrameQuaternion, EPSILON);
       }
 
       for (int i = 0; i < ITERATIONS; i++)
@@ -435,7 +435,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
          YoMutableFrameQuaternion.setEulerIncludingFrame(newFrame, rotX, rotY, rotZ);
          quaternion.setEuler(rotX, rotY, rotZ);
          assertEquals(newFrame, YoMutableFrameQuaternion.getReferenceFrame());
-         EuclidCoreTestTools.assertTuple4DEquals(quaternion, YoMutableFrameQuaternion, EPSILON);
+         EuclidCoreTestTools.assertEquals(quaternion, YoMutableFrameQuaternion, EPSILON);
       }
    }
 
@@ -444,7 +444,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
    {
       FrameTypeCopier frameTypeBuilder = (frame, quaternion) -> createFrameTuple(frame, (QuaternionReadOnly) quaternion);
       RandomFramelessTypeBuilder framelessTypeBuilder = EuclidCoreRandomTools::nextQuaternion;
-      Predicate<Method> methodFilter = m -> !m.getName().equals("hashCode");
+      Predicate<Method> methodFilter = m -> !m.getName().equals("hashCode") && !m.getName().equals("toString");
       EuclidFrameAPITester tester = new EuclidFrameAPITester(new EuclidFrameAPIDefaultConfiguration());
       tester.assertFrameMethodsOfFrameHolderPreserveFunctionality(frameTypeBuilder,
                                                                   framelessTypeBuilder,
@@ -493,7 +493,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
 
          quaternion.changeFrame(anotherFrame);
          assertTrue(anotherFrame == quaternion.getReferenceFrame());
-         EuclidCoreTestTools.assertQuaternionGeometricallyEquals(expected, quaternion, EPSILON);
+         EuclidCoreTestTools.assertOrientation3DGeometricallyEquals(expected, quaternion, EPSILON);
 
          ReferenceFrame differentRootFrame = ReferenceFrameTools.constructARootFrame("anotherRootFrame");
          try
@@ -527,7 +527,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
 
          actual.set(initialFrame, expected);
 
-         EuclidCoreTestTools.assertTuple4DEquals(expected, actual, EPSILON);
+         EuclidCoreTestTools.assertEquals(expected, actual, EPSILON);
          assertEquals(initialFrame, actual.getReferenceFrame());
 
          actual.set(EuclidCoreRandomTools.nextQuaternion(random));
@@ -548,7 +548,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
          catch (ReferenceFrameMismatchException e)
          {
             // good
-            EuclidCoreTestTools.assertTuple4DEquals(expected, actual, EPSILON);
+            EuclidCoreTestTools.assertEquals(expected, actual, EPSILON);
          }
       }
    }
@@ -570,7 +570,7 @@ public final class YoMutableFrameQuaternionTest extends FrameQuaternionReadOnlyT
          YoMutableFrameQuaternion actual = createRandomFrameTuple(random, initialFrame);
          actual.setFromReferenceFrame(anotherFrame);
          assertTrue(initialFrame == actual.getReferenceFrame());
-         EuclidCoreTestTools.assertTuple4DEquals(expected, actual, EPSILON);
+         EuclidCoreTestTools.assertEquals(expected, actual, EPSILON);
       }
    }
 

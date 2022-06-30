@@ -19,6 +19,7 @@ import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameUnitVector2DBasics;
 import us.ihmc.euclid.tools.EuclidCoreTools;
 import us.ihmc.euclid.tuple2D.interfaces.UnitVector2DReadOnly;
+import us.ihmc.euclid.tuple3D.UnitVector3D;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
 
@@ -118,7 +119,7 @@ public class YoFrameUnitVector2D extends YoFrameTuple2D implements FixedFrameUni
    {
       if (dirty)
       {
-         if (EuclidCoreTools.areAllZero(getRawX(), getRawY(), ZERO_TEST_EPSILON))
+         if (EuclidCoreTools.areAllZero(getRawX(), getRawY(), UnitVector3D.ZERO_TEST_EPSILON))
          {
             setToZero();
          }
