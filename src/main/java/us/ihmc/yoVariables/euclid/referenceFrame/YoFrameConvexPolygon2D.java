@@ -19,18 +19,27 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import us.ihmc.euclid.geometry.BoundingBox2D;
-import us.ihmc.euclid.geometry.interfaces.BoundingBox2DBasics;
+import us.ihmc.euclid.geometry.interfaces.ConvexPolygon2DReadOnly;
+import us.ihmc.euclid.geometry.interfaces.Vertex2DSupplier;
 import us.ihmc.euclid.geometry.tools.EuclidGeometryPolygonTools;
+import us.ihmc.euclid.geometry.tools.EuclidGeometryPolygonTools.Convexity;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
+import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameBoundingBox2DBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameConvexPolygon2DBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFramePoint2DBasics;
+import us.ihmc.euclid.referenceFrame.interfaces.FrameBoundingBox2DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameConvexPolygon2DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FramePoint2DReadOnly;
+import us.ihmc.euclid.referenceFrame.interfaces.FrameVertex2DSupplier;
 import us.ihmc.euclid.referenceFrame.tools.EuclidFrameFactories;
 import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
+import us.ihmc.euclid.tools.EuclidCoreTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.euclid.transform.RigidBodyTransform;
+import us.ihmc.euclid.transform.interfaces.AffineTransformReadOnly;
+import us.ihmc.euclid.transform.interfaces.RigidBodyTransformReadOnly;
+import us.ihmc.euclid.transform.interfaces.Transform;
+import us.ihmc.euclid.tuple2D.Point2D;
 import us.ihmc.euclid.tuple2D.interfaces.Point2DReadOnly;
 import us.ihmc.euclid.tuple3D.Point3D;
 import us.ihmc.euclid.tuple3D.interfaces.Point3DReadOnly;
@@ -43,8 +52,8 @@ import us.ihmc.yoVariables.variable.YoInteger;
  */
 public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
 {
-   private final List<YoFramePoint2D> vertexBuffer = new ArrayList<>();
-   private final List<FixedFramePoint2DBasics> vertexBufferView = Collections.unmodifiableList(vertexBuffer);
+   private final List<YoFramePoint2D> yoVertexBuffer = new ArrayList<>();
+   private final List<FixedFramePoint2DBasics> vertexBufferView = Collections.unmodifiableList(yoVertexBuffer);
    /**
     * Field for future expansion of {@code ConvexPolygon2d} to enable having the vertices in clockwise
     * or counter-clockwise ordered.
@@ -63,7 +72,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
     * {@link #update()}.
     * </p>
     */
-   private final BoundingBox2D boundingBox = new BoundingBox2D();
+   private final FixedFrameBoundingBox2DBasics boundingBox = EuclidFrameFactories.newFixedFrameBoundingBox2DBasics(this);
    /**
     * The centroid of this polygon which is located at the center of mass of this polygon when
     * considered as a physical object with constant thickness and density.
@@ -92,8 +101,12 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
     * </p>
     */
    private boolean isUpToDate = false;
+   private boolean boundingBoxDirty = true;
+   private boolean areaCentroidDirty = true;
    /** Vertex to store intermediate results to allow garbage free operations. */
    private final Point3D vertex3D = new Point3D();
+   /** For the update method, this is to prevent changing the order of the yoVertexBuffer. */
+   private final List<Point2D> tempVertexBuffer = new ArrayList<>();
 
    /**
     * Creates a new empty polygon.
@@ -130,7 +143,8 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
       for (int i = 0; i < maxNumberOfVertices; i++)
       {
          YoFramePoint2D point = new YoFramePoint2D(namePrefix + "_" + i + "_", nameSuffix, referenceFrame, registry);
-         vertexBuffer.add(point);
+         yoVertexBuffer.add(point);
+         tempVertexBuffer.add(new Point2D());
       }
    }
 
@@ -151,7 +165,8 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
 
       for (YoFramePoint2D vertex : yoVertexBuffer)
       {
-         vertexBuffer.add(vertex);
+         this.yoVertexBuffer.add(vertex);
+         tempVertexBuffer.add(new Point2D());
       }
    }
 
@@ -161,7 +176,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
    {
       checkNonEmpty();
       checkIndexInBoundaries(index);
-      return vertexBuffer.get(index);
+      return yoVertexBuffer.get(index);
    }
 
    /** {@inheritDoc} */
@@ -180,6 +195,8 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
       centroid.setToNaN();
       boundingBox.setToNaN();
       isUpToDate = false;
+      boundingBoxDirty = true;
+      areaCentroidDirty = true;
    }
 
    /** {@inheritDoc} */
@@ -188,6 +205,128 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
    {
       clear();
       isUpToDate = true;
+      boundingBoxDirty = false;
+      areaCentroidDirty = false;
+   }
+
+   @Override
+   public void set(Vertex2DSupplier vertex2DSupplier)
+   {
+      if (vertex2DSupplier instanceof ConvexPolygon2DReadOnly)
+      {
+         ConvexPolygon2DReadOnly other = (ConvexPolygon2DReadOnly) vertex2DSupplier;
+
+         if (clockwiseOrdered != other.isClockwiseOrdered())
+         {
+            // TODO For now relying on the expensive method to ensure consistent ordering.
+            FixedFrameConvexPolygon2DBasics.super.set(vertex2DSupplier);
+            return;
+         }
+
+         clear();
+         numberOfVertices.set(other.getNumberOfVertices());
+
+         for (int i = 0; i < numberOfVertices.getValue(); i++)
+         {
+            Point2DReadOnly otherVertex = other.getVertexUnsafe(i);
+            if (i >= yoVertexBuffer.size())
+               throw new RuntimeException("This polygon has reached its maximum number of vertices.");
+            yoVertexBuffer.get(i).set(otherVertex);
+         }
+
+         if (other.isUpToDate())
+         {
+            isUpToDate = true;
+            boundingBoxDirty = true;
+            areaCentroidDirty = true;
+         }
+      }
+      else
+      {
+         FixedFrameConvexPolygon2DBasics.super.set(vertex2DSupplier);
+      }
+   }
+
+   public void set(YoFrameConvexPolygon2D other)
+   {
+      if (clockwiseOrdered != other.clockwiseOrdered)
+      {
+         // TODO For now relying on the expensive method to ensure consistent ordering.
+         FixedFrameConvexPolygon2DBasics.super.set(other);
+         return;
+      }
+
+      checkReferenceFrameMatch(other);
+
+      numberOfVertices.set(other.numberOfVertices.getValue());
+
+      for (int i = 0; i < other.numberOfVertices.getValue(); i++)
+      {
+         FixedFramePoint2DBasics otherVertex = other.yoVertexBuffer.get(i);
+         if (i >= yoVertexBuffer.size())
+            throw new RuntimeException("This polygon has reached its maximum number of vertices.");
+         yoVertexBuffer.get(i).set(otherVertex);
+      }
+      boundingBox.set(other.boundingBox);
+      centroid.set(other.centroid);
+      area = other.area;
+      isUpToDate = other.isUpToDate;
+      boundingBoxDirty = other.boundingBoxDirty;
+      areaCentroidDirty = other.areaCentroidDirty;
+   }
+
+   @Override
+   public void set(FrameVertex2DSupplier frameVertex2DSupplier)
+   {
+      if (frameVertex2DSupplier instanceof YoFrameConvexPolygon2D)
+      {
+         set((YoFrameConvexPolygon2D) frameVertex2DSupplier);
+      }
+      else if (frameVertex2DSupplier instanceof FrameConvexPolygon2DReadOnly)
+      {
+         FrameConvexPolygon2DReadOnly other = (FrameConvexPolygon2DReadOnly) frameVertex2DSupplier;
+
+         if (clockwiseOrdered != other.isClockwiseOrdered())
+         {
+            // TODO For now relying on the expensive method to ensure consistent ordering.
+            FixedFrameConvexPolygon2DBasics.super.set(frameVertex2DSupplier);
+            return;
+         }
+
+         clear();
+         numberOfVertices.set(other.getNumberOfVertices());
+
+         for (int i = 0; i < numberOfVertices.getValue(); i++)
+         {
+            FramePoint2DReadOnly otherVertex = other.getVertexUnsafe(i);
+            if (i >= yoVertexBuffer.size())
+               throw new RuntimeException("This polygon has reached its maximum number of vertices.");
+            yoVertexBuffer.get(i).set(otherVertex);
+         }
+
+         if (other.isUpToDate())
+         {
+            isUpToDate = true;
+            boundingBoxDirty = true;
+            areaCentroidDirty = true;
+         }
+      }
+      else
+      {
+         FixedFrameConvexPolygon2DBasics.super.set(frameVertex2DSupplier);
+      }
+   }
+
+   @Override
+   public void setMatchingFrame(FrameVertex2DSupplier frameVertex2DSupplier, boolean checkIfTransformInXYPlane)
+   {
+      set((Vertex2DSupplier) frameVertex2DSupplier);
+
+      if (frameVertex2DSupplier.getReferenceFrame() != referenceFrame)
+      {
+         frameVertex2DSupplier.getReferenceFrame().getTransformToDesiredFrame(transformToDesiredFrame, referenceFrame);
+         applyTransform(transformToDesiredFrame, checkIfTransformInXYPlane);
+      }
    }
 
    /** {@inheritDoc} */
@@ -231,18 +370,42 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
       if (isUpToDate)
          return;
 
-      numberOfVertices.set(EuclidGeometryPolygonTools.inPlaceGiftWrapConvexHull2D(vertexBuffer, numberOfVertices.getValue()));
+      for (int i = 0; i < numberOfVertices.getValue(); i++)
+         tempVertexBuffer.get(i).set(yoVertexBuffer.get(i));
+      numberOfVertices.set(EuclidGeometryPolygonTools.inPlaceGiftWrapConvexHull2D(tempVertexBuffer, numberOfVertices.getValue()));
+      for (int i = 0; i < numberOfVertices.getValue(); i++)
+         yoVertexBuffer.get(i).set(tempVertexBuffer.get(i));
+
       isUpToDate = true;
 
-      updateCentroidAndArea();
-      updateBoundingBox();
+      boundingBoxDirty = true;
+      areaCentroidDirty = true;
    }
 
-   /** {@inheritDoc} */
-   @Override
-   public void updateCentroidAndArea()
+   /**
+    * Compute centroid and area of this polygon. Formula taken from
+    * <a href= "http://local.wasp.uwa.edu.au/~pbourke/geometry/polyarea/">here</a>.
+    */
+   private void updateCentroidAndArea()
    {
-      area = EuclidGeometryPolygonTools.computeConvexPolygon2DArea(vertexBuffer, numberOfVertices.getValue(), clockwiseOrdered, centroid);
+      if (areaCentroidDirty)
+      {
+         areaCentroidDirty = false;
+         area = EuclidGeometryPolygonTools.computeConvexPolygon2DArea(yoVertexBuffer, numberOfVertices.getValue(), clockwiseOrdered, centroid);
+      }
+   }
+
+   /**
+    * Updates the bounding box properties.
+    */
+   private void updateBoundingBox()
+   {
+      if (boundingBoxDirty)
+      {
+         boundingBoxDirty = false;
+         boundingBox.setToNaN();
+         boundingBox.updateToIncludePoints(this);
+      }
    }
 
    /** {@inheritDoc} */
@@ -250,7 +413,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
    public void addVertex(double x, double y)
    {
       isUpToDate = false;
-      YoFramePoint2D newVertex = vertexBuffer.get(numberOfVertices.getValue());
+      YoFramePoint2D newVertex = yoVertexBuffer.get(numberOfVertices.getValue());
       if (newVertex == null)
          throw new RuntimeException("This polygon has reached its maximum number of vertices.");
       newVertex.set(x, y);
@@ -270,24 +433,8 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
          return;
       }
       isUpToDate = false;
-      swap(vertexBuffer, indexOfVertexToRemove, numberOfVertices.getValue() - 1);
+      swap(yoVertexBuffer, indexOfVertexToRemove, numberOfVertices.getValue() - 1);
       numberOfVertices.decrement();
-   }
-
-   private static void swap(List<YoFramePoint2D> vertexBuffer, int i, int j)
-   {
-      if (i == j)
-         return;
-
-      YoFramePoint2D iVertex = vertexBuffer.get(i);
-      double x_i = iVertex.getX();
-      double y_i = iVertex.getY();
-      YoFramePoint2D jVertex = vertexBuffer.get(j);
-      double x_j = jVertex.getX();
-      double y_j = jVertex.getY();
-
-      iVertex.set(x_j, y_j);
-      jVertex.set(x_i, y_i);
    }
 
    /** {@inheritDoc} */
@@ -295,13 +442,6 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
    public List<? extends FramePoint2DReadOnly> getVertexBufferView()
    {
       return vertexBufferView;
-   }
-
-   /** {@inheritDoc} */
-   @Override
-   public FramePoint2DReadOnly getCentroid()
-   {
-      return centroid;
    }
 
    /** {@inheritDoc} */
@@ -335,7 +475,7 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
     */
    public int getMaxNumberOfVertices()
    {
-      return vertexBuffer.size();
+      return yoVertexBuffer.size();
    }
 
    /**
@@ -355,20 +495,33 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
     */
    public List<YoFramePoint2D> getVertexBuffer()
    {
-      return vertexBuffer;
+      return yoVertexBuffer;
    }
 
    /** {@inheritDoc} */
    @Override
    public double getArea()
    {
+      checkIfUpToDate();
+      updateCentroidAndArea();
       return area;
    }
 
    /** {@inheritDoc} */
    @Override
-   public BoundingBox2DBasics getBoundingBox()
+   public FramePoint2DReadOnly getCentroid()
    {
+      checkIfUpToDate();
+      updateCentroidAndArea();
+      return centroid;
+   }
+
+   /** {@inheritDoc} */
+   @Override
+   public FrameBoundingBox2DReadOnly getBoundingBox()
+   {
+      checkIfUpToDate();
+      updateBoundingBox();
       return boundingBox;
    }
 
@@ -377,6 +530,114 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
    public ReferenceFrame getReferenceFrame()
    {
       return referenceFrame;
+   }
+
+   @Override
+   public void translate(double x, double y)
+   {
+      checkIfUpToDate();
+
+      for (int i = 0; i < getNumberOfVertices(); i++)
+      {
+         getVertexUnsafe(i).add(x, y);
+      }
+
+      if (!boundingBoxDirty)
+      {
+         boundingBox.getMinPoint().add(x, y);
+         boundingBox.getMaxPoint().add(x, y);
+      }
+
+      if (!areaCentroidDirty)
+      {
+         centroid.add(x, y);
+      }
+   }
+
+   @Override
+   public void applyTransform(Transform transform, boolean checkIfTransformInXYPlane)
+   {
+      checkIfUpToDate();
+
+      for (int i = 0; i < getNumberOfVertices(); i++)
+      {
+         getVertexUnsafe(i).applyTransform(transform, checkIfTransformInXYPlane);
+      }
+
+      postTransform(transform);
+   }
+
+   @Override
+   public void applyInverseTransform(Transform transform, boolean checkIfTransformInXYPlane)
+   {
+      checkIfUpToDate();
+
+      for (int i = 0; i < getNumberOfVertices(); i++)
+      {
+         getVertexUnsafe(i).applyInverseTransform(transform, checkIfTransformInXYPlane);
+      }
+
+      postTransform(transform);
+   }
+
+   private void postTransform(Transform transform)
+   {
+      if (numberOfVertices.getValue() <= 3)
+      { // It's real cheap to update when dealing with few vertices.
+         notifyVerticesChanged();
+         update();
+         return;
+      }
+
+      boolean updateVertices = true;
+
+      if (transform instanceof RigidBodyTransformReadOnly)
+      {
+         RigidBodyTransformReadOnly rbTransform = (RigidBodyTransformReadOnly) transform;
+         updateVertices = rbTransform.hasRotation();
+      }
+      else if (transform instanceof AffineTransformReadOnly)
+      {
+         AffineTransformReadOnly aTransform = (AffineTransformReadOnly) transform;
+         updateVertices = aTransform.hasLinearTransform();
+      }
+
+      if (updateVertices)
+      {
+         for (int i = 0; i < getNumberOfVertices(); i++)
+         {
+            tempVertexBuffer.get(i).set(yoVertexBuffer.get(i));
+         }
+
+         // Testing ordering by looking at the convexity
+         Convexity convexity = null;
+
+         for (int vertexIndex = 0; vertexIndex < getNumberOfVertices(); vertexIndex++)
+         {
+            if (convexity == null)
+               convexity = EuclidGeometryPolygonTools.polygon2DConvexityAtVertex(vertexIndex, tempVertexBuffer, vertexIndex, clockwiseOrdered);
+            if (convexity != null)
+               break;
+         }
+
+         if (convexity == Convexity.CONCAVE)
+         { // The polygon got flipped, need to reverse the order to preserve the order.
+            EuclidCoreTools.reverse(tempVertexBuffer, 0, getNumberOfVertices());
+         }
+
+         // Shifting vertices around to ensure the first vertex is min-x (and max-y if multiple min-xs)
+         int minXMaxYVertexIndex = EuclidGeometryPolygonTools.findMinXMaxYVertexIndex(tempVertexBuffer, getNumberOfVertices());
+         EuclidCoreTools.rotate(tempVertexBuffer, 0, getNumberOfVertices(), -minXMaxYVertexIndex);
+
+         for (int i = 0; i < getNumberOfVertices(); i++)
+         {
+            yoVertexBuffer.get(i).set(tempVertexBuffer.get(i));
+         }
+      }
+
+      // Being lazy, could transform these too.
+      boundingBoxDirty = true;
+      areaCentroidDirty = true;
    }
 
    /**
@@ -395,8 +656,8 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
    {
       YoInteger yoNumberOfVertices = (YoInteger) newRegistry.findVariable(numberOfVertices.getFullNameString());
       List<YoFramePoint2D> yoVertexBuffer = new ArrayList<>();
-      for (int i = 0; i < vertexBuffer.size(); i++)
-         yoVertexBuffer.add(vertexBuffer.get(i).duplicate(newRegistry));
+      for (int i = 0; i < this.yoVertexBuffer.size(); i++)
+         yoVertexBuffer.add(this.yoVertexBuffer.get(i).duplicate(newRegistry));
       return new YoFrameConvexPolygon2D(yoVertexBuffer, yoNumberOfVertices, referenceFrame);
    }
 
@@ -422,5 +683,21 @@ public class YoFrameConvexPolygon2D implements FixedFrameConvexPolygon2DBasics
       long bits = EuclidHashCodeTools.addToHashCode(Boolean.hashCode(clockwiseOrdered), vertexBufferView);
       bits = EuclidHashCodeTools.addToHashCode(bits, referenceFrame);
       return EuclidHashCodeTools.toIntHashCode(bits);
+   }
+
+   private static void swap(List<YoFramePoint2D> vertexBuffer, int i, int j)
+   {
+      if (i == j)
+         return;
+
+      YoFramePoint2D iVertex = vertexBuffer.get(i);
+      double x_i = iVertex.getX();
+      double y_i = iVertex.getY();
+      YoFramePoint2D jVertex = vertexBuffer.get(j);
+      double x_j = jVertex.getX();
+      double y_j = jVertex.getY();
+
+      iVertex.set(x_j, y_j);
+      jVertex.set(x_i, y_i);
    }
 }
