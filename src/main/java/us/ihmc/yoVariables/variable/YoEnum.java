@@ -370,19 +370,7 @@ public class YoEnum<E extends Enum<E>> extends YoVariable implements EnumProvide
    {
       checkBounds(ordinal);
 
-      if (valueOrdinal != NULL_VALUE)
-      {
-         if (!(valueOrdinal == ordinal))
-         {
-            valueOrdinal = ordinal;
-            if (notifyListeners)
-            {
-               notifyListeners();
-            }
-            return true;
-         }
-      }
-      else
+      if (valueOrdinal != ordinal)
       {
          valueOrdinal = ordinal;
          if (notifyListeners)
@@ -393,7 +381,6 @@ public class YoEnum<E extends Enum<E>> extends YoVariable implements EnumProvide
       }
 
       return false;
-
    }
 
    /**

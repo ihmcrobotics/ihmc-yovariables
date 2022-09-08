@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -305,6 +306,33 @@ public class YoEnumTest
          String[] constants = {};
          new YoEnum<>("stringConstructor", "", registry, false, constants);
       });
+   }
+
+   @Test
+   public void testListener()
+   {
+      YoEnum<EnumYoVariableTestEnums> yoEnum = new YoEnum<>("anEnum", "", registry, EnumYoVariableTestEnums.class, true);
+      yoEnum.set(null);
+
+      MutableBoolean hasChanged = new MutableBoolean(false);
+      yoEnum.addListener(v -> hasChanged.setTrue());
+
+      for (EnumYoVariableTestEnums value : EnumYoVariableTestEnums.values())
+      {
+         yoEnum.set(value);
+         assertTrue(hasChanged.isTrue());
+         hasChanged.setFalse();
+         yoEnum.set(value);
+         assertFalse(hasChanged.isTrue());
+         hasChanged.setFalse();
+      }
+
+      yoEnum.set(null);
+      assertTrue(hasChanged.isTrue());
+      hasChanged.setFalse();
+      yoEnum.set(null);
+      assertFalse(hasChanged.isTrue());
+      hasChanged.setFalse();
    }
 
    enum EmptyEnum
