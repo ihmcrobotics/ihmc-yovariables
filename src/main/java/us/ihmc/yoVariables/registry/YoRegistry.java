@@ -735,6 +735,52 @@ public class YoRegistry implements YoVariableHolder
    }
 
    /**
+    * Returns the first discovered instance of a registry matching the given name.
+    * <p>
+    * The search is first conducted in this registry, then in its children in the order in which they
+    * were added.
+    * </p>
+    *
+    * @param name the name of the registry to retrieve. If the name contains
+    *             {@link YoTools#NAMESPACE_SEPERATOR_STRING}, it is split at the last occurrence to
+    *             extract a namespace and the actual registry name.
+    * @return the registry corresponding to the search criteria, or {@code null} if it could not be
+    *         found.
+    * @see #findRegistry(String, String)
+    */
+   public YoRegistry findRegistry(String name)
+   {
+      int separatorIndex = name.lastIndexOf(YoTools.NAMESPACE_SEPERATOR_STRING);
+
+      if (separatorIndex == -1)
+         return findRegistry(null, name);
+      else
+         return findRegistry(name.substring(0, separatorIndex), name.substring(separatorIndex + 1));
+   }
+
+   /**
+    * Returns the first discovered instance of a registry matching the given name and namespace.
+    * <p>
+    * The search is first conducted in this registry, then in its children in the order in which they
+    * were added.
+    * </p>
+    *
+    * @param namespaceEnding (optional) the namespace of the registry in which the registry was
+    *                        registered. The namespace does not need to be complete, i.e. it does not
+    *                        need to contain the name of the registries closest to the root registry.
+    *                        If {@code null}, the search is for the registry name only.
+    * @param name            the name of the registry to retrieve.
+    * @return the registry corresponding to the search criteria, or {@code null} if it could not be
+    *         found.
+    * @throws IllegalNameException if {@code name} contains "{@value YoTools#NAMESPACE_SEPERATOR}".
+    */
+   public YoRegistry findRegistry(String namespaceEnding, String name)
+   {
+      YoTools.checkNameDoesNotContainSeparator(name);
+      return YoSearchTools.findFirstRegistry(namespaceEnding, name, null, this);
+   }
+
+   /**
     * Finds and returns the registry with the given {@code namespace}.
     * <p>
     * The search is first conducted in this registry, then in its children in the order in which they
