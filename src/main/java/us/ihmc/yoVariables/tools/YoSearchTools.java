@@ -93,6 +93,41 @@ public class YoSearchTools
    }
 
    /**
+    * Recurses the registry subtree to find the first registry that matches the search criteria.
+    * 
+    * @param namespaceEnding (optional) the namespace of the registry in which the registry was
+    *                        registered. The namespace does not need to be complete, i.e. it does not
+    *                        need to contain the name of the registries closest to the root registry.
+    *                        If {@code null}, the search is for the registry name only.
+    * @param name            the name of the registry to retrieve.
+    * @param predicate       (optional) additional filter on the registry to find.
+    * @param root            the registry to search the subtree of.
+    * @return the first registry matching the search criteria, or {@code null} if no such registry
+    *         could be found.
+    */
+   public static YoRegistry findFirstRegistry(String namespaceEnding, String name, Predicate<YoRegistry> predicate, YoRegistry root)
+   {
+      if (namespaceEnding == null || root.getNamespace().endsWith(namespaceEnding))
+      {
+         YoRegistry candidate = root.getChild(name);
+         if (candidate != null)
+         {
+            if (predicate == null || predicate.test(candidate))
+               return candidate;
+         }
+      }
+
+      for (YoRegistry child : root.getChildren())
+      {
+         YoRegistry candidate = findFirstRegistry(namespaceEnding, name, predicate, child);
+         if (candidate != null)
+            return candidate;
+      }
+
+      return null;
+   }
+
+   /**
     * Recurses the registry subtree to find all the variables that matches the search criteria.
     * 
     * @param namespaceEnding        (optional) the namespace of the registry in which the variable(s)
@@ -107,7 +142,10 @@ public class YoSearchTools
     * @return all the variables matching the search criteria, the list is empty is no such variable
     *         could be found.
     */
-   public static List<YoVariable> findVariables(String namespaceEnding, String name, Predicate<YoVariable> predicate, YoRegistry registry,
+   public static List<YoVariable> findVariables(String namespaceEnding,
+                                                String name,
+                                                Predicate<YoVariable> predicate,
+                                                YoRegistry registry,
                                                 List<YoVariable> matchedVariablesToPack)
    {
       if (matchedVariablesToPack == null)
