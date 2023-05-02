@@ -21,10 +21,10 @@ dependencies {
    api("org.glassfish.jaxb:jaxb-runtime:2.3.2")
 
    api("us.ihmc:ihmc-commons:0.32.0")
-   api("us.ihmc:euclid-frame:0.19.1")
+   api("us.ihmc:euclid-frame:0.20.0")
 }
 
 testDependencies {
    api("us.ihmc:ihmc-commons-testing:0.32.0")
-   api("us.ihmc:euclid-test:0.19.1")
+   api("us.ihmc:euclid-test:0.20.0")
 }
