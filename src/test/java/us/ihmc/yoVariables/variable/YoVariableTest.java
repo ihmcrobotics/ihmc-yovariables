@@ -428,7 +428,17 @@ public class YoVariableTest
       assertTrue(comparer.compare(variable01, variable11));
       assertTrue(comparer.compare(variable02, variable12));
       assertTrue(comparer.compare(root0, root1));
+   }
 
+   @Test
+   public void testClear()
+   {
+      assertTrue(yoVariable.getRegistry() == registry);
+      assertTrue(registry.getVariables().contains(yoVariable));
+      yoVariable.clear();
+      assertNull(yoVariable.getRegistry());
+      assertFalse(registry.getVariables().contains(yoVariable));
+      assertEquals(yoVariable.getFullNameString(), yoVariable.getName());
    }
 
    private void createVariableChangeListeners(int numberOfListeners)

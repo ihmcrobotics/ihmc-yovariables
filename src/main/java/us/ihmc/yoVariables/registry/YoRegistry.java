@@ -293,13 +293,10 @@ public class YoRegistry implements YoVariableHolder
     */
    public void removeVariable(YoVariable variable)
    {
-      if (variable.getRegistry() != this)
+      if (!nameToVariableMap.containsValue(variable))
          return;
 
       String variableName = variable.getName().toLowerCase();
-
-      if (!nameToVariableMap.containsKey(variableName))
-         return;
 
       if (!restrictionLevel.isRemovalAllowed())
          throw new IllegalOperationException("Cannot remove variables from this registry: " + namespace);

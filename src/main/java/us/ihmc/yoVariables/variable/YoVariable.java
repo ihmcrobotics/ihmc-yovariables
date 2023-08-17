@@ -87,10 +87,10 @@ public abstract class YoVariable
       YoRegistry oldRegistry = this.registry;
       this.registry = null;
 
-      if (oldRegistry != null)
+      if (oldRegistry != null && oldRegistry.hasVariable(this.getName()))
          oldRegistry.removeVariable(this);
 
-      if (registry != null)
+      if (registry != null && !registry.hasVariable(this.getName()))
          registry.addVariable(this);
 
       this.registry = registry;

@@ -870,6 +870,19 @@ public class YoRegistryTest
       assertTrue(aa.getParameters().contains(paramater1));
       assertTrue(aaa.getParameters().contains(paramater2));
       assertTrue(aaa.getParameters().contains(paramater3));
+   }
 
+   @Test
+   public void testRemoveVariable()
+   {
+      assertTrue(robotVariable.getRegistry() == robotRegistry);
+      assertTrue(robotRegistry.getVariables().contains(robotVariable));
+      controllerRegistry.removeVariable(robotVariable);
+      assertTrue(robotVariable.getRegistry() == robotRegistry);
+      assertTrue(robotRegistry.getVariables().contains(robotVariable));
+      robotRegistry.removeVariable(robotVariable);
+      assertNull(robotVariable.getRegistry());
+      assertFalse(robotRegistry.getVariables().contains(robotVariable));
+      assertEquals(robotVariable.getFullNameString(), robotVariable.getName());
    }
 }
