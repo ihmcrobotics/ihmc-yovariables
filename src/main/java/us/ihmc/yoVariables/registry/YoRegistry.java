@@ -61,7 +61,7 @@ public class YoRegistry implements YoVariableHolder
    private final List<YoParameter> parameters = new ArrayList<>();
 
    /**
-    * The registry to which this registry is currently a child of, or {@code null} if {@code this} is
+    * ` The registry to which this registry is currently a child of, or {@code null} if {@code this} is
     * the root.
     */
    private YoRegistry parent;
@@ -194,8 +194,8 @@ public class YoRegistry implements YoVariableHolder
 
    private void clearInternal(boolean clearListeners)
    {
-      variables.forEach(variable -> variable.clear());
-      variables.clear();
+      for (int i = variables.size() - 1; i >= 0; i--)
+         variables.get(i).clear();
       nameToVariableMap.clear();
       parameters.clear();
       children.forEach(child -> child.clearInternal(true));
