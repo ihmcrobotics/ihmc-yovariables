@@ -3,7 +3,7 @@ package us.ihmc.yoVariables.euclid;
 import us.ihmc.euclid.interfaces.Settable;
 import us.ihmc.euclid.matrix.Matrix3D;
 import us.ihmc.euclid.matrix.interfaces.Matrix3DBasics;
-import us.ihmc.euclid.matrix.interfaces.Matrix3DReadOnly;
+import us.ihmc.euclid.tools.EuclidHashCodeTools;
 import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
@@ -51,7 +51,7 @@ public class YoMatrix3D implements Matrix3DBasics, Settable<Matrix3D>
       m22 = new YoDouble(namePrefix + "M22" + nameSuffix, registry);
    }
 
-   /** {@inheritDoc */
+   /** {@inheritDoc} */
    @Override
    public void set(Matrix3D other)
    {
@@ -66,126 +66,126 @@ public class YoMatrix3D implements Matrix3DBasics, Settable<Matrix3D>
       this.m22.set(other.getM22());
    }
 
-   /** {@inheritDoc */
+   /** {@inheritDoc} */
    @Override
    public void setM00(double m00)
    {
       this.m00.set(m00);
-
    }
 
-   /** {@inheritDoc */
+   /** {@inheritDoc} */
    @Override
    public void setM01(double m01)
    {
       this.m01.set(m01);
    }
 
-   /** {@inheritDoc */
+   /** {@inheritDoc} */
    @Override
    public void setM02(double m02)
    {
       this.m02.set(m02);
    }
 
-   /** {@inheritDoc */
+   /** {@inheritDoc} */
    @Override
    public void setM10(double m10)
    {
       this.m10.set(m10);
    }
 
-   /** {@inheritDoc */
+   /** {@inheritDoc} */
    @Override
    public void setM11(double m11)
    {
       this.m11.set(m11);
    }
 
-   /** {@inheritDoc */
+   /** {@inheritDoc} */
    @Override
    public void setM12(double m12)
    {
       this.m12.set(m12);
    }
 
-   /** {@inheritDoc */
+   /** {@inheritDoc} */
    @Override
    public void setM20(double m20)
    {
       this.m20.set(m20);
    }
 
-   /** {@inheritDoc */
+   /** {@inheritDoc} */
    @Override
    public void setM21(double m21)
    {
       this.m21.set(m21);
    }
 
-   /** {@inheritDoc */
+   /** {@inheritDoc} */
    @Override
    public void setM22(double m22)
    {
       this.m22.set(m22);
    }
 
-   /** {@inheritDoc */
+   /** {@inheritDoc} */
    @Override
    public double getM00()
    {
       return m00.getValue();
    }
 
-   /** {@inheritDoc */
+   /** {@inheritDoc} */
    @Override
    public double getM01()
    {
       return m01.getValue();
    }
 
-   /** {@inheritDoc */
+   /** {@inheritDoc} */
    @Override
    public double getM02()
    {
       return m02.getValue();
    }
 
-   /** {@inheritDoc */
+   /** {@inheritDoc} */
    @Override
    public double getM10()
    {
       return m10.getValue();
    }
 
+   /** {@inheritDoc} */
    @Override
    public double getM11()
    {
       return m11.getValue();
    }
 
-   /** {@inheritDoc */
+   /** {@inheritDoc} */
    @Override
    public double getM12()
    {
       return m12.getValue();
    }
 
-   /** {@inheritDoc */
+   /** {@inheritDoc} */
    @Override
    public double getM20()
    {
       return m20.getValue();
    }
 
-   /** {@inheritDoc */
+   /** {@inheritDoc} */
    @Override
    public double getM21()
    {
       return m21.getValue();
    }
 
-   /** {@inheritDoc */
+   /** {@inheritDoc} */
    @Override
    public double getM22()
    {
@@ -229,5 +229,19 @@ public class YoMatrix3D implements Matrix3DBasics, Settable<Matrix3D>
       m20.addListener(variableChangedListener);
       m21.addListener(variableChangedListener);
       m21.addListener(variableChangedListener);
+   }
+
+   @Override
+   public int hashCode()
+   {
+      return EuclidHashCodeTools.toIntHashCode(m00.getDoubleValue(),
+                                               m01.getDoubleValue(),
+                                               m02.getDoubleValue(),
+                                               m10.getDoubleValue(),
+                                               m11.getDoubleValue(),
+                                               m12.getDoubleValue(),
+                                               m20.getDoubleValue(),
+                                               m21.getDoubleValue(),
+                                               m22.getDoubleValue());
    }
 }
