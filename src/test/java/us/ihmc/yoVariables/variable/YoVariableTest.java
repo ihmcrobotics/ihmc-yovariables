@@ -431,11 +431,11 @@ public class YoVariableTest
    }
 
    @Test
-   public void testClear()
+   public void testDestroy()
    {
       assertTrue(yoVariable.getRegistry() == registry);
       assertTrue(registry.getVariables().contains(yoVariable));
-      yoVariable.clear();
+      yoVariable.destroy();
       assertNull(yoVariable.getRegistry());
       assertFalse(registry.getVariables().contains(yoVariable));
       assertEquals(yoVariable.getFullNameString(), yoVariable.getName());

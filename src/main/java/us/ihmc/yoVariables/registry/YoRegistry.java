@@ -168,6 +168,15 @@ public class YoRegistry implements YoVariableHolder
    }
 
    /**
+    * @deprecated Use {@link #destroy()} instead.
+    */
+   @Deprecated
+   public void clear()
+   {
+      destroy();
+   }
+
+   /**
     * Clears the internal data of this registry and its children.
     * <p>
     * The root registry can be cleared regardless of its current restriction level, in which case the
@@ -182,23 +191,23 @@ public class YoRegistry implements YoVariableHolder
     *
     * @throws IllegalOperationException if this registry is not fully mutable and is not the root.
     */
-   public void clear()
+   public void destroy()
    {
       if (!isRoot() && restrictionLevel != YoRegistryRestrictionLevel.FULLY_MUTABLE)
          throw new IllegalOperationException("Cannot clear a registry that is not the root and that does not have appropriate restriction level.");
       detachFromParent();
-      clearInternal(false);
+      destroyInternal(false);
       notifyListeners(null, null, null, ChangeType.CLEARED);
       changedListeners = null;
    }
 
-   private void clearInternal(boolean clearListeners)
+   private void destroyInternal(boolean clearListeners)
    {
       for (int i = variables.size() - 1; i >= 0; i--)
-         variables.get(i).clear();
+         variables.get(i).destroy();
       nameToVariableMap.clear();
       parameters.clear();
-      children.forEach(child -> child.clearInternal(true));
+      children.forEach(child -> child.destroyInternal(true));
       children.clear();
       nameToChildMap.clear();
       restrictionLevel = YoRegistryRestrictionLevel.FULLY_MUTABLE;

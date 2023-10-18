@@ -33,7 +33,7 @@ import us.ihmc.yoVariables.tools.YoTools;
  * registered to a given {@code YoRegistry}, allowing then for instance to collect all the variables
  * and to publish them on the server such as a client can read the variables.
  * </p>
- * 
+ *
  * @see YoBoolean
  * @see YoDouble
  * @see YoInteger
@@ -75,7 +75,7 @@ public abstract class YoVariable
 
    /**
     * Sets the registry for this variable.
-    * 
+    *
     * @param registry the new registry in which this variable is registry. If {@code null}, the
     *                 variable is detached from its previous registry.
     */
@@ -410,7 +410,7 @@ public abstract class YoVariable
     * The returned {@code String} depends on the type, numeric types will return a numeric
     * representation while enum's will return the enum value string.
     * </p>
-    * 
+    *
     * @return the string representation of this variable's current value.
     */
    public String getValueAsString()
@@ -421,7 +421,7 @@ public abstract class YoVariable
    /**
     * Returns the value of this variable as a string using the given format if this is a
     * {@link YoDouble}.
-    * 
+    *
     * @param format the format to use for a double value. Can be {@code null}.
     * @return the string representation of this variable's current value.
     */
@@ -432,7 +432,7 @@ public abstract class YoVariable
     * <p>
     * This variable's listeners will be notified if this variable's value is changed.
     * </p>
-    * 
+    *
     * @param valueAsString the string to parse.
     * @return {@code true} if this variable's value changed, {@code false} otherwise.
     */
@@ -447,7 +447,7 @@ public abstract class YoVariable
     * If {@code notifyListeners} is {@code true}, this variable's listeners will be notified if the
     * value parsed changes the the current value for this variable.
     * </p>
-    * 
+    *
     * @param valueAsString   the string to parse.
     * @param notifyListeners whether to notify this variable's listeners if this operation results in
     *                        changing this variable's current value.
@@ -458,7 +458,7 @@ public abstract class YoVariable
    /**
     * Convenience method for interpreting the given double value and converting it to a {@code String}
     * representation according to this variable implementation.
-    * 
+    *
     * @param format the format to use for a {@code YoDouble}.
     * @param value  the value to be interpreted.
     * @return the {@code String} representation of the value after interpretation.
@@ -496,12 +496,21 @@ public abstract class YoVariable
    }
 
    /**
+    * @deprecated Use {@link #destroy()} instead.
+    */
+   @Deprecated
+   public void clear()
+   {
+      destroy();
+   }
+
+   /**
     * Detaches this variable from its parent and clears the listeners.
     * <p>
     * Mostly useful when clearing before terminating an application.
     * </p>
     */
-   public void clear()
+   public void destroy()
    {
       setRegistry(null);
       changedListeners = null;
