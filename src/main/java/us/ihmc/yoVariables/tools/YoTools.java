@@ -40,6 +40,13 @@ import us.ihmc.yoVariables.variable.YoVariable;
 public class YoTools
 {
    /**
+    * Specifies whether sub-names in a namespace can repeat. Default value {@code false}.
+    * <p>
+    * TODO: Consider permanently disabling this sanity check.
+    * </p>
+    */
+   private static final boolean ALLOW_REPEATING_SUBNAMES = "true".equalsIgnoreCase(System.getProperty("yo.allowRepeatingSubname"));
+   /**
     * Character used to separate sub-names in a namespace when the namespace is represented as a single
     * {@code String}.
     */
@@ -126,7 +133,10 @@ public class YoTools
     * @param registryInfoFunction function used when printing statistics for one registry.
     * @param printStream          the stream to print to.
     */
-   public static void printStatistics(int minVariablesToPrint, int minChildrenToPrint, YoRegistry root, Function<YoRegistry, String> registryInfoFunction,
+   public static void printStatistics(int minVariablesToPrint,
+                                      int minChildrenToPrint,
+                                      YoRegistry root,
+                                      Function<YoRegistry, String> registryInfoFunction,
                                       PrintStream printStream)
    {
       printStatistics(candidate -> candidate.getVariables().size() >= minVariablesToPrint || candidate.getChildren().size() >= minChildrenToPrint,
@@ -305,9 +315,12 @@ public class YoTools
                + joinNames(namespace.getSubNames()));
       }
 
-      if (new HashSet<>(namespace.getSubNames()).size() != namespace.size())
+      if (!ALLOW_REPEATING_SUBNAMES)
       {
-         throw new IllegalNameException("The namespace has duplicate sub-names.\nNamespace: " + namespace.getName());
+         if (new HashSet<>(namespace.getSubNames()).size() != namespace.size())
+         {
+            throw new IllegalNameException("The namespace has duplicate sub-names.\nNamespace: " + namespace.getName());
+         }
       }
    }
 
