@@ -17,8 +17,7 @@ ihmc {
 
 dependencies {
    api("net.sf.trove4j:trove4j:3.0.3")
-   api("jakarta.xml.bind:jakarta.xml.bind-api:2.3.2")
-   api("org.glassfish.jaxb:jaxb-runtime:2.3.2")
+   api("com.sun.xml.bind:jaxb-ri:4.0.4")
 
    api("us.ihmc:ihmc-commons:0.32.0")
    api("us.ihmc:euclid-frame:0.20.0")
