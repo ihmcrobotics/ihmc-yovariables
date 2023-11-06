@@ -62,6 +62,19 @@ public class YoFrameQuaternion extends YoQuaternion implements FixedFrameQuatern
    }
 
    /**
+    * Creates a new {@code YoFrameQuaternion} using the given {@code yoQuaternion}'s backing {@code YoVariable}s and sets its
+    * reference frame to {@code referenceFrame}.
+    *
+    * @param yoQuaternion   quaternion which the backing {@code YoVariable}s are to be used for this.
+    * @param referenceFrame the reference frame for this {@code YoFrameQuaternion}.
+    */
+   public YoFrameQuaternion(YoQuaternion yoQuaternion, ReferenceFrame referenceFrame)
+   {
+      super(yoQuaternion.getYoQx(), yoQuaternion.getYoQy(), yoQuaternion.getYoQz(), yoQuaternion.getYoQs());
+      this.referenceFrame = referenceFrame;
+   }
+
+   /**
     * Creates a new {@code YoFrameQuaternion} using the given {@code YoVariable}s and sets its
     * reference frame to {@code referenceFrame}.
     *
@@ -81,7 +94,9 @@ public class YoFrameQuaternion extends YoQuaternion implements FixedFrameQuatern
       this.referenceFrame = referenceFrame;
    }
 
-   /** {@inheritDoc} */
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public ReferenceFrame getReferenceFrame()
    {

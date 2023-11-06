@@ -19,9 +19,8 @@ import us.ihmc.euclid.geometry.interfaces.Pose3DBasics;
 import us.ihmc.euclid.geometry.interfaces.Pose3DReadOnly;
 import us.ihmc.euclid.geometry.tools.EuclidGeometryIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
-import us.ihmc.euclid.tuple3D.interfaces.Point3DBasics;
-import us.ihmc.euclid.tuple4D.interfaces.QuaternionBasics;
 import us.ihmc.yoVariables.registry.YoRegistry;
+import us.ihmc.yoVariables.variable.YoDouble;
 
 /**
  * {@code Pose3DBasics} implementation which position and orientation backed with
@@ -29,9 +28,13 @@ import us.ihmc.yoVariables.registry.YoRegistry;
  */
 public class YoPose3D implements Pose3DBasics
 {
-   /** The position part of this pose 3D. */
+   /**
+    * The position part of this pose 3D.
+    */
    private final YoPoint3D position;
-   /** The orientation part of this pose 3D. */
+   /**
+    * The orientation part of this pose 3D.
+    */
    private final YoQuaternion orientation;
 
    /**
@@ -89,15 +92,85 @@ public class YoPose3D implements Pose3DBasics
    }
 
    @Override
-   public Point3DBasics getPosition()
+   public YoPoint3D getPosition()
    {
       return position;
    }
 
    @Override
-   public QuaternionBasics getOrientation()
+   public YoQuaternion getOrientation()
    {
       return orientation;
+   }
+
+   /**
+    * Gets the internal reference to the x-coordinate used for the position of this pose.
+    *
+    * @return the position x-coordinate as {@code YoVariable}.
+    */
+   public YoDouble getYoX()
+   {
+      return position.getYoX();
+   }
+
+   /**
+    * Gets the internal reference to the y-coordinate used for the position of this pose.
+    *
+    * @return the position y-coordinate as {@code YoVariable}.
+    */
+   public YoDouble getYoY()
+   {
+      return position.getYoY();
+   }
+
+   /**
+    * Gets the internal reference to the z-coordinate used for the position of this pose.
+    *
+    * @return the position z-coordinate as {@code YoVariable}.
+    */
+   public YoDouble getYoZ()
+   {
+      return position.getYoZ();
+   }
+
+   /**
+    * Gets the internal reference to the s-component used for the orientation of this pose.
+    *
+    * @return the position s-coordinate as {@code YoVariable}.
+    */
+   public YoDouble getYoQs()
+   {
+      return orientation.getYoQs();
+   }
+
+   /**
+    * Gets the internal reference to the x-component used for the orientation of this pose.
+    *
+    * @return the position x-coordinate as {@code YoVariable}.
+    */
+   public YoDouble getYoQx()
+   {
+      return orientation.getYoQx();
+   }
+
+   /**
+    * Gets the internal reference to the y-component used for the orientation of this pose.
+    *
+    * @return the position y-coordinate as {@code YoVariable}.
+    */
+   public YoDouble getYoQy()
+   {
+      return orientation.getYoQy();
+   }
+
+   /**
+    * Gets the internal reference to the z-component used for the orientation of this pose.
+    *
+    * @return the position z-coordinate as {@code YoVariable}.
+    */
+   public YoDouble getYoQz()
+   {
+      return orientation.getYoQz();
    }
 
    @Override

@@ -17,6 +17,7 @@ package us.ihmc.yoVariables.euclid.referenceFrame;
 
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFrameVector3DBasics;
+import us.ihmc.yoVariables.euclid.YoVector3D;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
 
@@ -26,6 +27,18 @@ import us.ihmc.yoVariables.variable.YoDouble;
  */
 public class YoFrameVector3D extends YoFrameTuple3D implements FixedFrameVector3DBasics
 {
+   /**
+    * Creates a new {@code YoFrameVector3D} using the given {@code yoVector3D} backing {@code YoVariable}s and sets its reference frame to
+    * {@code referenceFrame}.
+    *
+    * @param yoVector3D     vector which the backing {@code YoVariable}s are to be used for this.
+    * @param referenceFrame the reference frame for this vector.
+    */
+   public YoFrameVector3D(YoVector3D yoVector3D, ReferenceFrame referenceFrame)
+   {
+      super(yoVector3D.getYoX(), yoVector3D.getYoY(), yoVector3D.getYoZ(), referenceFrame);
+   }
+
    /**
     * Creates a new {@code YoFrameVector3D} using the given {@code YoVariable}s and sets its reference
     * frame to {@code referenceFrame}.

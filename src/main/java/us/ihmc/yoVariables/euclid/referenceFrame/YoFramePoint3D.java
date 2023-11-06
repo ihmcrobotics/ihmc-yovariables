@@ -17,6 +17,7 @@ package us.ihmc.yoVariables.euclid.referenceFrame;
 
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.interfaces.FixedFramePoint3DBasics;
+import us.ihmc.yoVariables.euclid.YoPoint3D;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
 
@@ -26,6 +27,18 @@ import us.ihmc.yoVariables.variable.YoDouble;
  */
 public class YoFramePoint3D extends YoFrameTuple3D implements FixedFramePoint3DBasics
 {
+   /**
+    * Creates a new {@code YoFramePoint3D} using the given {@code yoPoint3D} backing {@code YoVariable}s and sets its reference frame to
+    * {@code referenceFrame}.
+    *
+    * @param yoPoint3D      point which the backing {@code YoVariable}s are to be used for this.
+    * @param referenceFrame the reference frame for this point.
+    */
+   public YoFramePoint3D(YoPoint3D yoPoint3D, ReferenceFrame referenceFrame)
+   {
+      super(yoPoint3D.getYoX(), yoPoint3D.getYoY(), yoPoint3D.getYoZ(), referenceFrame);
+   }
+
    /**
     * Creates a new {@code YoFramePoint3D} using the given {@code YoVariable}s and sets its reference
     * frame to {@code referenceFrame}.

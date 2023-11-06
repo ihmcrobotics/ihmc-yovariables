@@ -73,7 +73,9 @@ public abstract class YoFrameTuple3D extends YoTuple3D implements FixedFrameTupl
       this.referenceFrame = referenceFrame;
    }
 
-   /** {@inheritDoc} */
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public ReferenceFrame getReferenceFrame()
    {

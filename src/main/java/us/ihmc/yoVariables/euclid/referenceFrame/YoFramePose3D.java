@@ -23,6 +23,7 @@ import us.ihmc.euclid.referenceFrame.interfaces.FramePose3DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple3DReadOnly;
 import us.ihmc.euclid.referenceFrame.tools.EuclidFrameIOTools;
 import us.ihmc.euclid.tools.EuclidHashCodeTools;
+import us.ihmc.yoVariables.euclid.YoPose3D;
 import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
@@ -39,10 +40,21 @@ public class YoFramePose3D implements FixedFramePose3DBasics
    /**
     * Creates a new {@code YoFramePose3D} using the given {@code position} and {@code orientation}.
     *
+    * @param pose           pose which backing {@code YoVariable}s are used to initialize this. Not modified.
+    * @param referenceFrame the reference frame for this pose.
+    */
+   public YoFramePose3D(YoPose3D pose, ReferenceFrame referenceFrame)
+   {
+      this(new YoFramePoint3D(pose.getPosition(), referenceFrame), new YoFrameQuaternion(pose.getOrientation(), referenceFrame));
+   }
+
+   /**
+    * Creates a new {@code YoFramePose3D} using the given {@code position} and {@code orientation}.
+    *
     * @param position    the {@code YoFramePoint3D} to use internally for the position.
     * @param orientation the {@code YoFrameQuaternion} to use internally for the orientation.
     * @throws ReferenceFrameMismatchException if {@code position} and {@code orientation} are not
-    *                                         expressed in the same reference frame.
+    *       expressed in the same reference frame.
     */
    public YoFramePose3D(YoFramePoint3D position, YoFrameQuaternion orientation)
    {
@@ -129,21 +141,27 @@ public class YoFramePose3D implements FixedFramePose3DBasics
       this.orientation.setMatchingFrame(orientation);
    }
 
-   /** {@inheritDoc} */
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public ReferenceFrame getReferenceFrame()
    {
       return position.getReferenceFrame();
    }
 
-   /** {@inheritDoc} */
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public YoFramePoint3D getPosition()
    {
       return position;
    }
 
-   /** {@inheritDoc} */
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public YoFrameQuaternion getOrientation()
    {
