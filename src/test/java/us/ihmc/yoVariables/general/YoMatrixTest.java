@@ -22,8 +22,8 @@ public class YoMatrixTest
       int maxNumberOfColumns = 8;
       YoRegistry registry = new YoRegistry("testRegistry");
       YoMatrix yoMatrix = new YoMatrix("testMatrix", maxNumberOfRows, maxNumberOfColumns, registry);
-      assertEquals(maxNumberOfRows, yoMatrix.getNumberOfRows());
-      assertEquals(maxNumberOfColumns, yoMatrix.getNumberOfColumns());
+      assertEquals(maxNumberOfRows, yoMatrix.getNumRows());
+      assertEquals(maxNumberOfColumns, yoMatrix.getNumCols());
 
       DMatrixRMaj denseMatrix = new DMatrixRMaj(maxNumberOfRows, maxNumberOfColumns);
       yoMatrix.get(denseMatrix);
@@ -72,8 +72,8 @@ public class YoMatrixTest
       assertEquals(maxNumberOfRows, denseMatrix.getNumRows());
       assertEquals(maxNumberOfColumns, denseMatrix.getNumCols());
 
-      assertEquals(maxNumberOfRows, yoMatrix.getNumberOfRows());
-      assertEquals(maxNumberOfColumns, yoMatrix.getNumberOfColumns());
+      assertEquals(maxNumberOfRows, yoMatrix.getNumRows());
+      assertEquals(maxNumberOfColumns, yoMatrix.getNumCols());
 
       Random random = new Random(1984L);
 
@@ -91,8 +91,8 @@ public class YoMatrixTest
       assertEquals(smallerRows, smallerMatrix.getNumRows());
       assertEquals(smallerColumns, smallerMatrix.getNumCols());
 
-      assertEquals(smallerRows, yoMatrix.getNumberOfRows());
-      assertEquals(smallerColumns, yoMatrix.getNumberOfColumns());
+      assertEquals(smallerRows, yoMatrix.getNumRows());
+      assertEquals(smallerColumns, yoMatrix.getNumCols());
 
       DMatrixRMaj checkMatrix2 = new DMatrixRMaj(1, 1);
       yoMatrix.getAndReshape(checkMatrix2);
@@ -119,7 +119,7 @@ public class YoMatrixTest
 
       int numberOfRows = 2;
       int numberOfColumns = 6;
-      yoMatrix.setToZero(numberOfRows, numberOfColumns);
+      yoMatrix.zero();
 
       DMatrixRMaj zeroMatrix = new DMatrixRMaj(numberOfRows, numberOfColumns);
       checkMatrixYoVariablesEqualsCheckMatrixAndOutsideValuesAreNaN(name, maxNumberOfRows, maxNumberOfColumns, zeroMatrix, registry);
@@ -180,6 +180,54 @@ public class YoMatrixTest
 
       assertEquals(maxNumberOfRows + 10, checkMatrix.getNumRows());
       assertEquals(0, checkMatrix.getNumCols());
+   }
+
+   @Test
+   public void testConstructorsWithNames()
+   {
+      // Passing in column names without row names -- should throw exception
+      try
+      {
+         new YoMatrix("testMatrix", 4, 4, null, new String[] {"col1", "col2", "col3", "col4"}, new YoRegistry("testRegistry"));
+         fail("Should have thrown an exception");
+      }
+      catch (RuntimeException e)
+      {
+         // good
+      }
+
+      // Passing in just row names, but with more than one column -- should throw exception
+      try
+      {
+         new YoMatrix("testMatrix", 4, 4, new String[] {"row1", "row2", "row3", "row4"}, null, new YoRegistry("testRegistry"));
+         fail("Should have thrown an exception");
+      }
+      catch (RuntimeException e)
+      {
+         // good
+      }
+
+      // Passing in row/column name arrays of different length to the number of rows/columns -- should throw exception
+      // Row names are fine, column names are too short
+      try
+      {
+         new YoMatrix("testMatrix", 4, 4, new String[] {"row1", "row2", "row3", "row4"}, new String[] {"col1", "col2"}, new YoRegistry("testRegistry"));
+         fail("Should have thrown an exception");
+      }
+      catch (RuntimeException e)
+      {
+         // good
+      }
+      // Row names are too short, column names are fine
+      try
+      {
+         new YoMatrix("testMatrix", 4, 4, new String[] {"row1", "row2"}, new String[] {"col1", "col2", "col3", "col4"}, new YoRegistry("testRegistry"));
+         fail("Should have thrown an exception");
+      }
+      catch (RuntimeException e)
+      {
+         // good
+      }
    }
 
    private void checkMatrixYoVariablesEqualsCheckMatrixAndOutsideValuesAreNaN(String name,
