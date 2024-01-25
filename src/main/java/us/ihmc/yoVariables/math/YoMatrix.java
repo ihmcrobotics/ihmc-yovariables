@@ -1,4 +1,4 @@
-package us.ihmc.yoVariables.general;
+package us.ihmc.yoVariables.math;
 
 import org.ejml.data.*;
 import org.ejml.ops.MatrixIO;
