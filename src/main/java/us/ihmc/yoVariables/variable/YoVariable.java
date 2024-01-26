@@ -15,14 +15,15 @@
  */
 package us.ihmc.yoVariables.variable;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import us.ihmc.yoVariables.exceptions.NameCollisionException;
 import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.parameters.YoParameter;
 import us.ihmc.yoVariables.registry.YoNamespace;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.tools.YoTools;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * {@code YoVariable}s provide the base for a framework that allows storing, manipulating, logging,
@@ -90,8 +91,13 @@ public abstract class YoVariable
       if (oldRegistry != null && oldRegistry.hasVariable(this.getName()))
          oldRegistry.removeVariable(this);
 
-      if (registry != null && !registry.hasVariable(this.getName()))
+      if (registry != null)
+      {
+         YoVariable existingVariable = registry.getVariable(getName());
+         if (existingVariable != null && existingVariable != this)
+            throw new NameCollisionException("A variable named " + getName() + " already exists in the registry " + registry.getNamespace() + ".");
          registry.addVariable(this);
+      }
 
       this.registry = registry;
       resetFullName();
@@ -277,7 +283,7 @@ public abstract class YoVariable
     * Returns this variable's list of {@link YoVariableChangedListener}s.
     *
     * @return the listeners previously added to this variable, or {@code null} if this variable has no
-    *         listener.
+    *       listener.
     */
    public List<YoVariableChangedListener> getListeners()
    {
@@ -290,7 +296,7 @@ public abstract class YoVariable
     *
     * @param listener the listener to remove.
     * @return {@code true} if the listener was removed, {@code false} if the listener was not found and
-    *         nothing happened.
+    *       nothing happened.
     */
    public boolean removeListener(YoVariableChangedListener listener)
    {

@@ -1,22 +1,18 @@
 package us.ihmc.yoVariables.variable;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
+import us.ihmc.yoVariables.exceptions.NameCollisionException;
 import us.ihmc.yoVariables.listener.YoVariableChangedListener;
 import us.ihmc.yoVariables.registry.YoRegistry;
+
+import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class YoVariableTest
 {
@@ -185,7 +181,6 @@ public class YoVariableTest
 
       assertEquals(yoVariable.getFullName(), yoVariable.getRegistry().getNamespace().append(yoVariable.getName()));
       assertEquals(yoVariable.getFullNameString(), "newReg.robot.testRegistry.variableOne");
-
    }
 
    @Test // timeout=300000
@@ -263,6 +258,20 @@ public class YoVariableTest
       assert !booleanVariable.valueEquals(true);
    }
 
+   @Test
+   public void testNameCollision()
+   {
+      YoBoolean booleanVariable = new YoBoolean("booleanVar", registry);
+      YoDouble doubleVariable = new YoDouble("doubleVariable", registry);
+      YoInteger intVariable = new YoInteger("intVariable", registry);
+      YoEnum<FooEnum> enumVariable = new YoEnum<>("enumVariable", registry, FooEnum.class);
+
+      assertThrows(NameCollisionException.class, () -> new YoBoolean("booleanVar", registry));
+      assertThrows(NameCollisionException.class, () -> new YoDouble("doubleVariable", registry));
+      assertThrows(NameCollisionException.class, () -> new YoInteger("intVariable", registry));
+      assertThrows(NameCollisionException.class, () -> new YoEnum<>("enumVariable", registry, FooEnum.class));
+   }
+
    //   public void testYoVariable1()
    //   {
    //      // Did a lot of constructing already. Not testing constructors.
@@ -272,8 +281,7 @@ public class YoVariableTest
    public void testNotifyVaribaleChangeListeners()
    {
       // create a bunch of Observers
-      @SuppressWarnings("unused")
-      int nObservers = 5;
+      @SuppressWarnings("unused") int nObservers = 5;
       createVariableChangeListeners(5);
 
       // add them to the YoVariable
@@ -502,7 +510,6 @@ public class YoVariableTest
       {
          return ReflectionToStringBuilder.toString(variable01, ToStringStyle.NO_CLASS_NAME_STYLE)
                                          .equals(ReflectionToStringBuilder.toString(variable11, ToStringStyle.NO_CLASS_NAME_STYLE));
-
       }
 
       public boolean compare(YoRegistry root0, YoRegistry root1)
