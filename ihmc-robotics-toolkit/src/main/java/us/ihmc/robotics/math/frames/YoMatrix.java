@@ -1,7 +1,6 @@
 package us.ihmc.robotics.math.frames;
 
 import org.ejml.data.*;
-
 import org.ejml.ops.MatrixIO;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
@@ -12,7 +11,7 @@ import us.ihmc.yoVariables.variable.YoInteger;
  * maximum number of rows and columns and an actual number of rows and columns. If you set with a
  * smaller matrix, then the actual size will be the size of the passed in matrix. extra entries will
  * be set to NaN. If you get the contents the matrix you pack must be the correct size.
- * 
+ *
  * @author JerryPratt
  */
 public class YoMatrix implements DMatrix, ReshapeMatrix
@@ -72,20 +71,21 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
             {
                case NONE:
                {
-                  variables[row][column] = new YoDouble(name + "_" + row + "_" + column, description, registry);  // names are simply the row and column indices
+                  variables[row][column] = new YoDouble(name  + row  + column, description, registry);  // names are simply the row and column indices
                   break;
                }
                case ROWS:
                {
                   if (maxNumberOfColumns > 1)
-                     throw new IllegalArgumentException("The YoMatrix must be a column vector if only row names are provided, else unique names cannot be generated.");
+                     throw new IllegalArgumentException(
+                           "The YoMatrix must be a column vector if only row names are provided, else unique names cannot be generated.");
 
-                  variables[row][column] = new YoDouble(name + "_" + rowNames[row], description, registry);  // names are the row names, no column identifier
+                  variables[row][column] = new YoDouble(name + rowNames[row], description, registry);  // names are the row names, no column identifier
                   break;
                }
                case ROWS_AND_COLUMNS:
                {
-                  variables[row][column] = new YoDouble(name + "_" + rowNames[row] + "_" + columnNames[column], description, registry);  // names are the row and column names
+                  variables[row][column] = new YoDouble(name + rowNames[row] + columnNames[column], description, registry);  // names are the row and column names
                   break;
                }
             }
@@ -187,10 +187,9 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
    @Override
    public void set(Matrix original)
    {
-      if (original instanceof DMatrix)
+      if (original instanceof DMatrix otherMatrix)
       {
-         DMatrix otherMatrix = (DMatrix) original;
-         reshape(otherMatrix.getNumRows(), otherMatrix.getNumRows());
+         reshape(otherMatrix.getNumRows(), otherMatrix.getNumCols());
          for (int row = 0; row < getNumRows(); row++)
          {
             for (int col = 0; col < getNumCols(); col++)
@@ -249,7 +248,7 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       }
    }
 
-   public void set(DMatrixRMaj matrix)
+   public void set(DMatrix matrix)
    {
       int numRows = matrix.getNumRows();
       int numCols = matrix.getNumCols();
@@ -282,7 +281,7 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       get(matrixToPack);
    }
 
-   public void get(DMatrixRMaj matrixToPack)
+   public void get(DMatrix matrixToPack)
    {
       int numRows = matrixToPack.getNumRows();
       int numCols = matrixToPack.getNumCols();
@@ -311,5 +310,10 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
             unsafe_set(row, col, Double.NaN);
          }
       }
+   }
+
+   public YoDouble getYoDouble(int row, int col)
+   {
+      return variables[row][col];
    }
 }
