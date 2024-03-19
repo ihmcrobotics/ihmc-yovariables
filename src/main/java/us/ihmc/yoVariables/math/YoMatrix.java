@@ -145,8 +145,8 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
             switch (checkNames(rowNames, columnNames))
             {
                case NONE -> variables[row][column] = new YoDouble(name + "_" + row + "_" + column, description, registry);
-               case ROWS -> variables[row][column] = new YoDouble(name + "_" + rowNames[row], description, registry);
-               case ROWS_AND_COLUMNS -> variables[row][column] = new YoDouble(name + "_" + rowNames[row] + "_" + columnNames[column], description, registry);
+               case ROWS -> variables[row][column] = new YoDouble(name + rowNames[row], description, registry);
+               case ROWS_AND_COLUMNS -> variables[row][column] = new YoDouble(name + rowNames[row] + columnNames[column], description, registry);
             }
          }
       }
