@@ -152,6 +152,9 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       }
    }
 
+   /**
+    * Enum used to determine what names have been provided to the YoMatrix.
+    */
    private enum NamesProvided
    {
       NONE, ROWS, ROWS_AND_COLUMNS
@@ -198,6 +201,11 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
          return NamesProvided.ROWS_AND_COLUMNS;
    }
 
+   /**
+    * Scale all entries of {@code this} by the provided scalar {@code scale}.
+    *
+    * @param scale the scalar to multiply all entries by.
+    */
    public void scale(double scale)
    {
       for (int row = 0; row < getNumRows(); row++)
@@ -209,6 +217,12 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       }
    }
 
+   /**
+    * Set {@code this} to {@code matrix} after it has been scaled by the provided scalar {@code scale}.
+    *
+    * @param scale the scalar to multiply all of {@code matrix} by.
+    * @param matrix the matrix to be scaled. Not modified.
+    */
    public void scale(double scale, DMatrix matrix)
    {
       if (matrix.getNumRows() != getNumRows() || matrix.getNumCols() != getNumCols())
@@ -224,16 +238,37 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       }
    }
 
+   /**
+    * Set {@code this} to the sum of {@code a} and {@code b}.
+    *
+    * @param a the first matrix to be added. Not modified.
+    * @param b the second matrix to be added. Not modified.
+    */
    public void add(DMatrix a, DMatrix b)
    {
       add(1.0, a, 1.0, b);
    }
 
+   /**
+    * Set {@code this} to the sum of {@code a}, and {@code b} scaled by {@code beta}.
+    *
+    * @param a the first matrix to be added. Not modified.
+    * @param beta the scalar to multiply {@code b} by.
+    * @param b the second matrix to be added. Not modified.
+    */
    public void add(DMatrix a, double beta, DMatrix b)
    {
       add(1.0, a, beta, b);
    }
 
+   /**
+    * Set {@code this} to the sum of {@code a} scaled by {@code alpha}, and {@code b} scaled by {@code beta}.
+    *
+    * @param alpha the scalar to multiply {@code a} by.
+    * @param a the first matrix to be added. Not modified.
+    * @param beta the scalar to multiply {@code b} by.
+    * @param b the second matrix to be added. Not modified.
+    */
    public void add(double alpha, DMatrix a, double beta, DMatrix b)
    {
       if (a.getNumRows() != b.getNumRows() || a.getNumCols() != b.getNumCols())
@@ -253,11 +288,22 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       }
    }
 
+   /**
+    * Set {@code this} to the sum of {@code this} and {@code a}.
+    *
+    * @param a the matrix to be added on to {@code this}. Not modified.
+    */
    public void addEquals(DMatrix a)
    {
       addEquals(1.0, a);
    }
 
+   /**
+    * Set {@code this} to the sum of {@code this}, and {@code a} scaled by {@code alpha}.
+    *
+    * @param alpha the scalar to multiply {@code a} by.
+    * @param a the matrix to be added on to {@code this}. Not modified.
+    */
    public void addEquals(double alpha, DMatrix a)
    {
       if (a.getNumRows() != getNumRows() || a.getNumCols() != getNumCols())
@@ -273,6 +319,13 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       }
    }
 
+   /**
+    * Get the entry of {@code this} at the specified row and column.
+    *
+    * @param row Matrix element's row index.
+    * @param col Matrix element's column index.
+    * @return the value of the matrix element at the specified row and column.
+    */
    @Override
    public double get(int row, int col)
    {
@@ -287,12 +340,22 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       return variables[row][col].getValue();
    }
 
+   /**
+    * Reshape the input matrix {@code matrixToPack} to match the size of {@code this} and set it to {@code this}.
+    *
+    * @param matrixToPack the matrix to reshape and pack {@code this} into. Modified.
+    */
    public void getAndReshape(DMatrixD1 matrixToPack)
    {
       matrixToPack.reshape(getNumRows(), getNumCols());
       get(matrixToPack);
    }
 
+   /**
+    * Get {@code this} matrix and pack into {@code matrixToPack}.
+    *
+    * @param matrixToPack the matrix to pack {@code this} into. Modified.
+    */
    public void get(DMatrix matrixToPack)
    {
       if (matrixToPack.getNumRows() != getNumRows() || matrixToPack.getNumCols() != getNumCols())
@@ -309,6 +372,15 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       }
    }
 
+   /**
+    * Set the number of rows and columns in the matrix.
+    * <p>
+    * The new row/column size cannot exceed the maximum row/column size. If the new size is smaller than the current size, the extra entries will be set to NaN.
+    * </p>
+    *
+    * @param numRows The new number of rows in the matrix.
+    * @param numCols The new number of columns in the matrix.
+    */
    @Override
    public void reshape(int numRows, int numCols)
    {
@@ -339,6 +411,13 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       }
    }
 
+   /**
+    * Set the entry of {@code this} at the specified row and column to the provided value {@code val}.
+    *
+    * @param row Matrix element's row index.
+    * @param col Matrix element's column index.
+    * @param val The element's new value.
+    */
    @Override
    public void set(int row, int col, double val)
    {
@@ -353,6 +432,14 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       variables[row][col].set(val);
    }
 
+   /**
+    * Set {@code this} to the matrix {@code original}.
+    * <p>
+    * If {@code original} is not a {@code DMatrix}, an {@code UnsupportedOperationException} is thrown.
+    * </p>
+    *
+    * @param original the matrix to set {@code this} to. Not modified.
+    */
    @Override
    public void set(Matrix original)
    {
@@ -373,6 +460,12 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       }
    }
 
+   /**
+    * Set {@code this} to a matrix of size {@code numRows} by {@code numCols} with the entries all NaNs.
+    *
+    * @param numRows the number of rows in the matrix.
+    * @param numCols the number of columns in the matrix.
+    */
    public void setToNaN(int numRows, int numCols)
    {
       reshape(numRows, numCols);
@@ -385,6 +478,11 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       }
    }
 
+   /**
+    * Check if {@code this} contains any NaNs.
+    *
+    * @return {@code true} if any of the entries of {@code this} are NaN, {@code false} otherwise.
+    */
    public boolean containsNaN()
    {
       for (int row = 0; row < getNumRows(); row++)
@@ -398,6 +496,9 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       return false;
    }
 
+   /**
+    * Set all entries of {@code this} to zero.
+    */
    @Override
    public void zero()
    {
@@ -413,24 +514,45 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       }
    }
 
+   /**
+    * Set {@code this} to a matrix of size {@code numRows} by {@code numCols} with all entries set to zero.
+    *
+    * @param numRows the number of rows in the matrix.
+    * @param numCols the number of columns in the matrix.
+    */
    public void zero(int numRows, int numCols)
    {
       reshape(numRows, numCols);
       zero();
    }
 
+   /**
+    * Get the number of rows in the matrix.
+    *
+    * @return the number of rows in the matrix.
+    */
    @Override
    public int getNumRows()
    {
       return numberOfRows.getValue();
    }
 
+   /**
+    * Get the number of columns in the matrix.
+    *
+    * @return the number of columns in the matrix.
+    */
    @Override
    public int getNumCols()
    {
       return numberOfColumns.getValue();
    }
 
+   /**
+    * Get the number of elements in the matrix.
+    *
+    * @return the number of elements in the matrix.
+    */
    @Override
    public int getNumElements()
    {
