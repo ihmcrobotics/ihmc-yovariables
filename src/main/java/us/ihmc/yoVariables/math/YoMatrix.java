@@ -220,7 +220,7 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
    /**
     * Set {@code this} to {@code matrix} after it has been scaled by the provided scalar {@code scale}.
     *
-    * @param scale the scalar to multiply all of {@code matrix} by.
+    * @param scale  the scalar to multiply all of {@code matrix} by.
     * @param matrix the matrix to be scaled. Not modified.
     */
    public void scale(double scale, DMatrix matrix)
@@ -252,9 +252,9 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
    /**
     * Set {@code this} to the sum of {@code a}, and {@code b} scaled by {@code beta}.
     *
-    * @param a the first matrix to be added. Not modified.
+    * @param a    the first matrix to be added. Not modified.
     * @param beta the scalar to multiply {@code b} by.
-    * @param b the second matrix to be added. Not modified.
+    * @param b    the second matrix to be added. Not modified.
     */
    public void add(DMatrix a, double beta, DMatrix b)
    {
@@ -265,9 +265,9 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
     * Set {@code this} to the sum of {@code a} scaled by {@code alpha}, and {@code b} scaled by {@code beta}.
     *
     * @param alpha the scalar to multiply {@code a} by.
-    * @param a the first matrix to be added. Not modified.
-    * @param beta the scalar to multiply {@code b} by.
-    * @param b the second matrix to be added. Not modified.
+    * @param a     the first matrix to be added. Not modified.
+    * @param beta  the scalar to multiply {@code b} by.
+    * @param b     the second matrix to be added. Not modified.
     */
    public void add(double alpha, DMatrix a, double beta, DMatrix b)
    {
@@ -302,7 +302,7 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
     * Set {@code this} to the sum of {@code this}, and {@code a} scaled by {@code alpha}.
     *
     * @param alpha the scalar to multiply {@code a} by.
-    * @param a the matrix to be added on to {@code this}. Not modified.
+    * @param a     the matrix to be added on to {@code this}. Not modified.
     */
    public void addEquals(double alpha, DMatrix a)
    {
