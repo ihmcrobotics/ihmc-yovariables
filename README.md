@@ -1,6 +1,6 @@
 # ![YoVariables](logo/YoVariables.png)
 [ ![ihmc-yovariables](https://maven-badges.herokuapp.com/maven-central/us.ihmc/ihmc-yovariables/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/us.ihmc/ihmc-yovariables)
-[ ![buildstatus](https://bamboo.ihmc.us/plugins/servlet/wittified/build-status/LIBS-IHMCYOVARIABLES)](https://bamboo.ihmc.us/plugins/servlet/wittified/build-status/LIBS-IHMCYOVARIABLES)
+[ ![buildstatus](ttps://github.com/ihmcrobotics/ihmc-yovariables/actions/workflows/gradle-test.yml/badge.svg)
 
 ## What is YoVariables
 YoVariables provides a framework for organizing, storing, and manipulating variables used in algorithms.
