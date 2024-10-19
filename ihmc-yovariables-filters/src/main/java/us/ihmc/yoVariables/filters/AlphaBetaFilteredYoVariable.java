@@ -1,39 +1,22 @@
-package us.ihmc.robotics.math.filters;
+package us.ihmc.yoVariables.filters;
 
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
 
 /**
- * <p>Title: </p>
+ * <p>
+ * An {@code AlphaBetaFilteredYoVariable} is a filtered version of {@link YoDouble}, and estimates the velocity of some value it is tracking.
+ * Either a {@link YoDouble} holding the position value is passed in to the
+ * constructor and {@link #update()} is called every tick, or {@link #update(double)} is
+ * called every tick. The {@code AlphaBetaFilteredYoVariable} updates its value
+ * with the current filtered velocity using
+ * <p>
+ * xp  =  x + (dt) v            // angular position prediction
+ * x+  =  xp + alpha (xmeas - xp)   // adjusted angular position estimate
+ * v+  =  v + beta (xmeas - xp)    // adjusted velocity estimate
  *
- * <p>Description: </p>
- *
- * <p>Copyright: Copyright (c) 2007</p>
- *
- * <p>Company: </p>
- *
- * @author not attributable
- * @version 1.0
- */
-
-/**
- * @author thutcheson
- *         </p>
- *         <p>
- *         </p>
- *         <p>
- *         An AlphaBetaFilteredYoVariable is a filtered version of an input YoVar.
- *         Either a YoVariable holding the unfiltered val is passed in to the
- *         constructor and update() is called every tick, or update(double) is
- *         called every tick. The AlphaBetaFilteredYoVariable updates it's val
- *         with the current filtered velocity using
- *
- *         xp  =  x + (dt) v            // angular position prediction
- *         x+  =  xp + alpha (xmeas - xp)   // adjusted angular position estimate
- *         v+  =  v + beta (xmeas - xp)    // adjusted velocity estimate
- *
- *         </p>
- *         <pre>
+ * </p>
+ * <pre>
  *
  *         For complete reference see:
  *                http://www.mstarlabs.com/control/engspeed.html#Ref2
@@ -51,25 +34,17 @@ public class AlphaBetaFilteredYoVariable extends YoDouble
    private final YoDouble positionState;
    private final YoDouble xMeasuredVariable;
 
-   public AlphaBetaFilteredYoVariable(String name, YoRegistry registry, double alpha, double beta, YoDouble positionVariable,
-         YoDouble xMeasuredVariable, double DT)
+   public AlphaBetaFilteredYoVariable(String name,
+                                      YoRegistry registry,
+                                      double alpha,
+                                      double beta,
+                                      YoDouble positionVariable,
+                                      YoDouble xMeasuredVariable,
+                                      double DT)
    {
       super(name, registry);
       this.alpha = alpha;
       this.beta = beta;
-      this.DT = DT;
-      this.positionState = positionVariable;
-      this.xMeasuredVariable = xMeasuredVariable;
-
-      reset();
-   }
-
-   public AlphaBetaFilteredYoVariable(String name, YoRegistry registry, YoDouble alphaVariable, YoDouble betaVariable,
-         YoDouble positionVariable, YoDouble xMeasuredVariable, double DT)
-   {
-      super(name, registry);
-      this.alphaVariable = alphaVariable;
-      this.betaVariable = betaVariable;
       this.DT = DT;
       this.positionState = positionVariable;
       this.xMeasuredVariable = xMeasuredVariable;
