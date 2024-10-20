@@ -1,6 +1,5 @@
 package us.ihmc.yoVariables.filters;
 
-import us.ihmc.commons.AngleTools;
 import us.ihmc.commons.MathTools;
 import us.ihmc.euclid.tools.EuclidCoreTools;
 import us.ihmc.yoVariables.providers.DoubleProvider;
@@ -135,7 +134,7 @@ public class AlphaFilteredYoVariable extends YoDouble implements ProcessingYoVar
       if (Double.isInfinite(breakFrequencyInHertz))
          return 0.0;
 
-      double alpha = 1.0 - breakFrequencyInHertz * AngleTools.TwoPI * dt;
+      double alpha = 1.0 - breakFrequencyInHertz * EuclidCoreTools.TwoPI * dt;
 
       alpha = MathTools.clamp(alpha, 0.0, 1.0);
 

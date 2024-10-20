@@ -6,12 +6,12 @@ import org.apache.commons.lang3.mutable.MutableDouble;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import us.ihmc.commons.AngleTools;
 import us.ihmc.commons.RandomNumbers;
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.tools.ReferenceFrameTools;
 import us.ihmc.euclid.tools.EuclidCoreRandomTools;
 import us.ihmc.euclid.tools.EuclidCoreTestTools;
+import us.ihmc.euclid.tools.EuclidCoreTools;
 import us.ihmc.euclid.tuple4D.Quaternion;
 import us.ihmc.yoVariables.providers.DoubleProvider;
 import us.ihmc.yoVariables.registry.YoRegistry;
@@ -48,7 +48,7 @@ public class RateLimitedYoFrameOrientationTest
          maxRate.setValue(RandomNumbers.nextDouble(random, 0.001, 10.0));
          Quaternion goalQuaternion = EuclidCoreRandomTools.nextQuaternion(random);
 
-         double distanceToGoal = Math.abs(AngleTools.trimAngleMinusPiToPi(new Quaternion(rateLimitedOrientation).distance(goalQuaternion)));
+         double distanceToGoal = Math.abs(EuclidCoreTools.trimAngleMinusPiToPi(new Quaternion(rateLimitedOrientation).distance(goalQuaternion)));
          if (distanceToGoal / dt < maxRate.doubleValue())
          { // Should converge in one step
             rateLimitedOrientation.update(goalQuaternion);
@@ -64,7 +64,7 @@ public class RateLimitedYoFrameOrientationTest
             for (int j = 0; j < numberOfIterations; j++)
             {
                rateLimitedOrientation.update(goalQuaternion);
-               double distance = Math.abs(AngleTools.trimAngleMinusPiToPi(new Quaternion(rateLimitedOrientation).distance(goalQuaternion)));
+               double distance = Math.abs(EuclidCoreTools.trimAngleMinusPiToPi(new Quaternion(rateLimitedOrientation).distance(goalQuaternion)));
                assertTrue(distance < previousDistance);
                angularVelocity.update(rateLimitedOrientation);
                double rate = angularVelocity.norm();

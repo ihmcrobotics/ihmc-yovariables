@@ -1,7 +1,7 @@
 package us.ihmc.yoVariables.filters;
 
-import us.ihmc.commons.AngleTools;
 import us.ihmc.commons.MathTools;
+import us.ihmc.euclid.tools.EuclidCoreTools;
 
 public class AlphaFilterTools
 {
@@ -22,7 +22,7 @@ public class AlphaFilterTools
       if (Double.isInfinite(breakFrequencyInHertz))
          return 0.0;
 
-      double omega = AngleTools.TwoPI * breakFrequencyInHertz;
+      double omega = EuclidCoreTools.TwoPI * breakFrequencyInHertz;
       double alpha = (1.0 - omega * dt / 2.0) / (1.0 + omega * dt / 2.0);
       alpha = MathTools.clamp(alpha, 0.0, 1.0);
       return alpha;
