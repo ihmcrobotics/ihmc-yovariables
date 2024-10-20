@@ -1,8 +1,9 @@
 package us.ihmc.yoVariables.filters;
 
-import org.ejml.data.DMatrix;
 import org.ejml.data.DMatrixRMaj;
+import org.ejml.data.Matrix;
 import org.ejml.dense.row.CommonOps_DDRM;
+import us.ihmc.yoVariables.math.YoMatrix;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
 
@@ -44,7 +45,7 @@ public class AlphaFilteredYoMatrix extends YoMatrix
     * @param current the current value of the matrix to be filtered. Not modified.
     */
    @Override
-   public void set(DMatrix current)
+   public void set(Matrix current)
    {
       super.set(current);
       this.current.set(current);
@@ -53,7 +54,7 @@ public class AlphaFilteredYoMatrix extends YoMatrix
    /**
     * Assuming that the current value has been set, this method solves for the filtered value.
     * <p>
-    * See {@link #set(DMatrix)} for how to set the matrix's current value.
+    * See {@link #set(Matrix)} for how to set the matrix's current value.
     * </p>
     */
    public void solve()
@@ -73,7 +74,7 @@ public class AlphaFilteredYoMatrix extends YoMatrix
     *
     * @param current the current value of the matrix to be filtered. Not modified.
     */
-   public void setAndSolve(DMatrix current)
+   public void setAndSolve(Matrix current)
    {
       CommonOps_DDRM.scale(alpha.getDoubleValue(), previous, filtered);
 
