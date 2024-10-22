@@ -1,11 +1,12 @@
 package us.ihmc.yoVariables.filters;
 
 import org.ejml.data.DMatrixRMaj;
-import org.ejml.dense.row.CommonOps_DDRM;
 
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoInteger;
+
+import java.util.Arrays;
 
 /**
  * Filter the given yoVariable using a moving average filter. This class is NOT REWINDABLE!
@@ -34,7 +35,7 @@ public class SimpleMovingAverageFilteredYoVariable extends YoDouble
       this.windowSize.set(windowSize);
 
       previousUpdateValues.reshape(windowSize, 1);
-      CommonOps_DDRM.fill(previousUpdateValues, 0.0);
+      Arrays.fill(previousUpdateValues.data, 0.0);
    }
 
    public void setWindowSize(int windowSize)

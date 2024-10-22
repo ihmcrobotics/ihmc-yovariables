@@ -21,9 +21,11 @@ dependencies {
 
    api("us.ihmc:ihmc-commons:0.32.0")
    api("us.ihmc:euclid-frame:0.21.0")
+//   api("org.ejml:ejml-ddense:0.39")
 }
 
 testDependencies {
    api("us.ihmc:ihmc-commons-testing:0.32.0")
    api("us.ihmc:euclid-test:0.21.0")
+   api("org.apache.commons:commons-math3:3.3")
 }

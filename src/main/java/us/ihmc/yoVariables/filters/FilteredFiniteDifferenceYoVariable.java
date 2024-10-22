@@ -1,6 +1,6 @@
 package us.ihmc.yoVariables.filters;
 
-import us.ihmc.commons.AngleTools;
+import us.ihmc.euclid.tools.EuclidCoreTools;
 import us.ihmc.yoVariables.providers.DoubleProvider;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoBoolean;
@@ -123,7 +123,7 @@ public class FilteredFiniteDifferenceYoVariable extends YoDouble implements Proc
          set(0.0);
       }
 
-      double difference = AngleTools.computeAngleDifferenceMinusPiToPi(currentPosition, lastPosition.getDoubleValue());
+      double difference = EuclidCoreTools.angleDifferenceMinusPiToPi(currentPosition, lastPosition.getDoubleValue());
 
       updateUsingDifference(difference);
 
