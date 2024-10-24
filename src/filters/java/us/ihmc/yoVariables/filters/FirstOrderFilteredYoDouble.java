@@ -8,11 +8,12 @@ public class FirstOrderFilteredYoDouble extends YoDouble
 {
    public enum FirstOrderFilterType
    {
-      LOW_PASS, NOTCH, BAND, HIGH_PASS
+      LOW_PASS, HIGH_PASS
    }
 
    private boolean hasBeenCalled = false;
 
+   private double filterInputOld;
    private double filterUpdateTimeOld;
 
    private final YoDouble cutoffFrequencyHz;
@@ -65,17 +66,37 @@ public class FirstOrderFilteredYoDouble extends YoDouble
 
    private double computeLowPassUpdate(double filterInput, double dt)
    {
-      double alpha = AlphaFilterTools.computeAlphaGivenBreakFrequencyProperly(dt, cutoffFrequencyHz.getDoubleValue());
+      double alpha = computeAlpha(dt, cutoffFrequencyHz.getDoubleValue());
 
       return alpha * this.getDoubleValue() + (1.0 - alpha) * filterInput;
    }
 
    private double computeHighPassUpdate(double filterInput, double dt)
    {
-      double lowPassValue = computeLowPassUpdate(filterInput, dt);
+      double alpha = computeAlpha(dt, cutoffFrequencyHz.getDoubleValue());
 
-      return filterInput - lowPassValue;
+      double ret = alpha * (this.getDoubleValue() + filterInput - filterInputOld);
+      return ret;
    }
+
+   private double computeAlpha(double dt, double cutoffFrequencyHz)
+{
+   if (cutoffFrequencyHz <= 0.0)
+   {
+      throw new RuntimeException("Cutoff Frequency must be greater than zero.  Cutoff = " + cutoffFrequencyHz);
+   }
+
+   double cutoff_radPerSec = cutoffFrequencyHz * 2.0 * Math.PI;
+   double RC = 1.0 / cutoff_radPerSec;
+   double alpha = RC / (RC + dt);  // alpha decreases with increasing cutoff frequency
+
+   if (alpha <= 0 || alpha >= 1.0 && dt != 0.0)
+   {
+      throw new RuntimeException("Alpha value must be between 0 and 1.  Alpha = " + alpha);
+   }
+
+   return alpha;
+}
 
    public void reset()
    {
@@ -93,6 +114,7 @@ public class FirstOrderFilteredYoDouble extends YoDouble
       {
          hasBeenCalled = true;
 
+         filterInputOld = 0.0;
          filterUpdateTimeOld = 0.0;
 
          this.set(filterInput);
@@ -131,6 +153,7 @@ public class FirstOrderFilteredYoDouble extends YoDouble
          this.set(filterOutput);
       }
 
+      filterInputOld = filterInput;
 
       if (yoTime != null)
       {

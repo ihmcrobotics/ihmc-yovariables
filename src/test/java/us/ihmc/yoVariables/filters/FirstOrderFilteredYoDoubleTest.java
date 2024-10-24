@@ -88,7 +88,6 @@ public class FirstOrderFilteredYoDoubleTest
                                                                                                              a,
                                                                                                              b,
                                                                                                              yoTime,
-                                                                                                             FirstOrderBandPassFilteredYoDouble.FirstOrderFilterType.BAND,
                                                                                                              registry);
 
       while (filterAttenuation > 0.1 && a > 0.0 && b > 0.0)
