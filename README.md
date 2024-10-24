@@ -40,6 +40,13 @@ A `YoParameter` can be attributed an initial value at construction or can also b
 ### `YoBuffer`
 `YoBuffer` provides an implementation of a buffer which can be used to store value history of collection of `YoVariable`s.
 
+### `Filters`
+The `Filters` project provides a way of generating yo variables with diffeerent types of filters on the resulting output signal. This includes:
+- `AlphaFilteredYoVariable`, which applies an alpha filter to a `YoDouble`, which is equivalent to a low-pass filter.
+- `RateLimitedYoVariable`, which limits the output of a `YoDouble` to change less than a cerrtain rate.
+- `BacklashCompensatedVelocityYoVariable`, which attempts to remove the backlash from the velocity that is estimated from a finite-differenced position signal.
+- `GlitchFilteredYoBoolean`, which forces a system to change value for a certain number of times before the return changes value.
+
 ## Using YoVariables from .jar releases with Maven/Gradle
 The releases .jars for YoVariables are hosted on Bintray.
 You can browse the IHMC release packages at https://bintray.com/ihmcrobotics/maven-release.
@@ -53,8 +60,7 @@ repositories {
 }
 
 dependencies {
-   compile group: "us.ihmc", name: "ihmc-yovariables", version: "x.x"
+   compile group: "us.ihmc", name: "ihmc-yovariables", version: "x.x",
+   compile group: "us.ihmc", name: "ihmc-yovariables-filters", version: "x.x"
 }
 ```
-
-
