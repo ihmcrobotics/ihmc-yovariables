@@ -1,5 +1,6 @@
 package us.ihmc.yoVariables.math;
 
+import org.ejml.EjmlUnitTests;
 import org.ejml.data.DMatrixRMaj;
 import org.ejml.dense.row.CommonOps_DDRM;
 import org.ejml.dense.row.RandomMatrices_DDRM;
@@ -46,6 +47,39 @@ public class YoMatrixTest
       assertArrayEquals(smallerExpected.getData(), smallerActual.getData(), EPSILON);
       assertEquals(smallerRowSize * smallerColumnSize, matrix.getNumElements());
    }
+
+   @Test
+   public void testSimpleYoMatrixExample()
+   {
+      int maxNumberOfRows = 4;
+      int maxNumberOfColumns = 8;
+      YoRegistry registry = new YoRegistry("testRegistry");
+      us.ihmc.yoVariables.filters.YoMatrix yoMatrix = new us.ihmc.yoVariables.filters.YoMatrix("testMatrix", maxNumberOfRows, maxNumberOfColumns, registry);
+      assertEquals(maxNumberOfRows, yoMatrix.getNumRows());
+      assertEquals(maxNumberOfColumns, yoMatrix.getNumCols());
+
+      DMatrixRMaj denseMatrix = new DMatrixRMaj(maxNumberOfRows, maxNumberOfColumns);
+      yoMatrix.reshape(maxNumberOfRows, maxNumberOfColumns);
+      yoMatrix.zero();
+      yoMatrix.get(denseMatrix);
+
+      DMatrixRMaj zeroMatrix = new DMatrixRMaj(maxNumberOfRows, maxNumberOfColumns);
+      EjmlUnitTests.assertEquals(zeroMatrix, denseMatrix, 1e-10);
+
+      Random random = new Random(1984L);
+
+      DMatrixRMaj randomMatrix = RandomMatrices_DDRM.rectangle(maxNumberOfRows, maxNumberOfColumns, random);
+      yoMatrix.set(randomMatrix);
+
+      DMatrixRMaj checkMatrix = new DMatrixRMaj(maxNumberOfRows, maxNumberOfColumns);
+      yoMatrix.get(checkMatrix);
+
+      EjmlUnitTests.assertEquals(randomMatrix, checkMatrix, 1e-10);
+
+      assertEquals(registry.findVariable(us.ihmc.yoVariables.filters.YoMatrix.getFieldName("testMatrix", 0, 0)).getValueAsDouble(), checkMatrix.get(0, 0), 1e-10);
+   }
+
+
 
    @Test
    public void testConstructorsWithNamesAndDescriptions()
@@ -275,6 +309,76 @@ public class YoMatrixTest
          DMatrixRMaj actual = new DMatrixRMaj(rowSize, columnSize);
          matrix.get(actual);
          assertArrayEquals(expected.getData(), actual.getData(), EPSILON);
+      }
+   }
+
+
+   @Test
+   public void testYoMatrixSetTooBig()
+   {
+      int maxNumberOfRows = 4;
+      int maxNumberOfColumns = 8;
+      String name = "testMatrix";
+      YoRegistry registry = new YoRegistry("testRegistry");
+      us.ihmc.yoVariables.filters.YoMatrix yoMatrix = new us.ihmc.yoVariables.filters.YoMatrix(name, maxNumberOfRows, maxNumberOfColumns, registry);
+
+      DMatrixRMaj tooBigMatrix = new DMatrixRMaj(maxNumberOfRows + 1, maxNumberOfColumns);
+
+      try
+      {
+         yoMatrix.set(tooBigMatrix);
+         fail("Too Big");
+      }
+      catch (RuntimeException e)
+      {
+      }
+
+      tooBigMatrix = new DMatrixRMaj(maxNumberOfRows, maxNumberOfColumns + 1);
+
+      try
+      {
+         yoMatrix.set(tooBigMatrix);
+         fail("Too Big");
+      }
+      catch (RuntimeException e)
+      {
+      }
+
+      // Test a 0 X Big Matrix
+      DMatrixRMaj okMatrix = new DMatrixRMaj(0, maxNumberOfColumns + 10);
+      yoMatrix.set(okMatrix);
+      assertMatrixYoVariablesAreNaN(name, maxNumberOfRows, maxNumberOfColumns, registry);
+
+      DMatrixRMaj checkMatrix = new DMatrixRMaj(1, 1);
+      yoMatrix.getAndReshape(checkMatrix);
+
+      assertEquals(0, checkMatrix.getNumRows());
+      assertEquals(maxNumberOfColumns + 10, checkMatrix.getNumCols());
+
+      // Test a Big X 0 Matrix
+
+      okMatrix = new DMatrixRMaj(maxNumberOfRows + 10, 0);
+      yoMatrix.set(okMatrix);
+      assertMatrixYoVariablesAreNaN(name, maxNumberOfRows, maxNumberOfColumns, registry);
+
+      checkMatrix = new DMatrixRMaj(1, 1);
+      yoMatrix.getAndReshape(checkMatrix);
+
+      assertEquals(maxNumberOfRows + 10, checkMatrix.getNumRows());
+      assertEquals(0, checkMatrix.getNumCols());
+
+   }
+
+
+   private static void assertMatrixYoVariablesAreNaN(String name, int maxNumberOfRows, int maxNumberOfColumns, YoRegistry registry)
+   {
+      for (int row = 0; row < maxNumberOfRows; row++)
+      {
+         for (int column = 0; column < maxNumberOfColumns; column++)
+         {
+            YoDouble variable = (YoDouble) registry.findVariable(us.ihmc.yoVariables.filters.YoMatrix.getFieldName(name, row, column));
+            assertTrue(Double.isNaN(variable.getDoubleValue()));
+         }
       }
    }
 
