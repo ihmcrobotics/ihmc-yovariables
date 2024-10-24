@@ -397,6 +397,40 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
    }
 
    /**
+    * Sets the content of {@code this} matrix to be equivalent to the {@code matrix}
+    *
+    * @param matrix the matrix to set {@code this} to. Modified.
+    */
+   public void set(DMatrix matrix)
+   {
+      int numRows = matrix.getNumRows();
+      int numCols = matrix.getNumCols();
+
+      if (((numRows > maxNumberOfRows) || (numCols > maxNumberOfColumns)) && (numRows > 0) && (numCols > 0))
+         throw new RuntimeException("Not enough rows or columns. matrix to set is " + matrix.getNumRows() + " by " + matrix.getNumCols());
+
+      this.numberOfRows.set(numRows);
+      this.numberOfColumns.set(numCols);
+
+      for (int row = 0; row < maxNumberOfRows; row++)
+      {
+         for (int column = 0; column < maxNumberOfColumns; column++)
+         {
+            double value;
+            if ((row < numRows) && (column < numCols))
+            {
+               value = matrix.unsafe_get(row, column);
+            }
+            else
+            {
+               value = Double.NaN;
+            }
+            unsafe_set(row, column, value, false);
+         }
+      }
+   }
+
+   /**
     * Set the number of rows and columns in the matrix.
     * <p>
     * The new row/column size cannot exceed the maximum row/column size. If the new size is smaller than the current size, the extra entries will be set to NaN.
