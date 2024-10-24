@@ -23,7 +23,15 @@ dependencies {
    api("us.ihmc:euclid-frame:0.22.0")
 }
 
+filtersDependencies {
+   api(ihmc.sourceSetProject("main"))
+   api("org.ejml:ejml-ddense:0.39");
+}
+
 testDependencies {
+   api(ihmc.sourceSetProject("main"))
+   api(ihmc.sourceSetProject("filters"))
+
    api("us.ihmc:ihmc-commons-testing:0.33.0")
    api("us.ihmc:euclid-test:0.22.0")
    api("org.apache.commons:commons-math3:3.3")

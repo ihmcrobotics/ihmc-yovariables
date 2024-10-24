@@ -1,13 +1,13 @@
 package us.ihmc.yoVariables.euclid.filters;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.Random;
 
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.junit.jupiter.api.Test;
 
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RunningAverageYoFrameVector3DTest
 {

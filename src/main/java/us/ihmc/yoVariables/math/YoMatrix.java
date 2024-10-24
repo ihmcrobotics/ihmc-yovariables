@@ -144,12 +144,36 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
          {
             switch (checkNames(rowNames, columnNames))
             {
-               case NONE -> variables[row][column] = new YoDouble(name + "_" + row + "_" + column, description, registry);
-               case ROWS -> variables[row][column] = new YoDouble(name + rowNames[row], description, registry);
-               case ROWS_AND_COLUMNS -> variables[row][column] = new YoDouble(name + rowNames[row] + columnNames[column], description, registry);
+               case NONE -> variables[row][column] = new YoDouble(getFieldName(name, row, column), description, registry);
+               case ROWS -> variables[row][column] = new YoDouble(getFieldName(name, rowNames[row], ""), description, registry);
+               case ROWS_AND_COLUMNS -> variables[row][column] = new YoDouble(getFieldName(name, rowNames[row], columnNames[column]), description, registry);
             }
          }
       }
+   }
+
+   /**
+    * Convenience provider for getting the field name of an individual cell in the matrix. This can be used if retrieving the variable name from a registry.
+    * @param prefix name of the entire matrix
+    * @param row    row in question
+    * @param column column in question
+    * @return String describing the name.
+    */
+   public static String getFieldName(String prefix, int row, int column)
+   {
+      return getFieldName(prefix, "_" + row, "_" + column);
+   }
+
+   /**
+    * Convenience provider for getting the field name of an individual cell in the matrix. This can be used if retrieving the variable name from a registry.
+    * @param prefix     name of the entire matrix
+    * @param rowName    row name in question
+    * @param columnName column name in question
+    * @return String describing the name.
+    */
+   public static String getFieldName(String prefix, String rowName, String columnName)
+   {
+      return prefix + rowName + columnName;
    }
 
    /**
@@ -212,7 +236,7 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       {
          for (int col = 0; col < getNumCols(); col++)
          {
-            unsafe_set(row, col, unsafe_get(row, col) * scale);
+            unsafe_set(row, col, unsafe_get(row, col) * scale, false);
          }
       }
    }
@@ -233,7 +257,7 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       {
          for (int col = 0; col < getNumCols(); col++)
          {
-            unsafe_set(row, col, matrix.unsafe_get(row, col) * scale);
+            unsafe_set(row, col, matrix.unsafe_get(row, col) * scale, false);
          }
       }
    }
@@ -283,7 +307,7 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       {
          for (int col = 0; col < getNumCols(); col++)
          {
-            unsafe_set(row, col, alpha * a.unsafe_get(row, col) + beta * b.unsafe_get(row, col));
+            unsafe_set(row, col, alpha * a.unsafe_get(row, col) + beta * b.unsafe_get(row, col), false);
          }
       }
    }
@@ -314,7 +338,7 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       {
          for (int col = 0; col < getNumCols(); col++)
          {
-            unsafe_set(row, col, unsafe_get(row, col) + alpha * a.unsafe_get(row, col));
+            unsafe_set(row, col, unsafe_get(row, col) + alpha * a.unsafe_get(row, col), false);
          }
       }
    }
@@ -398,7 +422,7 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       {
          for (int col = numCols; col < maxNumberOfColumns; col++)
          {
-            unsafe_set(row, col, Double.NaN);
+            unsafe_set(row, col, Double.NaN, false);
          }
       }
 
@@ -406,7 +430,7 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       {
          for (int col = 0; col < maxNumberOfColumns; col++)
          {
-            unsafe_set(row, col, Double.NaN);
+            unsafe_set(row, col, Double.NaN, false);
          }
       }
    }
@@ -426,10 +450,30 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       unsafe_set(row, col, val);
    }
 
+   /**
+    * Sets the variable contained at the sepcified index, but does not check whether the field is in bounds. This will call any attached yo variable listeners.
+    * If you want to avoid calling these listeners, please call {@link #unsafe_set(int, int, double, boolean)}.
+    * @param row Matrix element's row index.
+    * @param col Matrix element's column index.
+    * @param val The element's new value.
+    */
    @Override
    public void unsafe_set(int row, int col, double val)
    {
-      variables[row][col].set(val);
+      unsafe_set(row, col, val, true);
+   }
+
+   /**
+    * Sets the variable contained at the sepcified index, but does not check whether the field is in bounds. Optionally allows you to avoid notifying
+    * listeners.
+    * @param row             Matrix element's row index.
+    * @param col             Matrix element's column index.
+    * @param val             The element's new value.
+    * @param notifyListeners trigger for whether to notify attached yo variable listeners.
+    */
+   public void unsafe_set(int row, int col, double val, boolean notifyListeners)
+   {
+      variables[row][col].set(val, notifyListeners);
    }
 
    /**
@@ -450,7 +494,7 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
          {
             for (int col = 0; col < getNumCols(); col++)
             {
-               unsafe_set(row, col, otherMatrix.unsafe_get(row, col));
+               unsafe_set(row, col, otherMatrix.unsafe_get(row, col), false);
             }
          }
       }
@@ -473,7 +517,7 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       {
          for (int col = 0; col < numCols; col++)
          {
-            unsafe_set(row, col, Double.NaN);
+            unsafe_set(row, col, Double.NaN, false);
          }
       }
    }
@@ -507,9 +551,9 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
          for (int col = 0; col < maxNumberOfColumns; col++)
          {
             if (row < getNumRows() && col < getNumCols())
-               unsafe_set(row, col, 0.0);
+               unsafe_set(row, col, 0.0, false);
             else
-               unsafe_set(row, col, Double.NaN);
+               unsafe_set(row, col, Double.NaN, false);
          }
       }
    }
