@@ -71,7 +71,8 @@ public class SimpleMovingAverageFilteredYoVariable extends YoDouble
          average += previousUpdateValues.get(i, 0);
       }
 
-      this.set(average / ((double) windowSize.getIntegerValue()));
+      final int size = bufferHasBeenFilled ? windowSize.getIntegerValue() : bufferPosition;
+      this.set(average / ((double) size));
    }
 
    public void reset()

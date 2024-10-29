@@ -4,29 +4,29 @@ import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.interfaces.FramePoint2DReadOnly;
 import us.ihmc.euclid.tuple2D.interfaces.Point2DReadOnly;
 import us.ihmc.yoVariables.euclid.referenceFrame.YoFramePoint2D;
-import us.ihmc.yoVariables.filters.MovingAverageYoDouble;
+import us.ihmc.yoVariables.filters.SimpleMovingAverageFilteredYoVariable;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.tools.YoGeometryNameTools;
 
 public class MovingAverageYoFramePoint2D extends YoFramePoint2D
 {
-   private final MovingAverageYoDouble x, y;
+   private final SimpleMovingAverageFilteredYoVariable x, y;
 
-   public MovingAverageYoFramePoint2D(String namePrefix, String nameSuffix, YoRegistry registry, int beta, ReferenceFrame referenceFrame)
+   public MovingAverageYoFramePoint2D(String namePrefix, String nameSuffix, YoRegistry registry, int windowSize, ReferenceFrame referenceFrame)
    {
-      this(new MovingAverageYoDouble(YoGeometryNameTools.createXName(namePrefix, nameSuffix), registry, beta),
-           new MovingAverageYoDouble(YoGeometryNameTools.createYName(namePrefix, nameSuffix), registry, beta),
+      this(new SimpleMovingAverageFilteredYoVariable(YoGeometryNameTools.createXName(namePrefix, nameSuffix), windowSize, registry),
+           new SimpleMovingAverageFilteredYoVariable(YoGeometryNameTools.createYName(namePrefix, nameSuffix), windowSize, registry),
            referenceFrame);
    }
 
-   public MovingAverageYoFramePoint2D(String namePrefix, String nameSuffix, YoRegistry registry, int beta, YoFramePoint2D unfilteredPoint)
+   public MovingAverageYoFramePoint2D(String namePrefix, String nameSuffix, YoRegistry registry, int windowSize, YoFramePoint2D unfilteredPoint)
    {
-      this(new MovingAverageYoDouble(YoGeometryNameTools.createXName(namePrefix, nameSuffix), registry, beta, unfilteredPoint.getYoX()),
-           new MovingAverageYoDouble(YoGeometryNameTools.createYName(namePrefix, nameSuffix), registry, beta, unfilteredPoint.getYoY()),
+      this(new SimpleMovingAverageFilteredYoVariable(YoGeometryNameTools.createXName(namePrefix, nameSuffix), windowSize, unfilteredPoint.getYoX(), registry),
+           new SimpleMovingAverageFilteredYoVariable(YoGeometryNameTools.createYName(namePrefix, nameSuffix), windowSize, unfilteredPoint.getYoY(), registry),
            unfilteredPoint.getReferenceFrame());
    }
 
-   private MovingAverageYoFramePoint2D(MovingAverageYoDouble x, MovingAverageYoDouble y, ReferenceFrame referenceFrame)
+   private MovingAverageYoFramePoint2D(SimpleMovingAverageFilteredYoVariable x, SimpleMovingAverageFilteredYoVariable y, ReferenceFrame referenceFrame)
    {
       super(x, y, referenceFrame);
 

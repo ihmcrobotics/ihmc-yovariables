@@ -637,6 +637,18 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       return getNumRows() * getNumCols();
    }
 
+   /**
+    * Returns a yo double contained at {@code row} {@code col}
+    * @param row row in question
+    * @param col column in question
+    *
+    * @return yo double contained at that position
+    */
+   public YoDouble getYoDouble(int row, int col)
+   {
+      return variables[row][col];
+   }
+
    @Override
    public MatrixType getType()
    {
