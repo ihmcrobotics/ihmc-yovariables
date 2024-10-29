@@ -6,7 +6,7 @@ plugins {
 
 ihmc {
    group = "us.ihmc"
-   version = "0.13.2"
+   version = "0.13.3"
    vcsUrl = "https://github.com/ihmcrobotics/ihmc-yovariables"
    openSource = true
    maintainer = "Robert Griffin (rgriffin@ihmc.org)"
@@ -20,7 +20,7 @@ dependencies {
    api("com.sun.xml.bind:jaxb-impl:4.0.5")
 
    api("us.ihmc:ihmc-commons:0.34.0")
-   api("us.ihmc:euclid-frame:0.22.0")
+   api("us.ihmc:euclid-frame:0.22.2")
 }
 
 filtersDependencies {
@@ -33,6 +33,6 @@ testDependencies {
    api(ihmc.sourceSetProject("filters"))
 
    api("us.ihmc:ihmc-commons-testing:0.34.0")
-   api("us.ihmc:euclid-test:0.22.0")
+   api("us.ihmc:euclid-test:0.22.2")
    api("org.apache.commons:commons-math3:3.3")
 }
