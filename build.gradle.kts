@@ -19,7 +19,7 @@ dependencies {
    api("net.sf.trove4j:trove4j:3.0.3")
    api("com.sun.xml.bind:jaxb-impl:4.0.5")
 
-   api("us.ihmc:ihmc-commons:0.33.0")
+   api("us.ihmc:ihmc-commons:0.34.0")
    api("us.ihmc:euclid-frame:0.22.0")
 }
 
@@ -32,7 +32,7 @@ testDependencies {
    api(ihmc.sourceSetProject("main"))
    api(ihmc.sourceSetProject("filters"))
 
-   api("us.ihmc:ihmc-commons-testing:0.33.0")
+   api("us.ihmc:ihmc-commons-testing:0.34.0")
    api("us.ihmc:euclid-test:0.22.0")
    api("org.apache.commons:commons-math3:3.3")
 }
