@@ -6,7 +6,7 @@ plugins {
 
 ihmc {
    group = "us.ihmc"
-   version = "0.13.2"
+   version = "0.13.3"
    vcsUrl = "https://github.com/ihmcrobotics/ihmc-yovariables"
    openSource = true
    maintainer = "Robert Griffin (rgriffin@ihmc.org)"
