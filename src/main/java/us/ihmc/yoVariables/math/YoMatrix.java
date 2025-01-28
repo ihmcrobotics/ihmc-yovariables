@@ -236,7 +236,7 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       {
          for (int col = 0; col < getNumCols(); col++)
          {
-            unsafe_set(row, col, unsafe_get(row, col) * scale, false);
+            unsafe_set(row, col, unsafe_get(row, col) * scale);
          }
       }
    }
@@ -257,7 +257,7 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       {
          for (int col = 0; col < getNumCols(); col++)
          {
-            unsafe_set(row, col, matrix.unsafe_get(row, col) * scale, false);
+            unsafe_set(row, col, matrix.unsafe_get(row, col) * scale);
          }
       }
    }
@@ -307,7 +307,7 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       {
          for (int col = 0; col < getNumCols(); col++)
          {
-            unsafe_set(row, col, alpha * a.unsafe_get(row, col) + beta * b.unsafe_get(row, col), false);
+            unsafe_set(row, col, alpha * a.unsafe_get(row, col) + beta * b.unsafe_get(row, col));
          }
       }
    }
@@ -338,7 +338,7 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       {
          for (int col = 0; col < getNumCols(); col++)
          {
-            unsafe_set(row, col, unsafe_get(row, col) + alpha * a.unsafe_get(row, col), false);
+            unsafe_set(row, col, unsafe_get(row, col) + alpha * a.unsafe_get(row, col));
          }
       }
    }
@@ -425,7 +425,7 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
             {
                value = Double.NaN;
             }
-            unsafe_set(row, column, value, false);
+            unsafe_set(row, column, value);
          }
       }
    }
@@ -456,7 +456,7 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       {
          for (int col = numCols; col < maxNumberOfColumns; col++)
          {
-            unsafe_set(row, col, Double.NaN, false);
+            unsafe_set(row, col, Double.NaN);
          }
       }
 
@@ -464,7 +464,7 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       {
          for (int col = 0; col < maxNumberOfColumns; col++)
          {
-            unsafe_set(row, col, Double.NaN, false);
+            unsafe_set(row, col, Double.NaN);
          }
       }
    }
@@ -528,7 +528,7 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
          {
             for (int col = 0; col < getNumCols(); col++)
             {
-               unsafe_set(row, col, otherMatrix.unsafe_get(row, col), false);
+               unsafe_set(row, col, otherMatrix.unsafe_get(row, col));
             }
          }
       }
@@ -551,7 +551,7 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
       {
          for (int col = 0; col < numCols; col++)
          {
-            unsafe_set(row, col, Double.NaN, false);
+            unsafe_set(row, col, Double.NaN);
          }
       }
    }
@@ -585,9 +585,9 @@ public class YoMatrix implements DMatrix, ReshapeMatrix
          for (int col = 0; col < maxNumberOfColumns; col++)
          {
             if (row < getNumRows() && col < getNumCols())
-               unsafe_set(row, col, 0.0, false);
+               unsafe_set(row, col, 0.0);
             else
-               unsafe_set(row, col, Double.NaN, false);
+               unsafe_set(row, col, Double.NaN);
          }
       }
    }
