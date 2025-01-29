@@ -17,7 +17,7 @@ dependencies {
    api("net.sf.trove4j:trove4j:3.0.3")
    api("com.sun.xml.bind:jaxb-impl:4.0.5")
 
-   api("us.ihmc:ihmc-commons:0.34.0")
+   api("us.ihmc:ihmc-commons:0.35.0")
    api("us.ihmc:euclid-frame:0.22.2")
 }
 
