@@ -4,7 +4,7 @@ plugins {
 
 ihmc {
    group = "us.ihmc"
-   version = "0.13.3"
+   version = "0.13.4"
    vcsUrl = "https://github.com/ihmcrobotics/ihmc-yovariables"
    openSource = true
    maintainer = "Robert Griffin (rgriffin@ihmc.org)"
@@ -17,7 +17,7 @@ dependencies {
    api("net.sf.trove4j:trove4j:3.0.3")
    api("com.sun.xml.bind:jaxb-impl:4.0.5")
 
-   api("us.ihmc:ihmc-commons:0.34.0")
+   api("us.ihmc:ihmc-commons:0.35.0")
    api("us.ihmc:euclid-frame:0.22.2")
 }
 
