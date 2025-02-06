@@ -18,7 +18,7 @@ dependencies {
    api("com.sun.xml.bind:jaxb-impl:4.0.5")
 
    api("us.ihmc:ihmc-commons:0.35.1")
-   api("us.ihmc:euclid-frame:0.22.2")
+   api("us.ihmc:euclid-frame:0.22.3")
 }
 
 filtersDependencies {
@@ -31,6 +31,6 @@ testDependencies {
    api(ihmc.sourceSetProject("filters"))
 
    api("us.ihmc:ihmc-commons-testing:0.35.1")
-   api("us.ihmc:euclid-test:0.22.2")
+   api("us.ihmc:euclid-test:0.22.3")
    api("org.apache.commons:commons-math3:3.3")
 }
