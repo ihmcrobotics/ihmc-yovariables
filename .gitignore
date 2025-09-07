@@ -1,6 +1,7 @@
 # Top level files to ignore
 gradlew
 gradlew.bat
+.vscode
 
 # Top level directories to ignore
 /gradle
