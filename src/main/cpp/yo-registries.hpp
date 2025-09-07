@@ -33,7 +33,7 @@ private:
 // Forward declare this so it can be used in YoRegistry
 class YoVariable;
 
-class YoRegistry
+class YoRegistry : public std::enable_shared_from_this<YoRegistry>
 {
 public:
     explicit YoRegistry(const std::string& name);
@@ -44,7 +44,9 @@ public:
 
     const std::vector<std::shared_ptr<YoNamespace>>& get_namespaces() const;
 
-    void add_variable(std::shared_ptr<YoVariable>& variable);
+    void add_variable(const std::shared_ptr<YoVariable>& variable);
+
+    void remove_variable(const std::shared_ptr<YoVariable>& variable);
 
     std::shared_ptr<YoVariable>& get_child(const std::string& name) const;
 
@@ -64,21 +66,24 @@ private:
     std::vector<std::shared_ptr<YoVariable>> variables_;
     std::unordered_map<std::string, std::shared_ptr<YoVariable>> name_to_variable_map_;
 
-    void notify_listeners(std::shared_ptr<YoRegistry>& target_parent_registry, std::shared_ptr<YoRegistry>& registry, std::shared_ptr<YoVariable>& variable, ChangeType change_type);
+    void notify_listeners(const std::shared_ptr<YoRegistry>& target_parent_registry, 
+                          const std::shared_ptr<YoRegistry>& registry,
+                          const std::shared_ptr<YoVariable>& variable, 
+                          const ChangeType change_type);
 };
 
-class YoVariable
+class YoVariable : public std::enable_shared_from_this<YoVariable>
 {
 public:
     YoVariable(const std::string& name, std::shared_ptr<YoRegistry>& registry);
 
     virtual ~YoVariable() = default;
 
-    void set_registry(std::shared_ptr<YoRegistry>& registry);
+    void clear_registry();
 
-    void remove_yo_variable(std::shared_ptr<YoVariable>& variable);
+    void set_registry(const std::shared_ptr<YoRegistry>& registry);
 
-    std::shared_ptr<YoVariable>& get_registry();
+    std::shared_ptr<YoRegistry>& get_registry();
 
     const std::string& get_name();
 

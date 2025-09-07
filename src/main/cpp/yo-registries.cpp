@@ -77,7 +77,7 @@ const std::vector<std::shared_ptr<YoNamespace>>& YoRegistry::get_namespaces() co
     return namespaces_;
 }
 
-YoRegistry::remove_yo_variable(std::shared_ptr<YoVariable> variable)
+void YoRegistry::remove_variable(const std::shared_ptr<YoVariable>& variable)
 {
     if (!name_to_variable_map_.count(variable->get_name()))
         return;
@@ -86,16 +86,17 @@ YoRegistry::remove_yo_variable(std::shared_ptr<YoVariable> variable)
     std::transform(var_name.begin(), var_name.end(), var_name.begin(), ::tolower);
 
     // TODO check restriction level
-    variable->set_registry(nullptr);
+    variable->clear_registry();
     // remove from the lists
     // TODO check if this removal is correct
     variables_.erase(std::remove(variables_.begin(), variables_.end(), variable), variables_.end());
     name_to_variable_map_.erase(var_name);
 
-    notify_listeners(this, nullptr, variable, ChangeType::VARIALBE_REMOVED);
+    std::shared_ptr<YoRegistry> nullPtr;
+    notify_listeners(this->shared_from_this(), nullPtr, variable, ChangeType::VARIABLE_REMOVED);
 }
 
-void YoRegistry::add_variable(std::shared_ptr<YoVariable>& variable)
+void YoRegistry::add_variable(const std::shared_ptr<YoVariable>& variable)
 {
     // TODO check restriction level
 
@@ -114,14 +115,21 @@ void YoRegistry::add_variable(std::shared_ptr<YoVariable>& variable)
 
     if (variable->get_registry() != nullptr)
     {
-        variable->get_registry()->remove_yo_variable(variable);
+        variable->get_registry()->remove_variable(variable);
     }
 
     variables_.push_back(variable);
     name_to_variable_map_[var_name] = variable;
-    variable->set_registry(std::make_shared<YoRegistry>(this));
+    variable->set_registry(this->shared_from_this());
 
-    notify_listeners(std::make_shared<YoRegistry>(this), nullptr, variable, ChangeType::VARIABLE_ADDED);
+    std::shared_ptr<YoRegistry> nullPtr;
+    notify_listeners(this->shared_from_this(), nullPtr, variable, ChangeType::VARIABLE_ADDED);
+}
+
+void YoRegistry::notify_listeners(const std::shared_ptr<YoRegistry>& target_parent_registry, const std::shared_ptr<YoRegistry>& registry, const std::shared_ptr<YoVariable>& variable, const ChangeType change_type)
+{
+    // Placeholder for notifying listeners about changes
+    // Actual implementation would depend on how listeners are managed
 }
 
 
