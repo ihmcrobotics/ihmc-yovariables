@@ -1,6 +1,13 @@
 set(SOURCE_FILES
-        main/cpp/yo-registries.cpp
+        main/cpp/ihmc-yovariables.hpp
+        main/cpp/yo-registry-change-listener.hpp
+        main/cpp/yo-namespace.hpp
+        main/cpp/yo-namespace.cpp
+        main/cpp/yo-tools.hpp
+        main/cpp/yo-tools.cpp
         main/cpp/yo-registries.hpp
+        main/cpp/yo-registries.cpp
+        main/cpp/yo-variables.hpp
         main/cpp/yo-variables.cpp
         )
 
