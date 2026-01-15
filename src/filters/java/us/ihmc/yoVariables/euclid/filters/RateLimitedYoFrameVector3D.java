@@ -17,7 +17,7 @@ public class RateLimitedYoFrameVector3D extends YoFrameVector3D
    private final FrameTuple3DReadOnly rawPosition;
    private final YoBoolean limited;
    private final YoBoolean hasBeenCalled;
-   private final double dt;
+   private final DoubleProvider dt;
 
    private final FrameVector3D differenceVector = new FrameVector3D();
 
@@ -47,6 +47,36 @@ public class RateLimitedYoFrameVector3D extends YoFrameVector3D
    }
 
    private RateLimitedYoFrameVector3D(String namePrefix, String nameSuffix, YoRegistry registry, DoubleProvider maxRate, double dt,
+                                      FrameTuple3DReadOnly rawPosition, ReferenceFrame referenceFrame)
+   {
+      this(namePrefix, nameSuffix, registry, maxRate, () -> dt, rawPosition, referenceFrame);
+   }
+
+   public RateLimitedYoFrameVector3D(String namePrefix, String nameSuffix, YoRegistry registry, DoubleProvider maxRate, DoubleProvider dt,
+                                     FrameTuple3DReadOnly rawPosition)
+   {
+      this(namePrefix, nameSuffix, registry, maxRate, dt, rawPosition, rawPosition.getReferenceFrame());
+   }
+
+   public RateLimitedYoFrameVector3D(String namePrefix, String nameSuffix, YoRegistry registry, DoubleProvider maxRate, DoubleProvider dt,
+                                     ReferenceFrame referenceFrame)
+   {
+      this(namePrefix, nameSuffix, registry, maxRate, dt, null, referenceFrame);
+   }
+
+   public RateLimitedYoFrameVector3D(String namePrefix, String nameSuffix, YoRegistry registry, double maxRate, DoubleProvider dt,
+                                     FrameTuple3DReadOnly rawPosition)
+   {
+      this(namePrefix, nameSuffix, registry, VariableTools.createMaxRateYoDouble(namePrefix, nameSuffix, maxRate, registry), dt, rawPosition,
+           rawPosition.getReferenceFrame());
+   }
+
+   public RateLimitedYoFrameVector3D(String namePrefix, String nameSuffix, YoRegistry registry, double maxRate, DoubleProvider dt, ReferenceFrame referenceFrame)
+   {
+      this(namePrefix, nameSuffix, registry, VariableTools.createMaxRateYoDouble(namePrefix, nameSuffix, maxRate, registry), dt, null, referenceFrame);
+   }
+
+   private RateLimitedYoFrameVector3D(String namePrefix, String nameSuffix, YoRegistry registry, DoubleProvider maxRate, DoubleProvider dt,
                                       FrameTuple3DReadOnly rawPosition, ReferenceFrame referenceFrame)
    {
       super(namePrefix, nameSuffix, referenceFrame, registry);
@@ -108,7 +138,7 @@ public class RateLimitedYoFrameVector3D extends YoFrameVector3D
       differenceVector.set(xUnfiltered, yUnfiltered, zUnfiltered);
       differenceVector.sub(getX(), getY(), getZ());
 
-      limited.set(differenceVector.clipToMaxNorm(maxRateVariable.getValue() * dt));
+      limited.set(differenceVector.clipToMaxNorm(maxRateVariable.getValue() * dt.getValue()));
       add(differenceVector);
    }
 }

@@ -17,7 +17,7 @@ public class RateLimitedYoVariable extends YoDouble
    private final DoubleProvider unlimitedPosition;
    private final YoBoolean limited;
 
-   private final double dt;
+   private final DoubleProvider dt;
 
    private final YoBoolean hasBeenCalled;
 
@@ -128,6 +128,35 @@ public class RateLimitedYoVariable extends YoDouble
     */
    public RateLimitedYoVariable(String name, YoRegistry registry, DoubleProvider maxRateVariable, DoubleProvider unlimitedPosition, double dt)
    {
+      this(name, registry, maxRateVariable, unlimitedPosition, () -> dt);
+   }
+
+   /**
+    * Constructs this variable to track {@code positionVariable}. The value contained in this yo variable will track the desired reference passed in at
+    * construction, but will limit the maximum
+    * rate of change to {@code maxRateVariable}.
+    * <p>
+    * The maximum rate of change is enforced as a maximum step size every time {@link #update()} is called. The maximum step size
+    * can be calculated as {@code maxRateVariable} * {@code dt}.
+    * </p>
+    * <p>
+    * To use this variable after using this constructor, you should call {@link #update()}.  Calling {@link #update(double)} will not track the variable
+    * provided
+    * by {@code positionVariable}.
+    * </p>
+    * <p>
+    * A known edge case is if {@link #update()} is called more than once per control update. In this case, the maximum rate is enforced each time
+    * {@link #update()}  called, rather than per each control update. Avoid doing this.
+    * </p>
+    *
+    * @param name              name of this variable.
+    * @param registry          registry to add this variable to.
+    * @param maxRateVariable   maximum rate of change this value can experience every time {@link #update()} is called.
+    * @param unlimitedPosition varible provider that this variable will track.
+    * @param dt                expected time change since between calls of {@link #update()}.
+    */
+   public RateLimitedYoVariable(String name, YoRegistry registry, DoubleProvider maxRateVariable, DoubleProvider unlimitedPosition, DoubleProvider dt)
+   {
       super(name, registry);
 
       this.hasBeenCalled = VariableTools.createHasBeenCalledYoBoolean(name, "", registry);
@@ -204,9 +233,9 @@ public class RateLimitedYoVariable extends YoDouble
          throw new RuntimeException("The maxRate parameter in the RateLimitedYoVariable cannot be negative.");
 
       double difference = currentPosition - getDoubleValue();
-      if (Math.abs(difference) > maxRateVariable.getValue() * dt)
+      if (Math.abs(difference) > maxRateVariable.getValue() * dt.getValue())
       {
-         difference = Math.signum(difference) * maxRateVariable.getValue() * dt;
+         difference = Math.signum(difference) * maxRateVariable.getValue() * dt.getValue();
          this.limited.set(true);
       }
       else

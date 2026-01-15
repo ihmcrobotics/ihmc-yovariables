@@ -25,6 +25,20 @@ public class RateLimitedYoFrameVector2D extends YoFrameVector2D
            unfilteredVector.getReferenceFrame());
    }
 
+   public RateLimitedYoFrameVector2D(String namePrefix, YoRegistry registry,
+                                     DoubleProvider maxRate, DoubleProvider dt, YoFrameVector2D unfilteredVector)
+   {
+      this(namePrefix, "", registry, maxRate, dt, unfilteredVector);
+   }
+
+   public RateLimitedYoFrameVector2D(String namePrefix, String nameSuffix, YoRegistry registry,
+                                     DoubleProvider maxRate, DoubleProvider dt, YoFrameVector2D unfilteredVector)
+   {
+      this(new RateLimitedYoVariable(YoGeometryNameTools.createXName(namePrefix, nameSuffix), registry, maxRate, unfilteredVector.getYoX(), dt),
+           new RateLimitedYoVariable(YoGeometryNameTools.createYName(namePrefix, nameSuffix), registry, maxRate, unfilteredVector.getYoY(), dt),
+           unfilteredVector.getReferenceFrame());
+   }
+
    private RateLimitedYoFrameVector2D(RateLimitedYoVariable x, RateLimitedYoVariable y, ReferenceFrame referenceFrame)
    {
       super(x, y, referenceFrame);

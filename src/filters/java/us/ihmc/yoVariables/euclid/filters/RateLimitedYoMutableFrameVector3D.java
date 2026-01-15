@@ -17,7 +17,7 @@ public class RateLimitedYoMutableFrameVector3D extends YoMutableFrameVector3D
    private final FrameTuple3DReadOnly rawPosition;
    private final YoBoolean limited;
    private final YoBoolean hasBeenCalled;
-   private final double dt;
+   private final DoubleProvider dt;
 
    private final FrameVector3D differenceVector = new FrameVector3D();
 
@@ -27,7 +27,19 @@ public class RateLimitedYoMutableFrameVector3D extends YoMutableFrameVector3D
       this(namePrefix, nameSuffix, registry, maxRate, dt, rawPosition, rawPosition.getReferenceFrame());
    }
 
+   public RateLimitedYoMutableFrameVector3D(String namePrefix, String nameSuffix, YoRegistry registry, DoubleProvider maxRate, DoubleProvider dt,
+                                            FrameTuple3DReadOnly rawPosition)
+   {
+      this(namePrefix, nameSuffix, registry, maxRate, dt, rawPosition, rawPosition.getReferenceFrame());
+   }
+
    private RateLimitedYoMutableFrameVector3D(String namePrefix, String nameSuffix, YoRegistry registry, DoubleProvider maxRate, double dt,
+                                             FrameTuple3DReadOnly rawPosition, ReferenceFrame referenceFrame)
+   {
+      this(namePrefix, nameSuffix, registry, maxRate, () -> dt, rawPosition, referenceFrame);
+   }
+
+   private RateLimitedYoMutableFrameVector3D(String namePrefix, String nameSuffix, YoRegistry registry, DoubleProvider maxRate, DoubleProvider dt,
                                              FrameTuple3DReadOnly rawPosition, ReferenceFrame referenceFrame)
    {
       super(namePrefix, nameSuffix, registry, referenceFrame);
@@ -89,7 +101,7 @@ public class RateLimitedYoMutableFrameVector3D extends YoMutableFrameVector3D
       differenceVector.set(xUnfiltered, yUnfiltered, zUnfiltered);
       differenceVector.sub(getX(), getY(), getZ());
 
-      limited.set(differenceVector.clipToMaxLength(maxRateVariable.getValue() * dt));
+      limited.set(differenceVector.clipToMaxLength(maxRateVariable.getValue() * dt.getValue()));
       add(differenceVector);
    }
 }
