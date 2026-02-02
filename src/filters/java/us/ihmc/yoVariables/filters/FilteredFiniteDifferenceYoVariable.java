@@ -25,7 +25,7 @@ import us.ihmc.yoVariables.variable.YoDouble;
  */
 public class FilteredFiniteDifferenceYoVariable extends YoDouble implements ProcessingYoVariable
 {
-   private final double dt;
+   private final DoubleProvider dt;
 
    private final DoubleProvider alphaVariable;
    private final DoubleProvider position;
@@ -49,11 +49,26 @@ public class FilteredFiniteDifferenceYoVariable extends YoDouble implements Proc
       this(name, description, alphaVariable, null, dt, registry);
    }
 
+   public FilteredFiniteDifferenceYoVariable(String name, String description, DoubleProvider alphaVariable, DoubleProvider dt, YoRegistry registry)
+   {
+      this(name, description, alphaVariable, null, dt, registry);
+   }
+
    public FilteredFiniteDifferenceYoVariable(String name,
                                              String description,
                                              DoubleProvider alphaVariable,
                                              DoubleProvider positionVariable,
                                              double dt,
+                                             YoRegistry registry)
+   {
+      this(name, description, alphaVariable, positionVariable, () -> dt, registry);
+   }
+
+   public FilteredFiniteDifferenceYoVariable(String name,
+                                             String description,
+                                             DoubleProvider alphaVariable,
+                                             DoubleProvider positionVariable,
+                                             DoubleProvider dt,
                                              YoRegistry registry)
    {
       super(name, description, registry);
@@ -133,7 +148,7 @@ public class FilteredFiniteDifferenceYoVariable extends YoDouble implements Proc
    private void updateUsingDifference(double difference)
    {
       double previousFilteredDerivative = getDoubleValue();
-      double currentRawDerivative = difference / dt;
+      double currentRawDerivative = difference / dt.getValue();
 
       double alpha = alphaVariable.getValue();
       set(alpha * previousFilteredDerivative + (1.0 - alpha) * currentRawDerivative);

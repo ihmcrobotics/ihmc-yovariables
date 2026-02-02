@@ -24,7 +24,7 @@ import us.ihmc.yoVariables.variable.YoBoolean;
  */
 public class FilteredFiniteDifferenceYoFrameVector3D extends YoFrameVector3D
 {
-   private final double dt;
+   private final DoubleProvider dt;
    private final DoubleProvider alphaProvider;
 
    private final YoBoolean hasBeenCalled;
@@ -55,6 +55,37 @@ public class FilteredFiniteDifferenceYoFrameVector3D extends YoFrameVector3D
                                                    String nameSuffix,
                                                    DoubleProvider alpha,
                                                    double dt,
+                                                   YoRegistry registry,
+                                                   FrameTuple3DReadOnly frameTuple3DToDifferentiate,
+                                                   ReferenceFrame referenceFrame)
+   {
+      this(namePrefix, nameSuffix, alpha, () -> dt, registry, frameTuple3DToDifferentiate, referenceFrame);
+   }
+
+   public FilteredFiniteDifferenceYoFrameVector3D(String namePrefix,
+                                                  String nameSuffix,
+                                                  DoubleProvider alpha,
+                                                  DoubleProvider dt,
+                                                  YoRegistry registry,
+                                                  FrameTuple3DReadOnly frameTuple3DToDifferentiate)
+   {
+      this(namePrefix, nameSuffix, alpha, dt, registry, frameTuple3DToDifferentiate, frameTuple3DToDifferentiate.getReferenceFrame());
+   }
+
+   public FilteredFiniteDifferenceYoFrameVector3D(String namePrefix,
+                                                  String nameSuffix,
+                                                  DoubleProvider alpha,
+                                                  DoubleProvider dt,
+                                                  YoRegistry registry,
+                                                  ReferenceFrame referenceFrame)
+   {
+      this(namePrefix, nameSuffix, alpha, dt, registry, null, referenceFrame);
+   }
+
+   private FilteredFiniteDifferenceYoFrameVector3D(String namePrefix,
+                                                   String nameSuffix,
+                                                   DoubleProvider alpha,
+                                                   DoubleProvider dt,
                                                    YoRegistry registry,
                                                    FrameTuple3DReadOnly frameTuple3DToDifferentiate,
                                                    ReferenceFrame referenceFrame)
@@ -104,7 +135,7 @@ public class FilteredFiniteDifferenceYoFrameVector3D extends YoFrameVector3D
       }
 
       currentRawDerivative.sub(currentPosition, lastPosition);
-      currentRawDerivative.scale(1.0 / dt);
+      currentRawDerivative.scale(1.0 / dt.getValue());
 
       interpolate(currentRawDerivative, this, alphaProvider.getValue());
 
