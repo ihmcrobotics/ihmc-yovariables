@@ -1,5 +1,4 @@
 # ![YoVariables](logo/YoVariables.png)
-[ ![ihmc-yovariables](https://maven-badges.herokuapp.com/maven-central/us.ihmc/ihmc-yovariables/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/us.ihmc/ihmc-yovariables)
 ![buildstatus](https://github.com/ihmcrobotics/ihmc-yovariables/actions/workflows/gradle-test.yml/badge.svg)
 
 ## What is YoVariables
