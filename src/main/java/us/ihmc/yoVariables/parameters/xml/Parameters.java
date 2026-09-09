@@ -17,11 +17,6 @@ package us.ihmc.yoVariables.parameters.xml;
 
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-
 import us.ihmc.yoVariables.parameters.XmlParameterReader;
 import us.ihmc.yoVariables.parameters.XmlParameterWriter;
 import us.ihmc.yoVariables.parameters.YoParameter;
@@ -30,13 +25,16 @@ import us.ihmc.yoVariables.parameters.YoParameter;
  * The class represents a XML root token used together with {@link XmlParameterReader} and
  * {@link XmlParameterWriter} to export and import {@link YoParameter} with their values to and from
  * XML files.
+ * <p>
+ * Maps to the {@code <parameters>} root element containing {@code <registry>} children; see
+ * {@link XmlParameterReader} and {@link XmlParameterWriter} for the hand-written DOM
+ * (de)serialization. A {@code null} list (as opposed to an empty one) indicates the root element had
+ * no {@code <registry>} children when read.
+ * </p>
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.NONE)
 public class Parameters
 {
    /** The list of registries associated to this XML root token. */
-   @XmlElement(name = "registry")
    private List<Registry> registries;
 
    /**

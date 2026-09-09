@@ -20,9 +20,18 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import us.ihmc.yoVariables.parameters.xml.Parameter;
 import us.ihmc.yoVariables.parameters.xml.Parameters;
@@ -108,16 +117,68 @@ public class XmlParameterWriter extends AbstractParameterWriter
    {
       try
       {
-         JAXBContext jaxbContext = JAXBContext.newInstance(Parameters.class);
-         Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+         Document document = builder.newDocument();
 
-         jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+         Element root = document.createElement("parameters");
+         document.appendChild(root);
 
-         jaxbMarshaller.marshal(parameterRoot, outputStream);
+         for (Registry registry : parameterRoot.getRegistries())
+            root.appendChild(toElement(document, registry));
+
+         Transformer transformer = TransformerFactory.newInstance().newTransformer();
+         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+         transformer.transform(new DOMSource(document), new StreamResult(outputStream));
       }
-      catch (JAXBException e)
+      catch (ParserConfigurationException | TransformerException e)
       {
          throw new IOException(e);
       }
+   }
+
+   /**
+    * Builds a {@code <registry name="..."><registry>...</registry><parameter>...</parameter>
+    * </registry>} element for {@code registry}, recursing into its children.
+    * <p>
+    * Hand-written replacement for what was previously done via JAXB reflection-based marshalling, so
+    * this class stays a straightforward reference for a future non-Java (e.g. C++) port: build a DOM
+    * tree explicitly, then serialize it.
+    * </p>
+    */
+   private static Element toElement(Document document, Registry registry)
+   {
+      Element registryElement = document.createElement("registry");
+      registryElement.setAttribute("name", registry.getName());
+
+      for (Registry child : registry.getRegistries())
+         registryElement.appendChild(toElement(document, child));
+
+      for (Parameter parameter : registry.getParameters())
+         registryElement.appendChild(toElement(document, parameter));
+
+      return registryElement;
+   }
+
+   private static Element toElement(Document document, Parameter parameter)
+   {
+      Element parameterElement = document.createElement("parameter");
+      parameterElement.setAttribute("name", parameter.getName());
+      parameterElement.setAttribute("type", parameter.getType());
+      if (parameter.getMin() != null)
+         parameterElement.setAttribute("min", parameter.getMin());
+      if (parameter.getMax() != null)
+         parameterElement.setAttribute("max", parameter.getMax());
+      if (parameter.getValue() != null)
+         parameterElement.setAttribute("value", parameter.getValue());
+
+      if (parameter.getDescription() != null)
+      {
+         Element descriptionElement = document.createElement("description");
+         descriptionElement.setTextContent(parameter.getDescription());
+         parameterElement.appendChild(descriptionElement);
+      }
+
+      return parameterElement;
    }
 }
