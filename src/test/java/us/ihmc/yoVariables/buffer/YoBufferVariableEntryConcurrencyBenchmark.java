@@ -9,21 +9,31 @@ import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
 
 /**
- * Manual timing comparison between {@link YoBufferVariableEntry}'s {@code synchronized}
- * write/bounds-tracking path and the lock-free {@link AtomicBufferVariableEntryPrototype}.
+ * Manual timing harness for {@link YoBufferVariableEntry}'s write/bounds-tracking concurrency
+ * strategy, whatever that strategy currently is (as of this writing: lock-free, via
+ * {@link java.util.concurrent.atomic.AtomicLongArray}/{@link java.util.concurrent.atomic.AtomicReference}/
+ * {@link java.util.concurrent.atomic.AtomicBoolean} - it was previously {@code synchronized}).
+ * <p>
+ * Deliberately benchmarks only the real class rather than maintaining a second implementation
+ * in-source for comparison: to see the effect of a concurrency-strategy change, run this benchmark
+ * once on the branch/commit before the change and once after, and compare the two printed reports.
+ * Keeping this in source means that if the strategy is ever changed again (including reverted), the
+ * same benchmark immediately shows what changed, without needing to keep a synthetic alternative
+ * implementation around forever just to have something to diff against.
+ * </p>
  * <p>
  * This is deliberately <b>not</b> a JUnit test: timing results are inherently noisy (JIT warmup, GC,
- * whatever else is running on the machine), so this prints a comparison for a human to read rather
- * than asserting a specific speedup ratio, which would make for a flaky test. It is not picked up by
+ * whatever else is running on the machine), so this prints a report for a human to read rather than
+ * asserting on specific numbers, which would make for a flaky test. It is not picked up by
  * {@code gradle test} (no {@code @Test} annotations) - run it directly, e.g.:
  * </p>
  * <pre>
- * gradle :ihmc-yovariables-test:run -PmainClass=us.ihmc.yoVariables.buffer.SynchronizedVsAtomicBenchmark
+ * gradle :ihmc-yovariables-test:run -PmainClass=us.ihmc.yoVariables.buffer.YoBufferVariableEntryConcurrencyBenchmark
  * </pre>
  * <p>
  * or, if that project property isn't wired up in this version of the build, extract the resolved
  * classpath from {@code gradle :ihmc-yovariables-test:run --info} (look for the "Command:" line) and
- * run {@code java -cp <that classpath> us.ihmc.yoVariables.buffer.SynchronizedVsAtomicBenchmark}
+ * run {@code java -cp <that classpath> us.ihmc.yoVariables.buffer.YoBufferVariableEntryConcurrencyBenchmark}
  * directly.
  * </p>
  * <p>
@@ -34,15 +44,15 @@ import us.ihmc.yoVariables.variable.YoDouble;
  * yoBuffer.tickAndWriteIntoBuffer()} alongside its {@code render()} method.
  * </p>
  * <p>
- * Each trial runs for a fixed wall-clock duration rather than a fixed op count, with every writer
- * and reader thread counting how many operations it completed in that window. This is what makes
- * writer and reader throughput comparable to each other and across variants/reader-counts: an
- * earlier version of this benchmark gated trial duration on the writer finishing a fixed op count,
- * which meant a slower variant's reader(s) simply got more wall-clock time to accumulate ops in - a
- * confound that would be actively misleading for a reader-scaling comparison like this one.
+ * Each trial runs for a fixed wall-clock duration rather than a fixed op count, with every writer and
+ * reader thread counting how many operations it completed in that window, so writer and reader
+ * throughput are directly comparable to each other. Reports mean/stddev/min/max (as coefficient of
+ * variation alongside stddev) rather than just a mean: in practice, low trial counts have produced
+ * summary numbers that didn't hold up once the trial count was increased, so the noise needs to be
+ * visible, not just the average.
  * </p>
  */
-public class SynchronizedVsAtomicBenchmark
+public class YoBufferVariableEntryConcurrencyBenchmark
 {
    private static final int BUFFER_SIZE = 10_000;
    private static final long WARMUP_DURATION_MILLIS = 4_000;
@@ -57,48 +67,30 @@ public class SynchronizedVsAtomicBenchmark
          System.out.println();
          System.out.println("############ readers = " + readerCount + " ############");
 
-         System.out.println("Warming up (synchronized)...");
-         runTrial(WARMUP_DURATION_MILLIS, true, readerCount);
-         System.out.println("Warming up (atomic)...");
-         runTrial(WARMUP_DURATION_MILLIS, false, readerCount);
+         System.out.println("Warming up...");
+         runTrial(WARMUP_DURATION_MILLIS, readerCount);
 
-         long[] syncWriterOps = new long[TRIALS];
-         long[] atomicWriterOps = new long[TRIALS];
-         long[] syncReaderOpsTotal = new long[TRIALS];
-         long[] atomicReaderOpsTotal = new long[TRIALS];
+         long[] writerOps = new long[TRIALS];
+         long[] readerOpsTotal = new long[TRIALS];
 
          for (int trial = 0; trial < TRIALS; trial++)
          {
-            Result sync = runTrial(TRIAL_DURATION_MILLIS, true, readerCount);
-            Result atomic = runTrial(TRIAL_DURATION_MILLIS, false, readerCount);
+            Result result = runTrial(TRIAL_DURATION_MILLIS, readerCount);
 
-            syncWriterOps[trial] = sync.writerOpsCompleted;
-            atomicWriterOps[trial] = atomic.writerOpsCompleted;
-            syncReaderOpsTotal[trial] = sync.totalReaderOpsCompleted();
-            atomicReaderOpsTotal[trial] = atomic.totalReaderOpsCompleted();
+            writerOps[trial] = result.writerOpsCompleted;
+            readerOpsTotal[trial] = result.totalReaderOpsCompleted();
 
-            System.out.printf("Trial %d: synchronized writer = %6.2f Mops/s, readers total = %6.2f Mops/s (%.2f Mops/s/reader)%n",
+            System.out.printf("Trial %2d: writer = %6.2f Mops/s, readers total = %6.2f Mops/s (%.2f Mops/s/reader)%n",
                                trial + 1,
-                               opsPerSec(sync.writerOpsCompleted) / 1e6,
-                               opsPerSec(sync.totalReaderOpsCompleted()) / 1e6,
-                               opsPerSec(sync.totalReaderOpsCompleted()) / 1e6 / readerCount);
-            System.out.printf("Trial %d: atomic        writer = %6.2f Mops/s, readers total = %6.2f Mops/s (%.2f Mops/s/reader)%n",
-                               trial + 1,
-                               opsPerSec(atomic.writerOpsCompleted) / 1e6,
-                               opsPerSec(atomic.totalReaderOpsCompleted()) / 1e6,
-                               opsPerSec(atomic.totalReaderOpsCompleted()) / 1e6 / readerCount);
+                               opsPerSec(result.writerOpsCompleted) / 1e6,
+                               opsPerSec(result.totalReaderOpsCompleted()) / 1e6,
+                               opsPerSec(result.totalReaderOpsCompleted()) / 1e6 / readerCount);
          }
 
          System.out.println();
          System.out.println("=== Summary: readers = " + readerCount + ", " + TRIALS + " trials of " + TRIAL_DURATION_MILLIS + " ms each ===");
-         summarizeThroughput("synchronized writer     ", syncWriterOps);
-         summarizeThroughput("atomic writer            ", atomicWriterOps);
-         summarizeThroughput("synchronized readers total", syncReaderOpsTotal);
-         summarizeThroughput("atomic readers total      ", atomicReaderOpsTotal);
-
-         double writerRatio = mean(atomicWriterOps) / mean(syncWriterOps);
-         double readerRatio = mean(atomicReaderOpsTotal) / mean(syncReaderOpsTotal);
-         System.out.printf("%nAtomic/synchronized throughput ratio - writer: %.2fx, readers (total): %.2fx%n", writerRatio, readerRatio);
+         summarizeThroughput("writer      ", writerOps);
+         summarizeThroughput("readers total", readerOpsTotal);
       }
    }
 
@@ -107,12 +99,11 @@ public class SynchronizedVsAtomicBenchmark
       return ops / (TRIAL_DURATION_MILLIS / 1000.0);
    }
 
-   private static Result runTrial(long durationMillis, boolean useSynchronized, int readerCount) throws InterruptedException
+   private static Result runTrial(long durationMillis, int readerCount) throws InterruptedException
    {
       YoRegistry registry = new YoRegistry("benchmark");
       YoDouble variable = new YoDouble("value", registry);
-      YoBufferVariableEntry syncEntry = useSynchronized ? new YoBufferVariableEntry(variable, BUFFER_SIZE) : null;
-      AtomicBufferVariableEntryPrototype atomicEntry = useSynchronized ? null : new AtomicBufferVariableEntryPrototype(BUFFER_SIZE);
+      YoBufferVariableEntry entry = new YoBufferVariableEntry(variable, BUFFER_SIZE);
 
       CountDownLatch start = new CountDownLatch(1);
       AtomicBoolean stop = new AtomicBoolean(false);
@@ -133,18 +124,9 @@ public class SynchronizedVsAtomicBenchmark
             while (!stop.get())
             {
                int index = random.nextInt(BUFFER_SIZE);
-               if (useSynchronized)
-               {
-                  syncEntry.haveBoundsChanged();
-                  syncEntry.resetBoundsChangedFlag();
-                  syncEntry.readBufferAt(index);
-               }
-               else
-               {
-                  atomicEntry.haveBoundsChanged();
-                  atomicEntry.resetBoundsChangedFlag();
-                  atomicEntry.readValueAt(index);
-               }
+               entry.haveBoundsChanged();
+               entry.resetBoundsChangedFlag();
+               entry.readBufferAt(index);
                ops++;
             }
             readerOpsCompleted[readerIndex].set(ops);
@@ -161,10 +143,7 @@ public class SynchronizedVsAtomicBenchmark
          {
             double value = random.nextDouble() * 1000.0;
             int index = (int) (ops % BUFFER_SIZE);
-            if (useSynchronized)
-               syncEntry.writeBufferAt(value, index);
-            else
-               atomicEntry.writeValueAt(value, index);
+            entry.writeBufferAt(value, index);
             ops++;
          }
          writerOpsCompleted.set(ops);
