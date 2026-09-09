@@ -1,5 +1,6 @@
 package us.ihmc.yoVariables.buffer;
 
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -26,67 +27,87 @@ import us.ihmc.yoVariables.variable.YoDouble;
  * directly.
  * </p>
  * <p>
- * Simulates the one confirmed real usage pattern for this class: one writer thread ticking the
- * buffer (e.g. a simulation/timer thread) concurrently with one reader thread polling bounds/data
- * (e.g. a render thread), matching {@code RDXLoggingDevelopmentUI}'s
- * {@code timer.scheduleAtFixedRate(...) -> yoBuffer.tickAndWriteIntoBuffer()} alongside its
- * {@code render()} method.
+ * Simulates the confirmed real usage pattern for this class - one writer thread ticking the buffer
+ * (e.g. a simulation/timer thread) concurrently with reader thread(s) polling bounds/data (e.g. a
+ * render thread) - across a couple of reader counts (see {@link #READER_COUNTS}), matching
+ * {@code RDXLoggingDevelopmentUI}'s {@code timer.scheduleAtFixedRate(...) ->
+ * yoBuffer.tickAndWriteIntoBuffer()} alongside its {@code render()} method.
+ * </p>
+ * <p>
+ * Each trial runs for a fixed wall-clock duration rather than a fixed op count, with every writer
+ * and reader thread counting how many operations it completed in that window. This is what makes
+ * writer and reader throughput comparable to each other and across variants/reader-counts: an
+ * earlier version of this benchmark gated trial duration on the writer finishing a fixed op count,
+ * which meant a slower variant's reader(s) simply got more wall-clock time to accumulate ops in - a
+ * confound that would be actively misleading for a reader-scaling comparison like this one.
  * </p>
  */
 public class SynchronizedVsAtomicBenchmark
 {
    private static final int BUFFER_SIZE = 10_000;
-   private static final int WARMUP_OPS = 2_000_000;
-   private static final int MEASURED_OPS = 5_000_000;
-   private static final int TRIALS = 5;
+   private static final long WARMUP_DURATION_MILLIS = 4_000;
+   private static final long TRIAL_DURATION_MILLIS = 1_000;
+   private static final int TRIALS = 25;
+   private static final int[] READER_COUNTS = {1, 4};
 
    public static void main(String[] args) throws InterruptedException
    {
-      System.out.println("Warming up (synchronized)...");
-      runTrial(WARMUP_OPS, true);
-      System.out.println("Warming up (atomic)...");
-      runTrial(WARMUP_OPS, false);
-
-      long[] syncWriterNanos = new long[TRIALS];
-      long[] atomicWriterNanos = new long[TRIALS];
-      long[] syncReaderOps = new long[TRIALS];
-      long[] atomicReaderOps = new long[TRIALS];
-
-      for (int trial = 0; trial < TRIALS; trial++)
+      for (int readerCount : READER_COUNTS)
       {
-         Result sync = runTrial(MEASURED_OPS, true);
-         Result atomic = runTrial(MEASURED_OPS, false);
+         System.out.println();
+         System.out.println("############ readers = " + readerCount + " ############");
 
-         syncWriterNanos[trial] = sync.writerElapsedNanos;
-         atomicWriterNanos[trial] = atomic.writerElapsedNanos;
-         syncReaderOps[trial] = sync.readerOpsCompleted;
-         atomicReaderOps[trial] = atomic.readerOpsCompleted;
+         System.out.println("Warming up (synchronized)...");
+         runTrial(WARMUP_DURATION_MILLIS, true, readerCount);
+         System.out.println("Warming up (atomic)...");
+         runTrial(WARMUP_DURATION_MILLIS, false, readerCount);
 
-         System.out.printf("Trial %d: synchronized writer = %.1f ms (%.1f Mops/s), reader ops = %d%n",
-                            trial + 1,
-                            sync.writerElapsedNanos / 1e6,
-                            MEASURED_OPS / (sync.writerElapsedNanos / 1e3),
-                            sync.readerOpsCompleted);
-         System.out.printf("Trial %d: atomic        writer = %.1f ms (%.1f Mops/s), reader ops = %d%n",
-                            trial + 1,
-                            atomic.writerElapsedNanos / 1e6,
-                            MEASURED_OPS / (atomic.writerElapsedNanos / 1e3),
-                            atomic.readerOpsCompleted);
+         long[] syncWriterOps = new long[TRIALS];
+         long[] atomicWriterOps = new long[TRIALS];
+         long[] syncReaderOpsTotal = new long[TRIALS];
+         long[] atomicReaderOpsTotal = new long[TRIALS];
+
+         for (int trial = 0; trial < TRIALS; trial++)
+         {
+            Result sync = runTrial(TRIAL_DURATION_MILLIS, true, readerCount);
+            Result atomic = runTrial(TRIAL_DURATION_MILLIS, false, readerCount);
+
+            syncWriterOps[trial] = sync.writerOpsCompleted;
+            atomicWriterOps[trial] = atomic.writerOpsCompleted;
+            syncReaderOpsTotal[trial] = sync.totalReaderOpsCompleted();
+            atomicReaderOpsTotal[trial] = atomic.totalReaderOpsCompleted();
+
+            System.out.printf("Trial %d: synchronized writer = %6.2f Mops/s, readers total = %6.2f Mops/s (%.2f Mops/s/reader)%n",
+                               trial + 1,
+                               opsPerSec(sync.writerOpsCompleted) / 1e6,
+                               opsPerSec(sync.totalReaderOpsCompleted()) / 1e6,
+                               opsPerSec(sync.totalReaderOpsCompleted()) / 1e6 / readerCount);
+            System.out.printf("Trial %d: atomic        writer = %6.2f Mops/s, readers total = %6.2f Mops/s (%.2f Mops/s/reader)%n",
+                               trial + 1,
+                               opsPerSec(atomic.writerOpsCompleted) / 1e6,
+                               opsPerSec(atomic.totalReaderOpsCompleted()) / 1e6,
+                               opsPerSec(atomic.totalReaderOpsCompleted()) / 1e6 / readerCount);
+         }
+
+         System.out.println();
+         System.out.println("=== Summary: readers = " + readerCount + ", " + TRIALS + " trials of " + TRIAL_DURATION_MILLIS + " ms each ===");
+         summarizeThroughput("synchronized writer     ", syncWriterOps);
+         summarizeThroughput("atomic writer            ", atomicWriterOps);
+         summarizeThroughput("synchronized readers total", syncReaderOpsTotal);
+         summarizeThroughput("atomic readers total      ", atomicReaderOpsTotal);
+
+         double writerRatio = mean(atomicWriterOps) / mean(syncWriterOps);
+         double readerRatio = mean(atomicReaderOpsTotal) / mean(syncReaderOpsTotal);
+         System.out.printf("%nAtomic/synchronized throughput ratio - writer: %.2fx, readers (total): %.2fx%n", writerRatio, readerRatio);
       }
-
-      System.out.println();
-      System.out.println("=== Summary over " + TRIALS + " trials (" + MEASURED_OPS + " writer ops each) ===");
-      summarize("synchronized writer", syncWriterNanos);
-      summarize("atomic writer      ", atomicWriterNanos);
-      summarizeCount("synchronized reader ops completed", syncReaderOps);
-      summarizeCount("atomic reader ops completed       ", atomicReaderOps);
-
-      double meanSync = mean(syncWriterNanos);
-      double meanAtomic = mean(atomicWriterNanos);
-      System.out.printf("%nWriter throughput ratio (synchronized time / atomic time): %.2fx%n", meanSync / meanAtomic);
    }
 
-   private static Result runTrial(int writerOps, boolean useSynchronized) throws InterruptedException
+   private static double opsPerSec(long ops)
+   {
+      return ops / (TRIAL_DURATION_MILLIS / 1000.0);
+   }
+
+   private static Result runTrial(long durationMillis, boolean useSynchronized, int readerCount) throws InterruptedException
    {
       YoRegistry registry = new YoRegistry("benchmark");
       YoDouble variable = new YoDouble("value", registry);
@@ -94,60 +115,79 @@ public class SynchronizedVsAtomicBenchmark
       AtomicBufferVariableEntryPrototype atomicEntry = useSynchronized ? null : new AtomicBufferVariableEntryPrototype(BUFFER_SIZE);
 
       CountDownLatch start = new CountDownLatch(1);
-      AtomicBoolean stopReader = new AtomicBoolean(false);
-      AtomicLong readerOpsCompleted = new AtomicLong();
-      long[] writerElapsedNanosHolder = new long[1];
+      AtomicBoolean stop = new AtomicBoolean(false);
+      AtomicLong writerOpsCompleted = new AtomicLong();
+      AtomicLong[] readerOpsCompleted = new AtomicLong[readerCount];
+      for (int i = 0; i < readerCount; i++)
+         readerOpsCompleted[i] = new AtomicLong();
 
-      Thread reader = new Thread(() ->
+      Thread[] readers = new Thread[readerCount];
+      for (int r = 0; r < readerCount; r++)
       {
-         awaitUninterruptibly(start);
-         java.util.Random random = new java.util.Random(1);
-         while (!stopReader.get())
+         int readerIndex = r;
+         readers[r] = new Thread(() ->
          {
-            int index = random.nextInt(BUFFER_SIZE);
-            if (useSynchronized)
+            awaitUninterruptibly(start);
+            Random random = new Random(100 + readerIndex);
+            long ops = 0;
+            while (!stop.get())
             {
-               syncEntry.haveBoundsChanged();
-               syncEntry.resetBoundsChangedFlag();
-               syncEntry.readBufferAt(index);
+               int index = random.nextInt(BUFFER_SIZE);
+               if (useSynchronized)
+               {
+                  syncEntry.haveBoundsChanged();
+                  syncEntry.resetBoundsChangedFlag();
+                  syncEntry.readBufferAt(index);
+               }
+               else
+               {
+                  atomicEntry.haveBoundsChanged();
+                  atomicEntry.resetBoundsChangedFlag();
+                  atomicEntry.readValueAt(index);
+               }
+               ops++;
             }
-            else
-            {
-               atomicEntry.haveBoundsChanged();
-               atomicEntry.resetBoundsChangedFlag();
-               atomicEntry.readValueAt(index);
-            }
-            readerOpsCompleted.incrementAndGet();
-         }
-      }, "reader");
-      reader.setDaemon(true);
-      reader.start();
+            readerOpsCompleted[readerIndex].set(ops);
+         }, "reader-" + readerIndex);
+         readers[r].setDaemon(true);
+      }
 
       Thread writer = new Thread(() ->
       {
          awaitUninterruptibly(start);
-         java.util.Random random = new java.util.Random(2);
-         long startTime = System.nanoTime();
-         for (int i = 0; i < writerOps; i++)
+         Random random = new Random(2);
+         long ops = 0;
+         while (!stop.get())
          {
             double value = random.nextDouble() * 1000.0;
-            int index = i % BUFFER_SIZE;
+            int index = (int) (ops % BUFFER_SIZE);
             if (useSynchronized)
                syncEntry.writeBufferAt(value, index);
             else
                atomicEntry.writeValueAt(value, index);
+            ops++;
          }
-         writerElapsedNanosHolder[0] = System.nanoTime() - startTime;
+         writerOpsCompleted.set(ops);
       }, "writer");
       writer.setDaemon(true);
+
+      for (Thread reader : readers)
+         reader.start();
       writer.start();
 
       start.countDown();
-      writer.join();
-      stopReader.set(true);
-      reader.join();
+      Thread.sleep(durationMillis);
+      stop.set(true);
 
-      return new Result(writerElapsedNanosHolder[0], readerOpsCompleted.get());
+      writer.join();
+      for (Thread reader : readers)
+         reader.join();
+
+      long[] perReaderOps = new long[readerCount];
+      for (int i = 0; i < readerCount; i++)
+         perReaderOps[i] = readerOpsCompleted[i].get();
+
+      return new Result(writerOpsCompleted.get(), perReaderOps);
    }
 
    private static void awaitUninterruptibly(CountDownLatch latch)
@@ -162,17 +202,17 @@ public class SynchronizedVsAtomicBenchmark
       }
    }
 
-   private static void summarize(String label, long[] nanos)
+   private static void summarizeThroughput(String label, long[] ops)
    {
-      double meanMs = mean(nanos) / 1e6;
-      double minMs = min(nanos) / 1e6;
-      double maxMs = max(nanos) / 1e6;
-      System.out.printf("%s: mean = %.1f ms, min = %.1f ms, max = %.1f ms%n", label, meanMs, minMs, maxMs);
-   }
-
-   private static void summarizeCount(String label, long[] counts)
-   {
-      System.out.printf("%s: mean = %.0f, min = %d, max = %d%n", label, mean(counts), min(counts), max(counts));
+      double meanOps = mean(ops);
+      double coefficientOfVariation = meanOps == 0.0 ? 0.0 : stddev(ops, meanOps) / meanOps * 100.0;
+      System.out.printf("%s: mean = %6.2f Mops/s, stddev = %5.2f Mops/s (%.1f%%), min = %6.2f Mops/s, max = %6.2f Mops/s%n",
+                         label,
+                         opsPerSec((long) meanOps) / 1e6,
+                         opsPerSec((long) stddev(ops, meanOps)) / 1e6,
+                         coefficientOfVariation,
+                         opsPerSec(min(ops)) / 1e6,
+                         opsPerSec(max(ops)) / 1e6);
    }
 
    private static double mean(long[] values)
@@ -181,6 +221,21 @@ public class SynchronizedVsAtomicBenchmark
       for (long value : values)
          sum += value;
       return (double) sum / values.length;
+   }
+
+   /** Sample standard deviation (n-1 denominator), given a precomputed mean. */
+   private static double stddev(long[] values, double meanValue)
+   {
+      if (values.length < 2)
+         return 0.0;
+
+      double sumOfSquaredDeviations = 0.0;
+      for (long value : values)
+      {
+         double deviation = value - meanValue;
+         sumOfSquaredDeviations += deviation * deviation;
+      }
+      return Math.sqrt(sumOfSquaredDeviations / (values.length - 1));
    }
 
    private static long min(long[] values)
@@ -201,13 +256,21 @@ public class SynchronizedVsAtomicBenchmark
 
    private static final class Result
    {
-      private final long writerElapsedNanos;
-      private final long readerOpsCompleted;
+      private final long writerOpsCompleted;
+      private final long[] perReaderOpsCompleted;
 
-      private Result(long writerElapsedNanos, long readerOpsCompleted)
+      private Result(long writerOpsCompleted, long[] perReaderOpsCompleted)
       {
-         this.writerElapsedNanos = writerElapsedNanos;
-         this.readerOpsCompleted = readerOpsCompleted;
+         this.writerOpsCompleted = writerOpsCompleted;
+         this.perReaderOpsCompleted = perReaderOpsCompleted;
+      }
+
+      private long totalReaderOpsCompleted()
+      {
+         long total = 0;
+         for (long ops : perReaderOpsCompleted)
+            total += ops;
+         return total;
       }
    }
 }
