@@ -17,7 +17,7 @@ package us.ihmc.yoVariables.registry;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +53,7 @@ public class YoRegistry implements YoVariableHolder
     * Mapping from the lower-case simple name of a variable to the instance of the variable.
     * Facilitates retrieval of registered variables from their name.
     */
-   private final Map<String, YoVariable> nameToVariableMap = new LinkedHashMap<>();
+   private final Map<String, YoVariable> nameToVariableMap = new HashMap<>();
    /**
     * The list of parameters that are currently registered in this {@code this}. This list is mostly
     * used for book keeping.
@@ -71,7 +71,7 @@ public class YoRegistry implements YoVariableHolder
     * Mapping from the lower-case simple name of a registry to the instance of the registry.
     * Facilitates retrieval of registered children from their name.
     */
-   private final Map<String, YoRegistry> nameToChildMap = new LinkedHashMap<>();
+   private final Map<String, YoRegistry> nameToChildMap = new HashMap<>();
 
    /**
     * List of active listeners currently attached to this registry. Only instantiated when adding the
