@@ -15,11 +15,6 @@
  */
 package us.ihmc.yoVariables.parameters.xml;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlElement;
-
 import us.ihmc.yoVariables.parameters.XmlParameterReader;
 import us.ihmc.yoVariables.parameters.XmlParameterWriter;
 import us.ihmc.yoVariables.parameters.YoParameter;
@@ -31,32 +26,30 @@ import us.ihmc.yoVariables.parameters.YoParameter;
  * <p>
  * This XML token gathers the information for a single parameter.
  * </p>
+ * <p>
+ * Maps to a {@code <parameter name="..." type="..." min="..." max="..." value="..."><description>...
+ * </description></parameter>} element; see {@link XmlParameterReader} and {@link XmlParameterWriter}
+ * for the hand-written DOM (de)serialization.
+ * </p>
  */
-@XmlAccessorType(XmlAccessType.NONE)
 public class Parameter
 {
    /** The name of the parameter. */
-   @XmlAttribute
    private String name;
 
    /** The type of the parameter, e.g. "DoubleParameter" or "IntegerParameter". */
-   @XmlAttribute
    private String type;
 
    /** The lower bound associated to the parameter. */
-   @XmlAttribute
    private String min;
 
    /** The upper bound associated to the parameter. */
-   @XmlAttribute
    private String max;
 
    /** The {@code String} representation of the parameter's value. */
-   @XmlAttribute
    private String value;
 
    /** A detailing description associated to the parameter. */
-   @XmlElement
    private String description;
 
    /**
