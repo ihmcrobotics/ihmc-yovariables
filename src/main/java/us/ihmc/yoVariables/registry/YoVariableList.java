@@ -18,7 +18,7 @@ package us.ihmc.yoVariables.registry;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +37,7 @@ public class YoVariableList extends AbstractList<YoVariable> implements YoVariab
    /** List of all the variables added so far to provide index based retrieval. */
    private final List<YoVariable> variableList = new ArrayList<>();
    /** Map from simple name to variables to facilitate name based queries. */
-   private final Map<String, List<YoVariable>> simpleNameToVariablesMap = new LinkedHashMap<>();
+   private final Map<String, List<YoVariable>> simpleNameToVariablesMap = new HashMap<>();
 
    /**
     * Creates a new empty list.
