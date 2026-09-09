@@ -15,7 +15,9 @@
  */
 package us.ihmc.yoVariables.buffer;
 
-import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLongArray;
+import java.util.concurrent.atomic.AtomicReference;
 
 import us.ihmc.euclid.tools.EuclidCoreTools;
 import us.ihmc.yoVariables.buffer.interfaces.YoBufferVariableEntryReader;
@@ -24,32 +26,50 @@ import us.ihmc.yoVariables.variable.YoVariable;
 /**
  * {@code YoBufferVariableEntry} manages the buffer to store history for a single
  * {@code YoVariable}.
+ * <p>
+ * The write/read/bounds-tracking path ({@link #writeIntoBufferAt(int)}, {@link #readBufferAt(int)},
+ * {@link #haveBoundsChanged()}, {@link #resetBoundsChangedFlag()}, {@link #getBounds()},
+ * {@link #getWindowBounds(int, int)}) is lock-free rather than {@code synchronized}: {@link #bufferData}
+ * is an {@link AtomicLongArray} (values bit-reinterpreted via {@link Double#doubleToLongBits(double)},
+ * since Java has no {@code AtomicDoubleArray}), {@link #currentBounds} is an immutable
+ * {@link YoBufferBounds} swapped behind an {@link AtomicReference} via a compare-and-swap retry loop
+ * (so a reader can never see a torn {@code (lowerBound, upperBound)} pair), and
+ * {@link #boundsChanged}/{@link #boundsDirty} are {@link AtomicBoolean}s. This is correct under any
+ * number of concurrent writers, not just the single-writer pattern seen in this class's actual usage.
+ * </p>
+ * <p>
+ * The buffer-resizing operations ({@link #enlargeBufferSize(int)}, {@link #cropBuffer(int, int)},
+ * {@link #cutBuffer(int, int)}, {@link #shiftBuffer(int)}, {@link #thinData(int)},
+ * {@link #clearBuffer(int)}, {@link #fillBuffer()}) remain single-thread-only, exactly as before this
+ * change - they were never {@code synchronized} even when the rest of this class was, so this
+ * preserves their existing (implicit) contract rather than expanding it.
+ * </p>
  */
 public class YoBufferVariableEntry implements YoBufferVariableEntryReader
 {
    /** The variable this buffer is managing. */
    private final YoVariable variable;
-   /** The buffer in which the history of the variable's values are stored. */
-   private double[] bufferData;
+   /** The buffer in which the history of the variable's values are stored, bit-reinterpreted as longs. */
+   private volatile AtomicLongArray bufferData;
    /** The latest computed bounds on the variable values. */
-   private final YoBufferBounds currentBounds = new YoBufferBounds();
+   private final AtomicReference<YoBufferBounds> currentBounds = new AtomicReference<>(YoBufferBounds.EMPTY);
    /** Flag for user convenience to keep track of when bounds have been modified. */
-   private boolean boundsChanged = true;
+   private final AtomicBoolean boundsChanged = new AtomicBoolean(true);
    /**
     * Internal used to indicate whether {@link #currentBounds} should be updated when the user calls
     * {@link #getBounds()}.
     */
-   private boolean boundsDirty = true;
+   private final AtomicBoolean boundsDirty = new AtomicBoolean(true);
    /** Flag for user convenience. */
    private boolean useCustomBounds = false;
    /** User-defined bounds. */
-   private final YoBufferBounds customBounds = new YoBufferBounds();
+   private volatile YoBufferBounds customBounds = YoBufferBounds.EMPTY;
    /** Flag for user convenience. */
    private boolean inverted = false;
 
    /**
     * Creates a new buffer of the given size for the given variable.
-    * 
+    *
     * @param variable   the variable this buffer is dedicated to.
     * @param bufferSize the initial size of this buffer.
     */
@@ -61,26 +81,34 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
 
    /**
     * Clone constructor.
-    * 
+    *
     * @param other the other buffer to copy. Not modified.
     */
    public YoBufferVariableEntry(YoBufferVariableEntry other)
    {
       variable = other.getVariable();
-      bufferData = Arrays.copyOf(other.bufferData, other.getBufferSize());
-      currentBounds.set(other.currentBounds);
-      boundsChanged = other.boundsChanged;
-      boundsDirty = other.boundsDirty;
+      bufferData = copyOf(other.bufferData);
+      currentBounds.set(other.currentBounds.get());
+      boundsChanged.set(other.boundsChanged.get());
+      boundsDirty.set(other.boundsDirty.get());
       useCustomBounds = other.useCustomBounds;
-      customBounds.set(other.customBounds);
+      customBounds = other.customBounds;
       inverted = other.inverted;
+   }
+
+   private static AtomicLongArray copyOf(AtomicLongArray original)
+   {
+      AtomicLongArray copy = new AtomicLongArray(original.length());
+      for (int i = 0; i < original.length(); i++)
+         copy.set(i, original.get(i));
+      return copy;
    }
 
    protected void clearBuffer(int bufferSize)
    {
-      bufferData = new double[bufferSize];
-      currentBounds.clear();
-      boundsDirty = true;
+      bufferData = new AtomicLongArray(bufferSize);
+      currentBounds.set(YoBufferBounds.EMPTY);
+      boundsDirty.set(true);
    }
 
    /** {@inheritDoc} */
@@ -101,15 +129,15 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
    @Override
    public int getBufferSize()
    {
-      return bufferData.length;
+      return bufferData.length();
    }
 
    /**
     * Writes the current variable value into the buffer at the given index.
-    * 
+    *
     * @param index the index to write in the buffer.
     */
-   public synchronized void writeIntoBufferAt(int index)
+   public void writeIntoBufferAt(int index)
    {
       writeBufferAt(variable.getValueAsDouble(), index);
    }
@@ -117,64 +145,73 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
    /**
     * Writes the given value into this buffer at the given index.
     * <p>
-    * Package-private: this mutates the same state ({@code bufferData}, {@code currentBounds},
-    * {@code boundsChanged}) that {@link #writeIntoBufferAt(int)} protects with {@code synchronized}.
-    * Kept {@code synchronized} here too so the guarantee holds even if a future caller within this
-    * package reaches this method without already holding the lock (Java's intrinsic lock is
-    * per-thread reentrant, so this is safe and cheap when called from the already-synchronized
-    * {@link #writeIntoBufferAt(int)}).
+    * Package-private: nothing outside this package should be able to write into the buffer without
+    * going through {@link #writeIntoBufferAt(int)}'s well-defined semantics.
     * </p>
     *
     * @param value the value to write in this buffer.
     * @param index the index to write in the buffer.
     */
-   synchronized void writeBufferAt(double value, int index)
+   void writeBufferAt(double value, int index)
    {
-      if (bufferData[index] == value)
+      AtomicLongArray buffer = bufferData;
+
+      if (Double.longBitsToDouble(buffer.get(index)) == value)
          return;
 
-      bufferData[index] = value;
+      buffer.set(index, Double.doubleToLongBits(value));
 
-      if (currentBounds.update(value))
-         boundsChanged = true;
+      YoBufferBounds current;
+      YoBufferBounds widened;
+      do
+      {
+         current = currentBounds.get();
+         widened = current.widenedToInclude(value);
+         if (widened == current)
+            return;
+      }
+      while (!currentBounds.compareAndSet(current, widened));
+
+      boundsChanged.set(true);
    }
 
    /**
     * Reads the buffer at the given index and updates the variable current value.
-    * 
+    *
     * @param index the index read the buffer at.
     */
    protected void readFromBufferAt(int index)
    {
-      variable.setValueFromDouble(bufferData[index]);
+      variable.setValueFromDouble(Double.longBitsToDouble(bufferData.get(index)));
    }
 
    /** {@inheritDoc} */
    @Override
    public double readBufferAt(int index)
    {
-      return bufferData[index];
+      return Double.longBitsToDouble(bufferData.get(index));
    }
 
    /** {@inheritDoc} */
    @Override
    public double[] getBuffer()
    {
-      return getBufferWindow(0, bufferData.length);
+      return getBufferWindow(0, bufferData.length());
    }
 
    /** {@inheritDoc} */
    @Override
    public double[] getBufferWindow(int startIndex, int length)
    {
+      AtomicLongArray buffer = bufferData;
       double[] sample = new double[length];
       int n = startIndex;
 
       for (int i = 0; i < length; i++)
       {
-         sample[i] = bufferData[n];
+         sample[i] = Double.longBitsToDouble(buffer.get(n));
          n++;
-         if (n >= bufferData.length)
+         if (n >= buffer.length())
             n = 0;
       }
 
@@ -205,56 +242,63 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
    protected void fillBuffer()
    {
       double value = variable.getValueAsDouble();
-      for (int i = 0; i < bufferData.length; i++)
-         bufferData[i] = value;
-      currentBounds.clear();
+      long bits = Double.doubleToLongBits(value);
+      AtomicLongArray buffer = bufferData;
+
+      for (int i = 0; i < buffer.length(); i++)
+         buffer.set(i, bits);
+
+      currentBounds.set(YoBufferBounds.EMPTY);
    }
 
    protected void enlargeBufferSize(int newSize)
    {
-      double[] oldData = bufferData;
-      int oldNPoints = oldData.length;
+      AtomicLongArray oldData = bufferData;
+      int oldNPoints = oldData.length();
 
-      bufferData = new double[newSize];
+      AtomicLongArray newData = new AtomicLongArray(newSize);
 
       for (int i = 0; i < oldNPoints; i++)
       {
-         bufferData[i] = oldData[i];
+         newData.set(i, oldData.get(i));
       }
 
-      for (int i = oldNPoints; i < bufferData.length; i++)
+      long lastBits = oldData.get(oldNPoints - 1);
+      for (int i = oldNPoints; i < newData.length(); i++)
       {
-         bufferData[i] = oldData[oldNPoints - 1];
+         newData.set(i, lastBits);
       }
 
-      boundsDirty = true;
+      bufferData = newData;
+      boundsDirty.set(true);
    }
 
    protected int cropBuffer(int start, int end)
    {
+      AtomicLongArray oldData = bufferData;
+
       // If the endpoints are unreasonable indicate failure
-      if (start < 0 || end > bufferData.length)
+      if (start < 0 || end > oldData.length())
          return -1;
 
-      // Create a temporary variable to hold the old data
-      double[] oldData = bufferData;
-      int oldNPoints = oldData.length;
+      int oldNPoints = oldData.length();
 
       // Calculate the total number of points after the crop
       int nPoints = computeBufferSizeAfterCrop(start, end, oldNPoints);
 
-      bufferData = new double[nPoints];
+      AtomicLongArray newData = new AtomicLongArray(nPoints);
 
       // Transfer the data into the new array beginning with start.
-      for (int i = 0; i < bufferData.length; i++)
+      for (int i = 0; i < newData.length(); i++)
       {
-         bufferData[i] = oldData[(i + start) % oldNPoints];
+         newData.set(i, oldData.get((i + start) % oldNPoints));
       }
 
-      boundsDirty = true;
+      bufferData = newData;
+      boundsDirty.set(true);
 
       // Indicate the data length
-      return bufferData.length;
+      return newData.length();
    }
 
    protected int cutBuffer(int start, int end)
@@ -262,13 +306,13 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
       if (start > end)
          return -1;
 
+      AtomicLongArray oldData = bufferData;
+
       // If the endpoints are unreasonable indicate failure
-      if (start < 0 || end > bufferData.length)
+      if (start < 0 || end > oldData.length())
          return -1;
 
-      // Create a temporary variable to hold the old data
-      double[] oldData = bufferData;
-      int oldNPoints = oldData.length;
+      int oldNPoints = oldData.length();
 
       // Calculate the total number of points after the cut
       int nPoints = computeBufferSizeAfterCut(start, end, oldNPoints);
@@ -276,41 +320,44 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
       // If the result is 0 the size will remain the same
       if (nPoints == 0)
          nPoints = oldNPoints;
-      bufferData = new double[nPoints];
+      AtomicLongArray newData = new AtomicLongArray(nPoints);
 
       // Transfer the data into the new array beginning with start.
       int difference = end - start + 1;
       for (int i = 0; i < start; i++)
       {
-         bufferData[i] = oldData[i];
+         newData.set(i, oldData.get(i));
       }
 
-      for (int i = end + 1; i < oldData.length; i++)
+      for (int i = end + 1; i < oldNPoints; i++)
       {
-         bufferData[i - difference] = oldData[i];
+         newData.set(i - difference, oldData.get(i));
       }
 
-      boundsDirty = true;
+      bufferData = newData;
+      boundsDirty.set(true);
 
       // Indicate the data length
-      return bufferData.length;
+      return newData.length();
    }
 
    protected int thinData(int keepEveryNthPoint)
    {
-      double[] oldData = bufferData;
-      int oldNPoints = oldData.length;
+      AtomicLongArray oldData = bufferData;
+      int oldNPoints = oldData.length();
 
       int newNumberOfPoints = oldNPoints / keepEveryNthPoint;
-      bufferData = new double[newNumberOfPoints];
+      AtomicLongArray newData = new AtomicLongArray(newNumberOfPoints);
 
       int oldDataIndex = 0;
       for (int index = 0; index < newNumberOfPoints; index++)
       {
-         bufferData[index] = oldData[oldDataIndex];
+         newData.set(index, oldData.get(oldDataIndex));
 
          oldDataIndex = oldDataIndex + keepEveryNthPoint;
       }
+
+      bufferData = newData;
 
       return newNumberOfPoints;
    }
@@ -331,73 +378,102 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
 
    protected void shiftBuffer(int shiftIndex)
    {
+      AtomicLongArray oldData = bufferData;
+      int nPoints = oldData.length();
+
       // If the start point is outside of the data set abort
-      if (shiftIndex <= 0 || shiftIndex >= bufferData.length)
+      if (shiftIndex <= 0 || shiftIndex >= nPoints)
          return;
 
-      // Create a temporary array to carry out the shift
-      double[] oldData = bufferData;
-      int nPoints = bufferData.length;
-      bufferData = new double[nPoints];
+      AtomicLongArray newData = new AtomicLongArray(nPoints);
 
       // Repopulate the array using the new order
       for (int i = 0; i < nPoints; i++)
       {
-         bufferData[i] = oldData[(i + shiftIndex) % nPoints];
+         newData.set(i, oldData.get((i + shiftIndex) % nPoints));
       }
 
-      boundsDirty = true;
+      bufferData = newData;
+      boundsDirty.set(true);
    }
 
    /** {@inheritDoc} */
    @Override
-   public synchronized void resetBoundsChangedFlag()
+   public void resetBoundsChangedFlag()
    {
-      boundsChanged = false;
+      boundsChanged.set(false);
    }
 
    /** {@inheritDoc} */
    @Override
-   public synchronized boolean haveBoundsChanged()
+   public boolean haveBoundsChanged()
    {
-      return boundsChanged;
+      return boundsChanged.get();
    }
 
-   private synchronized boolean updateBounds()
+   /**
+    * Recomputes {@link #currentBounds} over the full buffer from a local snapshot of
+    * {@link #bufferData}, and updates {@link #boundsChanged} accordingly.
+    * <p>
+    * Uses a plain {@link AtomicReference#set(Object)} rather than a compare-and-swap retry loop: unlike
+    * {@link #writeBufferAt(double, int)}'s incremental widen, this is always a full,
+    * self-contained rescan of a point-in-time snapshot, so under a race the worst case is a reader
+    * transiently seeing a slightly stale (but internally consistent) bounds value, which the next call
+    * corrects - retrying a whole-buffer O(n) rescan on CAS failure would be considerably more expensive
+    * than accepting that.
+    * </p>
+    * <p>
+    * Deliberately does not clear {@link #boundsDirty}, matching this method's pre-existing behavior
+    * from before this class used atomics: only {@link #getWindowBounds(int, int)} ever clears it, so
+    * {@link #getBounds()} keeps recomputing on every call once {@link #boundsDirty} has ever been set.
+    * </p>
+    */
+   private void updateBounds()
    {
-      boundsChanged = false;
+      AtomicLongArray buffer = bufferData;
+      if (buffer == null)
+      {
+         boundsChanged.set(false);
+         return;
+      }
 
-      if (bufferData == null)
-         return false;
+      double[] bufferSnapshot = toDoubleArray(buffer);
+      YoBufferBounds oldBounds = currentBounds.get();
+      YoBufferBounds newBounds = YoBufferBounds.computed(0, bufferSnapshot.length - 1, bufferSnapshot);
+      currentBounds.set(newBounds);
+      boundsChanged.set(newBounds.getLowerBound() != oldBounds.getLowerBound() || newBounds.getUpperBound() != oldBounds.getUpperBound());
+   }
 
-      currentBounds.setInterval(0, getBufferSize() - 1);
-      boundsChanged = currentBounds.compute(bufferData);
-
-      return boundsChanged;
+   private static double[] toDoubleArray(AtomicLongArray buffer)
+   {
+      double[] result = new double[buffer.length()];
+      for (int i = 0; i < result.length; i++)
+         result[i] = Double.longBitsToDouble(buffer.get(i));
+      return result;
    }
 
    /** {@inheritDoc} */
    @Override
    public YoBufferBounds getBounds()
    {
-      if (boundsDirty)
+      if (boundsDirty.get())
          updateBounds();
 
-      return currentBounds;
+      return currentBounds.get();
    }
 
    /** {@inheritDoc} */
    @Override
    public YoBufferBounds getCustomBounds()
    {
-      customBounds.setInterval(0, getBufferSize() - 1);
-      customBounds.setBounds(variable.getLowerBound(), variable.getUpperBound());
-      return customBounds;
+      YoBufferBounds updated = YoBufferBounds.EMPTY.withInterval(0, getBufferSize() - 1).withBounds(variable.getLowerBound(), variable.getUpperBound());
+      customBounds = updated;
+      return updated;
    }
 
    /**
     * Calculates and returns the value average of the variable over the entire buffer.
-    * 
+    *
     * @return the average value.
     */
    public double computeAverage()
@@ -407,7 +483,7 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
 
    /**
     * Calculates and returns the value average of the variable over a portion of the buffer.
-    * 
+    *
     * @param start  the first buffer index to include in the calculation of the average. Should be in
     *               [0, {@code this.getBufferSize()}[.
     * @param length the number of elements to include in the calculation of the average. Should be in
@@ -421,13 +497,14 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
       if (length <= 0 || length > getBufferSize())
          throw new IndexOutOfBoundsException("length should be in ]0, " + getBufferSize() + "], but was: " + length);
 
+      AtomicLongArray buffer = bufferData;
       double total = 0.0;
       int count = 0;
       int index = 0;
 
       while (count < length)
       {
-         total += bufferData[index];
+         total += Double.longBitsToDouble(buffer.get(index));
 
          count++;
          index++;
@@ -442,16 +519,23 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
    @Override
    public YoBufferBounds getWindowBounds(int startIndex, int endIndex)
    {
-      if (bufferData != null)
+      AtomicLongArray buffer = bufferData;
+      if (buffer == null)
+         return currentBounds.get();
+
+      YoBufferBounds oldBounds = currentBounds.get();
+
+      if (boundsDirty.get() || startIndex != oldBounds.getStartIndex() || endIndex != oldBounds.getEndIndex())
       {
-         if (boundsDirty || startIndex != currentBounds.getStartIndex() || endIndex != currentBounds.getEndIndex())
-         {
-            currentBounds.setInterval(startIndex, endIndex);
-            boundsChanged = currentBounds.compute(bufferData);
-            boundsDirty = false;
-         }
+         double[] bufferSnapshot = toDoubleArray(buffer);
+         YoBufferBounds newBounds = YoBufferBounds.computed(startIndex, endIndex, bufferSnapshot);
+         currentBounds.set(newBounds);
+         boundsChanged.set(newBounds.getLowerBound() != oldBounds.getLowerBound() || newBounds.getUpperBound() != oldBounds.getUpperBound());
+         boundsDirty.set(false);
+         return newBounds;
       }
-      return currentBounds;
+
+      return oldBounds;
    }
 
    /**
@@ -464,7 +548,7 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
     * <li>the data of the two buffers are equal to an {@code epsilon}.
     * </ul>
     * </p>
-    * 
+    *
     * @param other   the other buffer to compare against {@code this}. Not modified.
     * @param epsilon the tolerance used when comparing the data of the two buffers.
     * @return {@code true} if the two buffers are considered equal, {@code false} otherwise.
@@ -476,10 +560,13 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
       if (!getVariableFullNameString().equals(other.getVariableFullNameString()))
          return false;
 
+      AtomicLongArray thisData = bufferData;
+      AtomicLongArray otherData = other.bufferData;
+
       for (int i = 0; i < getBufferSize(); i++)
       {
-         double thisDataPoint = bufferData[i];
-         double otherDataPoint = other.bufferData[i];
+         double thisDataPoint = Double.longBitsToDouble(thisData.get(i));
+         double otherDataPoint = Double.longBitsToDouble(otherData.get(i));
 
          if (Double.compare(thisDataPoint, otherDataPoint) != 0 && !EuclidCoreTools.epsilonEquals(thisDataPoint, otherDataPoint, epsilon))
          {

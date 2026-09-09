@@ -15,110 +15,87 @@
  */
 package us.ihmc.yoVariables.buffer;
 
+import java.util.Objects;
+
 /**
- * This class is used to store the lower and upper bounds to a series of double values typically
+ * Immutable value type storing the lower and upper bounds to a series of double values typically
  * from an indexed buffer.
  * <p>
  * It is part of the {@link YoBuffer} framework.
+ * </p>
+ * <p>
+ * Immutable specifically so {@link YoBufferVariableEntry} can hold it behind a
+ * {@link java.util.concurrent.atomic.AtomicReference} and swap one instance for another as a single
+ * atomic operation - a reader can then never observe a torn {@code (lowerBound, upperBound)} pair
+ * while a writer thread is concurrently widening the bounds, which two separate mutable fields could
+ * not guarantee.
  * </p>
  */
 public class YoBufferBounds
 {
    /**
-    * The bounds on the data are typically computed from the buffer in the range [{@code startIndex},
-    * {@code endIndex}].
+    * A cleared instance: indices {@code -1}, lower bound {@link Double#POSITIVE_INFINITY}, upper bound
+    * {@link Double#NEGATIVE_INFINITY}.
     */
-   private int startIndex;
+   public static final YoBufferBounds EMPTY = new YoBufferBounds(-1, -1, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
+
    /**
     * The bounds on the data are typically computed from the buffer in the range [{@code startIndex},
     * {@code endIndex}].
     */
-   private int endIndex;
+   private final int startIndex;
+   /**
+    * The bounds on the data are typically computed from the buffer in the range [{@code startIndex},
+    * {@code endIndex}].
+    */
+   private final int endIndex;
    /** The minimum value in the window defined by [{@code startIndex}, {@code endIndex}]. */
-   private double lowerBound;
+   private final double lowerBound;
    /** The maximum value in the window defined by [{@code startIndex}, {@code endIndex}]. */
-   private double upperBound;
+   private final double upperBound;
 
-   /**
-    * Creates a new {@code DataBounds} that is cleared.
-    * 
-    * @see #clear()
-    */
-   public YoBufferBounds()
-   {
-      clear();
-   }
-
-   /**
-    * Clears the internal data.
-    * <p>
-    * The indices are set to {@code -1}, the lower bound to {@link Double#POSITIVE_INFINITY}, and the
-    * upper bound to {@link Double#NEGATIVE_INFINITY}.
-    * </p>
-    */
-   public void clear()
-   {
-      this.startIndex = -1;
-      this.endIndex = -1;
-      lowerBound = Double.POSITIVE_INFINITY;
-      upperBound = Double.NEGATIVE_INFINITY;
-   }
-
-   /**
-    * Sets the index window for which the bounds represent.
-    * <p>
-    * This method does not modify the actual bounds.
-    * </p>
-    * 
-    * @param startIndex first index (inclusive) of the interval the bounds represent.
-    * @param endIndex   last index (inclusive) of the interval the bounds represent.
-    */
-   public void setInterval(int startIndex, int endIndex)
+   private YoBufferBounds(int startIndex, int endIndex, double lowerBound, double upperBound)
    {
       this.startIndex = startIndex;
       this.endIndex = endIndex;
-   }
-
-   /**
-    * Sets the bounds.
-    * <p>
-    * This method does not modify the indices for the interval.
-    * </p>
-    * 
-    * @param lowerBound the minimum value.
-    * @param upperBound the maximum value.
-    */
-   public void setBounds(double lowerBound, double upperBound)
-   {
       this.lowerBound = lowerBound;
       this.upperBound = upperBound;
    }
 
    /**
-    * Copies the values from {@code other}.
-    * 
-    * @param other the other bounds to copy the values from. Not modified.
+    * Returns a new bounds with the given index window, keeping this instance's lower/upper bound.
+    *
+    * @param startIndex first index (inclusive) of the interval the bounds represent.
+    * @param endIndex   last index (inclusive) of the interval the bounds represent.
+    * @return the new bounds.
     */
-   public void set(YoBufferBounds other)
+   public YoBufferBounds withInterval(int startIndex, int endIndex)
    {
-      startIndex = other.startIndex;
-      endIndex = other.endIndex;
-      lowerBound = other.lowerBound;
-      upperBound = other.upperBound;
+      return new YoBufferBounds(startIndex, endIndex, lowerBound, upperBound);
    }
 
    /**
-    * Computes and update the bounds of the given {@code buffer} within the interval
-    * [{@code startIndex}, {@code endIndex}].
-    * <p>
-    * The interval in which the bounds are to be computed can be set via
-    * {@link #setInterval(int, int)}.
-    * </p>
-    * 
-    * @param buffer the series of values to compute the lower and upper bounds of. Not modified.
-    * @return {@code true} if the bounds have changed, {@code false} otherwise.
+    * Returns a new bounds with the given lower/upper bound, keeping this instance's index window.
+    *
+    * @param lowerBound the minimum value.
+    * @param upperBound the maximum value.
+    * @return the new bounds.
     */
-   public boolean compute(double[] buffer)
+   public YoBufferBounds withBounds(double lowerBound, double upperBound)
+   {
+      return new YoBufferBounds(startIndex, endIndex, lowerBound, upperBound);
+   }
+
+   /**
+    * Computes the bounds of the given {@code buffer} within the interval [{@code startIndex},
+    * {@code endIndex}].
+    *
+    * @param startIndex first index (inclusive) of the interval to compute the bounds of.
+    * @param endIndex   last index (inclusive) of the interval to compute the bounds of.
+    * @param buffer     the series of values to compute the lower and upper bounds of. Not modified.
+    * @return the newly computed bounds.
+    */
+   public static YoBufferBounds computed(int startIndex, int endIndex, double[] buffer)
    {
       double newLowerBound = Double.POSITIVE_INFINITY;
       double newUpperBound = Double.NEGATIVE_INFINITY;
@@ -158,46 +135,31 @@ public class YoBufferBounds
          }
       }
 
-      boolean changed = false;
-
-      if (newLowerBound != lowerBound || newUpperBound != upperBound)
-      {
-         lowerBound = newLowerBound;
-         upperBound = newUpperBound;
-         changed = true;
-      }
-
-      return changed;
+      return new YoBufferBounds(startIndex, endIndex, newLowerBound, newUpperBound);
    }
 
    /**
-    * Updates the current bounds to contain the given {@code value}.
-    * 
-    * @param value the new value that is ensured to be inside the bounds after calling this method.
-    * @return {@code true} if the bounds have changed, {@code false} otherwise.
+    * Returns a new bounds widened to include {@code value}, keeping this instance's index window - or
+    * this same instance if {@code value} is already inside the current bounds.
+    * <p>
+    * Returning {@code this} unchanged (rather than an equal-valued new instance) is deliberate: it lets
+    * a caller doing a compare-and-swap update detect "no change needed" via reference equality without
+    * an extra value comparison.
+    * </p>
+    *
+    * @param value the new value that is ensured to be inside the returned bounds.
+    * @return the widened bounds, or {@code this} if {@code value} was already inside bounds.
     */
-   public boolean update(double value)
+   public YoBufferBounds widenedToInclude(double value)
    {
-      boolean changed = false;
-
-      if (value < lowerBound)
-      {
-         lowerBound = value;
-         changed = true;
-      }
-
-      if (value > upperBound)
-      {
-         upperBound = value;
-         changed = true;
-      }
-
-      return changed;
+      if (value >= lowerBound && value <= upperBound)
+         return this;
+      return new YoBufferBounds(startIndex, endIndex, Math.min(lowerBound, value), Math.max(upperBound, value));
    }
 
    /**
     * Tests if the given {@code value} is inside (inclusive) the current bounds.
-    * 
+    *
     * @param value the query.
     * @return {@code true} if <tt>value &in; [lowerBounds; upperBound]</tt>, {@code false} otherwise.
     */
@@ -212,7 +174,7 @@ public class YoBufferBounds
     * The bounds on the data are typically computed from the buffer in the range [{@code startIndex},
     * {@code endIndex}].
     * </p>
-    * 
+    *
     * @return first index (inclusive) of the interval the bounds represent.
     */
    public int getStartIndex()
@@ -226,7 +188,7 @@ public class YoBufferBounds
     * The bounds on the data are typically computed from the buffer in the range [{@code startIndex},
     * {@code endIndex}].
     * </p>
-    * 
+    *
     * @return last index (inclusive) of the interval the bounds represent.
     */
    public int getEndIndex()
@@ -237,7 +199,7 @@ public class YoBufferBounds
    /**
     * Returns the current value for the lower bound, i.e. the minimum value in the interval
     * [{@code startIndex}, {@code endIndex}].
-    * 
+    *
     * @return the value of the lower bound.
     */
    public double getLowerBound()
@@ -248,11 +210,35 @@ public class YoBufferBounds
    /**
     * Returns the current value for the upper bound, i.e. the maximum value in the interval
     * [{@code startIndex}, {@code endIndex}].
-    * 
+    *
     * @return the value of the upper bound.
     */
    public double getUpperBound()
    {
       return upperBound;
+   }
+
+   @Override
+   public boolean equals(Object object)
+   {
+      if (object == this)
+         return true;
+      if (!(object instanceof YoBufferBounds))
+         return false;
+      YoBufferBounds other = (YoBufferBounds) object;
+      return startIndex == other.startIndex && endIndex == other.endIndex && Double.compare(lowerBound, other.lowerBound) == 0
+            && Double.compare(upperBound, other.upperBound) == 0;
+   }
+
+   @Override
+   public int hashCode()
+   {
+      return Objects.hash(startIndex, endIndex, lowerBound, upperBound);
+   }
+
+   @Override
+   public String toString()
+   {
+      return "[" + startIndex + ", " + endIndex + "] -> [" + lowerBound + ", " + upperBound + "]";
    }
 }
