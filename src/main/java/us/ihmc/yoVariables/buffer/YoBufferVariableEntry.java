@@ -116,11 +116,19 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
 
    /**
     * Writes the given value into this buffer at the given index.
-    * 
+    * <p>
+    * Package-private: this mutates the same state ({@code bufferData}, {@code currentBounds},
+    * {@code boundsChanged}) that {@link #writeIntoBufferAt(int)} protects with {@code synchronized}.
+    * Kept {@code synchronized} here too so the guarantee holds even if a future caller within this
+    * package reaches this method without already holding the lock (Java's intrinsic lock is
+    * per-thread reentrant, so this is safe and cheap when called from the already-synchronized
+    * {@link #writeIntoBufferAt(int)}).
+    * </p>
+    *
     * @param value the value to write in this buffer.
     * @param index the index to write in the buffer.
     */
-   public void writeBufferAt(double value, int index)
+   synchronized void writeBufferAt(double value, int index)
    {
       if (bufferData[index] == value)
          return;
