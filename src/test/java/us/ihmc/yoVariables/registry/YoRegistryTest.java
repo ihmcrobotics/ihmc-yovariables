@@ -885,4 +885,58 @@ public class YoRegistryTest
       assertFalse(robotRegistry.getVariables().contains(robotVariable));
       assertEquals(robotVariable.getFullNameString(), robotVariable.getName());
    }
+
+   /**
+    * Guards the assumption that {@link YoRegistry#getVariables()} and {@link YoRegistry#getChildren()}
+    * return their contents in insertion order rather than in whatever order an internal lookup
+    * structure (e.g. a name-to-instance map) happens to iterate.
+    * <p>
+    * Names are added in an order that is neither alphabetical nor likely to match typical hash bucket
+    * ordering, so that a regression backed by an unordered map would very likely be caught.
+    * </p>
+    */
+   @Test
+   public void testGetVariablesAndGetChildrenPreserveInsertionOrder()
+   {
+      YoRegistry orderRoot = new YoRegistry("orderRoot");
+
+      String[] variableNames = {"zebra", "mango", "apple", "banana", "kiwi", "fig"};
+      YoVariable[] variables = new YoVariable[variableNames.length];
+      for (int i = 0; i < variableNames.length; i++)
+         variables[i] = new YoDouble(variableNames[i], orderRoot);
+
+      List<YoVariable> actualVariables = orderRoot.getVariables();
+      assertEquals(variableNames.length, actualVariables.size());
+      for (int i = 0; i < variableNames.length; i++)
+         assertEquals(variables[i], actualVariables.get(i), "Variable at index " + i + " was out of insertion order.");
+
+      String[] childNames = {"delta", "alpha", "charlie", "echo", "bravo"};
+      YoRegistry[] children = new YoRegistry[childNames.length];
+      for (int i = 0; i < childNames.length; i++)
+      {
+         children[i] = new YoRegistry(childNames[i]);
+         orderRoot.addChild(children[i]);
+      }
+
+      List<YoRegistry> actualChildren = orderRoot.getChildren();
+      assertEquals(childNames.length, actualChildren.size());
+      for (int i = 0; i < childNames.length; i++)
+         assertEquals(children[i], actualChildren.get(i), "Child at index " + i + " was out of insertion order.");
+
+      // Removing from the middle should not reshuffle the remaining entries.
+      orderRoot.removeVariable(variables[2]); // "apple"
+      List<YoVariable> afterRemoval = orderRoot.getVariables();
+      assertEquals(variableNames.length - 1, afterRemoval.size());
+      assertEquals(variables[0], afterRemoval.get(0));
+      assertEquals(variables[1], afterRemoval.get(1));
+      assertEquals(variables[3], afterRemoval.get(2));
+      assertEquals(variables[4], afterRemoval.get(3));
+      assertEquals(variables[5], afterRemoval.get(4));
+
+      // A variable added after a removal should land at the end, not in the vacated slot.
+      YoVariable reAdded = new YoDouble("apple", orderRoot);
+      List<YoVariable> afterReAdd = orderRoot.getVariables();
+      assertEquals(variableNames.length, afterReAdd.size());
+      assertEquals(reAdded, afterReAdd.get(afterReAdd.size() - 1));
+   }
 }

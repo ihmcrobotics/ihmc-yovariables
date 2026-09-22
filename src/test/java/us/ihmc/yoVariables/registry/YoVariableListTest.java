@@ -314,4 +314,56 @@ public class YoVariableListTest
       matchedNameShouldBeEmpty = YoSearchTools.filterVariables(YoSearchTools.regularExpressionFilter("bar"), list);
       assertTrue(matchedNameShouldBeEmpty.isEmpty());
    }
+
+   /**
+    * Guards the assumption that {@code YoVariableList} preserves insertion order (via
+    * {@link YoVariableList#get(int)}, {@link YoVariableList#indexOf(Object)}, and
+    * {@link YoVariableList#getVariables()}) rather than whatever order an internal lookup structure
+    * (e.g. a name-to-variable map) happens to iterate.
+    * <p>
+    * Names are added in an order that is neither alphabetical nor likely to match typical hash bucket
+    * ordering, so that a regression backed by an unordered map would very likely be caught.
+    * </p>
+    */
+   @Test
+   public void testGetAndIndexOfPreserveInsertionOrder()
+   {
+      YoRegistry registryA = new YoRegistry("registryA");
+      YoVariableList list = new YoVariableList("orderList");
+
+      String[] variableNames = {"zebra", "mango", "apple", "banana", "kiwi", "fig"};
+      YoVariable[] variables = new YoVariable[variableNames.length];
+      for (int i = 0; i < variableNames.length; i++)
+      {
+         variables[i] = new YoDouble(variableNames[i], registryA);
+         list.add(variables[i]);
+      }
+
+      assertEquals(variableNames.length, list.size());
+      for (int i = 0; i < variableNames.length; i++)
+      {
+         assertEquals(variables[i], list.get(i), "Variable at index " + i + " was out of insertion order.");
+         assertEquals(i, list.indexOf(variables[i]), "indexOf did not match insertion order for index " + i + ".");
+      }
+
+      List<YoVariable> actualVariables = list.getVariables();
+      for (int i = 0; i < variableNames.length; i++)
+         assertEquals(variables[i], actualVariables.get(i), "getVariables() index " + i + " was out of insertion order.");
+
+      // Removing from the middle should not reshuffle the remaining entries.
+      list.remove(variables[2]); // "apple"
+      assertEquals(variableNames.length - 1, list.size());
+      assertEquals(variables[0], list.get(0));
+      assertEquals(variables[1], list.get(1));
+      assertEquals(variables[3], list.get(2));
+      assertEquals(variables[4], list.get(3));
+      assertEquals(variables[5], list.get(4));
+
+      // A variable added after a removal should land at the end, not in the vacated slot.
+      YoRegistry registryB = new YoRegistry("registryB");
+      YoVariable reAdded = new YoDouble("apple", registryB);
+      list.add(reAdded);
+      assertEquals(variableNames.length, list.size());
+      assertEquals(reAdded, list.get(list.size() - 1));
+   }
 }
