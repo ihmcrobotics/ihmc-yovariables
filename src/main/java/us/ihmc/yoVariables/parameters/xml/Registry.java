@@ -18,11 +18,6 @@ package us.ihmc.yoVariables.parameters.xml;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlElement;
-
 import us.ihmc.yoVariables.parameters.XmlParameterReader;
 import us.ihmc.yoVariables.parameters.XmlParameterWriter;
 import us.ihmc.yoVariables.parameters.YoParameter;
@@ -34,20 +29,22 @@ import us.ihmc.yoVariables.parameters.YoParameter;
  * <p>
  * This XML token represents a registry which can have sub-registries and parameters.
  * </p>
+ * <p>
+ * Maps to a {@code <registry name="...">} element containing nested {@code <registry>} and
+ * {@code <parameter>} children; see {@link XmlParameterReader} and {@link XmlParameterWriter} for the
+ * hand-written DOM (de)serialization. A {@code null} list (as opposed to an empty one) indicates the
+ * element had no such children when read.
+ * </p>
  */
-@XmlAccessorType(XmlAccessType.NONE)
 public class Registry
 {
    /** The name of this registry. */
-   @XmlAttribute
    private String name;
 
    /** The children of this registry. */
-   @XmlElement(name = "registry")
    private List<Registry> registries;
 
    /** The parameters in this registry. */
-   @XmlElement(name = "parameter")
    private List<Parameter> parameters;
 
    /**
