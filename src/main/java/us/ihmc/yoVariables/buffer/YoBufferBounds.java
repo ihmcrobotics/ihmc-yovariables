@@ -152,7 +152,7 @@ public class YoBufferBounds
     */
    public YoBufferBounds widenedToInclude(double value)
    {
-      if (value >= lowerBound && value <= upperBound)
+      if (Double.isNaN(value) || (value >= lowerBound && value <= upperBound))
          return this;
       return new YoBufferBounds(startIndex, endIndex, Math.min(lowerBound, value), Math.max(upperBound, value));
    }
