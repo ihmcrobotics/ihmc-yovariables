@@ -2,7 +2,9 @@ package us.ihmc.yoVariables.buffer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Random;
 
@@ -582,5 +584,56 @@ public class YoBufferVariableEntryTest
    public void testGetFullVariableNameWithNamespace()
    {
       assertTrue(dataBufferEntry.getVariableFullNameString().equals(yoDouble.getFullNameString()));
+   }
+
+   @Test
+   public void testLoadBuffer()
+   {
+      Random random = new Random(49823);
+      yoDouble.set(-42.0);
+      yoDouble.addListener(v -> fail("loadBuffer should not notify the variable's listeners"));
+
+      double[] values = new double[nPoints];
+      for (int i = 0; i < nPoints; i++)
+         values[i] = random.nextDouble() * 200.0 - 100.0;
+
+      dataBufferEntry.resetBoundsChangedFlag();
+      dataBufferEntry.loadBuffer(values, 0);
+
+      assertEquals(-42.0, yoDouble.getValue());
+      assertTrue(dataBufferEntry.haveBoundsChanged());
+
+      double[] data = dataBufferEntry.getBuffer();
+      double min = Double.POSITIVE_INFINITY;
+      double max = Double.NEGATIVE_INFINITY;
+      for (int i = 0; i < nPoints; i++)
+      {
+         assertEquals(values[i], data[i]);
+         min = Math.min(min, values[i]);
+         max = Math.max(max, values[i]);
+      }
+
+      YoBufferBounds bounds = dataBufferEntry.getBounds();
+      assertEquals(min, bounds.getLowerBound());
+      assertEquals(max, bounds.getUpperBound());
+   }
+
+   @Test
+   public void testLoadBufferWithOffsets()
+   {
+      double[] source = {Double.NaN, 1.0, 2.0, 3.0, Double.NaN};
+      dataBufferEntry.loadBuffer(source, 1, 5, 3);
+
+      double[] data = dataBufferEntry.getBuffer();
+      assertEquals(0.0, data[4]);
+      assertEquals(1.0, data[5]);
+      assertEquals(2.0, data[6]);
+      assertEquals(3.0, data[7]);
+      assertEquals(0.0, data[8]);
+
+      assertThrows(IndexOutOfBoundsException.class, () -> dataBufferEntry.loadBuffer(source, 3, 0, 3));
+      assertThrows(IndexOutOfBoundsException.class, () -> dataBufferEntry.loadBuffer(source, -1, 0, 2));
+      assertThrows(IndexOutOfBoundsException.class, () -> dataBufferEntry.loadBuffer(source, nPoints - 2));
+      assertThrows(IndexOutOfBoundsException.class, () -> dataBufferEntry.loadBuffer(source, -1));
    }
 }

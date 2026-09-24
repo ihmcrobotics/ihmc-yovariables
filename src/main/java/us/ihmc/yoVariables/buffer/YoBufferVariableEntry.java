@@ -176,6 +176,62 @@ public class YoBufferVariableEntry implements YoBufferVariableEntryReader
    }
 
    /**
+    * Bulk-loads the given values into this buffer, starting at {@code startIndex}.
+    */
+   public void loadBuffer(double[] source, int startIndex)
+   {
+      loadBuffer(source, 0, startIndex, source.length);
+   }
+
+   /**
+    * Bulk-loads {@code length} values from {@code source} into this buffer.
+    */
+   public void loadBuffer(double[] source, int sourceOffset, int startIndex, int length)
+   {
+      AtomicLongArray buffer = bufferData;
+
+      if (sourceOffset < 0 || length < 0 || sourceOffset > source.length - length)
+         throw new IndexOutOfBoundsException("Invalid source range: offset = " + sourceOffset + ", length = " + length + ", source length = "
+               + source.length);
+      if (startIndex < 0 || startIndex > buffer.length() - length)
+         throw new IndexOutOfBoundsException("Invalid buffer range: startIndex = " + startIndex + ", length = " + length + ", buffer size = "
+               + buffer.length());
+
+      if (length == 0)
+         return;
+
+      double min = Double.POSITIVE_INFINITY;
+      double max = Double.NEGATIVE_INFINITY;
+
+      for (int i = 0; i < length; i++)
+      {
+         double value = source[sourceOffset + i];
+         buffer.set(startIndex + i, Double.doubleToLongBits(value));
+
+         if (value < min)
+            min = value;
+         if (value > max)
+            max = value;
+      }
+
+      if (min > max) // Only NaNs were loaded, nothing to widen.
+         return;
+
+      YoBufferBounds current;
+      YoBufferBounds widened;
+      do
+      {
+         current = currentBounds.get();
+         widened = current.widenedToInclude(min).widenedToInclude(max);
+         if (widened == current)
+            return;
+      }
+      while (!currentBounds.compareAndSet(current, widened));
+
+      boundsChanged.set(true);
+   }
+
+   /**
     * Reads the buffer at the given index and updates the variable current value.
     *
     * @param index the index read the buffer at.
